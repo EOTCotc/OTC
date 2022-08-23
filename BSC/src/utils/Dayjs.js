@@ -11,12 +11,12 @@ Dayjs.extend(relativeTime);
 Dayjs.locale("zh-cn");
 
 // Dayjs().format('YYYY-MM-DD')
-let time999 = new Date(Dayjs(new Date("2022-08-13 13:14"))).getTime() - Date.now();
+// let time999 = new Date(Dayjs(new Date("2022-08-13 13:14"))).getTime() - Date.now();
 
 let time976 =
   new Date(Dayjs(new Date("2022-08-15 13:14"))).getTime() - Date.now();
 
-Vue.prototype.time999 = time999;
+// Vue.prototype.time999 = time999;
 // Vue.prototype.time7779 = time976;
 
 Vue.filter("relativeTime", (value) => {

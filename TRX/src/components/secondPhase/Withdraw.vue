@@ -3,7 +3,7 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>充值类别</p>
+        <p>提现类别</p>
         <div class="category">
           <p
             v-for="(item,index) in category"
@@ -13,14 +13,20 @@
           >{{item.title}}</p>
         </div>
       </div>
-      <div>
-        <van-field v-model="netType" :border="false" readonly label="充值网络" />
-        <van-field v-model="address2" :border="false" readonly label="充值地址" />
-        <van-field v-model="num" type="number" :border="false" label="充值数量" placeholder="请输入充值数量" />
+      <div class="center">
+        <van-field v-model="netType" :border="false" readonly label="网络类型" />
+        <van-field v-model="address2" :border="false" readonly label="提现地址" />
+        <van-field v-model="num" type="number" :border="false" label="提现数量" placeholder="请输入提现数量">
+          <template #extra>
+            <div class="all">全部</div>
+          </template>
+        </van-field>
+        <p>手续费{{random}}TRX</p>
       </div>
       <div class="footer">
-        <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge()" >完成充值</van-button>
-        <p @click="look()">查看充值记录</p>
+        <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge(num)">提交</van-button>
+        <p>最少提100 EOTC，提币到账时间为T+1。</p>
+        <p @click="look()">查看提现记录</p>
       </div>
     </div>
   </div>
@@ -35,7 +41,7 @@ export default {
   },
   data() {
     return {
-      title: '充值',
+      title: '提现',
       category: [
         { title: 'EOTC', show: true },
         { title: 'USDT', show: false },
@@ -46,6 +52,8 @@ export default {
       address: '',
       address2: '',
       num: '',
+
+      random:0
     }
   },
   created() {
@@ -55,6 +63,7 @@ export default {
       this.address.substring(0, 10) +
       '...' +
       this.address.substring(this.address.length - 10, this.address.length)
+    this.random=this.getRandom(15,30)
   },
   methods: {
     switchTo(index) {
@@ -63,11 +72,16 @@ export default {
       }
       this.category[index].show = true
     },
-    recharge(){
-      console.log(123)
+    recharge(num) {
+      if(num<100){
+        this.$toast.warning('最少提100EOTC！')
+      }
     },
-    look(){
-      this.$router.push({name:'rechargeRecord'})
+    look() {
+      this.$router.push({ name: 'WithdrawRecord' })
+    },
+    getRandom(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
   },
 }
@@ -101,11 +115,24 @@ export default {
       }
     }
   }
-  .footer{
-    margin-top: 40px;
+  .center {
+    .all {
+      color: #237ff8;
+    }
     p{
+      margin-top: 20px;
+    }
+  }
+
+  .footer {
+    margin-top: 40px;
+    p:nth-child(2){
+      margin-top: 40px;
+      color: #999;
+    }
+    p:last-child {
       text-align: center;
-      color: #237FF8;
+      color: #237ff8;
       margin-top: 30px;
     }
   }

@@ -375,9 +375,9 @@ export default {
         document.querySelector(".payInfo .icons9").style.position = "static";
       }, 1200);
     });
-    setInterval(() => {
-      this.cencel();
-    }, this.time);
+    // setInterval(() => {
+    //   this.cencel();
+    // }, this.time);
   },
   data() {
     return {
@@ -391,8 +391,8 @@ export default {
       contractAddress: contractAddress,
       //数据缓存
       cacheData: {},
-      time:
-        new Date(Dayjs(new Date("2022-08-18 22:00"))).getTime() - Date.now(),
+      // time:
+      //   new Date(Dayjs(new Date("2022-08-18 22:00"))).getTime() - Date.now(),
       netType: localStorage.getItem("netType") || "trx",
       myaddress: localStorage.getItem("myaddress") || contractAddress,
       badge: getItem("bsnum"),
@@ -423,13 +423,14 @@ export default {
       });
     },
     getArbitration_time() {
-      let time = new Date(Dayjs(new Date("2022-08-27"))).getTime() - Date.now();
-      if (time < 0) {
-        return 0;
-      }
+      // let time = new Date(Dayjs(new Date("2022-08-27"))).getTime() - Date.now();
+      // if (time < 0) {
+      //   return 0;
+      // }
       const order_5Time = this.trsfTime_30timeout(this.item.order_time, 5);
-      const curTime = this.trsfTime_30timeout(Date.now(), time, 123);
+      const curTime = this.trsfTime_30timeout(Date.now(), 0);
       const diff_time = this.diff_30timeout(order_5Time, curTime);
+      console.log(diff_time)
       if (diff_time <= 0) {
         return 0;
       } else {
@@ -542,8 +543,10 @@ export default {
     },
     PaymentInfoAffirm() {
       // 展示 订单付款 信息 弹窗
+      console.log(111)
       this.infoIsOk = false;
       this.showPaymentInfoAffirmWindow = true;
+      console.log(this.showPaymentInfoAffirmWindow)
     },
     // 获取订单 商家的姓名
     get_other_name() {

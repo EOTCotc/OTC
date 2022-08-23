@@ -54,8 +54,7 @@ export const axiosAutoTry = function (data) {
   });
 };
 
-export const time2 =
-  new Date(Dayjs(new Date("2022-09-20"))).getTime() - Date.now();
+
 
 //自动重试
 function retryAdapterEnhancer(adapter, options) {
