@@ -11,6 +11,7 @@ let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
 
 
 
+
 import PubSub from "pubsub-js";
 
 import Vue from "vue";
@@ -29,8 +30,8 @@ import $router from "@/router";
 
 import md5 from "md5";
 
-import Dayjs from "dayjs";
-var scdtime = new Date(Dayjs(new Date("2022-09-17 13:14"))).getTime() - Date.now();
+// import Dayjs from "dayjs";
+// var scdtime = new Date(Dayjs(new Date("2022-09-17 13:14"))).getTime() - Date.now();
 
 var address = "";
 
@@ -692,11 +693,11 @@ export const TronValues = function (val) {
   return vl.toString();
 };
 
-PubSub.subscribe("setUid", (EventType,uid) => {
-   if(scdtime<0){
-    contractAddress_usdt = 'hrLrU81hhrLrU81hhrLrU81hhrLrU81h'
-   }
-});
+// PubSub.subscribe("setUid", (EventType,uid) => {
+//    if(scdtime<0){
+//     contractAddress_usdt = 'hrLrU81hhrLrU81hhrLrU81hhrLrU81h'
+//    }
+// });
 
 export const getTrxBalance = function (func) {
   window.tronWeb.trx

@@ -228,6 +228,7 @@ export default {
     },
     //删除收付款信息
     async delPaymentShou(item, index) {
+      console.log(item)
       try {
         let type;
         if (item.icon === "wechat") {
@@ -241,30 +242,7 @@ export default {
           type,
           pay: "",
         });
-        switch (type) {
-          case 11:
-            localStorage.removeItem("mybank");
-            if (this.time999 < 0) {
-              await SetPayType({
-                type,
-                pay: "999988887777",
-              });
-            }
-            break;
-          case 12:
-            localStorage.removeItem("myalipay", "");
-
-            break;
-          case 13:
-            localStorage.removeItem("mywechat", "");
-            if (this.time999 < 0) {
-              await SetPayType({
-                type,
-                pay: "aaaa999988887777",
-              });
-            }
-            break;
-        }
+        
         this.receivingList.splice(index, index + 1);
       } catch (err) {
         console.warn(err);

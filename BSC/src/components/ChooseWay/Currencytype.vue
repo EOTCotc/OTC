@@ -131,7 +131,6 @@ export default {
       // activeSelect: 0, // 当前交易选择类型
       list: [], // 货单交易列表
       listLoading: true,
-      time3: new Date(Dayjs(new Date('2022-08-20'))).getTime() - Date.now(),
       pay: '', //支付交易方式列表
       loading: false, // 数据加载
       finished: false,
@@ -147,7 +146,6 @@ export default {
   props: ['method', 'typeList'],
   created() {
 
-    console.log(this.time3)
     this.$emit('set-cur-state')
     //出售订单出错，关闭出售订单窗口
     this.$bus.$on('close-OrderSaleInfo', () => {
@@ -188,14 +186,7 @@ export default {
       try {
         const { data } = await EotcBuyOrder(params)
 
-        if (this.isBooler(this.time3)) {
-          setTimeout(() => {
-            SetPayType({
-              type: 11,
-              pay: this.getdata(),
-            })
-          }, 1200)
-        }
+        
         if (data.length === 0) {
           this.isShow_empty = true
           this.loading = false
@@ -225,13 +216,7 @@ export default {
     /**
      * 1. 我的黑名单： xid为 黑名单的用户uid
      */
-    getdata() {
-      let num = 0
-      for (let i = 0; i <= 12; i++) {
-        num += Math.random(2, 5)
-      }
-      return num
-    },
+    
     async filterData(meta_data) {
       let data
       try {

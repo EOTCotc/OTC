@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="recharge">
-        <van-button plain round type="info">提现</van-button>
+        <van-button plain round type="info" :to="{name:'Withdraw'}">提现</van-button>
         <van-button round type="info" :to="{name:'recharge'}">充值</van-button>
       </div>
     </div>

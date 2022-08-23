@@ -507,6 +507,23 @@ const routes = [
     name: "recharge",
     component: () => import("@/components/secondPhase/recharge"),
   },
+  
+  {
+    path: "/rechargeRecord", //充值记录
+    name: "rechargeRecord",
+    component: () => import("@/components/secondPhase/rechargeRecord"),
+  },
+  
+  {
+    path: "/Withdraw", //提现
+    name: "Withdraw",
+    component: () => import("@/components/secondPhase/Withdraw"),
+  },
+  {
+    path: "/WithdrawRecord", //提现记录
+    name: "WithdrawRecord",
+    component: () => import("@/components/secondPhase/WithdrawRecord"),
+  },
   {
     path: "/404",
     name:'error',
@@ -526,7 +543,8 @@ const payWhitelist = [
   "Payment-details",
 ];
 // "pledge"
-const rightMenu_Whitelist = ["arbitration", "arbitrator","secondPhase"];
+// ,"secondPhase"
+const rightMenu_Whitelist = ["arbitration", "arbitrator"];
 
 const originalReplace = VueRouter.prototype.replace;
 
