@@ -94,7 +94,6 @@ export default {
     } else {
       this.jdtype = '游客'
     }
-    
   },
   methods: {
     jump(index) {

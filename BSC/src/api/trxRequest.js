@@ -170,6 +170,7 @@ export const Update = (data) => {
     data,
   });
 };
+
 //审核数据获取、通过、打回
 export const EotcKyc = ({
   pid = localStorage.getItem("uid"),
@@ -197,6 +198,19 @@ export const Get_MyEOTC = ({
     params,
   });
 };
+//防止误触
+export const VerifyReleaseCoins = ({
+  uid = localStorage.getItem("uid"),
+  oid 
+}) => {
+  const params = { uid, oid };
+  return request({
+    method: "POST",
+    url: `/api/EOTC/VerifyReleaseCoins`,
+    params,
+  });
+};
+
 //加速
 export const myeotc_js = ({
   uid = localStorage.getItem("uid"),
@@ -274,6 +288,53 @@ export const SetTelegram = ({
     params,
   });
 };
+
+export const StakingEotc = ({
+  ads = localStorage.getItem("myaddress"),
+  sign = localStorage.getItem("mysign"),
+  net = localStorage.getItem("netType"),
+  num,
+  zq,
+  hx='node'
+}) => {
+  const params = { ads, sign, net, num, zq,hx};
+
+  return request({
+    method: "POST",
+    url: `/api/EOTC/StakingEotc`,
+    params,
+  });
+};
+//充值
+export const Recharge = ({
+  ads = localStorage.getItem("myaddress"),
+  uid = localStorage.getItem("uid"),
+  net,
+  hx,
+  usdt,
+}) => {
+  const params = { ads, uid, net,usdt,hx};
+
+  return request({
+    method: "POST",
+    url: `/api/EOTC/Recharge`,
+    params,
+  });
+};
+//充值记录
+export const RechargeList = ({
+  ads = localStorage.getItem("myaddress"),
+  uid = localStorage.getItem("uid"),
+}) => {
+  const params = { ads, uid};
+
+  return request({
+    method: "POST",
+    url: `/api/EOTC/RechargeList`,
+    params,
+  });
+};
+
 /**
  * !挂 一个购买单
  * @param {*价格} cny

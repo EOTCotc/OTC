@@ -1,27 +1,15 @@
 <template>
   <div class="currency">
     <div>
-      <van-tabs
-        @change="currency_Change"
-        v-model="active"
-        line-height="2px"
-        swipeable
-      >
+      <van-tabs @change="currency_Change" v-model="active" line-height="2px" swipeable>
         <!-- selsect 内容筛选 -->
         <div class="selsect">
           <selectNav @change-pay="changePay" @change-size="changeSize" />
         </div>
-        <van-loading size="24px" vertical v-if="listLoading"
-          >加载中...</van-loading
-        >
+        <van-loading size="24px" vertical v-if="listLoading">加载中...</van-loading>
         <payment_empty v-else-if="isShow_empty" />
 
-        <van-tab
-          v-for="(item, index) in typeList"
-          v-else
-          :title="item"
-          :key="index"
-        >
+        <van-tab v-for="(item, index) in typeList" v-else :title="item" :key="index">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -32,13 +20,11 @@
             <van-cell-group inset v-for="(items, i) in list" :key="i">
               <van-cell>
                 <template #title>
-                  <div class="left" @click="to_merchantInfo(items)">
+                  <!-- store -->
+                  <div class="left"  @click="to_merchantInfo(items)">
                     <div class="aut-img">
                       {{ items.sname.slice(0, 1) }}
-                      <div
-                        class="online-icon"
-                        v-if="isActive_user(items.updateDate)"
-                      >
+                      <div class="online-icon" v-if="isActive_user(items.updateDate)">
                         <p class="online-status"></p>
                       </div>
                     </div>
@@ -47,15 +33,14 @@
                 </template>
                 <template>
                   <div class="right">
+                    <!-- {{items.eotc}} EOTC | -->
                     <span>{{ items.odid }} | {{ items.chenjiao }}%</span>
                   </div>
                 </template>
               </van-cell>
               <van-cell>
                 <template #title>
-                  <div class="left">
-                    数量 {{ items.num | ThousandSeparator }} {{ item }}
-                  </div>
+                  <div class="left">数量 {{ items.num | ThousandSeparator }} {{ item }}</div>
                 </template>
                 <template #label>
                   <div>
@@ -76,11 +61,7 @@
                 </template>
                 <template>
                   <div>
-                    <van-button
-                      class="comfig-button"
-                      size="mini"
-                      @click="SubmitTrading(i)"
-                    >
+                    <van-button class="comfig-button" size="mini" @click="SubmitTrading(i)">
                       {{ method }}
                       <!--   去购买 -->
                     </van-button>
@@ -120,25 +101,25 @@
 </template>
 
 <script>
-import Dayjs from "dayjs";
+import Dayjs from 'dayjs'
 
-import PayIcons from "./pay-Icons";
-import selectNav from "@/components/selectNav";
-import payFllow from "@/components/deal-Fllow/pay-Fllow.vue";
-import payment_empty from "@/views/order-gather/payment-empty.vue";
+import PayIcons from './pay-Icons'
+import selectNav from '@/components/selectNav'
+import payFllow from '@/components/deal-Fllow/pay-Fllow.vue'
+import payment_empty from '@/views/order-gather/payment-empty.vue'
 
-import { EotcBuyOrder, UserBind } from "@/api/trxRequest";
+import { EotcBuyOrder, UserBind } from '@/api/trxRequest'
 
-import { myPayment } from "@/api/payverification";
+import { myPayment } from '@/api/payverification'
 
-import { payInfoUser } from "@/api/payverification";
-import { getItem, getItemSession, setItemSession } from "@/utils/storage";
-import { loadweb3, userBaseMes } from "@/utils/web3";
+import { payInfoUser } from '@/api/payverification'
+import { getItem, getItemSession, setItemSession } from '@/utils/storage'
+import { loadweb3, userBaseMes } from '@/utils/web3'
 
-import { SetPayType } from "@/api/payverification";
+import { SetPayType } from '@/api/payverification'
 
 export default {
-  name: "Currency-Type-content",
+  name: 'Currency-Type-content',
   components: {
     PayIcons,
     selectNav,
@@ -147,38 +128,39 @@ export default {
   },
   data() {
     return {
-      active: 0,
-      activeIndex: undefined, 
+      active: 0, // 交易类型列表 当前激活项
+      activeIndex: undefined, // 当前正在交易
       // activeSelect: 0, // 当前交易选择类型
       list: [], // 货单交易列表
       listLoading: true,
-      pay: "", //我的付款方式
-      loading: false, // 数据 停止加载
-      finished: false,// 加载检车
-      isShowTradingPopup: false, 
-      sellerMthods: myPayment(), //收款方式
+      pay: '', //支付交易方式列表
+      loading: false, // 数据加载
+      finished: false,
+      isShowTradingPopup: false, // 购买交易弹窗控制
+      sellerMthods: myPayment(), //用户可选择的 付款方式
       curTime: 0,
-      select_pay_method: 0, // 本次订单收款金额大小
-      select_money_range: 0, // 本次订单收款金额
+      select_pay_method: 0, //  选择当前交易方式
+      select_money_range: 0, // 金额选择范围
       isShow_empty: false,
-    };
+    }
   },
   //交易类型列表
-  props: ["method", "typeList"],
+  props: ['method', 'typeList'],
   created() {
-    this.$emit("set-cur-state");
+
+    this.$emit('set-cur-state')
     //出售订单出错，关闭出售订单窗口
-    this.$bus.$on("close-OrderSaleInfo", () => {
-      this.isShowTradingPopup = false;
-    });
-    this.$bus.$on("update-orderlist", () => {
+    this.$bus.$on('close-OrderSaleInfo', () => {
+      this.isShowTradingPopup = false
+    })
+    this.$bus.$on('update-orderlist', () => {
       this.onLoad({
         pay: this.select_pay_method,
         dtype: 0,
-        otype: getItem("netType"),
+        otype: getItem('netType'),
         amount: this.select_money_range,
-      });
-    });
+      })
+    })
     loadweb3(userBaseMes);
     setTimeout(() => {
       if (this.listLoading) {
@@ -186,51 +168,51 @@ export default {
       }
     }, 20000);
 
-    window.addEventListener("hashchange", this.hashChangeGoback);
+    window.addEventListener("hashchange", this.hashChangeGoback)
   },
   beforeDestroy() {
-    window.removeEventListener("hashchange", this.hashChangeGoback);
+    window.removeEventListener("hashchange", this.hashChangeGoback)
   },
   provide() {
     return {
       sellerMthods: this.sellerMthods,
-    };
+    }
   },
   methods: {
     async onLoad(params) {
       // 异步更新数据
-      this.$toast("正在努力加载中", {
-        position: "bottom-right",
+      this.$toast('正在努力加载中', {
+        position: 'bottom-right',
         timeout: false,
-      });
+      })
       try {
-        const { data } = await EotcBuyOrder(params);
+        const { data } = await EotcBuyOrder(params)
 
         
         if (data.length === 0) {
-          this.isShow_empty = true;
-          this.loading = false;
-          this.finished = true;
-          this.listLoading = false;
-          return false;
+          this.isShow_empty = true
+          this.loading = false
+          this.finished = true
+          this.listLoading = false
+          return false
         }
-        const result = await this.filterData(data);
-        this.list = result;
+        const result = await this.filterData(data)
+        this.list = result
         /**
          *  后端排序规则： 除去双方黑名单
          *  低价排名靠前
          *   是否在线
          */
-        this.listLoading = false;
-        setItemSession("buydataList", result);
+        this.listLoading = false
+        setItemSession('buydataList', result)
       } catch (err) {
-        this.list = getItemSession("buydataList");
-        console.warn("请求数据过于频繁");
+        this.list = getItemSession('buydataList')
+        console.warn('请求数据过于频繁')
       } finally {
-        this.listLoading = false;
-        this.loading = false;
-        this.finished = true;
-        this.$toast.clear();
+        this.listLoading = false
+        this.loading = false
+        this.finished = true
+        this.$toast.clear()
       }
     },
     /**
@@ -238,180 +220,177 @@ export default {
      */
     
     async filterData(meta_data) {
-      let data;
+      let data
       try {
         data = await UserBind({
           type: 0, // 拉黑
-        });
+        })
       } catch (err) {
-        console.warn(err);
-        return meta_data;
+        console.warn(err)
+        return meta_data
       }
 
-      data = data.data;
+      data = data.data
       if (data.length === 0) {
-        return meta_data;
+        return meta_data
       }
-      const Blacklisted_user = [];
-      const uid = localStorage.getItem("uid");
+      const Blacklisted_user = []
+      const uid = localStorage.getItem('uid')
       data.forEach((user) => {
         if (uid === user.xid) {
-          Blacklisted_user.push(user.uid);
+          Blacklisted_user.push(user.uid)
         } else {
-          Blacklisted_user.push(user.xid);
+          Blacklisted_user.push(user.xid)
         }
-      });
+      })
       // 1. 过滤掉我的黑名单 和  我被拉黑的用户订单
       meta_data = meta_data?.filter((order) => {
         if (Blacklisted_user?.includes(order.eid)) {
           // console.log("黑名单用户：", order.sname);
-          return false;
+          return false
         }
-        return order;
-      });
-      return meta_data;
+        return order
+      })
+      return meta_data
     },
     to_merchantInfo(item) {
       this.$router.push({
-        name: "merchantInfo",
+        name: 'merchantInfo',
         params: {
           sell_Info: item,
         },
-      });
+      })
     },
     closeModel() {
-      this.$refs["pay-popup"].finishReset();
-      this.$refs["pay-popup"].closeDelayTimeModel();
+      this.$refs['pay-popup'].finishReset()
+      this.$refs['pay-popup'].closeDelayTimeModel()
     },
     showModel() {
       //每次打开 交易弹窗，resetCount
       // this.$refs["pay-popup"].finishReset();
-      this.$refs["pay-popup"].initTime();
+      this.$refs['pay-popup'].initTime()
     },
     hashChangeGoback() {
-      this.isShowTradingPopup = false;
+      this.isShowTradingPopup = false
     },
     changePay(pay) {
-      this.select_pay_method = pay;
+      this.select_pay_method = pay
       this.onLoad({
         pay,
         amount: this.select_money_range,
-      });
+      })
     },
     changeSize(amount) {
-      this.select_money_range = amount;
+      this.select_money_range = amount
       this.onLoad({
         amount,
         pay: this.select_pay_method,
-      });
+      })
     },
     SubmitTrading(index) {
       // 购买订单
-      let time = Date.now();
+      let time = Date.now()
       if (time - this.curTime < 1000) {
-        return false;
+        return false
       }
-      this.curTime = time;
-      const userInfo = payInfoUser();
-      this.activeIndex = index; //设置 商品激活选项
+      this.curTime = time
+      const userInfo = payInfoUser()
+      this.activeIndex = index //设置 商品激活选项
       // 付款方式是否满足
       if (this.payverification(userInfo) && this.isSatisfyPaymentMethod()) {
-        this.isShowTradingPopup = true; // 前提条件完成，弹出购买窗口
+        this.isShowTradingPopup = true // 前提条件完成，弹出购买窗口
       }
     },
     payverification({ iskyc, xdnum, userdsx, myjifen }) {
-      let payVeriFicationCount = 0;
+      let payVeriFicationCount = 0
       // iskyc 实名认证审核通过 为2
-      if (iskyc === "2") {
-        payVeriFicationCount += 1;
+      if (iskyc === '2') {
+        payVeriFicationCount += 1
       } else {
         this.$toast.error(
           <div>
             <p style="font-size:13px;margin:5px">需要实名认证才能进行交易</p>
             <p style="font-size:13px;margin:5px">请您先完成实名认证！</p>
           </div>
-        );
-        return false;
+        )
+        return false
       }
       //xdnum 下单数量 0
-      if (xdnum === "0") {
-        payVeriFicationCount += 1;
+      if (xdnum === '0') {
+        payVeriFicationCount += 1
       } else {
         this.$toast.error(
           <div>
-            <p style="font-size:13px;margin:5px">
-              您已存在一笔正在进行的购买订单
-            </p>
+            <p style="font-size:13px;margin:5px">您已存在一笔正在进行的购买订单</p>
             <p style="font-size:15px;margin:5px">处理完成后方可继续交易!</p>
           </div>
-        );
-        return false;
+        )
+        return false
       }
       // 取消订单次数 每日8次  凌晨清零
-      if (userdsx >= "0") {
-        payVeriFicationCount += 1;
+      if (userdsx >= '0') {
+        payVeriFicationCount += 1
       } else {
-        this.$toast.warning("您已连续多次撤销订单，请明天再下单！");
-        return false;
+        this.$toast.warning('您已连续多次撤销订单，请明天再下单！')
+        return false
       }
       // myjifen 用户积分必须大于10
       if (Number(myjifen) >= 10) {
-        payVeriFicationCount += 1;
+        payVeriFicationCount += 1
       } else {
-        this.$toast.error("您积分已不足 10 ，无法购买！");
-        return false;
+        this.$toast.error('您积分已不足 10 ，无法购买！')
+        return false
       }
-      return payVeriFicationCount === 4;
+      return payVeriFicationCount === 4
     },
     isSatisfyPaymentMethod() {
       // payMent 商家收款方式  sellerMthods 我的收付款方式
-      const payMent = this.getCurPayList(this.list[this.activeIndex]);
+      const payMent = this.getCurPayList(this.list[this.activeIndex])
       const viodFlg = Object.keys(this.sellerMthods).some(
-        (payMethod) =>
-          payMent.includes(payMethod) && this.sellerMthods[payMethod]
-      );
+        (payMethod) => payMent.includes(payMethod) && this.sellerMthods[payMethod]
+      )
       if (viodFlg) {
-        return true;
+        return true
       } else {
-        this.$toast.clear();
-        this.$toast.warning("您没有填写该收付款方式");
-        return false;
+        this.$toast.clear()
+        this.$toast.warning('您没有填写该收付款方式')
+        return false
       }
     },
     getCurPayList(item) {
-      const Icons = [];
+      const Icons = []
       function hasCurrentPay(value) {
-        return Boolean(value.split("&")[1]);
+        return Boolean(value.split('&')[1])
       }
       for (const key of Object.keys(item)) {
         switch (key) {
-          case "bank":
+          case 'bank':
             if (hasCurrentPay(item[key])) {
-              Icons.push("yhk", "mybank");
+              Icons.push('yhk', 'mybank')
             }
-            break;
-          case "aipay":
+            break
+          case 'aipay':
             if (hasCurrentPay(item[key])) {
-              Icons.push("zfb", "myalipay");
+              Icons.push('zfb', 'myalipay')
             }
-            break;
-          case "wechat":
+            break
+          case 'wechat':
             if (hasCurrentPay(item[key])) {
-              Icons.push("wx", "mybmywechatnk");
+              Icons.push('wx', 'mybmywechatnk')
             }
-            break;
+            break
         }
       }
-      return Icons;
+      return Icons
     },
     currency_Change(tag_Name, title) {
-      this.$toast.clear();
-      if (title !== "USDT") {
-        this.$toast.error(`目前暂时不支持 ${title}`);
+      this.$toast.clear()
+      if (title !== 'USDT') {
+        this.$toast.error(`目前暂时不支持 ${title}`)
         this.$nextTick(() => {
-          this.active = 0;
-        });
-        return false;
+          this.active = 0
+        })
+        return false
       }
     },
     // 用户是否在线
@@ -419,23 +398,21 @@ export default {
       const diff_30timeout = this.diff_30timeout(
         this.trsfTime_30timeout(time, 30),
         this.transformTime_Zh(Date.now())
-      );
+      )
 
-      return diff_30timeout >= 0 ? true : false;
+      return diff_30timeout >= 0 ? true : false
     },
   },
   filters: {
     ThousandSeparator(value) {
-      if (!value) return "";
+      if (!value) return ''
       return (
         value &&
-        value
-          .toString()
-          .replace(/(^|\s)\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ","))
-      );
+        value.toString().replace(/(^|\s)\d+/g, (m) => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
+      )
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -460,7 +437,9 @@ export default {
     right: 20px;
     top: 28px;
   }
-
+  .store{
+    width: auto !important;
+  }
   .left {
     display: flex;
     width: 6rem;

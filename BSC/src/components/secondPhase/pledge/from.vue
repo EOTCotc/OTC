@@ -100,7 +100,6 @@ export default {
   },
   watch: {
     number(newName, old) {
-      console.log(newName)
       if (newName < 0) {
         Toast.fail('请输入有效的质押数量')
         this.number = ''

@@ -1,9 +1,11 @@
 
 // 主网链
+const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
 let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
 let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
 let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
 //测试网
+// const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
 //  let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
 //  let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
 //  let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
@@ -87,7 +89,7 @@ export const UserInfo = function () {
   //团队人数
   const allMan = localStorage.getItem("allMan");
   //有效节点
-  const stakeMan = localStorage.getItem("stakeMan");
+  const stakeMan = localStorage.getItem("stakeMan")*1;
   //总业绩
   const usdt_teams = localStorage.getItem("usdt_teams");
 
@@ -100,6 +102,13 @@ export const UserInfo = function () {
   const Lrfc = localStorage.getItem("Lrfc"); //分享奖励
   const Syfh = localStorage.getItem("Syfh"); //辅助奖励
   const Tdj = localStorage.getItem("Tdj"); //EOTC空投
+
+  
+
+  const ztman = localStorage.getItem("ztman")*1; //直推人数
+  const ztvip = localStorage.getItem("ztvip"); //节点类型
+  // const zyman = localStorage.getItem("zyman")*1; //团队有效人数
+
 
   return {
     email,
@@ -129,6 +138,8 @@ export const UserInfo = function () {
     Lrfc,
     Syfh,
     Tdj,
+    ztman,
+    ztvip
   };
 };
 
@@ -156,7 +167,7 @@ export const userBaseMes = function () {
   })
     .then((data) => {
       var it = eval(data.data);
-      // console.log("用户Uid", it);
+      console.log("用户Uid", it);
       if (it.Uid != "0") {
         localStorage.setItem("uid", it.Uid); // 主键 6位 唯一标识 id
         localStorage.setItem("parentID", it.Paypwd); //推荐人 注册邀请地址  两种形式  1 用户uid  和  邀请者的uid
@@ -205,6 +216,14 @@ export const userBaseMes = function () {
         localStorage.setItem("Lrfc", it.Lrfc); //分享奖励
         localStorage.setItem("Syfh", it.Syfh); //辅助奖励
         localStorage.setItem("Tdj", it.Tdj); //节点补助
+        localStorage.setItem('otczy',it.node)//otc质押总额
+
+        localStorage.setItem('giftEotc',it.giftEotc)//赠送EOTC
+        localStorage.setItem('giftNFT',it.giftNFT)//赠送卡牌
+
+        localStorage.setItem('ztman',it.ztman)//直推人数
+        localStorage.setItem('ztvip',it.ztvip)//节点类型
+        // localStorage.setItem('zyman',it.zyman)//团队有效人数
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
         console.log('登录')
@@ -252,6 +271,7 @@ export const SendUSDT = async function (val, ads, ctype) {
     }
   });
 };
+
 
 
 
@@ -705,6 +725,7 @@ export const getTrxBalance = function (func) {
     .then((result) => {
       if (parseInt(result) >= trxMin) func();
       else {
+        Vue.$toast.warning(trxMes)
         warnmes(trxMes, null);
       }
     });
@@ -1210,3 +1231,75 @@ export const tcoinFee = function tcoinFee(val) {
     }
   });
 };
+
+//获取链上质押总量
+export const TotalNumber = async function () {
+	let mytron = await window.tronWeb.contract().at(regular);
+
+	return new Promise((res, rej) => {
+		mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
+			from: window.tronWeb.defaultAddress.base58
+		},
+			function (error, result) {
+        console.log(result)
+				if (!error) {
+					let mnum = parseInt(result[0]._hex, 16) / 1000000.0;
+          
+					res(mnum);
+				} else {
+					Vue.$toast.error(error);
+				}
+
+			}
+		);
+	});
+};
+//获取总订单表
+export const allOrder = async function () {
+	let mytron = await window.tronWeb.contract().at(regular);
+
+	return new Promise((res, rej) => {
+		mytron.allPledge(localStorage.getItem('myaddress')).call({
+			from: window.tronWeb.defaultAddress.base58
+		},
+			function (error, result) {
+				if (!error) {
+          let data = modification(result);
+					res(data);
+				} else {
+					Vue.$toast.error(error);
+          rej(error);
+				}
+
+			}
+		);
+	});
+};
+
+//数据修改
+function modification(data) {
+	let mnum = parseInt(data[0]._hex, 16);
+	localStorage.setItem('now', mnum);
+	let list = [];
+	for (let i = 0; i < data[1].length; i++) {
+		let obj = {};
+		for (let j = 0; j < data[1][i].length; j++) {
+			if (j == 0) {
+				obj.id = parseInt(data[1][i][j]._hex, 16);
+			} else if (j == 1) {
+				obj.cycle = parseInt(data[1][i][j]._hex, 16);
+			} else if (j == 2) {
+				obj.startTime = parseInt(data[1][i][j]._hex, 16);
+			} else if (j == 3) {
+				obj.amount = parseInt(data[1][i][j]._hex, 16) / 1000000;
+			} else if (j == 4) {
+				obj.reward = parseInt(data[1][i][j]._hex, 16) / 1000000;
+			} else if (j == 5) {
+				obj.isStop = parseInt(data[1][i][j]._hex, 16);
+			}
+		}
+		list.push(obj);
+	}
+	return list;
+}
+

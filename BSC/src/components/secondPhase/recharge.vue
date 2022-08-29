@@ -25,9 +25,8 @@
     </div>
   </div>
 </template>
-
 <script>
-import { SendUSDT, getTrxBalance, loadweb3, myUsdtAmount, myEOTCAmount } from '@/utils/web3'
+import { SendUSDT, Reconstruction_getTrxBalance, loadweb3 } from '@/utils/web3'
 import { Recharge } from '@/api/trxRequest'
 import { Dialog } from 'vant'
 import white from '@/components/Nav/white.vue'
@@ -52,7 +51,7 @@ export default {
     }
   },
   created() {
-    setTimeout(() => {
+     setTimeout(() => {
       loadweb3()
     }, 1000)
     this.netType = localStorage.getItem('netType')
@@ -75,10 +74,10 @@ export default {
       this.category[index].show = true
     },
     async recharge() {
-      let money, num
+      let money
       for (let i of this.category) {
         if (i.show) {
-          if (i.title == 'EOTC' || i.title == 'USDT') {
+          if (i.title == 'USDT' || i.title == 'EOTC') {
             money = i.title
           } else {
             this.$toast.warning(`${i.title}充值功能尚未开放！`)
@@ -86,40 +85,26 @@ export default {
           }
         }
       }
-      if (money == 'USDT') {
-        await myUsdtAmount()
-        num = Number(localStorage.getItem('myamount'))
-      } else if (money == 'EOTC') {
-        await myEOTCAmount()
-        num = Number(localStorage.getItem('eotcAmount'))
-      }
-      let that = this
-      if (num >= that.num) {
-        getTrxBalance(function () {
-          SendUSDT(that.num, that.address, money).then((res) => {
-            let net
-            console.log(money)
-            if (money == 'EOTC') {
-              net = money.toLowerCase()
-            } else if (money == 'USDT') {
-              net = localStorage.getItem('netType')
-            }
-            console.log(net)
-            Recharge({ hx: res, usdt: that.num, net: net }).then((res) => {
-              console.log(res)
-              if (res.data.State > 0) {
-                Dialog.alert({
-                  message: '充值成功!\n您充值的金额将在5分钟之内到账.',
-                }).then(() => {
-                  // on close
-                })
-              }
+
+      await Reconstruction_getTrxBalance()
+      SendUSDT(this.num, this.address, money).then((res) => {
+        let net
+        if (money == 'EOTC') {
+          net = money.toLowerCase()
+        } else if (money == 'USDT') {
+          net = localStorage.getItem('netType')
+        }
+        Recharge({ hx: res, usdt: this.num, net: net }).then((res) => {
+          console.log(res)
+          if (res.data.State > 0) {
+            Dialog.alert({
+              message: '充值成功!\n您充值的金额将在5分钟之内到账.',
+            }).then(() => {
+              // on close
             })
-          })
+          }
         })
-      }else{
-        this.$toast.warning(`您的${money}余额不足！`)
-      }
+      })
     },
 
     look() {

@@ -36,7 +36,8 @@
             <van-cell-group inset v-for="(items, i) in list" :key="i">
               <van-cell>
                 <template #title>
-                  <div class="left" @click="to_merchantInfo(items)">
+                  <!-- store -->
+                  <div class="left " @click="to_merchantInfo(items)">
                     <div class="aut-img">
                       {{ items.sname.slice(0, 1) }}
                       <div
@@ -51,6 +52,7 @@
                 </template>
                 <template>
                   <div class="right">
+                    <!-- {{items.eotc}} EOTC |  -->
                     <span>{{ items.odid }} | {{ items.chenjiao }}%</span>
                   </div>
                 </template>
@@ -146,16 +148,16 @@ export default {
   },
   data() {
     return {
-      active: 0, // 是否交易
-      activeIndex: undefined, // 交易失败
+      active: 0, // 交易类型列表 当前激活项
+      activeIndex: undefined, // 当前正在交易
       // activeSelect: 0, // 当前交易选择类型
-      list: [], 
+      list: [], // 货单交易列表
       listLoading: true,
-      pay: "", 
+      pay: "", //支付交易方式列表
       loading: false, // 数据加载
       finished: false,
-      isShowTradingPopup: false,
-      sellerMthods: myPayment(), 
+      isShowTradingPopup: false, // 购买交易弹窗控制
+      sellerMthods: myPayment(), //用户可选择的 收款方式
       curTime: 0,
       select_pay_method: 0,
       select_money_range: 0,
@@ -169,6 +171,11 @@ export default {
   },
   props: ["method", "typeList"],
   created() {
+    // this.onLoad({
+    //   dtype: 1,
+    //   otype: getItem("netType"),
+    // });
+    //console.log(getItem("netType"))
     this.$toast("正在努力加载中", {
       position: "bottom-right",
       timeout: 500,
@@ -453,10 +460,12 @@ export default {
     right: 20px;
     top: 28px;
   }
-
+   .store{
+    width: auto !important;
+  }
   .left {
     display: flex;
-    width: 6rem;
+    // width: 6rem;
     // color: #969799;
     align-items: center;
 

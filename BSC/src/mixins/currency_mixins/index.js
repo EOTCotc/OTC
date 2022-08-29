@@ -63,7 +63,13 @@ export default {
       this.is_validVal();
     },
     onNumInput(e) {
-      const max = localStorage.getItem("myeotc");
+      // const max = localStorage.getItem("myeotc");
+
+      const myEoct=localStorage.getItem("myeotc")*1
+      const otczy= localStorage.getItem("otczy")*1
+      const giftEotc=localStorage.getItem("giftEotc")*1
+
+      const max=myEoct+otczy+giftEotc
       if (Number(e.target.value) < 0) {
         e.target.value = 0;
         this.number = 0;

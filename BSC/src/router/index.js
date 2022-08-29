@@ -261,11 +261,7 @@ const routes = [
         name: "share",
         component: () => import("@/components/share"),
       },
-      {
-        path: "pledge", //质押获得能量
-        name: "pledge",
-        component: () => import("@/components/pledge"),
-      },
+
       {
         path: "contact", //联系我们
         name: "contact",
@@ -281,6 +277,11 @@ const routes = [
         path: "firstPhase", //一期推广
         name: "firstPhase",
         component: () => import("@/components/firstPhase"),
+      },
+      {
+        path: "secondPhase", //二期推广
+        name: "secondPhase",
+        component: () => import("@/components/secondPhase"),
       },
 
       {
@@ -314,6 +315,7 @@ const routes = [
         name: "chain",
         component: () => import("@/components/Chain/index.vue"),
       },
+
     ],
   },
 
@@ -355,9 +357,13 @@ const routes = [
   {
     path: "/pledgFrom", //质押表单
     name: "pledgFrom",
-    component: () => import("@/components/pledge/from.vue"),
+    component: () => import("@/components/secondPhase/pledge/from.vue"),
   },
-
+  {
+    path: "/shfrom", //赎回表单
+    name: "shfrom",
+    component: () => import("@/components/secondPhase/pledge/shfrom.vue"),
+  },
   {
     path: "/publicityDetails", //公示仲裁案详情
     name: "publicityDetails",
@@ -466,8 +472,61 @@ const routes = [
   },
 
   {
+    // 流动性挖矿
+    path: "/secondPhase/mining",
+    name: "mining",
+    component: () => import("@/components/secondPhase/mining"),
+  },
+  {
+    // NFT收益
+    path: "/secondPhase/NFT",
+    name: "NFT",
+    component: () => import("@/components/secondPhase/NFT"),
+  },
+  {
+    // 链上理财转币
+    path: "/secondPhase/zyzb",
+    name: "zyzb",
+    component: () => import("@/components/secondPhase/zyzb"),
+  },
+  {
+    path: "/secondPhase/pledge", //交易质押
+    name: "pledge",
+    component: () => import("@/components/secondPhase/pledge"),
+  },
+  {
+    path: "/secondPhase/record", //质押记录
+    name: "PledgeRecord",
+    component: () => import("@/components/secondPhase/pledge/record"),
+  },
+
+
+
+  {
+    path: "/recharge", //充值
+    name: "recharge",
+    component: () => import("@/components/secondPhase/recharge"),
+  },
+
+  {
+    path: "/rechargeRecord", //充值记录
+    name: "rechargeRecord",
+    component: () => import("@/components/secondPhase/rechargeRecord"),
+  },
+
+  {
+    path: "/Withdraw", //提现
+    name: "Withdraw",
+    component: () => import("@/components/secondPhase/Withdraw"),
+  },
+  {
+    path: "/WithdrawRecord", //提现记录
+    name: "WithdrawRecord",
+    component: () => import("@/components/secondPhase/WithdrawRecord"),
+  },
+  {
     path: "/404",
-    name:'error',
+    name: 'error',
     component: () => import("@/components/NotFound"),
   },
   {
@@ -483,29 +542,27 @@ const payWhitelist = [
   "outflows-currency",
   "Payment-details",
 ];
-
-const rightMenu_Whitelist = ["pledge", "arbitration", "arbitrator"];
+// "pledge"
+// ,"secondPhase"
+const rightMenu_Whitelist = ["arbitration", "arbitrator","Withdraw",'NFT','mining','zyzb'];
 
 const originalReplace = VueRouter.prototype.replace;
 
 VueRouter.prototype.replace = function replace(location) {
-  return originalReplace.call(this, location).catch((err) => {});
+  return originalReplace.call(this, location).catch((err) => { });
 };
 
 const originalPush = VueRouter.prototype.push;
 
 VueRouter.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch((err) => {});
+  return originalPush.call(this, location).catch((err) => { });
 };
 
 const router = new VueRouter({
   routes,
 });
 
-// function valid_identity(next){
 
-//     return next()
-// }
 
 router.beforeEach((to, form, next) => {
   window.document.title = "EOTC全球首个去中心化OTC交易所";
@@ -554,7 +611,7 @@ router.beforeEach((to, form, next) => {
 
   if (to.name === "order-Ticket") {
     Vue.$toast.clear();
-    if (localStorage.getItem("myeotc") < 5000) {
+    if (localStorage.getItem("myeotc") < 5000&&Number(localStorage.getItem("giftNFT"))==0 ) {
       Vue.$toast.warning({
         component: toastComponent,
         props: {
@@ -600,6 +657,7 @@ router.beforeEach((to, form, next) => {
     });
     return next(new Error("功能暂未完成。。"));
   }
+
   next();
 });
 

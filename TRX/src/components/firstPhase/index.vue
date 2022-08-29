@@ -40,7 +40,7 @@
       </div>
       <div class="footer">
         <p class="look" @click="go()">查看收益明细</p>
-        <van-button color="#1B2945" round block >转二期质押</van-button>
+        <van-button color="#1B2945" round block :to="{name:'pledge'}" >转二期质押</van-button>
       </div>
     </div>
   </div>
