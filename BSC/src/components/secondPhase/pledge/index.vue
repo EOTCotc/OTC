@@ -346,7 +346,7 @@ export default {
       line-height: 48px;
     }
     .footer {
-      width: calc(100vw - 60px);
+      width: calc(100vw - 60px) ;
       position: fixed;
       bottom: 0;
       right: 0;

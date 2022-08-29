@@ -353,12 +353,21 @@ export default {
     },
     onNumInput(e) {
       this.isChange_orderInfo = true;
-      const max = localStorage.getItem("myeotc");
+      // const max = localStorage.getItem("myeotc");
+      // localStorage.getItem("otczy")
+      // localStorage.getItem("giftEotc")
+
+      const myEoct=localStorage.getItem("myeotc")*1
+      const otczy= localStorage.getItem("otczy")*1
+      const giftEotc=localStorage.getItem("giftEotc")*1
+
+      const max=myEoct+otczy+giftEotc
+
       if (Number(e.target.value) < 0) {
         e.target.value = 0;
         this.number = 0;
       }
-      if (Number(e.target.value) > +max) {
+      if (Number(e.target.value) > max) {
         e.target.value = max;
         this.number = e.target.value;
         this.$toast.clear();

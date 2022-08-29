@@ -218,7 +218,7 @@
          买家没点付款前灰色，禁用状态不能点击-->
     <footer class="footer">
       <div class="cancel">
-        <van-button @click="releaseCurrency" block>我已收到付款</van-button>
+        <van-button @click="verify" block>我已收到付款</van-button>
       </div>
     </footer>
 
@@ -251,7 +251,7 @@ import loadingToast from "@/components/loading-toast";
 
 import { Reconstruction_getTrxBalance, outOrder } from "@/utils/web3";
 
-import { UpdateOrderType } from "@/api/trxRequest";
+import { UpdateOrderType,VerifyReleaseCoins } from "@/api/trxRequest";
 
 import { paytype } from "@/utils/utils";
 
@@ -302,6 +302,7 @@ export default {
         this.cacheData = this.$route.meta.cacheData;
       }
       this.get_cuePayType();
+      console.log(this.cacheData)
     },
     get_cuePayType() {
       const payMethod = this.cacheData.item.bank;
@@ -343,8 +344,31 @@ export default {
     paytype(value) {
       return paytype(value);
     },
+    //放币前校验
+    verify(){
+      VerifyReleaseCoins({oid:this.cacheData.item.id}).then(res=>{
+        console.log(this.cacheData)
+        if(res.data.State=='1'){
+          this.releaseCurrency()
+        }else{
+          this.$toast.warning('放币成功')
+          this.$router.replace({
+          name: "sell-success",
+          params: {
+            totalMoney: this.cacheData.item.amount1,
+            num: this.cacheData.item.num,
+          },
+          query: {
+            role: "merchant_seller",
+          },
+        });
+        }
+      })
+    },
+    
     // 已确认收款，进行放币
     async releaseCurrency() {
+      
       try {
         this.releaseLd = true; // 确认信息 放币中....
         this.$toast.warning(

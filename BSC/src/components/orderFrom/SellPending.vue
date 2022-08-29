@@ -29,6 +29,10 @@
       </div>
       <div class="text">
         <div>
+          <p>对方质押数量</p>
+          <p class="text-color">{{ item.stake }} EOTC</p>
+        </div>
+        <div>
           <p>交易数量</p>
           <p>{{ item.num }} USDT</p>
         </div>

@@ -20,7 +20,8 @@
             <van-cell-group inset v-for="(items, i) in list" :key="i">
               <van-cell>
                 <template #title>
-                  <div class="left" @click="to_merchantInfo(items)">
+                  <!-- store -->
+                  <div class="left "  @click="to_merchantInfo(items)">
                     <div class="aut-img">
                       {{ items.sname.slice(0, 1) }}
                       <div class="online-icon" v-if="isActive_user(items.updateDate)">
@@ -32,6 +33,7 @@
                 </template>
                 <template>
                   <div class="right">
+                    <!-- {{items.eotc}} EOTC | -->
                     <span>{{ items.odid }} | {{ items.chenjiao }}%</span>
                   </div>
                 </template>
@@ -435,7 +437,9 @@ export default {
     right: 20px;
     top: 28px;
   }
-
+  .store{
+    width: auto !important;
+  }
   .left {
     display: flex;
     width: 6rem;

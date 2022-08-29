@@ -3,7 +3,7 @@
     <div class="content_person">
       <div class="person" @click="personCenter()">
         <div class="person_i">
-          <img src="../../static/image/head.png" alt="" />
+          <img src="../../static/image/head.png" alt />
         </div>
         <div class="person_text">
           <div class="person_title">
@@ -16,11 +16,13 @@
               size="mini"
               plain
               hairline
-              >节点类型:{{ item }}</van-button
-            >
+            >节点类型:{{ item }}</van-button>
           </div>
           <div class="person_asset">
-            <p><span>UID:</span>{{ uid }}</p>
+            <p>
+              <span>UID:</span>
+              {{ uid }}
+            </p>
             <div>{{ briefMyAddress(myaddress) }}</div>
             <van-icon class="text_icon" name="arrow" />
           </div>
@@ -34,7 +36,7 @@
           :style="{visibility: item.isshow ? 'hidden':'visible'}"
         >
           <template>
-            <p >{{ item.title }}:{{ item.num }}</p>
+            <p>{{ item.title }}:{{ item.num }}</p>
           </template>
         </div>
       </div>
@@ -101,211 +103,197 @@
 </template>
 
 <script>
+import { UpdateOrder } from '@/api/trxRequest'
 
-import { UpdateOrder } from "@/api/trxRequest";
-
-import { UserInfo } from "@/utils/web3";
-import { getItem } from "@/utils/storage";
-import { Toast } from "vant";
+import { UserInfo } from '@/utils/web3'
+import { getItem } from '@/utils/storage'
+import { Toast } from 'vant'
 export default {
-  name: "Nav_right",
+  name: 'Nav_right',
   data() {
     return {
       activeName: null,
       list: [
         {
-          title: "个人信息",
-          icon: "iconfont icon-gerenxinxi",
+          title: '个人信息',
+          icon: 'iconfont icon-gerenxinxi',
           childlist: [
             {
-              title: "身份信息",
+              title: '身份信息',
               iskyc: true,
-              event: "identity",
+              event: 'identity',
             },
-            { title: "收付款信息", event: "receivingList" },
-            { title: "各公链绑定地址信息", event: "chain" },
+            { title: '收付款信息', event: 'receivingList' },
+            { title: '各公链绑定地址信息', event: 'chain' },
           ],
         },
         {
-          title: "推广信息",
-          icon: "iconfont icon-tuiguangxinxi",
+          title: '推广信息',
+          icon: 'iconfont icon-tuiguangxinxi',
           childlist: [
-            { title: "一期推广", event: "firstPhase" },
-            { title: "分享链接", event: "share" },
-            { title: "团队节点", event: "team" },
-            // { title: "分享收益", event: "earnings" },
+            { title: '一期推广', event: 'firstPhase' },
+            { title: '分享链接', event: 'share' },
+            { title: '团队节点', event: 'team' },
+            { title: '二期推广', event: 'secondPhase' },
           ],
         },
+
         {
-          title: "质押信息",
-          icon: "iconfont icon-zhiyaxinxi",
+          title: '交易管理',
+          icon: 'iconfont icon-jiaoyiguanli',
           childlist: [
-            { title: "质押获得能量和优惠", event: "pledge" },
-            { title: "质押赚币" },
-          ],
-        },
-        {
-          title: "交易管理",
-          icon: "iconfont icon-jiaoyiguanli",
-          childlist: [
-            { title: "订单", event: "orderGather-full" },
-            { title: "委托单", event: "order-Ticket" },
-            { title: "仲裁", event: "arbitration" },
-            { title: "仲裁员", event: "arbitrator" },
-            { title: "关注/黑名单", event: "focus" },
+            { title: '订单', event: 'orderGather-full' },
+            { title: '委托单', event: 'order-Ticket' },
+            { title: '仲裁', event: 'arbitration' },
+            { title: '仲裁员', event: 'arbitrator' },
+            { title: '关注/黑名单', event: 'focus' },
           ],
         },
       ],
       moneylist: [
-        { title: "USDT", num: "12.00",},
-        { title: "EOTC", num: "1", event: "release",},
+        { title: 'USDT', num: '12.00' },
+        { title: 'EOTC', num: '1', event: 'release' },
       ],
       orderShow: false,
-      myaddress: localStorage.getItem("myaddress"),
-      uid: "",
-      iskyc: "",
-      iskyc_text: "",
-      name: "",
-      uname: "",
-      item: "",
-    };
+      myaddress: localStorage.getItem('myaddress'),
+      uid: '',
+      iskyc: '',
+      iskyc_text: '',
+      name: '',
+      uname: '',
+      item: '',
+    }
   },
   mounted() {
-    let asd = UserInfo();
+    let asd = UserInfo()
     console.log(asd.myamount)
     const netType = localStorage.getItem('netType')
-    if(netType==='bsc'){
-        this.moneylist[1].isshow = true
+    if (netType === 'bsc') {
+      this.moneylist[1].isshow = true
     }
-    this.moneylist[1].num = asd.eotcAmount;
-    this.moneylist[0].num = asd.myamount;
+    this.moneylist[1].num = asd.eotcAmount
+    this.moneylist[0].num = asd.myamount
 
-    this.name = asd.uname;
-    if (asd.item == "未质押") {
-      this.item = "A0";
+    this.name = asd.uname
+    if (asd.item == '未质押') {
+      this.item = 'A0'
     } else {
-      this.item = asd.item;
+      this.item = asd.item
     }
 
     this.myaddress =
       asd.myaddress.substring(0, 10) +
-      "..." +
-      asd.myaddress.substring(asd.myaddress.length - 10, asd.myaddress.length);
+      '...' +
+      asd.myaddress.substring(asd.myaddress.length - 10, asd.myaddress.length)
 
-    this.uid = asd.uid;
-    this.iskyc = asd.iskyc;
-    this.uname = asd.uname;
+    this.uid = asd.uid
+    this.iskyc = asd.iskyc
+    this.uname = asd.uname
     switch (asd.iskyc) {
-      case "-1":
-        this.iskyc_text = "认证失败";
-        break;
-      case "0":
-        this.iskyc_text = "未认证";
-        break;
-      case "1":
-        this.iskyc_text = "审核中";
-        break;
-      case "2":
-        this.iskyc_text = "已认证";
-        break;
+      case '-1':
+        this.iskyc_text = '认证失败'
+        break
+      case '0':
+        this.iskyc_text = '未认证'
+        break
+      case '1':
+        this.iskyc_text = '审核中'
+        break
+      case '2':
+        this.iskyc_text = '已认证'
+        break
     }
   },
   methods: {
     pulldown() {
-      this.orderShow = !this.orderShow;
+      this.orderShow = !this.orderShow
     },
     personCenter() {
-      this.$router.push({ name: "accountstate" });
+      this.$router.push({ name: 'accountstate' })
     },
     // go 点击菜单 去哪个页面
     go(data) {
       if (data.event != undefined) {
         if (this.iskyc == 2 && data.iskyc) {
-          this.$router.push({ name: "identity_message" });
+          this.$router.push({ name: 'identity_message' })
         } else if (this.iskyc == 1 && data.iskyc) {
           Toast.loading({
-            message: "审核中...",
+            message: '审核中...',
             forbidClick: true,
-          });
+          })
         } else if (this.iskyc == -1 && data.iskyc) {
-          this.$router.push({ name: "erroridentity" });
+          this.$router.push({ name: 'erroridentity' })
         } else {
-          if (data.event === "order-Ticket") {
-            if (getItem("myeotc") < 5000) {
+          if (data.event === 'order-Ticket') {
+            if (
+              localStorage.getItem('myeotc') < 5000 &&
+              Number(localStorage.getItem('giftNFT')) == 0
+            ) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">
-                    您质押的EOTC不足
-                  </p>
-                  <p style="font-size:14px;margin:5px 0;">
-                    EOTC质押5000以上的会员才能挂单
-                  </p>
+                  <p style="font-size:14px;margin:5px;color:red">您质押的EOTC不足</p>
+                  <p style="font-size:14px;margin:5px 0;">EOTC质押5000以上的会员才能挂单</p>
                 </div>
-              );
-              return false;
+              )
+              return false
             }
-            if (getItem("myjifen") < 9) {
+            if (getItem('myjifen') < 9) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">
-                    您的积分不足
-                  </p>
-                  <p style="font-size:14px;margin:5px">
-                    拥有10积分的会员才能挂单
-                  </p>
+                  <p style="font-size:14px;margin:5px;color:red">您的积分不足</p>
+                  <p style="font-size:14px;margin:5px">拥有10积分的会员才能挂单</p>
                 </div>
-              );
-              return false;
+              )
+              return false
             }
             // 刷新订单状态
             // UpdateOrder(getItem('uid'))
-
           }
-          this.screen(data.event);
-          this.$router.push({ name: data.event });
+          this.screen(data.event)
+          this.$router.push({ name: data.event })
         }
       }
       if (data.url != undefined) {
-        window.location.href = data.url;
+        window.location.href = data.url
       }
     },
     // 释放跳转
     jump(data) {
       if (data.event != undefined) {
-        this.$router.push({ name: data.event });
+        this.$router.push({ name: data.event })
       }
     },
 
     auditing(name) {
       if (name == 1) {
-        window.location.href = "https://eotc.im/html/guide/guide.html";
+        window.location.href = 'https://eotc.im/html/guide/guide.html'
       } else if (name == 2) {
-        window.location.href = "https://eotc.im/html/question/question.html";
+        window.location.href = 'https://eotc.im/html/question/question.html'
       } else {
-        this.$router.push({ name: name });
+        this.$router.push({ name: name })
       }
     },
     screen(name) {
       if (this.$route.name == name) {
-        this.$bus.$emit("sendBus", false);
+        this.$bus.$emit('sendBus', false)
       }
     },
     setClass(num) {
       if (num == 0) {
-        return "coll_renzhen";
+        return 'coll_renzhen'
       } else if (num == 1) {
-        return "coll_shenhe";
+        return 'coll_shenhe'
       } else if (num == -1) {
-        return "coll_error";
+        return 'coll_error'
       }
       //console.log(num);
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
-/deep/[class*="van-hairline"]::after {
+/deep/[class*='van-hairline']::after {
   border: none;
 }
 /deep/.van-cell::after {
