@@ -301,7 +301,8 @@ export default {
           parseFloat(localStorage.getItem("myamount")) - parseFloat(usdtNum);
         localStorage.setItem("myamount", mynum);
         PubSub.publish("update-selltotal-orderData");
-      } catch (err) {
+      } 
+      catch (err) {
         console.warn("err", err);
         this.$toast.clear();
         this.$toast.warning(+err, {
@@ -451,7 +452,12 @@ export default {
     },
     onNumInput(e) {
       this.isChange_orderInfo = true;
-      const max = localStorage.getItem("myeotc");
+      // const max = localStorage.getItem("myeotc");
+      const myEoct=localStorage.getItem("myeotc")*1
+      const otczy= localStorage.getItem("otczy")*1
+      const giftEotc=localStorage.getItem("giftEotc")*1
+
+      const max=myEoct+otczy+giftEotc
       if (Number(e.target.value) < 0) {
         e.target.value = 0;
         this.number = 0;

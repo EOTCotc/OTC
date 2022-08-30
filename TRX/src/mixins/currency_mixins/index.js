@@ -69,7 +69,7 @@ export default {
       const giftEotc=localStorage.getItem("giftEotc")*1
 
       const max=myEoct+otczy+giftEotc
-
+      console.log(max)
       if (Number(e.target.value) < 0) {
         e.target.value = 0;
         this.number = 0;

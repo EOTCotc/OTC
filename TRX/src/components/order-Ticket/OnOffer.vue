@@ -70,7 +70,7 @@ export default {
         const { data } = await Order_sj({
           type: 10,
         });
-        //console.log(data);
+        console.log(data);
         this.sellDatalist = data.reverse();
         this.dataLoading_before = false;
       } catch (err) {

@@ -223,6 +223,9 @@ export const userBaseMes = function () {
 
         localStorage.setItem('ztman',it.ztman)//直推人数
         localStorage.setItem('ztvip',it.ztvip)//节点类型
+        
+        localStorage.setItem('freeNum',it.freeNum)//免手续费额度
+        
         // localStorage.setItem('zyman',it.zyman)//团队有效人数
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
@@ -682,7 +685,7 @@ export const cancelOrders = async function (oid, val) {
         callValue: 0,
         shouldPollResponse: false,
       });
-      console.log(res);
+      console.log(oid,val,res);
       getxh(6, oid, val, res);
       await myUsdtAmount();
       resolve();

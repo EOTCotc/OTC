@@ -137,8 +137,11 @@ export default {
   },
   async mounted() {
     const netType = localStorage.getItem("netType");
-    if (netType === "xxx") {
-      this.wallet = window.tronWeb.defaultAddress.base58;
+    if (netType === "asd") {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      this.wallet = accounts[0].toLocaleLowerCase();
     } else if (netType === "trx") {
       this.wallet = window.tronWeb.defaultAddress.base58;
     } else if (netType === "bsc") {

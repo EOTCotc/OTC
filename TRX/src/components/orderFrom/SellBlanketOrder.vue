@@ -260,6 +260,7 @@ export default {
     };
   },
   created() {
+    console.log(this.orderItem)
     this.price = this.orderItem.cny;
     this.number = this.orderItem.num;
     this.MaxLegalTender = this.orderItem.amount2;
@@ -357,7 +358,10 @@ export default {
     async cancel_yes() {
       try {
         const usdt = this.number;
+        // console.log(usdt)
+
         await cancelOrders(this.orderItem.id, usdt);
+        // console.log(this.price,this.number,this.MinLegalTender,this.MaxLegalTender,this.orderItem.id)
         await UPdateOrder_sj({
           cny: this.price,
           num: this.number,

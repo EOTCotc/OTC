@@ -200,10 +200,11 @@ export const Get_MyEOTC = ({
 };
 //防止误触
 export const VerifyReleaseCoins = ({
-  uid = localStorage.getItem("uid"),
+  ads=localStorage.getItem("myaddress"),
+  sign=localStorage.getItem("mysign"),
   oid 
 }) => {
-  const params = { uid, oid };
+  const params = { oid, ads,sign };
   return request({
     method: "POST",
     url: `/api/EOTC/VerifyReleaseCoins`,

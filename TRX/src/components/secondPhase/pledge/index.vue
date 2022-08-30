@@ -23,7 +23,7 @@
         <div class="van-hairline--bottom"></div>
 
         <div class="total_flex">
-          <!-- <div class="left_flex">
+          <div class="left_flex">
             <img v-show="zyShow" src="@/static/image/zhiya.png" alt />
             <img v-show="!zyShow" src="@/static/image/discounts.png" alt />
             <p>{{ brokerage }}</p>
@@ -31,8 +31,9 @@
           <div class="number">
             <p v-if="zyShow">{{ usdt }} USDT</p>
             <p v-else>2022.5.6</p>
-          </div>-->
+          </div>
         </div>
+        <van-progress class="progress" :percentage="percentage" color="#868BE9" stroke-width="8" />
       </div>
       <div v-show="zyShow" class="datum">
         <div>
@@ -128,15 +129,18 @@ export default {
       presenter: 0,
 
       eotc: '',
-      usdt: 100,
+      usdt: 0,
       title: '交易质押',
       //节点类型
       jdtype: '',
+      percentage:0
     }
   },
   mounted() {
     this.presenter = localStorage.getItem('giftEotc')
     this.eotc = Number(localStorage.getItem('otczy'))
+    this.usdt = localStorage.getItem('freeNum') * 1
+
     let data = UserInfo()
     if (data.myjifen > 10) {
       this.jdtype = '交易用户'
@@ -156,6 +160,7 @@ export default {
     } else {
       this.jdtype = '游客'
     }
+    this.plan()
   },
   methods: {
     jump(index) {
@@ -181,6 +186,33 @@ export default {
       //   this.brokerage = '当前可优惠至'
       // }
     },
+    plan(){
+      const myEoct=localStorage.getItem("myeotc")*1
+      const otczy= localStorage.getItem("otczy")*1
+      const giftEotc=localStorage.getItem("giftEotc")*1
+    
+      const max=myEoct+otczy+giftEotc
+      if(max==0){
+        return
+      }
+      let num=max
+      if(max>=100&&max<5000){
+        num=max*10
+      }
+      if(max>=5000&&max<10000 ){
+        num=max*20
+      }
+      if(max>=10000 &&max<50000){
+        num=max*30
+      }
+      if(max>=50000 &&max<100000){
+        num=max*40
+      }
+      if(max>=100000){
+        num=max*50
+      }
+      this.percentage=(this.usdt/num*100).toFixed(2)
+    }
   },
 }
 </script>
@@ -253,6 +285,12 @@ export default {
             font-size: 32px;
             font-weight: bold;
             color: #333;
+            // display: flex;
+            // align-items: center;
+            // span{
+            //   color: #999;
+            //   font-size: 18px;
+            // }
           }
           span {
             font-size: 28px;

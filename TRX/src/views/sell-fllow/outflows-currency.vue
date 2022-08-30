@@ -286,7 +286,7 @@
 
     <van-dialog v-model="orderSaleLoading" :showConfirmButton="false">
       <van-loading size="36px" text-color="#000" vertical>转币中</van-loading>
-      <div class="ld-text">正在放币到合约，请稍等...</div>
+      <div class="ld-text">正在转币到合约，请稍等...</div>
     </van-dialog>
 
     <!-- end 出售 信息 loading  提示弹窗  -->
