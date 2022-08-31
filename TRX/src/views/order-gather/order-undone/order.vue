@@ -405,7 +405,8 @@ export default {
       } else {
         //用户出售
         const $order = this.order_item;
-        console.log($order.dsx)
+
+        console.log($order)
         switch ($order.dsx) {
           case "2": {
             let data;

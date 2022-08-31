@@ -81,7 +81,7 @@ export const UserInfo = function () {
   const item = localStorage.getItem("item");
 
   const allMan = localStorage.getItem("allMan"); //团队人数
-  const stakeMan = localStorage.getItem("stakeMan")*1; //有效节点
+  const stakeMan = localStorage.getItem("stakeMan") * 1; //有效节点
   const usdt_teams = localStorage.getItem("usdt_teams"); //总业绩
 
   const usdt_ye = localStorage.getItem("usdt_ye"); //USDT余额
@@ -96,6 +96,8 @@ export const UserInfo = function () {
 
   const ztman = localStorage.getItem("ztman"); //直推人数
   const ztvip = localStorage.getItem("ztvip"); //节点类型
+
+
 
   return {
     email,
@@ -143,6 +145,7 @@ export const loadweb3 = async function loadweb3(func) {
       myUsdtAmount();
       console.log(address);
       localStorage.setItem("netType", "bsc"); //ethereum.chainId
+      // localStorage.setItem("netType", "asd");
       if (address != localStorage.getItem("myaddress")) {
         console.log("没有地址");
         clearmymes();
@@ -244,11 +247,13 @@ export const userBaseMes = function () {
         localStorage.setItem("Tdj", it.Tdj); //节点补助
         localStorage.setItem('otczy', it.node);//otc质押总额
 
-        localStorage.setItem('giftEotc',it.giftEotc)//赠送EOTC
-        localStorage.setItem('giftNFT',it.giftNFT)//赠送卡牌
+        localStorage.setItem('giftEotc', it.giftEotc);//赠送EOTC
+        localStorage.setItem('giftNFT', it.giftNFT);//赠送卡牌
 
-        localStorage.setItem('ztman',it.ztman)//直推人数
-        localStorage.setItem('ztvip',it.ztvip)//节点类型
+        localStorage.setItem('ztman', it.ztman);//直推人数
+        localStorage.setItem('ztvip', it.ztvip);//节点类型
+
+        localStorage.setItem('freeNum', it.freeNum);//免手续费额度
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
       } else {
@@ -375,27 +380,25 @@ export const Reconstruction_usdtsend = function (val, message) {
 
 //转账
 export const SendUSDT = async function (val, ads, ctype) {
-  console.log(ctype)
-  return new Promise( (resolve, reject) => {
+  console.log(ctype);
+  return new Promise((resolve, reject) => {
     const address = localStorage.getItem("myaddress");
     var myContract;
-    let type
-    if (ctype == "usdt"){
+    let type;
+    if (ctype == "usdt") {
       myContract = Contract_USDT(window.web3);
-      type='ether'
-    } 
-    else if(ctype == "eotc"){
+      type = 'ether';
+    }
+    else if (ctype == "eotc") {
       myContract = Contract_EOTC_token(window.web3);
-      type='mwei'
-    }else {
+      type = 'mwei';
+    } else {
       warnmes("BSC网络暂不支持EOTC转账");
       return;
     }
-    console.log(val)
-    console.log(EthValues(val))
-    
+
     myContract.methods
-      .transfer(ads, EthValues(val,type))
+      .transfer(ads, EthValues(val, type))
       .send({ from: address }, function (error, result) {
         if (!error) {
           console.log(result);
@@ -416,18 +419,30 @@ export const SendUSDT = async function (val, ads, ctype) {
 function myUsdtAmount() {
   var myContract = Contract_USDT(window.web3);
   console.log(address);
+
   myContract.methods
     .balanceOf(address)
     .call({ from: address }, function (error, result) {
       if (!error) {
-        var mynum = parseFloat(window.web3.utils.fromWei(result)).toFixed(2);
+          var mynum = TypeShow(result).toFixed(2);
         console.log("myamount", mynum);
         localStorage.setItem("myamount", mynum);
+       
       } else {
         console.log(error);
         return -1;
       }
     });
+}
+//网络判断
+function TypeShow(result) {
+  //mwei 1000000 gwei:1000000000 ether 1000000000000000000
+  if(localStorage.getItem('netType')=='asd'){
+    return parseFloat(window.web3.utils.fromWei(result, 'mwei'))
+  }else if(localStorage.getItem('netType')=='bsc'){
+    return parseFloat(window.web3.utils.fromWei(result, 'ether'))
+  }
+  
 }
 
 //用户向合约订单质押USDT，执行前需要向USDT合约申请approve授权
@@ -677,9 +692,14 @@ function getxh(dtype, oid, val, hx) {
     console.log("GetHx", data.data);
   });
 }
-function EthValues(val,type='ether') {
+function EthValues(val, type) {
   //mwei 1000000 gwei:1000000000 ether 1000000000000000000
-  return window.web3.utils.toWei(val.toString(), type);
+  if(localStorage.getItem('netType')=='asd'||type){
+    return window.web3.utils.toWei(val.toString(), 'mwei');
+  }else if(localStorage.getItem('netType')=='bsc'){
+    return window.web3.utils.toWei(val.toString(), 'ether');
+  }
+  
 }
 
 export const dealTransForm = () => {
@@ -689,16 +709,16 @@ export const dealTransForm = () => {
 export const Reconstruction_getTrxBalance = async function () {
   return new Promise((resolve, reject) => {
     try {
-      console.log(111)
+      console.log(111);
       window.web3.eth
         .getBalance(localStorage.getItem("myaddress"))
         .then((result) => {
-          if (parseFloat(window.web3.utils.fromWei(result)) >= bscMin)
+          if (TypeShow(result) >= bscMin)
             resolve();
-          else{
-            Vue.$toast.warning(bscMes)
-            reject(bscMes)
-          } 
+          else {
+            Vue.$toast.warning(bscMes);
+            reject(bscMes);
+          }
         });
     } catch (err) {
       reject(err);
@@ -716,7 +736,7 @@ export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
         .call({ from: address }, function (error, result) {
           if (!error) {
             console.log(result);
-            let usdt = parseFloat(window.web3.utils.fromWei(result[1])).toFixed(
+            let usdt = TypeShow(result[1]).toFixed(
               6
             );
             console.log(usdt);
@@ -743,7 +763,7 @@ export const GetmyUSDT_User = function GetmyUSDT_User(orderID, gusdt, fuc) {
           if (!error) {
             let zads = result[2];
             console.log(zads);
-            let usdt = parseFloat(window.web3.utils.fromWei(result[1])).toFixed(
+            let usdt = TypeShow(result[1]).toFixed(
               6
             );
             console.log(usdt);
@@ -773,7 +793,7 @@ export const Reconstruction_verifyUSDT = function verifyUSDT(amount, fuc) {
         .balanceOf(address)
         .call({ from: address }, function (error, result) {
           if (!error) {
-            let mynum = parseFloat(window.web3.utils.fromWei(result));
+            let mynum = TypeShow(result);
             if (mynum >= amount) resolve();
             else reject("钱包余额不足");
             localStorage.setItem("myamount", mynum.toFixed(2));
@@ -796,7 +816,7 @@ export const myApprove = async function myApprove(num, func) {
         .allowance(address, contractAddress)
         .call({ from: address }, function (error, result) {
           if (!error) {
-            let mnum = parseFloat(window.web3.utils.fromWei(result));
+            let mnum = TypeShow(result);
             if (mnum >= parseFloat(num)) resolve();
             else reject(1000000, "请先给智能合约授权");
           } else {
@@ -818,7 +838,7 @@ export const Reconstruction_myApprove = async function (num) {
         .allowance(address, contractAddress)
         .call({ from: address }, function (error, result) {
           if (!error) {
-            let mnum = parseFloat(window.web3.utils.fromWei(result));
+            let mnum = TypeShow(result);
             if (mnum >= parseFloat(num)) resolve();
             else Reconstruction_usdtsend(1000000);
           } else {
@@ -840,7 +860,7 @@ async function Approve(func) {
     .allowance(address, contractAddress)
     .call({ from: address }, function (error, result) {
       if (!error) {
-        if (parseFloat(window.web3.utils.fromWei(result) > 0)) func();
+        if (TypeShow(result)>0) func();
         else eotcmes("该地址未授权，无须取消。");
       } else {
         eotcmes("操作失败，请重试  " + error);
@@ -853,73 +873,73 @@ export const sfeotc = function (func) {
 };
 //获取链上质押总量
 export const TotalNumber = async function () {
-	let mytron = await window.tronWeb.contract().at(regular);
+  let mytron = await window.tronWeb.contract().at(regular);
 
-	return new Promise((res, rej) => {
-		mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
-			from: window.tronWeb.defaultAddress.base58
-		},
-			function (error, result) {
-        console.log(result)
-				if (!error) {
-					let mnum = parseInt(result[0]._hex, 16) / 1000000.0;
-          
-					res(mnum);
-				} else {
-					Vue.$toast.error(error);
-				}
+  return new Promise((res, rej) => {
+    mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
+      from: window.tronWeb.defaultAddress.base58
+    },
+      function (error, result) {
+        console.log(result);
+        if (!error) {
+          let mnum = parseInt(result[0]._hex, 16) / 1000000.0;
 
-			}
-		);
-	});
+          res(mnum);
+        } else {
+          Vue.$toast.error(error);
+        }
+
+      }
+    );
+  });
 };
 //获取总订单表
 export const allOrder = async function () {
-	let mytron = await window.tronWeb.contract().at(regular);
+  let mytron = await window.tronWeb.contract().at(regular);
 
-	return new Promise((res, rej) => {
-		mytron.allPledge(localStorage.getItem('myaddress')).call({
-			from: window.tronWeb.defaultAddress.base58
-		},
-			function (error, result) {
-				if (!error) {
+  return new Promise((res, rej) => {
+    mytron.allPledge(localStorage.getItem('myaddress')).call({
+      from: window.tronWeb.defaultAddress.base58
+    },
+      function (error, result) {
+        if (!error) {
           let data = modification(result);
-					res(data);
-				} else {
-					Vue.$toast.error(error);
+          res(data);
+        } else {
+          Vue.$toast.error(error);
           rej(error);
-				}
+        }
 
-			}
-		);
-	});
+      }
+    );
+  });
 };
 
 //数据修改
 function modification(data) {
-	let mnum = parseInt(data[0]._hex, 16);
-	localStorage.setItem('now', mnum);
-	let list = [];
-	for (let i = 0; i < data[1].length; i++) {
-		let obj = {};
-		for (let j = 0; j < data[1][i].length; j++) {
-			if (j == 0) {
-				obj.id = parseInt(data[1][i][j]._hex, 16);
-			} else if (j == 1) {
-				obj.cycle = parseInt(data[1][i][j]._hex, 16);
-			} else if (j == 2) {
-				obj.startTime = parseInt(data[1][i][j]._hex, 16);
-			} else if (j == 3) {
-				obj.amount = parseInt(data[1][i][j]._hex, 16) / 1000000;
-			} else if (j == 4) {
-				obj.reward = parseInt(data[1][i][j]._hex, 16) / 1000000;
-			} else if (j == 5) {
-				obj.isStop = parseInt(data[1][i][j]._hex, 16);
-			}
-		}
-		list.push(obj);
-	}
-	return list;
+  let mnum = parseInt(data[0]._hex, 16);
+  localStorage.setItem('now', mnum);
+  let list = [];
+  for (let i = 0; i < data[1].length; i++) {
+    let obj = {};
+    for (let j = 0; j < data[1][i].length; j++) {
+      if (j == 0) {
+        obj.id = parseInt(data[1][i][j]._hex, 16);
+      } else if (j == 1) {
+        obj.cycle = parseInt(data[1][i][j]._hex, 16);
+      } else if (j == 2) {
+        obj.startTime = parseInt(data[1][i][j]._hex, 16);
+      } else if (j == 3) {
+        obj.amount = parseInt(data[1][i][j]._hex, 16) / 1000000;
+      } else if (j == 4) {
+        obj.reward = parseInt(data[1][i][j]._hex, 16) / 1000000;
+      } else if (j == 5) {
+        obj.isStop = parseInt(data[1][i][j]._hex, 16);
+      }
+    }
+    list.push(obj);
+  }
+  return list;
 }
 
 

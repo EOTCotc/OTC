@@ -611,7 +611,7 @@ router.beforeEach((to, form, next) => {
 
   if (to.name === "order-Ticket") {
     Vue.$toast.clear();
-    if (localStorage.getItem("myeotc") < 5000&&Number(localStorage.getItem("giftNFT"))==0 ) {
+    if (localStorage.getItem("myeotc") < 5000&&Number(localStorage.getItem('giftNFT'))==0 ) {
       Vue.$toast.warning({
         component: toastComponent,
         props: {
