@@ -152,7 +152,7 @@ export default {
           var it = eval(data);
           it.bank = this.item.ads.trim();
           let odid = parseInt(it.odid);
-          console.log(odid)
+          // console.log(odid,111)
           if (odid > 9) {
             localStorage.setItem("xdnum", odid);
             console.log(this.item)

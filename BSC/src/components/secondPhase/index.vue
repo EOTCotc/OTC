@@ -75,10 +75,10 @@ export default {
     let data = UserInfo()
     this.USDT = data.usdt_ye
     this.EOTC = data.eotc_stake
+    let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
 
-    if (data.myjifen > 10) {
-      this.jdtype = '交易用户'
-      let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+    if (data.myjifen > 10 && sum > 100) {
+      this.jdtype = '有效用户'
       if (sum > 5000 && data.ztman >= 19 && data.stakeMan >= 90) {
         this.jdtype = '信用节点'
       }

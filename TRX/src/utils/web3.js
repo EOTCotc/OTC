@@ -225,8 +225,10 @@ export const userBaseMes = function () {
         localStorage.setItem('ztvip',it.ztvip)//节点类型
         
         localStorage.setItem('freeNum',it.freeNum)//免手续费额度
+
+
         
-        // localStorage.setItem('zyman',it.zyman)//团队有效人数
+        localStorage.setItem('nodeRate',it.nodeRate)//otc质押收益
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
         console.log('登录')

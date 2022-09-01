@@ -68,6 +68,5 @@ new Vue({
   i18n,
   beforeCreate() {
     Vue.prototype.$bus = this;
-    Vue.prototype.bug = time2
   },
 }).$mount("#app");

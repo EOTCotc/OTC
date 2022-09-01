@@ -255,6 +255,8 @@ export const userBaseMes = function () {
 
         localStorage.setItem('freeNum', it.freeNum);//免手续费额度
 
+        localStorage.setItem('nodeRate',it.nodeRate)//otc质押收益
+
         PubSub.publish("setUid", localStorage.getItem("uid"));
       } else {
         // sysMes("请先注册EOTC", function () { window.location.href = "login.html" });

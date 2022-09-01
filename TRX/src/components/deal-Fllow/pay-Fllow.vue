@@ -58,7 +58,7 @@ export default {
         alt="USDC"
       />
       <section class="top-container">
-        <div class="top-title">购买{{ activePayType }}</div>
+        <div class="top-title">购买1{{ activePayType }}</div>
         <div class="top-main-container">
           <div class="top-txt">单价 ￥{{ curPayData.cny }}</div>
           <van-count-down

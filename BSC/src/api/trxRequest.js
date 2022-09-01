@@ -604,3 +604,18 @@ export const cancel_order = ({ id, oid, ads }) => {
     },
   });
 };
+//获取质押记录
+export const MyStakeList = ({
+  ads=localStorage.getItem('myaddress'),
+  net=localStorage.getItem('netType'),
+  zq=0
+}) => {
+  const params = {
+    ads,net,zq
+  };
+  return request({
+    method: "POST",
+    url: "/api/EOTC/MyStakeList",
+    params,
+  });
+};
