@@ -146,6 +146,8 @@ export default {
       select_pay_method: 0, //  选择当前交易方式
       select_money_range: 0, // 金额选择范围
       isShow_empty: false,
+
+      count:0
     }
   },
   //交易类型列表

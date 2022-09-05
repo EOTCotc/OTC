@@ -30,7 +30,7 @@
           <p class="type" @click="show = true">{{ type }}</p>
         </template>
       </van-field>
-      <div class="hint">提示: 质押6个月年化收益48%，质押12个月年化收益72%，质押24个月年化收益100%，质押36个月年化收益200%</div>
+      <div class="hint">提示: 质押6个月年化收益48%，质押12个月年化收益72%，质押24个月年化收益100%，质押36个月年化收益120%</div>
     </div>
     <div class="botton">
       <van-button

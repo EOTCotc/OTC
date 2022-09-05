@@ -109,7 +109,7 @@ export default {
           } else if (i.uid == 24) {
             i.reward = (i.znum * 1 * i.uid) / 12
           } else if (i.uid == 36) {
-            i.reward = (i.znum * 1 * 2 * i.uid) / 12
+            i.reward = (i.znum * 1 * 1.2 * i.uid) / 12
           }
 
           if (Newdate > nowdate) {

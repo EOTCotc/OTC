@@ -297,7 +297,7 @@ export const loadweb3 = async function (func) {
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
           // localStorage.setItem("netType", "xxx");
-          localStorage.setItem("netType", "trx");
+           localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");

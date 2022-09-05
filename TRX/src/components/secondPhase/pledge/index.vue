@@ -17,7 +17,11 @@
             <p>质押总额</p>
           </div>
 
+          <div class="right">
           <p class="number">{{ eotc }} EOTC</p>
+          <p class="deli">质押明细</p>
+          </div>
+          
         </div>
 
         <div class="van-hairline--bottom"></div>
@@ -78,20 +82,20 @@
         </div>
         <div>
           信用节点
-          <br />1、需要至少有19个直推有效用户
+          <br />1、需要至少有5个直推有效用户
           <br />2、质押代币数量5000个以上
           <br />3、团队有效用户90人
         </div>
         <div>
           实时节点
-          <br />1、需要至少有19个直推有效用户
+          <br />1、需要至少有7个直推有效用户
           <br />2、质押代币数量10000个以上
           <br />3、团队二条线有信用节点
           <br />4、团队有效用户300人
         </div>
         <div>
           中级节点
-          <br />1、需要至少有19个直推有效用户
+          <br />1、需要至少有13个直推有效用户
           <br />2、质押代币数量前101-1100名
           <br />3、团队三条线有实时节点或实时节点永久分红权益卡
           <br />4、团队有效用户900人
@@ -162,13 +166,13 @@ export default {
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
     if (data.myjifen > 10&&sum>100) {
       this.jdtype = '有效用户'
-      if (sum > 5000 && data.ztman >= 19 && data.stakeMan >= 90) {
+      if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
         this.jdtype = '信用节点'
       }
-      if (sum > 10000 && data.ztman >= 19 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
+      if (sum > 10000 && data.ztman >= 7 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
         this.jdtype = '实时节点'
       }
-      if (sum > 50000 && data.ztman >= 19 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
+      if (sum > 50000 && data.ztman >= 13 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
         this.jdtype = '中级节点'
       }
       if (sum > 100000 && data.ztman >= 19 && data.stakeMan >= 3000 && data.ztvip[1] * 1 >= 5) {
@@ -336,6 +340,25 @@ export default {
             font-size: 28px;
           }
         }
+        .right{
+          .deli{
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: #237ff8;
+            &::after{
+              width: 11px;
+              height: 11px;
+              content: '';
+              display: inline-block;
+              border: 1px solid #237ff8;
+              border-left: none;
+              border-bottom: none;
+              transform: rotate(45deg);
+            }
+          }
+        }
+
         .right_flex {
           display: flex;
           align-items: center;
