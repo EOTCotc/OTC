@@ -5,6 +5,7 @@ export default {
   methods: {
     async get_token(tokenObj, user) {
       try {
+        console.log(tokenObj)
         if (!tokenObj?.[this.curRole]) {
           const { data } = await Getwsid({
             oid:this.MerchanInfo.odid,

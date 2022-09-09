@@ -16,7 +16,7 @@
       <div>
         <van-field v-model="netType" :border="false" readonly label="充值网络" />
         <van-field v-model="address2" :border="false" readonly label="充值地址" />
-        <van-field v-model="num" type="number" :border="false" label="充值数量" placeholder="请输入充值数量" />
+        <van-field v-model="num" type="number" :border="false" label="充值数量" maxlength="10" placeholder="请输入充值数量" />
       </div>
       <div class="footer">
         <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge()">完成充值</van-button>
@@ -109,7 +109,7 @@ export default {
               console.log(res)
               if (res.data.State > 0) {
                 Dialog.alert({
-                  message: '充值成功!\n您充值的金额将在5分钟之内到账.',
+                  message: '充值成功!\n您充值的金额将在3分钟之内到账.',
                 }).then(() => {
                   // on close
                 })

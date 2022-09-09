@@ -126,7 +126,7 @@ function compress(img, show, state) {
     //进行最小压缩
     let ndata = canvas.toDataURL("image/jpeg", 0.2);
     tCanvas.width = tCanvas.height = canvas.width = canvas.height = 0;
-    // //console.log(ndata,'压缩后的base64');
+    // console.log(ndata,'压缩后的base64');
     return ndata;
 }
 

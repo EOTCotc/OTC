@@ -2,9 +2,7 @@
   <div class="zh-container" v-if="isVoild_token">
     <van-field v-model="token_val" center placeholder="请输入Token">
       <template #button>
-        <van-button size="small" type="primary" @click="volidToken(token_val)"
-          >确认</van-button
-        >
+        <van-button size="small" type="primary" @click="volidToken(token_val)">确认</van-button>
       </template>
     </van-field>
   </div>
@@ -28,22 +26,15 @@
 
     <div class="balance">
       <div>
-        <p :style="{ color: 'red', fontWeight: '700' }">
-          TRX: {{ Transfers_TRX }}
-        </p>
+        <p :style="{ color: 'red', fontWeight: '700' }">TRX: {{ Transfers_TRX }}</p>
       </div>
       <div>
-        <p :style="{ color: 'red', fontWeight: '700' }">
-          USDT: {{ Transfers_USDT }}
-        </p>
+        <p :style="{ color: 'red', fontWeight: '700' }">USDT: {{ Transfers_USDT }}</p>
       </div>
     </div>
     <main>
       <div class="main">
-        <section
-          class="content"
-          :style="{ position: 'sticky', top: '0', background: '#eee' }"
-        >
+        <section class="content" :style="{ position: 'sticky', top: '0', background: '#eee' }">
           <p>姓名</p>
           <p>钱包地址</p>
           <p>邮箱</p>
@@ -53,9 +44,7 @@
         </section>
         <section class="content p2" v-for="(user, i) in dataList" :key="i">
           <p>{{ user.UserName }}</p>
-          <p>
-            {{ briefMyAddress(user.ads.trim()) }}
-          </p>
+          <p>{{ briefMyAddress(user.ads.trim()) }}</p>
           <p>{{ user.mail }}</p>
           <p>{{ user.num }}</p>
           <p>{{ user.tel }}</p>
@@ -63,12 +52,11 @@
         </section>
       </div>
       <van-row class="bottom" type="flex" justify="space-around">
-        <van-col span="10" :style="{ color: 'red', fontWeight: '700' }"
-          >预估手续费：{{ total_trxServer() }}</van-col
-        >
-        <van-col span="10" :style="{ color: 'red', fontWeight: '700' }"
-          >提币总量：{{ total_coin() }}</van-col
-        >
+        <van-col
+          span="10"
+          :style="{ color: 'red', fontWeight: '700' }"
+        >预估手续费：{{ total_trxServer() }}</van-col>
+        <van-col span="10" :style="{ color: 'red', fontWeight: '700' }">提币总量：{{ total_coin() }}</van-col>
       </van-row>
     </main>
 
@@ -77,9 +65,7 @@
         <van-button type="default" @click="reharge">充值</van-button>
       </div>
       <div class="next">
-        <van-button type="default" :disabled="Transfers_Btn" @click="transfer"
-          >转账</van-button
-        >
+        <van-button type="default" :disabled="Transfers_Btn" @click="transfer">转账</van-button>
       </div>
     </footer>
 
@@ -90,12 +76,7 @@
       :confirmButtonText="type === 'transfer' ? '转账' : '充值'"
     >
       <template #title>
-        <Reharge
-          ref="numInput"
-          :action="action"
-          @num-input="onInput"
-          @change-Type="changeType"
-        ></Reharge>
+        <Reharge ref="numInput" :action="action" @num-input="onInput" @change-Type="changeType"></Reharge>
       </template>
       <template>
         <div class="reharge_coin"></div>
@@ -105,13 +86,13 @@
 </template>
 
 <script>
-import { contractAddress_usdt } from "@/utils/abi";
+import { contractAddress_usdt } from '@/utils/abi'
 
-import { tcoinFee, SendUSDT } from "@/utils/web3";
+import { tcoinFee, SendUSDT } from '@/utils/web3'
 
-import { AutoCoin } from "@/api/payverification";
+import { AutoCoin } from '@/api/payverification'
 
-import Reharge from "./rehargeinput.vue";
+import Reharge from './rehargeinput.vue'
 
 export default {
   components: {
@@ -119,136 +100,126 @@ export default {
   },
   data() {
     return {
-      value: this.briefMyAddress("TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ"),
-      myTrx: "0.00",
-      myUsdt: localStorage.getItem("myamount"),
-      Transfers_TRX: "0.00",
-      Transfers_USDT: "0.00",
+      value: this.briefMyAddress('TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ'),
+      myTrx: '0.00',
+      myUsdt: localStorage.getItem('myamount'),
+      Transfers_TRX: '0.00',
+      Transfers_USDT: '0.00',
       rehargeModel: false,
-      type: "",
-      Transfers_val: "",
-      action: { text: "USDT", icon: require("@/static/image/usdt.svg") },
+      type: '',
+      Transfers_val: '',
+      action: { text: 'USDT', icon: require('@/static/image/usdt.svg') },
       isVoild_token: true,
-      token_val: "",
+      token_val: '',
       dataList: [],
       Transfers_Btn: false,
-    };
+    }
   },
 
   methods: {
     async volidToken(val) {
-      const { data } = await AutoCoin(0, this.token_val.trim());
-      if(data.State === '0'){
+      const { data } = await AutoCoin(0, this.token_val.trim())
+      if (data.State === '0') {
         this.$router.replace({
-          name:'error'
+          name: 'error',
         })
         return false
       }
-      this.dataList = data;
+      this.dataList = data
       this.isVoild_token = false
       if (data.length == 0) {
-        this.Transfers_Btn = true;
+        this.Transfers_Btn = true
       }
-      this.update_Data();
+      this.update_Data()
     },
     async update_Data() {
-      this.init();
-      this.Transfers_USDT = await this.loadingUsdt();
+      this.init()
+      this.Transfers_USDT = await this.loadingUsdt()
     },
     async loadingUsdt() {
       return new Promise(async (resolve, reject) => {
-        let mynum;
-        let mytron_usdt = await window.tronWeb
-          .contract()
-          .at(contractAddress_usdt);
-        let ads = "TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ";
+        let mynum
+        let mytron_usdt = await window.tronWeb.contract().at(contractAddress_usdt)
+        let ads = 'TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ'
         mytron_usdt.balanceOf(ads).call(
           {
             from: ads,
           },
           function (error, result) {
             if (!error) {
-              mynum = (result / 1000000).toFixed(2);
-              console.log("mynum", mynum);
-              resolve(mynum);
+              mynum = (result / 1000000).toFixed(2)
+              console.log('mynum', mynum)
+              resolve(mynum)
             } else {
-              console.log(error);
-              reject(error);
+              console.log(error)
+              reject(error)
             }
           }
-        );
-      });
+        )
+      })
     },
     init() {
-      window.tronWeb.trx
-        .getBalance(window.tronWeb.defaultAddress.base58)
-        .then((result) => {
-          console.log("myTrx:", result);
-          this.myTrx = (result / 1000000).toFixed(2);
-        });
+      window.tronWeb.trx.getBalance(window.tronWeb.defaultAddress.base58).then((result) => {
+        console.log('myTrx:', result)
+        this.myTrx = (result / 1000000).toFixed(2)
+      })
 
-      window.tronWeb.trx
-        .getBalance("TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ")
-        .then((result) => {
-          console.log(result);
-          this.Transfers_TRX = (result / 1000000).toFixed(2);
-        });
+      window.tronWeb.trx.getBalance('TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ').then((result) => {
+        console.log(result)
+        this.Transfers_TRX = (result / 1000000).toFixed(2)
+      })
     },
     onInput(val) {
-      this.Transfers_val = val;
+      this.Transfers_val = val
     },
     changeType(item) {
-      this.action = item;
+      this.action = item
     },
     async confirm() {
-      const coin_type = this.action.text;
-      const val = this.Transfers_val;
-      const action_type = this.type;
-      if ((this.Transfers_val ?? "") !== "") {
-        if (action_type === "recharge" && coin_type === "TRX") {
+      const coin_type = this.action.text
+      const val = this.Transfers_val
+      const action_type = this.type
+      if ((this.Transfers_val ?? '') !== '') {
+        if (action_type === 'recharge' && coin_type === 'TRX') {
           if (parseFloat(val) > parseFloat(this.myTrx)) {
-            this.$toast.error("TRX钱包余额不足！");
-            return false;
+            this.$toast.error('TRX钱包余额不足！')
+            return false
           }
-          await tcoinFee(val);
-          await this.update_Data();
-          this.myTrx = parseFloat(this.myTrx) - parseFloat(val);
-          this.Transfers_TRX = parseFloat(this.Transfers_TRX) + parseFloat(val);
-          return true;
+          await tcoinFee(val)
+          await this.update_Data()
+          this.myTrx = parseFloat(this.myTrx) - parseFloat(val)
+          this.Transfers_TRX = parseFloat(this.Transfers_TRX) + parseFloat(val)
+          return true
         }
 
-        if (action_type === "recharge" && coin_type === "USDT") {
+        if (action_type === 'recharge' && coin_type === 'USDT') {
           if (parseFloat(val) > parseFloat(this.myUsdt)) {
-            this.$toast.error("USDT 钱包余额不足！");
-            return false;
+            this.$toast.error('USDT 钱包余额不足！')
+            return false
           }
           try {
-            await SendUSDT(
-              val,
-              "TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ",
-              coin_type
-            );
-            await this.update_Data();
-            this.myUsdt = this.myUsdt - val;
+            await SendUSDT(val, 'TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ', coin_type)
+            await this.update_Data()
+            this.myUsdt = this.myUsdt - val
           } catch (err) {
-            this.$toast.error(err);
+            this.$toast.error(err)
           }
         }
       }
-      return false;
+      return false
     },
     total_trxServer() {
-      return parseInt(this.dataList.length * 7);
+      return parseInt(this.dataList.length * 7)
     },
     total_coin() {
       return this.dataList
         .reduce((preCoin, user) => (preCoin += parseFloat(user.num)), 0)
-        .toFixed(2);
+        .toFixed(2)
     },
     reharge() {
-      this.type = "recharge";
-      this.rehargeModel = true;
-      this.$nextTick(this.$refs["numInput"]?.clearNum);
+      this.type = 'recharge'
+      this.rehargeModel = true
+      this.$nextTick(this.$refs['numInput']?.clearNum)
     },
     async transfer() {
       if (
@@ -256,20 +227,21 @@ export default {
         parseFloat(this.Transfers_USDT) >= parseFloat(this.total_coin())
       ) {
         try {
-          const { data } = await AutoCoin(1, this.token_val);
-          if (data.State === "1") {
-            await this.update_Data();
-            this.$toast.success("转账成功");
+          const { data } = await AutoCoin(1, this.token_val)
+          if (data.State === '1') {
+            await this.update_Data()
+            this.$toast.success('转账成功')
           }
         } catch (err) {
-          this.$toast.error(err);
+          this.$toast.error(err)
         }
       } else {
-        this.$toast.error("钱包余额不足，请充值！");
+        this.$toast.error('钱包余额不足，请充值！')
       }
     },
+   
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

@@ -17,8 +17,9 @@ import loadingToast from "@/components/loading-toast";
 /**
  * ! Reconstruction_ 标记开头的方法进行了 promise化重构
  */
+ import { Toast } from 'vant';
 
-import { SetCoinAds, GetHx, EotcLoginmes } from "@/api/trxRequest";
+import { SetCoinAds, GetHx, EotcLoginmes,VerifyOrder} from "@/api/trxRequest";
 
 import { clearmymes } from "@/api/payverification";
 
@@ -728,7 +729,7 @@ export const Reconstruction_getTrxBalance = async function () {
   });
 };
 
-export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
+export const GetmyUSDT = function (orderID, gusdt,type) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem("myaddress");
@@ -742,10 +743,27 @@ export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
               6
             );
             console.log(usdt);
+            console.log(111)
             if (gusdt <= usdt) resolve();
-            else reject("该订单USDT数量已不足");
+            else{
+              VerifyOrder({ id: orderID, num: usdt, type: type }).then(res => {
+                console.log(res);
+                if (type == 0) {
+                  reject("该订单USDT数量已不足");
+                } else {
+                  if (res.data.Code > 0) {
+                    reject(111);
+                    Toast.loading({
+                      message: '校验中...',
+                      forbidClick: true,
+                    });
+                  }
+                }
+              });
+            } 
+
           } else {
-            reject("操作失败，请重试  " + error);
+            Vue.$toast.warning('操作失败，请重试' + error);
           }
         });
     } catch (err) {
@@ -754,7 +772,7 @@ export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
   });
 };
 
-export const GetmyUSDT_User = function GetmyUSDT_User(orderID, gusdt, fuc) {
+export const GetmyUSDT_User = function (orderID, gusdt, fuc) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem("myaddress");

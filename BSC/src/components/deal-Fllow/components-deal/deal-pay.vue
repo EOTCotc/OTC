@@ -141,7 +141,7 @@ export default {
       return new Promise(async (resolve, reject) => {
         try {
           const id = this.item.id;
-          await GetmyUSDT(id, gusdt);
+          await GetmyUSDT(id, gusdt,0);
           if(!messageError) await runSign();
           const { data } = await Verification_UserXbuyOrder_before({
             oid: id,
