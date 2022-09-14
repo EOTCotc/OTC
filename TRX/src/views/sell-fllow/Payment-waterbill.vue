@@ -104,6 +104,7 @@
         type="primary"
       >{{ isSend ? "连线中" : "发送" }}</van-button>
     </van-form>
+
     <van-popup class="popup" v-model="imageShow" round position="bottom">
       <div class="popBox">
         <p>请上传图片</p>
@@ -112,7 +113,7 @@
         <van-button @click="updata()" size="small" type="primary">上传</van-button>
       </div>
     </van-popup>
-    <van-image-preview v-model="show" :images="images" @change="onChange">
+    <van-image-preview v-model="show" :images="images">
       <template v-slot:index>第{{ index }}页</template>
     </van-image-preview>
   </div>
@@ -127,7 +128,7 @@ import { Toast, Notify, ImagePreview } from 'vant'
 import { Reminders, ChatUpdate } from '@/api/trxRequest'
 import { domain } from '@/utils/request'
 import waterBillSeller from '@/mixins/water-bill-seller'
-
+//用户出售聊天
 export default {
   name: 'Payment-waterbill',
   props: ['item', 'MerchanInfo'],
@@ -179,8 +180,8 @@ export default {
     },
   },
   created() {
-    window.asd = this.asd
-    console.log(this.item)
+    window.preview = this.preview
+    console.log(this.MerchanInfo.odid)
     const tokenObj = getItem(`cs-${this.MerchanInfo.odid}`)
     this.curRole = this.$route.query.role
     this.get_token(tokenObj, 0)
@@ -228,9 +229,9 @@ export default {
             this.megList.push(
               this.cinit_mes(
                 'buyer',
-                `<img onclick="asd('${urlTop + url}')" src="${
+                `<img onclick="preview('${urlTop + url}')" src="${
                   urlTop + url
-                }" width="200px"  style="display:block"   alt="">`,
+                }" width="200px"  style="display:block;"   alt="">`,
                 true
               )
             )
@@ -251,10 +252,8 @@ export default {
       console.log(this.images)
       Toast.clear()
     },
-    onChange(index) {
-      this.index = index
-    },
-    asd(url) {
+
+    preview(url) {
       this.images = []
       console.log(url)
       this.images.push(url)
@@ -280,7 +279,13 @@ export default {
         )
         this.isReminders = true
         // <p style="font-size:15px;margin:5px">买家正在快马加鞭的给您进行汇款!</p>
-        this.megList.push(this.cinit_mes('buyer', '我转币至合约，请尽快完成订单支付！', true))
+        this.megList.push(
+          this.cinit_mes(
+            'buyer',
+            '<div style="padding:10px;">我转币至合约，请尽快完成订单支付！</div>',
+            true
+          )
+        )
         this.soket.send('我转币至合约，请尽快完成订单支付！')
         this.messageScrollIntoView()
       } catch (err) {
@@ -316,9 +321,24 @@ export default {
         }
         // 监听离线消息
         this.soket.onmessage = (result) => {
-          //console.log("result", result);
+          console.log('result', result)
           //console.log(result.data);
-          this.megList.push(this.cinit_mes('seller', result.data, true))
+          let re = new RegExp('https://api.eotcyu.club/img')
+          let show = re.test(result.data)
+          if (show) {
+            this.megList.push(
+              this.cinit_mes(
+                'seller',
+                `<img onclick="preview('${result.data}')" src="${result.data}" width="200px"  style="display:block;"   alt="">`,
+                true
+              )
+            )
+          } else {
+            this.megList.push(
+              this.cinit_mes('seller', `<div style="padding:10px">${result.data}</div>`, true)
+            )
+          }
+          // this.megList.push(this.cinit_mes('seller', result.data, true))
         }
         this.soket.onerror = function (error) {
           console.warn('连接错误 error')
@@ -349,7 +369,9 @@ export default {
 
     onSend() {
       if (this.soket.readyState == WebSocket.OPEN) {
-        this.megList.push(this.cinit_mes('buyer', this.message, false))
+        this.megList.push(
+          this.cinit_mes('buyer', `<div style="padding:10px">${this.message}</div>`, true)
+        )
         this.soket.send(this.message)
       }
       this.messageScrollIntoView()
@@ -369,9 +391,11 @@ export default {
         // this.cinit_mes('seller', this.item.smes, false),
         this.cinit_mes(
           'seller',
-          `联系方式
+          `
+           <div style="padding:10px"> 联系方式
              <a href="tel:${this.MerchanInfo.wechat}">${this.MerchanInfo.wechat}</a>\n
-              <a href="mailto:${this.item.mail}">${this.item.mail}</a>`,
+              <a href="mailto:${this.item.mail}">${this.item.mail}</a></div>
+         `,
           true
         )
       )
@@ -384,7 +408,6 @@ export default {
     },
     async get_chatting_records() {
       let page = this.page
-      console.log(page)
       try {
         const { data } = await GetOidMsg({
           oid: this.MerchanInfo.odid,
@@ -404,22 +427,27 @@ export default {
               newDataList.push(
                 this.cinit_mes(
                   role,
-                  `<img onclick="asd('${i.msg}')" src="${i.msg}" width="200px"  style="display:block"   alt="">`,
+                  `<img onclick="preview('${i.msg}')" src="${i.msg}" width="200px"  style="display:block;"   alt="">`,
                   true,
                   i.date,
                   i.uid
                 )
               )
             } else {
-              newDataList.push(this.cinit_mes(role, i.msg, false, i.date, i.uid))
+              newDataList.push(
+                this.cinit_mes(
+                  role,
+                  `<div style="padding:10px">${i.msg}</div>`,
+                  true,
+                  i.date,
+                  i.uid
+                )
+              )
             }
           }
           this.againList = data
           Promise.resolve()
             .then(() => {
-              //console.log("newDataList", newDataList);
-              console.log(111)
-              // if (page === 1)
               this.megList = []
               return '首次刷新数据'
             })
@@ -427,14 +455,9 @@ export default {
               for (let i of newDataList) {
                 this.megList.unshift(i)
               }
-              // this.againList=this.megList
-
-              console.log(this.megList)
             })
             .finally(() => {
-              // if (page === 1) {
               this.init_mesgList()
-              // }
               this.isLoading_before = false
               this.page++
             })
@@ -491,6 +514,7 @@ export default {
   /deep/ .van-pull-refresh {
     height: 100%;
     flex: 1;
+
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -578,11 +602,12 @@ export default {
           font-size: 24px;
         }
         .payAuthor-content {
+          overflow: hidden;
           font-size: 0.4rem;
           width: fit-content;
           background-color: #eee;
           margin: 15px 0;
-          padding: 15px;
+          // padding: 15px;
           line-height: 50px;
           border-radius: 15px;
           --webkit--word-wrap: break-word;
@@ -613,6 +638,7 @@ export default {
         display: flex;
         padding: 0 15px;
         .payAuthor-content {
+          overflow: hidden;
           font-size: 0.4rem;
           flex: auto;
           width: fit-content;
@@ -620,7 +646,7 @@ export default {
           color: #fff;
           margin: 15px 0;
           overflow: hidden;
-          padding: 15px;
+          // padding: 15px;
           --webkit--word-wrap: break-word;
           border-radius: 15px;
         }
@@ -662,10 +688,6 @@ export default {
     }
     button {
       width: 25%;
-      // position: absolute;
-      // right: 25px;
-      // top: 37%;
-      // transform: translateY(-50%);
     }
 
     /deep/ .van-field__control {

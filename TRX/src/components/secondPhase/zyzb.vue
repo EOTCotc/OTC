@@ -21,11 +21,11 @@
         </div>
         <div>
           <p>推荐质押(人数)</p>
-          <p>45</p>
+          <p>{{people}}</p>
         </div>
         <div>
           <p>推荐质押总量(EOTC)</p>
-          <p>86699.00</p>
+          <p>{{peopleNum}}</p>
         </div>
       </div>
       <div class="rule">
@@ -87,7 +87,16 @@ export default {
       interest: 0,
       //盲盒数量
       boxnum: 0,
+      //推荐质押人数
+      people: 0,
+      //推荐质押总量
+      peopleNum: 0,
     }
+  },
+  mounted() {
+    this.boxnum = localStorage.getItem('handselBox')
+    this.people = localStorage.getItem('stakingMan')
+    this.peopleNum = localStorage.getItem('stakingNum')
   },
   created() {
     this.init()
@@ -130,19 +139,19 @@ export default {
       } else if (type == 3) {
         list = [3, 6, 9, 12, 14, 300]
       }
-      if (num >= 1000 && num <= 1999) {
-        this.boxnum += list[0]
-      } else if (num >= 2000 && num <= 2999) {
-        this.boxnum += list[1]
-      } else if (num >= 3000 && num <= 3999) {
-        this.boxnum += list[2]
-      } else if (num >= 4000 && num <= 4999) {
-        this.boxnum += list[3]
-      } else if (num >= 5000) {
-        this.boxnum += list[4]
-        let five = Math.floor((num - 5000) / list[5])
-        this.boxnum += five
-      }
+      // if (num >= 1000 && num <= 1999) {
+      //   this.boxnum += list[0]
+      // } else if (num >= 2000 && num <= 2999) {
+      //   this.boxnum += list[1]
+      // } else if (num >= 3000 && num <= 3999) {
+      //   this.boxnum += list[2]
+      // } else if (num >= 4000 && num <= 4999) {
+      //   this.boxnum += list[3]
+      // } else if (num >= 5000) {
+      //   this.boxnum += list[4]
+      //   let five = Math.floor((num - 5000) / list[5])
+      //   this.boxnum += five
+      // }
     },
   },
 }
@@ -222,7 +231,7 @@ export default {
     }
   }
   .footer {
-    margin:30px 0 60px;
+    margin: 30px 0 60px;
   }
 }
 </style>

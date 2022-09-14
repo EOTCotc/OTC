@@ -5,13 +5,14 @@ export default {
   methods: {
     async get_token(tokenObj, user) {
       try {
+        console.log(tokenObj);
         if (!tokenObj?.[this.curRole]) {
           const { data } = await Getwsid({
             oid: this.odid,
             user,
           });
-          console.log(tokenObj)
-          console.log(this.odid)
+          console.log(tokenObj);
+          console.log(this.odid);
           setItem(
             this.odid,
             Object.assign({}, {
@@ -24,8 +25,8 @@ export default {
             oid: this.odid,
             user,
           });
-          console.log('0',tokenObj)
-          console.log('0',this.odid)
+          console.log('0', tokenObj);
+          console.log('0', this.odid);
           setItem(
             this.odid,
             Object.assign(tokenObj, {

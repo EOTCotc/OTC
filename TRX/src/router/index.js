@@ -545,7 +545,8 @@ const payWhitelist = [
 // "pledge"
 // ,"secondPhase"
 //"arbitration"
-const rightMenu_Whitelist = ["arbitrator","arbitration","Withdraw",'NFT','mining','zyzb','important-userList'];
+// 'zyzb'
+const rightMenu_Whitelist = ["arbitrator","arbitration","Withdraw",'NFT','mining','important-userList'];
 
 const originalReplace = VueRouter.prototype.replace;
 

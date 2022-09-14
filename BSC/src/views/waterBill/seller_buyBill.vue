@@ -3,21 +3,18 @@
     <!-- 流水审查页面 -->
     <header class="header" @click="$router.back(-1)">
       <van-icon name="arrow-left" />
-      <span class="hd-txt"> {{ item.mes }} </span>
+      <span class="hd-txt">{{ item.mes }}</span>
     </header>
     <section class="water-bill-content">
       <div class="top-content">待付款</div>
       <div class="top-mid-content">
-        <span class="price">￥{{ item.amount1 }}.00</span>
-        <span class="mid-r-content"> </span>
+        <span class="price">￥{{ item.amount1 }}</span>
+        <span class="mid-r-content"></span>
       </div>
     </section>
 
     <article class="dialogue" ref="dialogue-content">
-      <van-pull-refresh
-        v-model="isLoading_before"
-        @refresh="get_chatting_records"
-      >
+      <van-pull-refresh v-model="isLoading_before" @refresh="get_chatting_records">
         <template v-for="(message, index) in megList">
           <div
             ref="dialogue-content-child"
@@ -28,10 +25,7 @@
             <span class="author-img">{{ item.mes.slice(0, 1) }}</span>
             <span class="author-info">
               <p class="payAuthor-name">{{ item.mes }}</p>
-              <span
-                class="payAuthor-content breakword"
-                v-content:[message]
-              ></span>
+              <span class="payAuthor-content breakword" v-content:[message]></span>
             </span>
           </div>
 
@@ -41,12 +35,9 @@
             :key="index"
             v-else-if="message.role === 'seller' && message.message"
           >
-            <span class="author-img">
-              {{ myname.slice(0, 1) }}
-            </span>
+            <span class="author-img">{{ myname.slice(0, 1) }}</span>
             <span class="author-info breakword">
-              <span class="payAuthor-content breakword" v-content:[message]>
-              </span>
+              <span class="payAuthor-content breakword" v-content:[message]></span>
             </span>
           </div>
         </template>
@@ -59,6 +50,7 @@
       :show-error="false"
       validate-trigger="onSubmit"
     >
+      <van-icon @click="imageShow=true,fileList=[]" name="add-o" />
       <van-field
         v-model="message"
         @focus="ipt_focus"
@@ -72,130 +64,257 @@
         clearable
         type="textarea"
         maxlength="200"
-      >
-      </van-field>
+      ></van-field>
       <van-button
         :disabled="isSend"
         size="small"
         native-type="submit"
         type="primary"
-      >
-        {{ isSend ? "连线中" : "发送" }}
-      </van-button>
+      >{{ isSend ? "连线中" : "发送" }}</van-button>
     </van-form>
+
+    <van-popup class="popup" v-model="imageShow" round position="bottom">
+      <div class="popBox">
+        <p>请上传图片</p>
+        <van-uploader :after-read="afterRead" v-model="fileList" multiple :max-count="9" />
+        <!-- <img src="" width="100px" alt=""> -->
+        <van-button @click="updata()" size="small" type="primary">上传</van-button>
+      </div>
+    </van-popup>
+    <van-image-preview v-model="show" :images="images">
+      <template v-slot:index>第{{ index }}页</template>
+    </van-image-preview>
   </div>
 </template>
 
 <script>
-import { Getwsid, OrderAudit } from "@/api/payverification";
+import { Getwsid, OrderAudit } from '@/api/payverification'
 
-import { Dialog } from "vant";
+import { Dialog, Toast, ImagePreview } from 'vant'
 
-import { GetOidMsg } from "@/api/payverification";
+import { ChatUpdate } from '@/api/trxRequest'
 
-import { setItem, getItem } from "@/utils/storage";
+import { GetOidMsg } from '@/api/payverification'
 
-import waterBillSeller from "@/mixins/water-bill-seller";
+import { setItem, getItem } from '@/utils/storage'
 
-import { domain } from "@/utils/request";
+import waterBillSeller from '@/mixins/water-bill-seller'
 
+import { domain } from '@/utils/request'
+//商家收购待处理聊天
 export default {
-  name: "sellerBuy-water-bill",
-  props: ["odid", "item", "MerchanInfo"],
+  name: 'sellerBuy-water-bill',
+  props: ['odid', 'item', 'MerchanInfo'],
   mixins: [waterBillSeller],
+  components: {
+    [ImagePreview.Component.name]: ImagePreview.Component,
+  },
   data() {
     return {
       isSend: true,
-      myname: localStorage.getItem("uname"),
+      myname: localStorage.getItem('uname'),
       isLoading_before: false,
       token: undefined,
-      message: "",
+      message: '',
       rules: [
         {
           required: true,
           validator: this.validator,
-          message: "发送内容不能为空",
+          message: '发送内容不能为空',
         },
       ],
       megList: [],
+      againList: [],
       page: 1,
       iscreate_DefaultMs: true,
-      curRole: "", //本聊天室 当前身份
+      curRole: '', //本聊天室 当前身份
       ischangecheck_rcoin: true,
-    };
+
+      imageShow: false,
+      fileList: [],
+
+      show: false,
+      index: 1,
+      images: [],
+      //避免重复连接
+      lockReconnect: false,
+    }
   },
   created() {
-    this.curRole = this.$route.query.role;
-    const tokenOBJ = getItem(`cs-${this.odid}`);
-    this.get_token(tokenOBJ, 1);
-    this.changecheck_rcoin();
+    window.preview = this.preview
+    this.curRole = this.$route.query.role
+    const tokenOBJ = getItem(`cs-${this.odid}`)
+    this.get_token(tokenOBJ, 1)
+    this.changecheck_rcoin()
   },
   methods: {
-    ipt_focus() {
-      // this.$refs["footer"].$el.style.marginBottom = "78%";
+    afterRead(File) {
+      // 此时可以自行将文件上传至服务器
+      console.log(File)
+      this.$reduce(File, 1).then((data) => {
+        File.file = data.fileZip
+        console.log(data)
+        this.url = data.base64
+      })
+      console.log(this.fileList)
     },
-    ipt_blur() {
-      // this.$refs["footer"].$el.style.marginBottom = "0";
+    light(fun, time) {
+      return new Promise((res) => {
+        setTimeout(() => {
+          fun()
+          res()
+        }, time)
+      })
     },
+    //图片上传
+    async updata() {
+      if (this.fileList.length <= 0) {
+        this.$toast.warning('请至少上传一张图片！')
+        return
+      }
+      Toast.loading({
+        duration: 0, // 持续展示 toast
+        forbidClick: true,
+        message: '加载中',
+      })
+
+      let urlTop = 'https://api.eotcyu.club/img/'
+      for (let i of this.fileList) {
+        console.log(i)
+        let fd = new FormData()
+        fd.append('proof', i.file)
+        await ChatUpdate(fd)
+          .then((res) => {
+            let url = res.data.State
+            console.log(urlTop + url)
+            this.megList.push(
+              this.cinit_mes(
+                'seller',
+                `<img onclick="preview('${urlTop + url}')" src="${
+                  urlTop + url
+                }" width="200px"  style="display:block;"   alt="">`,
+                true
+              )
+            )
+            this.$nextTick(() => {
+              let length = this.$refs.buyers.length
+              this.$refs.buyers[length - 1].style.padding = 0
+              console.log(this.$refs.buyers)
+            })
+
+            this.soket.send(urlTop + url)
+          })
+          .catch((err) => {
+            this.$toast.warning('图片上传失败，请稍后上传！')
+            console.log(err)
+          })
+      }
+      this.imageShow = false
+      console.log(this.images)
+      Toast.clear()
+    },
+
+    preview(url) {
+      this.images = []
+      this.images.push(url)
+      this.show = true
+    },
+    ipt_focus() {},
+    ipt_blur() {},
     init_pagewater_bill() {
-      const role = this.$route.query.role;
-      if (role === "seller") {
-        const url = `wss://${domain}/api/wss/Connect?token=${this.token}`;
-        this.soket = new WebSocket(url);
+      const role = this.$route.query.role
+      console.log(role)
+      if (role === 'seller') {
+        const url = `wss://${domain}/api/wss/Connect?token=${this.token}`
+
+        this.soket = new WebSocket(url)
         this.soket.onopen = () => {
-          this.$toast.clear();
-          //连接成功 发送默认消息 只有首次会创建并发送
+          this.$toast.clear()
           if (this.iscreate_DefaultMs) {
-            this.init_mesgList();
+            this.init_mesgList()
           }
-          this.iscreate_DefaultMs = false;
-          //console.log("连接成功 Connected!");
-        };
+          this.iscreate_DefaultMs = false
+        }
         // 监听离线消息
         this.soket.onmessage = (result) => {
-          //console.log("result", result);
-          //console.log(result.data);
-          this.megList.push(this.cinit_mes("buyer", result.data, true));
-        };
+          let re = new RegExp('https://api.eotcyu.club/img')
+          let show = re.test(result.data)
+          if (show) {
+            this.megList.push(
+              this.cinit_mes(
+                'buyer',
+                `<img onclick="preview('${result.data}')" src="${result.data}" width="200px"  style="display:block;"   alt="">`,
+                true
+              )
+            )
+          } else {
+            this.megList.push(
+              this.cinit_mes('buyer', `<div style="padding:10px">${result.data}</div>`, true)
+            )
+          }
+        }
         this.soket.onerror = function (error) {
-          console.warn("连接错误 error");
+          console.warn('连接错误 error')
+          this.reconnect(url)
           //console.log(error.data);
-        };
+        }
         this.soket.onclose = () => {
-          console.warn("连接错误，断开连接。。");
-        };
+          console.warn('连接错误，断开连接。。')
+          this.reconnect(url)
+        }
       }
     },
-   messageScrollIntoView() {
+
+    reconnect(url) {
+      if (this.lockReconnect) {
+        return
+      }
+      this.lockReconnect = true
+      //没连接上会一直重连，设置延迟避免请求过多
+      // tt && clearTimeout(tt)
+      let that = this
+      setTimeout(function () {
+        // createWebSocket(url)
+        that.init_pagewater_bill()
+        that.lockReconnect = false
+      }, 4000)
+    },
+
+    messageScrollIntoView() {
       this.$nextTick(() => {
-        if (this.$refs["dialogue-content-child"] instanceof Array) {
-          this.$refs["dialogue-content-child"]?.slice(-1)[0]?.scrollIntoView();
+        if (this.$refs['dialogue-content-child'] instanceof Array) {
+          this.$refs['dialogue-content-child']?.slice(-1)[0]?.scrollIntoView()
         }
-      });
+      })
     },
     onSend() {
       if (this.soket.readyState == WebSocket.OPEN) {
-        this.megList.push(this.cinit_mes("seller", this.message, false));
-        this.soket.send(this.message);
+        this.megList.push(
+          this.cinit_mes('seller', `<div style="padding:10px">${this.message}</div>`, true)
+        )
+        this.soket.send(this.message)
       }
-      this.messageScrollIntoView();
-      this.message = "";
+      this.messageScrollIntoView()
+      this.message = ''
     },
     init_mesgList() {
       this.megList.push(
         this.cinit_mes(
-          "buyer",
-          `联系方式
+          'buyer',
+          ` <div style="padding:10px">
+            联系方式
              <a href="tel:${this.item.amount2}">${this.item.amount2}</a>\n
-              <a href="mailto:${this.item.aipay}">${this.item.aipay}</a>`,
+              <a href="mailto:${this.item.aipay}">${this.item.aipay}</a>
+          </div>
+          `,
           true
         )
-      );
+      )
       try {
-        this.messageScrollIntoView();
-        this.isSend = false;
+        this.messageScrollIntoView()
+        this.isSend = false
       } catch {
-        this.isSend = true;
+        this.isSend = true
       }
     },
     cinit_mes(role, message, htmlflg, date, serial) {
@@ -205,73 +324,93 @@ export default {
         html: htmlflg,
         date: date ?? this.transformTime_Zh(Date.now()),
         pid: serial ?? 0,
-      };
+      }
     },
     validator(value) {
-      if ((value ?? "") === "") {
+      if ((value ?? '') === '') {
         //console.log(value);
-        return false;
+        return false
       }
-      return true;
+      return true
     },
     // 获取聊天记录 每次10条
     async get_chatting_records() {
       /**
        * 滚动容器 .van-pull-refresh
        */
-      let page = this.page;
+      let page = this.page
       try {
         const { data } = await GetOidMsg({
           oid: this.odid,
           page: this.page,
-        });
+        })
         if (data.length > 0) {
-          const newDataList = [];
-          while (data.length > 0) {
-            const firstMsg = data.shift();
-            const role = firstMsg.user === "0" ? "buyer" : "seller";
-            newDataList.push(
-              this.cinit_mes(
-                role,
-                firstMsg.msg,
-                false,
-                firstMsg.date,
-                firstMsg.uid
+          let arr = this.againList.concat(data)
+          const newDataList = []
+          for (let i of arr) {
+            const role = i.user === '0' ? 'buyer' : 'seller'
+            let re = new RegExp('https://api.eotcyu.club/img')
+            let show = re.test(i.msg)
+            if (show) {
+              console.log(show)
+              newDataList.push(
+                this.cinit_mes(
+                  role,
+                  `<img onclick="preview('${i.msg}')" src="${i.msg}" width="200px"  style="display:block;"   alt="">`,
+                  true,
+                  i.date,
+                  i.uid
+                )
               )
-            );
+            } else {
+              newDataList.push(
+                this.cinit_mes(
+                  role,
+                  `<div style="padding:10px">${i.msg}</div>`,
+                  true,
+                  i.date,
+                  i.uid
+                )
+              )
+            }
           }
+
+          this.againList = data
           Promise.resolve()
             .then(() => {
-              //console.log("newDataList", newDataList);
-              if (page === 1) this.megList = [];
-              return "首次刷新数据";
+              console.log('newDataList', newDataList)
+              this.megList = []
+              return '首次刷新数据'
             })
             .then(() => {
-              this.megList.unshift(...newDataList.reverse());
+              for (let i of newDataList) {
+                this.megList.unshift(i)
+              }
+              // this.megList.unshift(...newDataList.reverse())
             })
             .finally(() => {
-              if (page === 1) this.init_mesgList();
-              this.isLoading_before = false;
-              this.page++;
-            });
+              this.init_mesgList()
+              this.isLoading_before = false
+              this.page++
+            })
         } else {
-          this.isLoading_before = false;
+          this.isLoading_before = false
         }
       } catch (err) {
-        this.isLoading_before = false;
+        this.isLoading_before = false
         //console.log(err);
       }
     },
     changecheck_rcoin() {
-      if (this.item.rcoin === "-1") {
-        this.ischangecheck_rcoin = true;
-        return true;
+      if (this.item.rcoin === '-1') {
+        this.ischangecheck_rcoin = true
+        return true
       } else if (+this.item.rcoin === 0 && +this.item.rcoin >= 0) {
-        this.ischangecheck_rcoin = false;
-        return false;
+        this.ischangecheck_rcoin = false
+        return false
       } else if (!this.item.rcoin) {
-        this.ischangecheck_rcoin = true;
-        return true;
+        this.ischangecheck_rcoin = true
+        return true
       }
     },
   },
@@ -279,17 +418,37 @@ export default {
     content: {
       bind(el, binding) {
         if (binding.arg.html) {
-          el.innerHTML = binding.arg.message;
+          el.innerHTML = binding.arg.message
         } else {
-          el.innerText = binding.arg.message;
+          el.innerText = binding.arg.message
         }
       },
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
+.popup {
+  height: 50%;
+  position: relative;
+
+  .popBox {
+    padding: 20px;
+    p {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    button {
+      position: absolute;
+      right: 40px;
+      bottom: 60px;
+    }
+    /deep/.van-button--small {
+      padding: 0 40px;
+    }
+  }
+}
 .water-bill {
   position: fixed;
   z-index: 99;
@@ -389,11 +548,12 @@ export default {
           font-size: 24px;
         }
         .payAuthor-content {
+          overflow: hidden;
           font-size: 0.4rem;
           width: fit-content;
           background-color: #eee;
           margin: 15px 0;
-          padding: 15px;
+          // padding: 15px;
           line-height: 50px;
           border-radius: 15px;
           --webkit--word-wrap: break-word;
@@ -424,6 +584,7 @@ export default {
         display: flex;
         padding: 0 15px;
         .payAuthor-content {
+          overflow: hidden;
           font-size: 0.4rem;
           flex: auto;
           width: fit-content;
@@ -431,7 +592,7 @@ export default {
           color: #fff;
           margin: 15px 0;
           overflow: hidden;
-          padding: 15px;
+          // padding: 15px;
           --webkit--word-wrap: break-word;
           border-radius: 15px;
         }
@@ -461,17 +622,16 @@ export default {
     background-color: rgb(247, 247, 247);
     padding: 15px 25px 45px 25px;
     position: relative;
-    margin-bottom: 0; //76%
+    margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     .van-cell {
       padding: 10px;
-      width: auto;
-      margin-right: 1.5rem;
+      margin: 0 10px;
     }
     button {
-      position: absolute;
-      right: 25px;
-      top: 37%;
-      transform: translateY(-50%);
+      width: 25%;
     }
 
     /deep/ .van-field__control {

@@ -1,14 +1,14 @@
 
 // 主网链
-// const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
-// let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
-// let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
-// let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
+const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
+let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
+let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
+let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
 //测试网
-const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
-let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
-let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
-let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+// const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
+// let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+// let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+// let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 
 
 
@@ -231,6 +231,10 @@ export const userBaseMes = function () {
 
         localStorage.setItem('nodeRate', it.nodeRate);//otc质押收益
 
+        localStorage.setItem('stakingMan', it.stakingMan);//推荐质押人数
+        localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
+        localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
+
         PubSub.publish("setUid", localStorage.getItem("uid"));
         console.log('登录');
       } else {
@@ -297,8 +301,8 @@ export const loadweb3 = async function (func) {
           myUsdtAmount();
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
-          localStorage.setItem("netType", "xxx");
-          //  localStorage.setItem("netType", "trx");
+          // localStorage.setItem("netType", "xxx");
+           localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");

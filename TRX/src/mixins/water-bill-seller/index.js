@@ -5,10 +5,10 @@ export default {
   methods: {
     async get_token(tokenObj, user) {
       try {
-        console.log(tokenObj)
+        
         if (!tokenObj?.[this.curRole]) {
           const { data } = await Getwsid({
-            oid:this.MerchanInfo.odid,
+            oid: this.MerchanInfo.odid,
             user,
             otype: 1,
           });
@@ -21,7 +21,7 @@ export default {
           this.token = data.State;
         } else if (tokenObj?.[this.curRole] == "0") {
           const { data } = await Getwsid({
-            oid:this.MerchanInfo.odid,
+            oid: this.MerchanInfo.odid,
             user,
             otype: 1,
           });
@@ -34,6 +34,7 @@ export default {
           this.token = data.State;
         } else {
           this.token = tokenObj[this.curRole];
+          console.log(this.token);
         }
         this.init_pagewater_bill();
       } catch (err) {

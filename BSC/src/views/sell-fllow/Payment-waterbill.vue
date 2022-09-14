@@ -16,11 +16,8 @@
           size="large"
           v-if="!isReminders && +item.dsx === 1"
           @click="urge_payMoney"
-          >催付款</van-tag
-        >
-        <van-tag type="primary" v-if="isReminders" size="large"
-          >已催付款</van-tag
-        >
+        >催付款</van-tag>
+        <van-tag type="primary" v-if="isReminders" size="large">已催付款</van-tag>
       </div>
       <div class="top-mid-content">
         <span class="price">
@@ -33,18 +30,17 @@
       </div>
     </section>
     <section class="water-bill-tips">
-      <span><van-icon name="warn-o" /></span>
-      <span :style="{ marginLeft: '15px' }"
-        >收款请认准订单详情中展示的买家收款账号，或买家分享
+      <span>
+        <van-icon name="warn-o" />
+      </span>
+      <span :style="{ marginLeft: '15px' }">
+        收款请认准订单详情中展示的买家收款账号，或买家分享
         的付款账号卡片。其余买家私聊发送的账号信息一律不要接受。
       </span>
     </section>
 
     <article class="dialogue" ref="dialogue-content">
-      <van-pull-refresh
-        v-model="isLoading_before"
-        @refresh="get_chatting_records"
-      >
+      <van-pull-refresh v-model="isLoading_before" @refresh="get_chatting_records">
         <!-- 卖家信息展示 -->
         <template v-for="(message, index) in megList">
           <!-- 商家信息 -->
@@ -57,10 +53,7 @@
             <span class="author-img">{{ item.sname.slice(0, 1) }}</span>
             <span class="author-info">
               <p class="payAuthor-name">{{ item.sname }}</p>
-              <span
-                class="payAuthor-content breakword"
-                v-content:[message]
-              ></span>
+              <span class="payAuthor-content breakword" v-content:[message]></span>
             </span>
           </div>
 
@@ -76,11 +69,7 @@
               {{ myname.slice(0, 1) }}
             </span>
             <span class="author-info breakword">
-              <span
-                class="payAuthor-content breakword"
-                v-content:[message]
-              >
-              </span>
+              <span ref="buyers" class="payAuthor-content breakword" v-content:[message]></span>
             </span>
           </div>
         </template>
@@ -93,6 +82,7 @@
       :show-error="false"
       validate-trigger="onSubmit"
     >
+      <van-icon @click="imageShow=true,fileList=[]" name="add-o" />
       <van-field
         v-model="message"
         @focus="ipt_focus"
@@ -106,71 +96,169 @@
         clearable
         type="textarea"
         maxlength="80"
-      >
-      </van-field>
+      ></van-field>
       <van-button
         :disabled="isSend"
         size="small"
         native-type="submit"
         type="primary"
-      >
-        {{ isSend ? "连线中" : "发送" }}
-      </van-button>
+      >{{ isSend ? "连线中" : "发送" }}</van-button>
     </van-form>
+
+    <van-popup class="popup" v-model="imageShow" round position="bottom">
+      <div class="popBox">
+        <p>请上传图片</p>
+        <van-uploader :after-read="afterRead" v-model="fileList" multiple :max-count="9" />
+        <!-- <img src="" width="100px" alt=""> -->
+        <van-button @click="updata()" size="small" type="primary">上传</van-button>
+      </div>
+    </van-popup>
+    <van-image-preview v-model="show" :images="images">
+      <template v-slot:index>第{{ index }}页</template>
+    </van-image-preview>
   </div>
 </template>
 
 <script>
-import {  getItem } from "@/utils/storage";
-import { GetOidMsg } from "@/api/payverification";
+import { getItem } from '@/utils/storage'
+import { GetOidMsg } from '@/api/payverification'
 
-import { Reminders } from "@/api/trxRequest";
-import { domain } from "@/utils/request";
-import waterBillSeller from "@/mixins/water-bill-seller";
+import { Toast, Notify, ImagePreview } from 'vant'
 
+import { Reminders, ChatUpdate } from '@/api/trxRequest'
+import { domain } from '@/utils/request'
+import waterBillSeller from '@/mixins/water-bill-seller'
+//用户出售聊天
 export default {
-  name: "Payment-waterbill",
-  props: ["item", "MerchanInfo"],
+  name: 'Payment-waterbill',
+  props: ['item', 'MerchanInfo'],
   mixins: [waterBillSeller],
+  components: {
+    [ImagePreview.Component.name]: ImagePreview.Component,
+  },
   data() {
     return {
       isSend: true,
       page: 1,
-      myname: localStorage.getItem("uname"),
+      myname: localStorage.getItem('uname'),
       isLoading_before: false,
       time: 20 * 60 * 1000,
-      message: "",
+      message: '',
       rules: [
         {
           required: true,
           validator: this.validator,
-          message: "发送内容不能为空",
+          message: '发送内容不能为空',
         },
       ],
       megList: [],
-      curRole: "",
-      token: "",
+      againList: [],
+      curRole: '',
+      token: '',
       iscreate_DefaultMs: true,
       isReminders: false,
-    };
+
+      imageShow: false,
+      fileList: [],
+
+      show: false,
+      index: 1,
+      images: [],
+      //避免重复连接
+      lockReconnect: false,
+    }
   },
   directives: {
     content: {
       bind(el, binding) {
         if (binding.arg.html) {
-          el.innerHTML = binding.arg.message;
+          el.innerHTML = binding.arg.message
         } else {
-          el.innerText = binding.arg.message;
+          el.innerText = binding.arg.message
         }
       },
     },
   },
   created() {
-    const tokenObj = getItem(`cs-${this.MerchanInfo.odid}`);
-    this.curRole = this.$route.query.role;
-    this.get_token(tokenObj, 0);
+    window.preview = this.preview
+    console.log(this.MerchanInfo.odid)
+    const tokenObj = getItem(`cs-${this.MerchanInfo.odid}`)
+    this.curRole = this.$route.query.role
+    this.get_token(tokenObj, 0)
   },
   methods: {
+    afterRead(File) {
+      // 此时可以自行将文件上传至服务器
+      console.log(File)
+      this.$reduce(File, 1).then((data) => {
+        File.file = data.fileZip
+        console.log(data)
+        this.url = data.base64
+      })
+      console.log(this.fileList)
+    },
+    light(fun, time) {
+      return new Promise((res) => {
+        setTimeout(() => {
+          fun()
+          res()
+        }, time)
+      })
+    },
+    //图片上传
+    async updata() {
+      if (this.fileList.length <= 0) {
+        this.$toast.warning('请至少上传一张图片！')
+        return
+      }
+      Toast.loading({
+        duration: 0, // 持续展示 toast
+        forbidClick: true,
+        message: '加载中',
+      })
+
+      let urlTop = 'https://api.eotcyu.club/img/'
+      for (let i of this.fileList) {
+        console.log(i)
+        let fd = new FormData()
+        fd.append('proof', i.file)
+        await ChatUpdate(fd)
+          .then((res) => {
+            let url = res.data.State
+            console.log(urlTop + url)
+            this.megList.push(
+              this.cinit_mes(
+                'buyer',
+                `<img onclick="preview('${urlTop + url}')" src="${
+                  urlTop + url
+                }" width="200px"  style="display:block;"   alt="">`,
+                true
+              )
+            )
+            this.$nextTick(() => {
+              let length = this.$refs.buyers.length
+              this.$refs.buyers[length - 1].style.padding = 0
+              console.log(this.$refs.buyers)
+            })
+
+            this.soket.send(urlTop + url)
+          })
+          .catch((err) => {
+            this.$toast.warning('图片上传失败，请稍后上传！')
+            console.log(err)
+          })
+      }
+      this.imageShow = false
+      console.log(this.images)
+      Toast.clear()
+    },
+
+    preview(url) {
+      this.images = []
+      console.log(url)
+      this.images.push(url)
+      this.show = true
+    },
     ipt_focus() {
       // this.$refs["footer"].$el.style.marginBottom = "0px";
     },
@@ -183,72 +271,111 @@ export default {
           did: this.MerchanInfo.odid,
           mail: this.item.mail,
           type: 2, // 用户催商家付款
-        });
+        })
         this.$toast.success(
           <div>
             <p style="font-size:13px;margin:5px">已发送邮件至对方邮箱！</p>
           </div>
-        );
-        this.isReminders = true;
+        )
+        this.isReminders = true
         // <p style="font-size:15px;margin:5px">买家正在快马加鞭的给您进行汇款!</p>
         this.megList.push(
-          this.cinit_mes("buyer", "我转币至合约，请尽快完成订单支付！", true)
-        );
-        this.soket.send("我转币至合约，请尽快完成订单支付！");
-        this.messageScrollIntoView();
+          this.cinit_mes(
+            'buyer',
+            '<div style="padding:10px;">我转币至合约，请尽快完成订单支付！</div>',
+            true
+          )
+        )
+        this.soket.send('我转币至合约，请尽快完成订单支付！')
+        this.messageScrollIntoView()
       } catch (err) {
-        this.isReminders = true;
-        this.$toast.error("请不要频繁催促对方！！！");
+        this.isReminders = true
+        this.$toast.error('请不要频繁催促对方！！！')
       }
     },
     messageScrollIntoView() {
       this.$nextTick(() => {
-        if (this.$refs["dialogue-content-child"] instanceof Array) {
-          this.$refs["dialogue-content-child"]?.slice(-1)[0]?.scrollIntoView();
+        if (this.$refs['dialogue-content-child'] instanceof Array) {
+          this.$refs['dialogue-content-child']?.slice(-1)[0]?.scrollIntoView()
         }
-      });
+      })
     },
     init_pagewater_bill() {
-      const role = this.$route.query.role;
-      if (role === "buyer") {
-        const url = `wss://${domain}/api/wss/Connect?token=${this.token}`;
-        //console.log(url);
-        this.soket = new WebSocket(url);
+      const role = this.$route.query.role
+      if (role === 'buyer') {
+        const url = `wss://${domain}/api/wss/Connect?token=${this.token}`
+        console.log(url)
+        this.soket = new WebSocket(url)
         this.soket.onopen = () => {
-          this.$toast.clear();
+          this.$toast.clear()
           //连接成功 发送默认消息 只有首次会创建并发送
           if (this.iscreate_DefaultMs) {
-            this.init_mesgList();
+            this.init_mesgList()
           }
-          this.iscreate_DefaultMs = false;
-          window.addEventListener("hashchange", () => {
-            this.soket.close();
-            console.warn("您已断开连接");
-          });
+          this.iscreate_DefaultMs = false
+          window.addEventListener('hashchange', () => {
+            this.soket.close()
+            console.warn('您已断开连接')
+          })
           //console.log("连接成功 Connected!");
-        };
+        }
         // 监听离线消息
         this.soket.onmessage = (result) => {
-          //console.log("result", result);
+          console.log('result', result)
           //console.log(result.data);
-          this.megList.push(this.cinit_mes("seller", result.data, true));
-        };
+          let re = new RegExp('https://api.eotcyu.club/img')
+          let show = re.test(result.data)
+          if (show) {
+            this.megList.push(
+              this.cinit_mes(
+                'seller',
+                `<img onclick="preview('${result.data}')" src="${result.data}" width="200px"  style="display:block;"   alt="">`,
+                true
+              )
+            )
+          } else {
+            this.megList.push(
+              this.cinit_mes('seller', `<div style="padding:10px">${result.data}</div>`, true)
+            )
+          }
+          // this.megList.push(this.cinit_mes('seller', result.data, true))
+        }
         this.soket.onerror = function (error) {
-          console.warn("连接错误 error");
+          console.warn('连接错误 error')
+          this.reconnect(url)
           //console.log(error.data);
-        };
-        this.soket.onclose = () => {
-          console.warn("连接错误，断开连接。。");
-        };
+        }
+        this.soket.onclose = (asd) => {
+          console.warn('连接错误，断开连接。。')
+          this.reconnect(url)
+        }
       }
     },
+
+    reconnect(url) {
+      if (this.lockReconnect) {
+        return
+      }
+      this.lockReconnect = true
+      //没连接上会一直重连，设置延迟避免请求过多
+      // tt && clearTimeout(tt)
+      let that = this
+      setTimeout(function () {
+        // createWebSocket(url)
+        that.init_pagewater_bill()
+        that.lockReconnect = false
+      }, 4000)
+    },
+
     onSend() {
       if (this.soket.readyState == WebSocket.OPEN) {
-        this.megList.push(this.cinit_mes("buyer", this.message, false));
-        this.soket.send(this.message);
+        this.megList.push(
+          this.cinit_mes('buyer', `<div style="padding:10px">${this.message}</div>`, true)
+        )
+        this.soket.send(this.message)
       }
-      this.messageScrollIntoView();
-      this.message = "";
+      this.messageScrollIntoView()
+      this.message = ''
     },
     cinit_mes(role, message, htmlflg, date, serial) {
       return {
@@ -257,82 +384,123 @@ export default {
         html: htmlflg,
         date: date ?? this.transformTime_Zh(Date.now()),
         pid: serial ?? 0,
-      };
+      }
     },
     init_mesgList() {
       this.megList.push(
-        this.cinit_mes("seller", this.item.smes, false),
+        // this.cinit_mes('seller', this.item.smes, false),
         this.cinit_mes(
-          "seller",
-          `联系方式
+          'seller',
+          `
+           <div style="padding:10px"> 联系方式
              <a href="tel:${this.MerchanInfo.wechat}">${this.MerchanInfo.wechat}</a>\n
-              <a href="mailto:${this.item.mail}">${this.item.mail}</a>`,
+              <a href="mailto:${this.item.mail}">${this.item.mail}</a></div>
+         `,
           true
         )
-      );
+      )
       try {
-        this.messageScrollIntoView();
-        this.isSend = false;
+        this.messageScrollIntoView()
+        this.isSend = false
       } catch {
-        this.isSend = true;
+        this.isSend = true
       }
     },
     async get_chatting_records() {
-      let page = this.page;
+      let page = this.page
       try {
         const { data } = await GetOidMsg({
           oid: this.MerchanInfo.odid,
           page: this.page,
-        });
+        })
+
         if (data.length > 0) {
-          const newDataList = [];
-          while (data.length > 0) {
-            const firstMsg = data.shift();
-            const role = firstMsg.user === "0" ? "buyer" : "seller";
-            newDataList.push(
-              this.cinit_mes(
-                role,
-                firstMsg.msg,
-                false,
-                firstMsg.date,
-                firstMsg.uid
+          let arr = this.againList.concat(data)
+          console.log(arr)
+          const newDataList = []
+          for (let i of arr) {
+            const role = i.user === '0' ? 'buyer' : 'seller'
+            let re = new RegExp('https://api.eotcyu.club/img')
+            let show = re.test(i.msg)
+            if (show) {
+              console.log(show)
+              newDataList.push(
+                this.cinit_mes(
+                  role,
+                  `<img onclick="preview('${i.msg}')" src="${i.msg}" width="200px"  style="display:block;"   alt="">`,
+                  true,
+                  i.date,
+                  i.uid
+                )
               )
-            );
+            } else {
+              newDataList.push(
+                this.cinit_mes(
+                  role,
+                  `<div style="padding:10px">${i.msg}</div>`,
+                  true,
+                  i.date,
+                  i.uid
+                )
+              )
+            }
           }
+          this.againList = data
           Promise.resolve()
             .then(() => {
-              //console.log("newDataList", newDataList);
-              if (page === 1) this.megList = [];
-              return "首次刷新数据";
+              this.megList = []
+              return '首次刷新数据'
             })
             .then(() => {
-              this.megList.unshift(...newDataList.reverse());
+              for (let i of newDataList) {
+                this.megList.unshift(i)
+              }
             })
             .finally(() => {
-              if (page === 1) this.init_mesgList();
-              this.isLoading_before = false;
-              this.page++;
-            });
+              this.init_mesgList()
+              this.isLoading_before = false
+              this.page++
+            })
         } else {
-          this.isLoading_before = false;
+          this.isLoading_before = false
         }
       } catch (err) {
-        this.isLoading_before = false;
-        console.log(err);
+        this.isLoading_before = false
+        console.log(err)
       }
     },
     validator(value) {
-      if ((value ?? "") === "") {
+      if ((value ?? '') === '') {
         //console.log(value);
-        return false;
+        return false
       }
-      return true;
+      return true
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
+.popup {
+  height: 50%;
+  position: relative;
+
+  .popBox {
+    padding: 20px;
+    p {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+    button {
+      position: absolute;
+      right: 40px;
+      bottom: 60px;
+    }
+    /deep/.van-button--small {
+      padding: 0 40px;
+    }
+  }
+}
 .water-bill {
   position: fixed;
   z-index: 99;
@@ -346,6 +514,7 @@ export default {
   /deep/ .van-pull-refresh {
     height: 100%;
     flex: 1;
+
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -433,11 +602,12 @@ export default {
           font-size: 24px;
         }
         .payAuthor-content {
+          overflow: hidden;
           font-size: 0.4rem;
           width: fit-content;
           background-color: #eee;
           margin: 15px 0;
-          padding: 15px;
+          // padding: 15px;
           line-height: 50px;
           border-radius: 15px;
           --webkit--word-wrap: break-word;
@@ -468,6 +638,7 @@ export default {
         display: flex;
         padding: 0 15px;
         .payAuthor-content {
+          overflow: hidden;
           font-size: 0.4rem;
           flex: auto;
           width: fit-content;
@@ -475,7 +646,7 @@ export default {
           color: #fff;
           margin: 15px 0;
           overflow: hidden;
-          padding: 15px;
+          // padding: 15px;
           --webkit--word-wrap: break-word;
           border-radius: 15px;
         }
@@ -506,20 +677,21 @@ export default {
     padding: 15px 25px 45px 25px;
     position: relative;
     margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
     .van-cell {
       padding: 10px;
-      width: auto;
-      margin-right: 1.5rem;
+      // width: auto;
+      margin: 0 10px;
     }
     button {
-      position: absolute;
-      right: 25px;
-      top: 37%;
-      transform: translateY(-50%);
+      width: 25%;
     }
 
     /deep/ .van-field__control {
-      padding-left: 25px;
+      // padding-left: 25px;
     }
   }
 }

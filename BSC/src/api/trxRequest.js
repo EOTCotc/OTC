@@ -171,6 +171,16 @@ export const Update = (data) => {
   });
 };
 
+//聊天图片上传
+export const ChatUpdate = (data) => {
+  // const params = data
+  return request({
+    method: "POST",
+    url: `/api/OTC/UpdateImg`,
+    data,
+  });
+};
+
 //审核数据获取、通过、打回
 export const EotcKyc = ({
   pid = localStorage.getItem("uid"),
