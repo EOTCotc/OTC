@@ -146,7 +146,7 @@ export default {
             { title: '委托单', event: 'order-Ticket' },
             { title: '仲裁', event: 'arbitration' },
             { title: '仲裁员', event: 'arbitrator' },
-            { title: '关注/黑名单', event: 'focus' },
+            { title: '关注/黑名单', event: 'important-userList' },
           ],
         },
       ],

@@ -63,19 +63,19 @@ Vue.use(VueCanvasPoster);
 
 Vue.config.productionTip = false;
 
-Vue.config.errorHandler = function (err, vm, info) {
-  console.log(err);
-  console.log(vm);
-  Vue.$toast.error(err.message, {
-    timeout: 3000,
-  });
-  Vue.$toast.warning(info, {
-    timeout: 3000,
-  });
-  router.replace({
-    name: "error",
-  });
-};
+// Vue.config.errorHandler = function (err, vm, info) {
+//   console.log(err);
+//   console.log(vm);
+//   Vue.$toast.error(err.message, {
+//     timeout: 3000,
+//   });
+//   Vue.$toast.warning(info, {
+//     timeout: 3000,
+//   });
+//   router.replace({
+//     name: "error",
+//   });
+// };
 
 new Vue({
   render: (h) => h(App),

@@ -6,6 +6,10 @@
         <div class="selsect">
           <selectNav @change-pay="changePay" @change-size="changeSize" />
         </div>
+        <div class="ordernum" v-if="count!=0">
+          <p>当前有 {{count}} 笔订单待处理</p>
+          <van-button round size="small" type="primary" :to="{name:'orderGather-full'}">去处理</van-button>
+        </div>
         <van-loading size="24px" vertical v-if="listLoading">加载中...</van-loading>
         <payment_empty v-else-if="isShow_empty" />
 
@@ -21,7 +25,7 @@
               <van-cell>
                 <template #title>
                   <!-- store -->
-                  <div class="left"  @click="to_merchantInfo(items)">
+                  <div class="left" @click="to_merchantInfo(items)">
                     <div class="aut-img">
                       {{ items.sname.slice(0, 1) }}
                       <div class="online-icon" v-if="isActive_user(items.updateDate)">
@@ -108,7 +112,7 @@ import selectNav from '@/components/selectNav'
 import payFllow from '@/components/deal-Fllow/pay-Fllow.vue'
 import payment_empty from '@/views/order-gather/payment-empty.vue'
 
-import { EotcBuyOrder, UserBind } from '@/api/trxRequest'
+import { EotcBuyOrder, UserBind, Eotcdis_Order } from '@/api/trxRequest'
 
 import { myPayment } from '@/api/payverification'
 
@@ -142,16 +146,20 @@ export default {
       select_pay_method: 0, //  选择当前交易方式
       select_money_range: 0, // 金额选择范围
       isShow_empty: false,
+
+      count: 0,
     }
   },
   //交易类型列表
   props: ['method', 'typeList'],
   created() {
-
     this.$emit('set-cur-state')
     //出售订单出错，关闭出售订单窗口
     this.$bus.$on('close-OrderSaleInfo', () => {
       this.isShowTradingPopup = false
+    })
+    this.$bus.$on('asd', () => {
+      console.log('asd')
     })
     this.$bus.$on('update-orderlist', () => {
       this.onLoad({
@@ -161,17 +169,17 @@ export default {
         amount: this.select_money_range,
       })
     })
-    loadweb3(userBaseMes);
+    loadweb3(userBaseMes)
     setTimeout(() => {
       if (this.listLoading) {
-        loadweb3(userBaseMes);
+        loadweb3(userBaseMes)
       }
-    }, 20000);
+    }, 20000)
 
-    window.addEventListener("hashchange", this.hashChangeGoback)
+    window.addEventListener('hashchange', this.hashChangeGoback)
   },
   beforeDestroy() {
-    window.removeEventListener("hashchange", this.hashChangeGoback)
+    window.removeEventListener('hashchange', this.hashChangeGoback)
   },
   provide() {
     return {
@@ -185,10 +193,26 @@ export default {
         position: 'bottom-right',
         timeout: false,
       })
-      try {
-        const { data } = await EotcBuyOrder(params)
 
-        
+      try {
+        //查询待处理订单
+        Eotcdis_Order({ type: 1, t1: -1, t2: 2 }).then((res) => {
+          let data = res.data
+          let count = 0
+          for (let i of data) {
+            let show = /^[^0][8,9][\d]{8}$/g.test(i.id)
+            if (show) {
+              if (i.dsx == '0' || i.dsx == '2') count++
+            } else {
+              if (i.dsx != '2') count++
+            }
+          }
+          this.count = count
+        })
+
+        const { data } = await EotcBuyOrder(params)
+        this.$emit('asd')
+
         if (data.length === 0) {
           this.isShow_empty = true
           this.loading = false
@@ -218,7 +242,7 @@ export default {
     /**
      * 1. 我的黑名单： xid为 黑名单的用户uid
      */
-    
+
     async filterData(meta_data) {
       let data
       try {
@@ -437,7 +461,7 @@ export default {
     right: 20px;
     top: 28px;
   }
-  .store{
+  .store {
     width: auto !important;
   }
   .left {
@@ -496,6 +520,20 @@ export default {
   position: sticky;
   top: 190px;
   z-index: 5;
+}
+.ordernum {
+  background: #e5f8f1;
+  padding: 30px;
+  margin: 20px 30px;
+  border-radius: 20px;
+  font-size: 32px;
+  color: #00b87a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /deep/.van-button--small {
+    padding: 0 40px;
+  }
 }
 /deep/ .van-tabs__wrap {
   position: sticky !important;

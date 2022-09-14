@@ -18,6 +18,7 @@
             v-for="(orderItem, i) in sellDatalist"
             :key="random(i)"
             :orderItem="orderItem"
+            @repetition="repetition"
           />
         </van-tab>
         <van-tab title="待处理">
@@ -79,6 +80,9 @@ export default {
     },
     random(i) {
       return Math.random(0, i) * Math.random(0, i);
+    },
+    repetition() {
+      this.getSellData()
     },
   },
 };

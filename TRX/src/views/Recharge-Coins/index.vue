@@ -24,6 +24,7 @@
       label="转币地址："
       :style="{ color: 'red', fontWeight: '700' }"
       input-align="right"
+      @click="jump()"
     />
 
     <div class="balance">
@@ -156,6 +157,7 @@ export default {
       this.Transfers_USDT = await this.loadingUsdt();
     },
     async loadingUsdt() {
+      console.log(111)
       return new Promise(async (resolve, reject) => {
         let mynum;
         let mytron_usdt = await window.tronWeb
@@ -267,6 +269,10 @@ export default {
       } else {
         this.$toast.error("钱包余额不足，请充值！");
       }
+    },
+     jump() {
+      window.location.href =
+        'https://tronscan.io/#/address/TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ/transfers'
     },
   },
 };

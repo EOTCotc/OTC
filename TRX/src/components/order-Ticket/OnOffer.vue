@@ -6,11 +6,7 @@
       :size="{ width: '35px', height: '35px' }"
       :style="{ fill: 'rgb(219,9, 9)' }"
     />
-    <van-empty
-      class="null"
-      v-else-if="sellDatalist.length == 0"
-      description="暂无订单信息"
-    />
+    <van-empty class="null" v-else-if="sellDatalist.length == 0" description="暂无订单信息" />
     <div v-else>
       <van-tabs v-model="active" animated swipeable background="#F3F4F5">
         <van-tab title="总订单">
@@ -18,6 +14,7 @@
             v-for="(orderItem, i) in sellDatalist"
             :key="random(i)"
             :orderItem="orderItem"
+            @repetition="repetition"
           />
         </van-tab>
         <van-tab title="待处理">
@@ -32,18 +29,19 @@
 </template>
 
 <script>
-import SellBlanketOrder from "@/components/orderFrom/SellBlanketOrder.vue";
-import SellPending from "@/components/orderFrom/SellPending.vue";
-import SellAccomplish from "@/components/orderFrom/SellAccomplish.vue";
+import SellBlanketOrder from '@/components/orderFrom/SellBlanketOrder.vue'
+import SellPending from '@/components/orderFrom/SellPending.vue'
+import SellAccomplish from '@/components/orderFrom/SellAccomplish.vue'
 
-import { VueLoading } from "vue-loading-template";
 
-import { Order_sj } from "@/api/trxRequest";
+import { VueLoading } from 'vue-loading-template'
 
-import PubSub from "pubsub-js";
+import { Order_sj } from '@/api/trxRequest'
+
+import PubSub from 'pubsub-js'
 
 export default {
-  name: "my-onoffer", //商家出售
+  name: 'my-onoffer', //商家出售
   components: {
     SellBlanketOrder,
     SellPending,
@@ -51,37 +49,40 @@ export default {
     VueLoading,
   },
   created() {
-    this.getSellData();
-    PubSub.subscribe("update-selltotal-orderData", () => {
-      this.getSellData();
-      this.random(Math.random(0,10))
-    });
+    this.getSellData()
+    PubSub.subscribe('update-selltotal-orderData', () => {
+      this.getSellData()
+      this.random(Math.random(0, 10))
+    })
   },
   data() {
     return {
       sellDatalist: [],
-      active: "",
+      active: '',
       dataLoading_before: true,
-    };
+    }
   },
   methods: {
     async getSellData() {
       try {
         const { data } = await Order_sj({
           type: 10,
-        });
-        console.log(data);
-        this.sellDatalist = data.reverse();
-        this.dataLoading_before = false;
+        })
+        console.log(data)
+        this.sellDatalist = data.reverse()
+        this.dataLoading_before = false
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
       }
     },
     random(i) {
-      return Math.random(0, i) * Math.random(0, i);
+      return Math.random(0, i) * Math.random(0, i)
+    },
+    repetition() {
+      this.getSellData()
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

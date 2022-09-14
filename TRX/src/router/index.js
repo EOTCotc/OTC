@@ -545,7 +545,8 @@ const payWhitelist = [
 // "pledge"
 // ,"secondPhase"
 //"arbitration"
-const rightMenu_Whitelist = ["arbitrator","Withdraw",'NFT','mining','zyzb'];
+// 'zyzb'
+const rightMenu_Whitelist = ["arbitrator","arbitration","Withdraw",'NFT','mining','important-userList'];
 
 const originalReplace = VueRouter.prototype.replace;
 
@@ -615,7 +616,7 @@ router.beforeEach((to, form, next) => {
 
   if (to.name === "order-Ticket") {
     Vue.$toast.clear();
-    if (localStorage.getItem("myeotc") < 5000&&Number(localStorage.getItem("giftNFT"))==0 ) {
+    if (localStorage.getItem("myeotc")*1 < 5000 && Number(localStorage.getItem("giftNFT"))==0 ) {
       Vue.$toast.warning({
         component: toastComponent,
         props: {

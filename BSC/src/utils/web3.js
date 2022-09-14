@@ -17,8 +17,9 @@ import loadingToast from "@/components/loading-toast";
 /**
  * ! Reconstruction_ 标记开头的方法进行了 promise化重构
  */
+ import { Toast } from 'vant';
 
-import { SetCoinAds, GetHx, EotcLoginmes } from "@/api/trxRequest";
+import { SetCoinAds, GetHx, EotcLoginmes,VerifyOrder} from "@/api/trxRequest";
 
 import { clearmymes } from "@/api/payverification";
 
@@ -254,6 +255,12 @@ export const userBaseMes = function () {
         localStorage.setItem('ztvip', it.ztvip);//节点类型
 
         localStorage.setItem('freeNum', it.freeNum);//免手续费额度
+
+        localStorage.setItem('nodeRate',it.nodeRate)//otc质押收益
+
+        localStorage.setItem('stakingMan', it.stakingMan);//推荐质押人数
+        localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
+        localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
       } else {
@@ -726,7 +733,7 @@ export const Reconstruction_getTrxBalance = async function () {
   });
 };
 
-export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
+export const GetmyUSDT = function (orderID, gusdt,type) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem("myaddress");
@@ -740,10 +747,27 @@ export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
               6
             );
             console.log(usdt);
+            console.log(111)
             if (gusdt <= usdt) resolve();
-            else reject("该订单USDT数量已不足");
+            else{
+              VerifyOrder({ id: orderID, num: usdt, type: type }).then(res => {
+                console.log(res);
+                if (type == 0) {
+                  reject("该订单USDT数量已不足");
+                } else {
+                  if (res.data.Code > 0) {
+                    reject(111);
+                    Toast.loading({
+                      message: '校验中...',
+                      forbidClick: true,
+                    });
+                  }
+                }
+              });
+            } 
+
           } else {
-            reject("操作失败，请重试  " + error);
+            Vue.$toast.warning('操作失败，请重试' + error);
           }
         });
     } catch (err) {
@@ -752,7 +776,7 @@ export const GetmyUSDT = function GetmyUSDT(orderID, gusdt, fuc) {
   });
 };
 
-export const GetmyUSDT_User = function GetmyUSDT_User(orderID, gusdt, fuc) {
+export const GetmyUSDT_User = function (orderID, gusdt, fuc) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem("myaddress");

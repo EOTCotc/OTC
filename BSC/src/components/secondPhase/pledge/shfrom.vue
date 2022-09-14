@@ -1,6 +1,5 @@
 <template>
   <div>
-      <!-- right-text="质押记录" -->
 
     <van-nav-bar
       title="质押赎回"
@@ -9,7 +8,6 @@
       fixed
       placeholder
       @click-left="onClickLeft"
-      @click-right="onClickRight"
     />
     <div class="content">
       <van-field v-model="num" :border="false" label="赎回数量" placeholder="可赎回 0 EOTC">
@@ -47,10 +45,7 @@ export default {
     onClickLeft() {
       this.$router.back()
     },
-    onClickRight() {
-      this.$router.push({name:'PledgeRecord'})
-      console.log(111)
-    },
+   
     redeem() {
       this.show=true
 

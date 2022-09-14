@@ -82,12 +82,15 @@ export const reg = function (that, value1, wallet, email, verification, loginSta
 
     //用户协议
     var isok = checked
+    let signMes="EOTC请求您签名确认,签名不消耗GAS."
 
     var reg0 = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var reg1 = /^\d{6}$/;
     var reg2= /[@]/im;
+    console.log(sign)
     if (sign == null || sign == "") {
-        userSign(window.signMes, null);
+        console.log(window.signMes)
+        userSign(signMes);
         return false;
     }
     if (wallet_ads.length < 30) {

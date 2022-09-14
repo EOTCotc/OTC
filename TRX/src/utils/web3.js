@@ -6,9 +6,9 @@ let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
 let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
 //测试网
 // const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
-//  let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
-//  let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
-//  let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+// let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+// let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+// let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 
 
 
@@ -23,8 +23,9 @@ import loadingToast from "@/components/loading-toast";
  * ! Reconstruction_ 标记开头的方法进行了 promise化重构
  */
 
+import { Toast } from 'vant';
 // api  url
-import { SetCoinAds, GetHx, EotcLoginmes } from "@/api/trxRequest";
+import { SetCoinAds, GetHx, EotcLoginmes, VerifyOrder } from "@/api/trxRequest";
 
 import { clearmymes } from "@/api/payverification";
 
@@ -89,7 +90,7 @@ export const UserInfo = function () {
   //团队人数
   const allMan = localStorage.getItem("allMan");
   //有效节点
-  const stakeMan = localStorage.getItem("stakeMan")*1;
+  const stakeMan = localStorage.getItem("stakeMan") * 1;
   //总业绩
   const usdt_teams = localStorage.getItem("usdt_teams");
 
@@ -103,9 +104,9 @@ export const UserInfo = function () {
   const Syfh = localStorage.getItem("Syfh"); //辅助奖励
   const Tdj = localStorage.getItem("Tdj"); //EOTC空投
 
-  
 
-  const ztman = localStorage.getItem("ztman")*1; //直推人数
+
+  const ztman = localStorage.getItem("ztman") * 1; //直推人数
   const ztvip = localStorage.getItem("ztvip"); //节点类型
   // const zyman = localStorage.getItem("zyman")*1; //团队有效人数
 
@@ -216,20 +217,26 @@ export const userBaseMes = function () {
         localStorage.setItem("Lrfc", it.Lrfc); //分享奖励
         localStorage.setItem("Syfh", it.Syfh); //辅助奖励
         localStorage.setItem("Tdj", it.Tdj); //节点补助
-        localStorage.setItem('otczy',it.node)//otc质押总额
+        localStorage.setItem('otczy', it.node);//otc质押总额
 
-        localStorage.setItem('giftEotc',it.giftEotc)//赠送EOTC
-        localStorage.setItem('giftNFT',it.giftNFT)//赠送卡牌
+        localStorage.setItem('giftEotc', it.giftEotc);//赠送EOTC
+        localStorage.setItem('giftNFT', it.giftNFT);//赠送卡牌
 
-        localStorage.setItem('ztman',it.ztman)//直推人数
-        localStorage.setItem('ztvip',it.ztvip)//节点类型
-        
-        localStorage.setItem('freeNum',it.freeNum)//免手续费额度
-        
-        // localStorage.setItem('zyman',it.zyman)//团队有效人数
+        localStorage.setItem('ztman', it.ztman);//直推人数
+        localStorage.setItem('ztvip', it.ztvip);//节点类型
+
+        localStorage.setItem('freeNum', it.freeNum);//免手续费额度
+
+
+
+        localStorage.setItem('nodeRate', it.nodeRate);//otc质押收益
+
+        localStorage.setItem('stakingMan', it.stakingMan);//推荐质押人数
+        localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
+        localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
-        console.log('登录')
+        console.log('登录');
       } else {
         console.warn("请先注册EOTC");
         $router.replace({
@@ -295,7 +302,7 @@ export const loadweb3 = async function (func) {
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
           // localStorage.setItem("netType", "xxx");
-          localStorage.setItem("netType", "trx");
+           localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");
@@ -447,7 +454,7 @@ export const myUsdtAmount = async function myUsdtAmount() {
       if (mytron_usdt == null)
         mytron_usdt = await window.tronWeb.contract().at(contractAddress_usdt);
       let ads = window.tronWeb.defaultAddress.base58;
-      console.log(ads)
+      console.log(ads);
       mytron_usdt.balanceOf(ads).call(
         {
           from: ads,
@@ -685,7 +692,7 @@ export const cancelOrders = async function (oid, val) {
         callValue: 0,
         shouldPollResponse: false,
       });
-      console.log(oid,val,res);
+      console.log(oid, val, res);
       getxh(6, oid, val, res);
       await myUsdtAmount();
       resolve();
@@ -728,14 +735,14 @@ export const getTrxBalance = function (func) {
     .then((result) => {
       if (parseInt(result) >= trxMin) func();
       else {
-        Vue.$toast.warning(trxMes)
+        Vue.$toast.warning(trxMes);
         warnmes(trxMes, null);
       }
     });
 };
 
 //下单验证前
-export const GetmyUSDT = async function (orderID, gusdt) {
+export const GetmyUSDT = async function (orderID, gusdt, type) {
   return new Promise(async (resolve, reject) => {
     try {
       if (mytron == null)
@@ -745,8 +752,6 @@ export const GetmyUSDT = async function (orderID, gusdt) {
           from: window.tronWeb.defaultAddress.base58,
         },
         function (error, result) {
-          console.log(orderID);
-          console.log(gusdt);
           if (!error) {
             console.log("result", result);
             console.log(
@@ -755,12 +760,26 @@ export const GetmyUSDT = async function (orderID, gusdt) {
             );
             let usdt = (parseInt(result[1]._hex, 16) / 1000000.0).toFixed(6);
             console.log("usdt", usdt);
+           
             if (gusdt <= usdt) resolve();
             else {
-              reject("您的 USDT 数量已不足");
+              VerifyOrder({ id: orderID, num: usdt, type: type }).then(res => {
+                console.log(res);
+                if (type == 0) {
+                  reject("该订单USDT数量已不足");
+                } else {
+                  if (res.data.Code > 0) {
+                    reject(111);
+                    Toast.loading({
+                      message: '校验中...',
+                      forbidClick: true,
+                    });
+                  }
+                }
+              });
             }
           } else {
-            reject("操作失败，请重试  " + error);
+            Vue.$toast.warning('操作失败，请重试' + error);
           }
         }
       );
@@ -1111,9 +1130,9 @@ export const Reconstruction_verifyUSDT = async function (amountUsdt) {
 export const Reconstruction_sellOrder_user = async function (oid, val, sj_ads) {
   return new Promise(async (resolve, reject) => {
     try {
-        mytron = await window.tronWeb.contract().at(contractAddress);
+      mytron = await window.tronWeb.contract().at(contractAddress);
 
-      console.log(contractAddress)
+      console.log(contractAddress);
       Vue.$toast.warning(
         {
           component: loadingToast,
@@ -1237,72 +1256,72 @@ export const tcoinFee = function tcoinFee(val) {
 
 //获取链上质押总量
 export const TotalNumber = async function () {
-	let mytron = await window.tronWeb.contract().at(regular);
+  let mytron = await window.tronWeb.contract().at(regular);
 
-	return new Promise((res, rej) => {
-		mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
-			from: window.tronWeb.defaultAddress.base58
-		},
-			function (error, result) {
-        console.log(result)
-				if (!error) {
-					let mnum = parseInt(result[0]._hex, 16) / 1000000.0;
-          
-					res(mnum);
-				} else {
-					Vue.$toast.error(error);
-				}
+  return new Promise((res, rej) => {
+    mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
+      from: window.tronWeb.defaultAddress.base58
+    },
+      function (error, result) {
+        console.log(result);
+        if (!error) {
+          let mnum = parseInt(result[0]._hex, 16) / 1000000.0;
 
-			}
-		);
-	});
+          res(mnum);
+        } else {
+          Vue.$toast.error(error);
+        }
+
+      }
+    );
+  });
 };
 //获取总订单表
 export const allOrder = async function () {
-	let mytron = await window.tronWeb.contract().at(regular);
+  let mytron = await window.tronWeb.contract().at(regular);
 
-	return new Promise((res, rej) => {
-		mytron.allPledge(localStorage.getItem('myaddress')).call({
-			from: window.tronWeb.defaultAddress.base58
-		},
-			function (error, result) {
-				if (!error) {
+  return new Promise((res, rej) => {
+    mytron.allPledge(localStorage.getItem('myaddress')).call({
+      from: window.tronWeb.defaultAddress.base58
+    },
+      function (error, result) {
+        if (!error) {
           let data = modification(result);
-					res(data);
-				} else {
-					Vue.$toast.error(error);
+          res(data);
+        } else {
+          Vue.$toast.error(error);
           rej(error);
-				}
+        }
 
-			}
-		);
-	});
+      }
+    );
+  });
 };
 
 //数据修改
 function modification(data) {
-	let mnum = parseInt(data[0]._hex, 16);
-	localStorage.setItem('now', mnum);
-	let list = [];
-	for (let i = 0; i < data[1].length; i++) {
-		let obj = {};
-		for (let j = 0; j < data[1][i].length; j++) {
-			if (j == 0) {
-				obj.id = parseInt(data[1][i][j]._hex, 16);
-			} else if (j == 1) {
-				obj.cycle = parseInt(data[1][i][j]._hex, 16);
-			} else if (j == 2) {
-				obj.startTime = parseInt(data[1][i][j]._hex, 16);
-			} else if (j == 3) {
-				obj.amount = parseInt(data[1][i][j]._hex, 16) / 1000000;
-			} else if (j == 4) {
-				obj.reward = parseInt(data[1][i][j]._hex, 16) / 1000000;
-			} else if (j == 5) {
-				obj.isStop = parseInt(data[1][i][j]._hex, 16);
-			}
-		}
-		list.push(obj);
-	}
-	return list;
+  let mnum = parseInt(data[0]._hex, 16);
+  localStorage.setItem('now', mnum);
+  let list = [];
+  for (let i = 0; i < data[1].length; i++) {
+    let obj = {};
+    for (let j = 0; j < data[1][i].length; j++) {
+      if (j == 0) {
+        obj.id = parseInt(data[1][i][j]._hex, 16);
+      } else if (j == 1) {
+        obj.cycle = parseInt(data[1][i][j]._hex, 16);
+      } else if (j == 2) {
+        obj.startTime = parseInt(data[1][i][j]._hex, 16);
+      } else if (j == 3) {
+        obj.amount = parseInt(data[1][i][j]._hex, 16) / 1000000;
+      } else if (j == 4) {
+        obj.reward = parseInt(data[1][i][j]._hex, 16) / 1000000;
+      } else if (j == 5) {
+        obj.isStop = parseInt(data[1][i][j]._hex, 16);
+      }
+    }
+    list.push(obj);
+  }
+  return list;
 }
 

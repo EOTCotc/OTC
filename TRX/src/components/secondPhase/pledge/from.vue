@@ -77,6 +77,8 @@ export default {
       type: '节点类型',
       show: false,
       columns: [
+        '有效用户 100EOTC',
+        '有效用户 1000EOTC',
         '信用节点 5000EOTC',
         '实时节点 10000EOTC',
         '中级节点 50000EOTC',
@@ -108,7 +110,9 @@ export default {
         Toast.fail('您的EOTC余额不足')
         this.number = ''
       }
-      if (newName >= 5000 && newName < 10000) {
+      if (newName >= 100 && newName < 5000) {
+        this.type = '有效用户'
+      } else if (newName >= 5000 && newName < 10000) {
         this.type = '信用节点'
       } else if (newName >= 10000 && newName < 50000) {
         this.type = '实时节点'
@@ -142,18 +146,26 @@ export default {
       this.show = false
       switch (index) {
         case 0:
+          this.number = 100
+          this.type = '有效用户'
+          break
+        case 1:
+          this.number = 1000
+          this.type = '有效用户'
+          break
+        case 2:
           this.number = 5000
           this.type = '信用节点'
           break
-        case 1:
+        case 3:
           this.type = '实时节点'
           this.number = 10000
           break
-        case 2:
+        case 4:
           this.type = '中级节点'
           this.number = 50000
           break
-        case 3:
+        case 5:
           this.type = '高级节点'
           this.number = 100000
           break

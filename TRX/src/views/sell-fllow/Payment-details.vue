@@ -411,6 +411,7 @@ export default {
         amount1: this.cacheData.totalMoney,
         sname: this.cacheData.item.sname,
       };
+      console.log(this.cacheData)
       this.$router.push({
         name: "Payment-waterbill",
         params: {

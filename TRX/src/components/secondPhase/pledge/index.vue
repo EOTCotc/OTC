@@ -10,28 +10,41 @@
     </div>
     <div class="center">
       <div class="total">
-        <div class="total_flex">
-          <div class="left_flex">
+        <div class="total_flex" @click="record()">
+          <div class="left_flex" >
             <img src="@/static/image/zhiya2.png" alt />
 
             <p>质押总额</p>
           </div>
 
+          <div class="right">
           <p class="number">{{ eotc }} EOTC</p>
+          <p class="deli">质押明细</p>
+          </div>
+          
         </div>
 
         <div class="van-hairline--bottom"></div>
 
         <div class="total_flex">
           <div class="left_flex">
-            <img v-show="zyShow" src="@/static/image/zhiya.png" alt />
+            <img v-show="zyShow" src="@/static/image/zhiya3.png" alt />
             <img v-show="!zyShow" src="@/static/image/discounts.png" alt />
             <p>{{ brokerage }}</p>
           </div>
           <div class="number">
-            <p v-if="zyShow">{{ usdt }} USDT</p>
+            <p v-if="zyShow">{{ earnings }} EOTC</p>
             <p v-else>2022.5.6</p>
           </div>
+        </div>
+      </div>
+      <div class="service">
+        <div>
+          <div>
+            <img v-show="zyShow" src="@/static/image/zhiya.png" alt />
+            <p>免手续费额度</p>
+          </div>
+          <p v-if="zyShow">{{ usdt }} USDT</p>
         </div>
         <van-progress class="progress" :percentage="percentage" color="#868BE9" stroke-width="8" />
       </div>
@@ -41,7 +54,7 @@
           <p>{{presenter}}</p>
         </div>
         <div>
-          <p>手续费分红(EOTC)</p>
+          <p>手续费分红(USDT)</p>
           <p>0</p>
         </div>
         <div>
@@ -61,7 +74,7 @@
         </div>
         <div>
           有效用户(满足以下条件之一)
-          <br />1、1.0质押100EOTC及以上
+          <br />1、质押100EOTC及以上
           <br />2、定期理财质押1000EOTC及以上
           <br />3、持有EOTC NFT任意一张卡牌及以上
           <br />4、质押EOTC LP 100个及以上
@@ -69,20 +82,20 @@
         </div>
         <div>
           信用节点
-          <br />1、需要至少有19个直推有效用户
+          <br />1、需要至少有5个直推有效用户
           <br />2、质押代币数量5000个以上
           <br />3、团队有效用户90人
         </div>
         <div>
           实时节点
-          <br />1、需要至少有19个直推有效用户
+          <br />1、需要至少有7个直推有效用户
           <br />2、质押代币数量10000个以上
           <br />3、团队二条线有信用节点
           <br />4、团队有效用户300人
         </div>
         <div>
           中级节点
-          <br />1、需要至少有19个直推有效用户
+          <br />1、需要至少有13个直推有效用户
           <br />2、质押代币数量前101-1100名
           <br />3、团队三条线有实时节点或实时节点永久分红权益卡
           <br />4、团队有效用户900人
@@ -118,40 +131,48 @@
 
 <script>
 import { UserInfo } from '@/utils/web3'
+import { MyStakeList } from '@/api/trxRequest'
 export default {
   //交易质押
   data() {
     return {
       zyShow: true,
       zyText: 'OTC质押',
-      brokerage: '免手续费额度',
+      brokerage: '质押收益',
 
       presenter: 0,
 
       eotc: '',
       usdt: 0,
+      //质押收益
+      earnings:0,
       title: '交易质押',
       //节点类型
       jdtype: '',
-      percentage:0
+      percentage: 0,
     }
   },
   mounted() {
+    // this.earnings=localStorage.getItem('nodeRate')
+
+    this.allearning()
+
     this.presenter = localStorage.getItem('giftEotc')
     this.eotc = Number(localStorage.getItem('otczy'))
     this.usdt = localStorage.getItem('freeNum') * 1
 
+
     let data = UserInfo()
-    if (data.myjifen > 10) {
-      this.jdtype = '交易用户'
-      let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
-      if (sum > 5000 && data.ztman >= 19 && data.stakeMan >= 90) {
+    let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+    if (data.myjifen > 10&&sum>100) {
+      this.jdtype = '有效用户'
+      if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
         this.jdtype = '信用节点'
       }
-      if (sum > 10000 && data.ztman >= 19 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
+      if (sum > 10000 && data.ztman >= 7 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
         this.jdtype = '实时节点'
       }
-      if (sum > 50000 && data.ztman >= 19 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
+      if (sum > 50000 && data.ztman >= 13 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
         this.jdtype = '中级节点'
       }
       if (sum > 100000 && data.ztman >= 19 && data.stakeMan >= 3000 && data.ztvip[1] * 1 >= 5) {
@@ -186,32 +207,55 @@ export default {
       //   this.brokerage = '当前可优惠至'
       // }
     },
-    plan(){
-      const myEoct=localStorage.getItem("myeotc")*1
-      const otczy= localStorage.getItem("otczy")*1
-      const giftEotc=localStorage.getItem("giftEotc")*1
-    
-      const max=myEoct+otczy+giftEotc
-      if(max==0){
+    plan() {
+      const myEoct = localStorage.getItem('myeotc') * 1
+      const otczy = localStorage.getItem('otczy') * 1
+      const giftEotc = localStorage.getItem('giftEotc') * 1
+
+      const max = myEoct + otczy + giftEotc
+      if (max == 0) {
         return
       }
-      let num=max
-      if(max>=100&&max<5000){
-        num=max*10
+      let num = max
+      if (max >= 100 && max < 5000) {
+        num = max * 10
       }
-      if(max>=5000&&max<10000 ){
-        num=max*20
+      if (max >= 5000 && max < 10000) {
+        num = max * 20
       }
-      if(max>=10000 &&max<50000){
-        num=max*30
+      if (max >= 10000 && max < 50000) {
+        num = max * 30
       }
-      if(max>=50000 &&max<100000){
-        num=max*40
+      if (max >= 50000 && max < 100000) {
+        num = max * 40
       }
-      if(max>=100000){
-        num=max*50
+      if (max >= 100000) {
+        num = max * 50
       }
-      this.percentage=(this.usdt/num*100).toFixed(2)
+      this.percentage = ((this.usdt / num) * 100).toFixed(2)
+    },
+    record(){
+      this.$router.push({name:'PledgeRecord'})
+    },
+    allearning(){
+      MyStakeList({}).then((res) => {
+        let zongnum=0
+        let data = res.data
+        for (let i of data){
+          i.uid = i.uid * 1
+          if (i.uid == 6) {
+            i.reward = (i.znum * 1 * 0.48 * i.uid) / 12
+          } else if (i.uid == 12) {
+            i.reward = (i.znum * 1 * 0.72 * i.uid) / 12
+          } else if (i.uid == 24) {
+            i.reward = (i.znum * 1 * i.uid) / 12
+          } else if (i.uid == 36) {
+            i.reward = (i.znum * 1 * 1.2 * i.uid) / 12
+          }
+          zongnum=zongnum + i.reward*1
+        }
+        this.earnings=zongnum
+      })
     }
   },
 }
@@ -296,6 +340,25 @@ export default {
             font-size: 28px;
           }
         }
+        .right{
+          .deli{
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            color: #237ff8;
+            &::after{
+              width: 11px;
+              height: 11px;
+              content: '';
+              display: inline-block;
+              border: 1px solid #237ff8;
+              border-left: none;
+              border-bottom: none;
+              transform: rotate(45deg);
+            }
+          }
+        }
+
         .right_flex {
           display: flex;
           align-items: center;
@@ -319,6 +382,27 @@ export default {
       }
       .total_flex:last-child {
         padding-top: 40px;
+      }
+      
+    }
+    .service{
+      font-size: 28px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 30px;
+      img {
+        width: 40px;
+        height: 40px;
+        margin-right: 12px;
+      }
+      div{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        div{
+          display: flex;
+        }
       }
       .progress {
         margin-top: 30px;

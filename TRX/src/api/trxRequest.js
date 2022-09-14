@@ -170,6 +170,15 @@ export const Update = (data) => {
     data,
   });
 };
+//聊天图片上传
+export const ChatUpdate = (data) => {
+  // const params = data
+  return request({
+    method: "POST",
+    url: `/api/OTC/UpdateImg`,
+    data,
+  });
+};
 
 //审核数据获取、通过、打回
 export const EotcKyc = ({
@@ -198,6 +207,22 @@ export const Get_MyEOTC = ({
     params,
   });
 };
+//商家USDT余额不足校验
+export const VerifyOrder = ({
+  ads = localStorage.getItem("myaddress"),
+  sign = localStorage.getItem("mysign"),
+  id,
+  num,
+  type
+}) => {
+  const params = { ads, sign,id,num,type };
+  return request({
+    method: "POST",
+    url: `/api/OTC/VerifyOrder`,
+    params,
+  });
+};
+
 //防止误触
 export const VerifyReleaseCoins = ({
   ads=localStorage.getItem("myaddress"),
@@ -602,5 +627,21 @@ export const cancel_order = ({ id, oid, ads }) => {
       ads,
       oid,
     },
+  });
+};
+
+//获取质押记录
+export const MyStakeList = ({
+  ads=localStorage.getItem('myaddress'),
+  net=localStorage.getItem('netType'),
+  zq=0
+}) => {
+  const params = {
+    ads,net,zq
+  };
+  return request({
+    method: "POST",
+    url: "/api/EOTC/MyStakeList",
+    params,
   });
 };

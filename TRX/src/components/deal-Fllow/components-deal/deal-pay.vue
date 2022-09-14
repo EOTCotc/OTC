@@ -119,6 +119,7 @@ export default {
         gusdt = this.money;
         totalPrice = this.transformNum;
       }
+
       try {
         await this.generate_orders(gusdt, totalPrice);
       } catch (err) {
@@ -137,11 +138,13 @@ export default {
       this.orderPayLoading = false;
       this.$bus.$emit("close-OrderSaleInfo");
     },
+
     async generate_orders(gusdt, totalPrice,messageError = false) {
       return new Promise(async (resolve, reject) => {
         try {
+          console.log(this.item)
           const id = this.item.id;
-          await GetmyUSDT(id, gusdt);
+          await GetmyUSDT(id, gusdt,0);
           if(!messageError) await runSign();
           const { data } = await Verification_UserXbuyOrder_before({
             oid: id,
@@ -152,7 +155,7 @@ export default {
           var it = eval(data);
           it.bank = this.item.ads.trim();
           let odid = parseInt(it.odid);
-          console.log(odid)
+          // console.log(odid,111)
           if (odid > 9) {
             localStorage.setItem("xdnum", odid);
             console.log(this.item)

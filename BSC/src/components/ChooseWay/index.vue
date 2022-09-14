@@ -217,7 +217,7 @@ export default {
         {
           text: "关注",
           icon: require("@/assets/tools-svg/gz.svg"),
-          // view_name: "important-userList",
+          view_name: "important-userList",
           query: {
             source: "concern",
           },
@@ -225,7 +225,7 @@ export default {
         {
           text: "黑名单",
           icon: require("@/assets/tools-svg/hmd.svg"),
-          // view_name: "important-userList",
+          view_name: "important-userList",
           query: {
             source: "blacklist",
           },

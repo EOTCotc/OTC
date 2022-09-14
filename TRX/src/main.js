@@ -56,9 +56,9 @@ Vue.use(VueCanvasPoster);
 Vue.config.productionTip = false;
 
 Vue.config.errorHandler = function (err, vm, info) {
-  router.replace({
-    name: "index",
-  });
+  // router.replace({
+  //   name: "index",
+  // });
 };
 
 new Vue({
@@ -68,6 +68,5 @@ new Vue({
   i18n,
   beforeCreate() {
     Vue.prototype.$bus = this;
-    Vue.prototype.bug = time2
   },
 }).$mount("#app");
