@@ -3,18 +3,6 @@
     <Navwhite :title="title"></Navwhite>
     <div class="content">
       <div class="cell">
-        <p class="cell_title">单价</p>
-        <div class="inputs">
-          <input
-            type="number"
-            v-model="price"
-            @blur="onPriceInput(5, 7, $event)"
-            placeholder="出售USDT的单价(CNY)"
-          />
-          <p>CNY</p>
-        </div>
-      </div>
-      <div class="cell">
         <p class="cell_title">数量</p>
         <div class="inputs">
           <input
@@ -23,9 +11,22 @@
             @blur="onNumInput($event)"
             placeholder="最大出售数量"
           />
-          <p>USDT</p>
+          <p style="color:#237FF8" @click="kindShow=false">{{kind}}</p>
         </div>
       </div>
+      <div class="cell">
+        <p class="cell_title">单价</p>
+        <div class="inputs">
+          <input
+            type="number"
+            v-model="price"
+            @blur="onPriceInput(5, 7.5, $event,kind)"
+            :placeholder="'出售'+kind +'的单价(CNY)'"
+          />
+          <p>CNY</p>
+        </div>
+      </div>
+      
       <div class="cell">
         <p class="cell_title">限售</p>
         <div class="cell_flex">
@@ -48,7 +49,7 @@
               @blur="onMinDigitalCash"
               placeholder="最低出售总额"
             />
-            <p>USDT</p>
+            <p>{{kind}}</p>
             <span v-if="eror[1]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -72,7 +73,7 @@
               @blur="onMaxDigitalCash"
               placeholder="最高出售总额"
             />
-            <p>USDT</p>
+            <p>{{kind}}</p>
             <span v-if="eror[3]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -153,7 +154,7 @@
           </div>
           <div>
             <p>数量</p>
-            <p>{{ number }} USDT</p>
+            <p>{{ number }} {{kind}}</p>
           </div>
           <div>
             <p>限额</p>
@@ -161,7 +162,7 @@
           </div>
           <div>
             <p>限额</p>
-            <p>{{ MinDigitalCash }} USDT ~ {{ MaxDigitalCash }} USDT</p>
+            <p>{{ MinDigitalCash }} {{kind}} ~ {{ MaxDigitalCash }} {{kind}}</p>
           </div>
         </div>
 
@@ -196,13 +197,21 @@
           </div>
           <div>
             <p>数量</p>
-            <p>{{ number }} USDT</p>
+            <p>{{ number }} {{kind}}</p>
           </div>
         </div>
         <van-button block color="#1B2945" round @click="transfer"
           >向合约转币</van-button
         >
       </div>
+    </van-popup>
+    <van-popup v-model="kindShow" round position="bottom">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @cancel="showPicker = false"
+        @confirm="onConfirm"
+      />
     </van-popup>
     <PopLoad :loadShow="loadshow"></PopLoad>
   </div>
@@ -238,9 +247,17 @@ export default {
       contractShow: false,
       loadshow: false,
       contractAddress: contractAddress,
+
+      kindShow: false,
+      kind: 'USDT',
+      columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
     };
   },
   methods: {
+    onConfirm(value) {
+      this.kind = value
+      this.kindShow = false
+    },
     sellItem() {
       this.contractShow = true;
     },

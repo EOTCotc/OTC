@@ -3,29 +3,25 @@
     <Navwhite :title="title"></Navwhite>
     <div class="content">
       <div class="cell">
+        <p class="cell_title">数量</p>
+        <div class="inputs">
+          <input type="number" v-model="number" @blur="onNumInput($event)" placeholder="最大收购数量" />
+          <p style="color:#237FF8" @click="kindShow=true">{{kind}}</p>
+        </div>
+      </div>
+      <div class="cell">
         <p class="cell_title">单价</p>
         <div class="inputs">
           <input
             type="number"
             v-model="price"
-            @blur="onPriceInput(5, 7, $event)"
-            placeholder="收购USDT的单价(CNY)"
+            @blur="onPriceInput(5, 7.5, $event,kind)"
+            :placeholder="'收购'+kind+'的单价(CNY)'"
           />
           <p>CNY</p>
         </div>
       </div>
-      <div class="cell">
-        <p class="cell_title">数量</p>
-        <div class="inputs">
-          <input
-            type="number"
-            v-model="number"
-            @blur="onNumInput($event)"
-            placeholder="最大收购数量"
-          />
-          <p>USDT</p>
-        </div>
-      </div>
+
       <div class="cell">
         <p class="cell_title">限购</p>
         <div class="cell_flex">
@@ -48,7 +44,7 @@
               @blur="onMinDigitalCash"
               placeholder="最低收购总额"
             />
-            <p>USDT</p>
+            <p>{{kind}}</p>
             <span v-if="eror[1]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -72,7 +68,7 @@
               @blur="onMaxDigitalCash"
               placeholder="最高收购总额"
             />
-            <p>USDT</p>
+            <p>{{kind}}</p>
             <span v-if="eror[3]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -83,21 +79,13 @@
       <h6>使用现金交易：</h6>
       <van-cell center :border="false">
         <template #icon>
-          <img
-            class="pay-img"
-            :src="require('@/assets/currency-icons/unmoney.png')"
-            alt="aug-icon"
-          />
+          <img class="pay-img" :src="require('@/assets/currency-icons/unmoney.png')" alt="aug-icon" />
         </template>
         <template #title>
           <span class="custom-title">可接受现金</span>
         </template>
         <template #right-icon>
-          <van-switch
-            v-model="receiving_checked"
-            @change="check_change('isMoney')"
-            size="18px"
-          />
+          <van-switch v-model="receiving_checked" @change="check_change('isMoney')" size="18px" />
         </template>
       </van-cell>
       <van-cell center :border="false">
@@ -112,25 +100,13 @@
           <span class="custom-title">只接受现金</span>
         </template>
         <template #right-icon>
-          <van-switch
-            v-model="isMoney"
-            @change="check_change('receiving_checked')"
-            size="18px"
-          />
+          <van-switch v-model="isMoney" @change="check_change('receiving_checked')" size="18px" />
         </template>
       </van-cell>
     </footer>
 
     <div class="button">
-      <van-button
-        type="primary"
-        block
-        round
-        @click="popswitch"
-        :disabled="vali_value"
-      >
-        生成收购订单
-      </van-button>
+      <van-button type="primary" block round @click="popswitch" :disabled="vali_value">生成收购订单</van-button>
     </div>
 
     <van-popup
@@ -152,7 +128,7 @@
           </div>
           <div>
             <p>数量</p>
-            <p>{{ number }} USDT</p>
+            <p>{{ number }} {{kind}}</p>
           </div>
           <div>
             <p>限额</p>
@@ -160,13 +136,11 @@
           </div>
           <div>
             <p>限额</p>
-            <p>{{ MinDigitalCash }} USDT ~ {{ MaxDigitalCash }} USDT</p>
+            <p>{{ MinDigitalCash }} {{kind}} ~ {{ MaxDigitalCash }} {{kind}}</p>
           </div>
         </div>
 
-        <van-checkbox shape="square" v-model="checked"
-          >我已认真核对</van-checkbox
-        >
+        <van-checkbox shape="square" v-model="checked">我已认真核对</van-checkbox>
         <van-button
           class="pop-button"
           @click="jump()"
@@ -174,21 +148,29 @@
           color="#1B2945"
           block
           :disabled="!checked"
-          >确认生成</van-button
-        >
+        >确认生成</van-button>
       </div>
+    </van-popup>
+
+    <van-popup v-model="kindShow" round position="bottom">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @cancel="showPicker = false"
+        @confirm="onConfirm"
+      />
     </van-popup>
   </div>
 </template>
 
 <script>
-import Navwhite from "@/components/Nav/white.vue";
-import currency_mixin from "@/mixins/currency_mixins";
-import loadingToast from "@/components/loading-toast";
-import { addOrder } from "@/api/trxRequest";
+import Navwhite from '@/components/Nav/white.vue'
+import currency_mixin from '@/mixins/currency_mixins'
+import loadingToast from '@/components/loading-toast'
+import { addOrder } from '@/api/trxRequest'
 
 export default {
-  name: "setpur-chase", //挂收购单
+  name: 'setpur-chase', //挂收购单
   components: {
     Navwhite,
   },
@@ -196,25 +178,33 @@ export default {
   data() {
     return {
       hasInput: true,
-      title: "收购",
-    };
+      title: '收购',
+
+      kindShow: true,
+      kind: 'USDT',
+      columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
+    }
   },
   methods: {
+    onConfirm(value) {
+      this.kind = value
+      this.kindShow = false
+    },
     //生成收购单
     async jump() {
       this.$toast.warning(
         {
           component: loadingToast,
           props: {
-            title: "收购单生成中,请耐心等待。。。",
+            title: '收购单生成中,请耐心等待。。。',
           },
         },
         {
           icon: false,
           timeout: false,
         }
-      );
-      this.isclose_on_click_overlay = false;
+      )
+      this.isclose_on_click_overlay = false
       try {
         const { data } = await addOrder({
           cny: this.price,
@@ -222,9 +212,9 @@ export default {
           amount1: this.MinLegalTender,
           amount2: this.MaxLegalTender,
           cash: this.cash,
-        });
-        this.$toast.clear();
-        if (data.State === "1") {
+        })
+        this.$toast.clear()
+        if (data.State === '1') {
           this.$toast.error(
             <div>
               <p style="font-size:14px;margin:5px">挂单数量超过最大数额！</p>
@@ -232,24 +222,24 @@ export default {
             {
               timeout: 3000,
             }
-          );
-          this.isclose_on_click_overlay = true;
-          return false;
+          )
+          this.isclose_on_click_overlay = true
+          return false
         }
         this.$router.replace({
-          name: "order-Ticket",
+          name: 'order-Ticket',
           params: {
-            method: "buy",
+            method: 'buy',
           },
-        });
+        })
       } catch (err) {
-        console.warn(err);
-        this.$toast.error("网络有点小错误，请稍后重试。");
+        console.warn(err)
+        this.$toast.error('网络有点小错误，请稍后重试。')
       }
-      this.isclose_on_click_overlay = true;
+      this.isclose_on_click_overlay = true
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

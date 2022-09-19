@@ -72,7 +72,7 @@
           <div class="cell">
             <p class="cell_title">单价</p>
             <div class="inputs">
-              <input type="number" v-model="price" @blur="onPriceInput(5, 7, $event)" />
+              <input type="number" v-model="price" @blur="onPriceInput(5, 7.5, $event)" />
               <p>CNY</p>
             </div>
           </div>
@@ -405,9 +405,9 @@ export default {
         this.price = 5
         this.$toast.warning('该货币价格不能低于 5 CNY')
       } else if (Number(e.target.value) >= max) {
-        this.price = 7
-        e.target.value = 7
-        this.$toast.warning('该货币价格不能高于 7 CNY')
+        this.price = 7.5
+        e.target.value = 7.5
+        this.$toast.warning('该货币价格不能高于 7.5 CNY')
       }
       this.is_validVal()
     },
