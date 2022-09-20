@@ -47,8 +47,14 @@ export default {
       }
       this.popshow = true;
     },
-    onPriceInput(min, max, e) {
+    onPriceInput(min, max, e,kind) {
+      console.log(kind)
       this.hasInput = false;
+      if(kind!='USDT'&&kind!='USDC'){
+        this.price = e.target.value;
+        this.is_validVal();
+        return
+      }
       if (min <= Number(e.target.value) && Number(e.target.value) <= max) {
         this.price = e.target.value;
       } else if (Number(e.target.value) <= min) {
@@ -56,9 +62,9 @@ export default {
         this.price = 5;
         this.$toast.warning("该货币价格不能低于 5 CNY");
       } else if (Number(e.target.value) >= max) {
-        this.price = 7;
-        e.target.value = 7;
-        this.$toast.warning("该货币价格不能高于 7 CNY");
+        this.price = 7.5;
+        e.target.value = 7.5;
+        this.$toast.warning("该货币价格不能高于 7.5 CNY");
       }
       this.is_validVal();
     },
@@ -77,9 +83,10 @@ export default {
       if (Number(e.target.value) > +max) {
         e.target.value = max;
         this.number = e.target.value;
+        console.log(this.kind)
         this.$toast.warning(
           <div>
-            <p style="font-size:13px;margin:5px">您最高收购 USDT 的数量</p>
+            <p style="font-size:13px;margin:5px">您最高收购 ${this.kind} 的数量</p>
             <p style="font-size:16px;margin:5px">不能超过质押的数量${max}!</p>
           </div>
         );

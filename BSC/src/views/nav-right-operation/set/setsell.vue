@@ -8,7 +8,7 @@
           <input
             type="number"
             v-model="price"
-            @blur="onPriceInput(5, 7, $event)"
+            @blur="onPriceInput(5, 7.5, $event)"
             placeholder="出售USDT的单价(CNY)"
           />
           <p>CNY</p>

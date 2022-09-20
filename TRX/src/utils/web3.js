@@ -1,14 +1,14 @@
 
 // 主网链
-const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
-let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
-let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
-let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
+// const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
+// let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
+// let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
+// let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
 //测试网
-// const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
-// let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
-// let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
-// let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
+let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 
 
 
@@ -256,8 +256,9 @@ export const SendUSDT = async function (val, ads, ctype) {
   //val 数量 abs 钱包地址 contractAddress 币种合约
 
   return new Promise(async (resolve, reject) => {
-    try {
+    // try {
       let mytron;
+      console.log(111)
       if (ctype == "USDT")
         mytron = await window.tronWeb.contract().at(contractAddress_usdt);
       else mytron = await window.tronWeb.contract().at(contractAddress_eotc);
@@ -266,6 +267,7 @@ export const SendUSDT = async function (val, ads, ctype) {
         callValue: 0,
         shouldPollResponse: false,
       });
+      console.log(222)
       if (ctype == "USDT") {
         await myUsdtAmount();
       } else {
@@ -276,9 +278,9 @@ export const SendUSDT = async function (val, ads, ctype) {
         resolve(res);
       }, 1200);
       Vue.$toast.success("转账成功!");
-    } catch (err) {
-      reject(err);
-    }
+    // } catch (err) {
+    //   reject(err);
+    // }
   });
 };
 
@@ -287,6 +289,7 @@ export const SendUSDT = async function (val, ads, ctype) {
 
 export const loadweb3 = async function (func) {
   //bsg为true强制签名
+  console.log(window.tronWeb)
   if (window.tronWeb) {
     var obj = setInterval(async () => {
       if (window.tronWeb.defaultAddress.base58) {
@@ -301,8 +304,8 @@ export const loadweb3 = async function (func) {
           myUsdtAmount();
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
-          // localStorage.setItem("netType", "xxx");
-           localStorage.setItem("netType", "trx");
+          localStorage.setItem("netType", "xxx");
+          //  localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");

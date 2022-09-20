@@ -125,8 +125,8 @@ export default {
       }
       this.nickname = data?.sname.trim();
       this.phone = data?.dsx;
-      this.sell = data?.mes;
-      this.buy = data?.smes;
+      this.sell = data?.smes;
+      this.buy = data?.mes;
     },
     on_submit() {
       this.$refs["info_form"]

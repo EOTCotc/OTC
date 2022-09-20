@@ -24,7 +24,7 @@
       </div>
 
       <div class="top-mid-content">
-        <span class="price">￥{{ item.amount1 }}.00</span>
+        <span class="price">￥{{ item.amount1 }}</span>
         <span class="mid-r-content">
           <van-button
             type="danger"
@@ -394,7 +394,7 @@ export default {
             this.megList.push(
               this.cinit_mes(
                 'seller',
-                `我已通过您的流水审查，您可以进行下一步付款！`,
+                `<div style="padding:10px">我已通过您的流水审查，您可以进行下一步付款！</div>`,
                 false,
                 Date.now()
               )
@@ -466,7 +466,7 @@ export default {
           </div>
         )
         this.isReminders = true
-        this.megList.push(this.cinit_mes('seller', '老板您好，请尽快完成订单支付！', true))
+        this.megList.push(this.cinit_mes('seller', `<div style="padding:10px">老板您好，请尽快完成订单支付！</div>`, true))
         this.soket.send('老板您好，请尽快完成订单支付！')
       } catch (err) {
         this.isReminders = true

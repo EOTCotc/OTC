@@ -79,7 +79,7 @@
                   '总金额 复制成功'
                 )
               "
-              >￥{{ ThousandSeparator(cacheData.item.amount1) }}.00
+              >￥{{ ThousandSeparator(cacheData.item.amount1) }}
               <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
             ></span>
           </li>

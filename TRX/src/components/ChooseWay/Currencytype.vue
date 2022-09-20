@@ -412,7 +412,7 @@ export default {
       if (title !== 'USDT') {
         this.$toast.error(`目前暂时不支持 ${title}`)
         this.$nextTick(() => {
-          this.active = 0
+          // this.active = 0
         })
         return false
       }

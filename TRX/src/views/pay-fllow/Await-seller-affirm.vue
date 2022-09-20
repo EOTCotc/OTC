@@ -53,7 +53,7 @@
           <li>
             <span>总金额</span>
             <span class="importan-tTsxt"
-              >￥{{ ThousandSeparator(money) }}.00</span
+              >￥{{ ThousandSeparator(money) }}</span
             >
           </li>
           <li>
