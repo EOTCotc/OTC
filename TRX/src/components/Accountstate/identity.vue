@@ -208,8 +208,8 @@ export default {
       fileList1: [],
       fileList2: [],
 
-      homeShow: false,
-      personShow: true,
+      homeShow: true,
+      personShow: false,
       countryShow: false,
       handShow: false,
 

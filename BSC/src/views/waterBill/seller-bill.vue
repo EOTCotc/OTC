@@ -395,7 +395,7 @@ export default {
               this.cinit_mes(
                 'seller',
                 `<div style="padding:10px">我已通过您的流水审查，您可以进行下一步付款！</div>`,
-                false,
+                true,
                 Date.now()
               )
             )

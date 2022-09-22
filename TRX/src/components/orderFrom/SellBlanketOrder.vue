@@ -168,7 +168,7 @@
 </template>
 
 <script>
-import { Dialog} from 'vant'
+import { Dialog, Toast } from 'vant'
 
 import { UPdateOrder_sj } from '@/api/trxRequest'
 
@@ -224,7 +224,7 @@ export default {
     }
   },
   created() {
-    console.log(this.orderItem)
+    // console.log(this.orderItem)
     this.price = this.orderItem.cny
     this.number = this.orderItem.num
     this.MaxLegalTender = this.orderItem.amount2
@@ -533,9 +533,19 @@ export default {
     },
     //校验
     async verify() {
-      GetmyUSDT(this.orderItem.id, this.orderItem.num, 1).catch((err) => {
-        this.$emit('repetition', err)
+      console.log(111)
+      Toast.loading({
+        message: '校验中...',
+        forbidClick: true,
       })
+      GetmyUSDT(this.orderItem.id, this.orderItem.num, 1)
+        .catch((err) => {
+          console.log(222)
+          this.$emit('repetition', err)
+        })
+        .then(() => {
+          Toast.clear()
+        })
     },
   },
 }

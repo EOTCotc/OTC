@@ -1,13 +1,17 @@
 
 // 主网链
 // const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
-// let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
-// let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
-// let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
+// let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
+// let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+// let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
 //测试网
 const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
 let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+
 let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+
+let contractAddress_usdc = "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8";
+
 let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 
 
@@ -44,7 +48,7 @@ var mytron = null;
 const trxMin = 30000000;
 const trxMes = "为使交易顺畅,请确保钱包中不少于30 TRX";
 
-var signMes = "EOTC请求您签名确认,签名不消耗GAS.";
+window.signMes = "EOTC请求您签名确认,签名不消耗GAS.";
 
 function eotcmes(message) {
   console.log(message);
@@ -57,6 +61,26 @@ function warnmes(mes) {
 function distsmes1(message) {
   console.log(message);
 }
+export const currency = function (type) {
+  switch (type) {
+    case 'usdt':
+      contractAddress_usdt = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+      break;
+    case 'usdc':
+      contractAddress_usdt = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+      break;
+    case 'btc':
+      contractAddress_usdt = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+      break;
+    case 'eth':
+      contractAddress_usdt = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+      break;
+    case 'trx':
+      contractAddress_usdt = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+      break;
+
+  }
+};
 
 export const UserInfo = function () {
   //注册邮箱   邮箱和uid 一一对应 是唯一的
@@ -149,6 +173,7 @@ export const userBaseMes = function () {
   //加载用户数据前必须检验用户是否已经消息签名
   var mysign = localStorage.getItem("mysign");
   if (mysign == null || mysign == "") {
+    // console.log(signMes)
     userSign(signMes); //消息签名
     return false;
   }
@@ -257,27 +282,27 @@ export const SendUSDT = async function (val, ads, ctype) {
 
   return new Promise(async (resolve, reject) => {
     // try {
-      let mytron;
-      console.log(111)
-      if (ctype == "USDT")
-        mytron = await window.tronWeb.contract().at(contractAddress_usdt);
-      else mytron = await window.tronWeb.contract().at(contractAddress_eotc);
-      let res = await mytron.transfer(ads, TronValues(val)).send({
-        feeLimit: 100000000,
-        callValue: 0,
-        shouldPollResponse: false,
-      });
-      console.log(222)
-      if (ctype == "USDT") {
-        await myUsdtAmount();
-      } else {
-        await myEOTCAmount();
-      }
-      console.log(res);
-      setTimeout(() => {
-        resolve(res);
-      }, 1200);
-      Vue.$toast.success("转账成功!");
+    let mytron;
+    console.log(111);
+    if (ctype == "USDT")
+      mytron = await window.tronWeb.contract().at(contractAddress_usdt);
+    else mytron = await window.tronWeb.contract().at(contractAddress_eotc);
+    let res = await mytron.transfer(ads, TronValues(val)).send({
+      feeLimit: 100000000,
+      callValue: 0,
+      shouldPollResponse: false,
+    });
+    console.log(222);
+    if (ctype == "USDT") {
+      await myUsdtAmount();
+    } else {
+      await myEOTCAmount();
+    }
+    console.log(res);
+    setTimeout(() => {
+      resolve(res);
+    }, 1200);
+    Vue.$toast.success("转账成功!");
     // } catch (err) {
     //   reject(err);
     // }
@@ -289,7 +314,7 @@ export const SendUSDT = async function (val, ads, ctype) {
 
 export const loadweb3 = async function (func) {
   //bsg为true强制签名
-  console.log(window.tronWeb)
+  console.log(window.tronWeb);
   if (window.tronWeb) {
     var obj = setInterval(async () => {
       if (window.tronWeb.defaultAddress.base58) {
@@ -300,16 +325,18 @@ export const loadweb3 = async function (func) {
           mytron_usdt = await window.tronWeb
             .contract()
             .at(contractAddress_usdt);
+          console.log(mytron_usdt);
           mytron = await window.tronWeb.contract().at(contractAddress);
           myUsdtAmount();
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
           localStorage.setItem("netType", "xxx");
-          //  localStorage.setItem("netType", "trx");
+          // localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");
             clearmymes();
+            // console.log(signMes)
             userSign(signMes, func); //首次消息签名
             return false;
           }
@@ -748,6 +775,7 @@ export const getTrxBalance = function (func) {
 export const GetmyUSDT = async function (orderID, gusdt, type) {
   return new Promise(async (resolve, reject) => {
     try {
+      // console.log(orderID,gusdt,type)
       if (mytron == null)
         mytron = await window.tronWeb.contract().at(contractAddress);
       mytron.getInfo_order(orderID.toString()).call(
@@ -763,7 +791,7 @@ export const GetmyUSDT = async function (orderID, gusdt, type) {
             );
             let usdt = (parseInt(result[1]._hex, 16) / 1000000.0).toFixed(6);
             console.log("usdt", usdt);
-           
+            console.log('gsdt',gusdt)
             if (gusdt <= usdt) resolve();
             else {
               VerifyOrder({ id: orderID, num: usdt, type: type }).then(res => {
@@ -773,10 +801,7 @@ export const GetmyUSDT = async function (orderID, gusdt, type) {
                 } else {
                   if (res.data.Code > 0) {
                     reject(111);
-                    Toast.loading({
-                      message: '校验中...',
-                      forbidClick: true,
-                    });
+                    
                   }
                 }
               });

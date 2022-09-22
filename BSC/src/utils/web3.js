@@ -26,7 +26,7 @@ import { clearmymes } from "@/api/payverification";
 import $router from "@/router";
 import md5 from "md5";
 
-var signMes = "EOTC请求您签名确认,签名不消耗GAS.";
+window.signMes = "EOTC请求您签名确认,签名不消耗GAS.";
 
 const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
 
@@ -757,10 +757,7 @@ export const GetmyUSDT = function (orderID, gusdt,type) {
                 } else {
                   if (res.data.Code > 0) {
                     reject(111);
-                    Toast.loading({
-                      message: '校验中...',
-                      forbidClick: true,
-                    });
+                    
                   }
                 }
               });

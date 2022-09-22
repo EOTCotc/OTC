@@ -37,6 +37,7 @@ import SellBlanketOrder from "@/components/orderFrom/SellBlanketOrder.vue";
 import SellPending from "@/components/orderFrom/SellPending.vue";
 import SellAccomplish from "@/components/orderFrom/SellAccomplish.vue";
 
+import {  Toast } from 'vant'
 import { VueLoading } from "vue-loading-template";
 
 import { Order_sj } from "@/api/trxRequest";
@@ -83,6 +84,7 @@ export default {
     },
     repetition() {
       this.getSellData()
+      Toast.clear()
     },
   },
 };
