@@ -6,7 +6,7 @@
         <p class="cell_title">数量</p>
         <div class="inputs">
           <input type="number" v-model="number" @blur="onNumInput($event)" placeholder="最大收购数量" />
-          <p style="color:#237FF8" @click="kindShow=true">{{kind}}</p>
+          <p style="color:#237FF8" @click="kindShow=false">{{kind}}</p>
         </div>
       </div>
       <div class="cell">
@@ -180,7 +180,7 @@ export default {
       hasInput: true,
       title: '收购',
 
-      kindShow: true,
+      kindShow: false,
       kind: 'USDT',
       columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
     }

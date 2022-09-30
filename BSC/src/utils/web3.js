@@ -26,7 +26,7 @@ import { clearmymes } from "@/api/payverification";
 import $router from "@/router";
 import md5 from "md5";
 
-var signMes = "EOTC请求您签名确认,签名不消耗GAS.";
+window.signMes = "EOTC请求您签名确认,签名不消耗GAS.";
 
 const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
 
@@ -261,6 +261,13 @@ export const userBaseMes = function () {
         localStorage.setItem('stakingMan', it.stakingMan);//推荐质押人数
         localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
         localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
+
+        localStorage.setItem('lpZt', it.lpZt);//直推
+        localStorage.setItem('lpJt', it.lpJt);//间推
+        localStorage.setItem('lpTeams', it.lpTeams);//社区补贴
+        localStorage.setItem('lpNode', it.lpNode);//节点补贴
+
+        localStorage.setItem('myStakingEotc', it.myStakingEotc);
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
       } else {
@@ -757,10 +764,7 @@ export const GetmyUSDT = function (orderID, gusdt,type) {
                 } else {
                   if (res.data.Code > 0) {
                     reject(111);
-                    Toast.loading({
-                      message: '校验中...',
-                      forbidClick: true,
-                    });
+                    
                   }
                 }
               });

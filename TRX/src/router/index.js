@@ -478,6 +478,13 @@ const routes = [
     component: () => import("@/components/secondPhase/mining"),
   },
   {
+    // 申诉
+    path: "/appeal",
+    name: "appeal",
+    component: () => import("@/views/appeal"),
+  },
+  
+  {
     // NFT收益
     path: "/secondPhase/NFT",
     name: "NFT",
@@ -546,7 +553,8 @@ const payWhitelist = [
 // ,"secondPhase"
 //"arbitration"
 // 'zyzb'
-const rightMenu_Whitelist = ["arbitrator","arbitration","Withdraw",'NFT','mining','important-userList'];
+// ,'mining'
+const rightMenu_Whitelist = ["arbitrator","arbitration","Withdraw",'NFT','important-userList'];
 
 const originalReplace = VueRouter.prototype.replace;
 
@@ -616,6 +624,8 @@ router.beforeEach((to, form, next) => {
 
   if (to.name === "order-Ticket") {
     Vue.$toast.clear();
+    console.log(localStorage.getItem("myeotc")*1<5000)
+    console.log(localStorage.getItem("giftNFT"))
     if (localStorage.getItem("myeotc")*1 < 5000 && Number(localStorage.getItem("giftNFT"))==0 ) {
       Vue.$toast.warning({
         component: toastComponent,

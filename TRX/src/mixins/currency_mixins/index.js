@@ -80,14 +80,14 @@ export default {
         e.target.value = 0;
         this.number = 0;
       }
-      if (Number(e.target.value) > +max) {
-        e.target.value = max;
+      if (Number(e.target.value) > +max*10) {
+        e.target.value = max*10;
         this.number = e.target.value;
         console.log(this.kind)
         this.$toast.warning(
           <div>
             <p style="font-size:13px;margin:5px">您最高收购 ${this.kind} 的数量</p>
-            <p style="font-size:16px;margin:5px">不能超过质押的数量${max}!</p>
+            <p style="font-size:16px;margin:5px">不能超过质押的数量${max*10}!</p>
           </div>
         );
       }

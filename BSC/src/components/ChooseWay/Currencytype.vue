@@ -200,7 +200,7 @@ export default {
             if (show) {
               if (i.dsx == '0' || i.dsx == '2') count++
             } else {
-              if (i.dsx != '2') count++
+              if (i.dsx != '1') count++
             }
           }
           this.count = count
@@ -215,6 +215,7 @@ export default {
           this.listLoading = false
           return false
         }
+        this.isShow_empty = false
         const result = await this.filterData(data)
 
         this.list = result

@@ -13,13 +13,15 @@
 
 
 //测试网
-export const contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
-export const contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
-export const contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+// export const contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+
+// export const contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+
+// export const contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 //主网
-// export const contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
-// export const contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
-// export const contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
+export const contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu"; 
+export const contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"; 
+export const contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
 
 
 
@@ -33,9 +35,9 @@ export const contractAbi_usdt = [{ "constant": true, "inputs": [], "name": "name
 
 
 
-export const Contract_EOTC = async function Contract_EOTC(web3c) {
-  return await web3c.contract.at(contractAddress);
-};
-export const Contract_USDT = async function Contract_USDT(web3c) {
-  return await web3c.contract.at(contractAddress_usdt);
-};
+// export const Contract_EOTC = async function Contract_EOTC(web3c) {
+//   return await web3c.contract.at(contractAddress);
+// };
+// export const Contract_USDT = async function Contract_USDT(web3c) {
+//   return await web3c.contract.at(contractAddress_usdt);
+// };

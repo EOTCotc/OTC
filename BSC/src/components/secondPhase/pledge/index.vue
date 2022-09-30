@@ -159,6 +159,7 @@ this.allearning()
     this.presenter = localStorage.getItem('giftEotc')
     this.eotc = Number(localStorage.getItem('otczy'))
     this.usdt = localStorage.getItem('freeNum') * 1
+    
 
     let data = UserInfo()
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
@@ -210,8 +211,9 @@ this.allearning()
       const myEoct = localStorage.getItem('myeotc') * 1
       const otczy = localStorage.getItem('otczy') * 1
       const giftEotc = localStorage.getItem('giftEotc') * 1
+      const myStakingEotc = localStorage.getItem('myStakingEotc') * 1
 
-      const max = myEoct + otczy + giftEotc
+      const max = myEoct + otczy + giftEotc+myStakingEotc
       if (max == 0) {
         return
       }

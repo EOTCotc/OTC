@@ -211,8 +211,11 @@ export default {
       const myEoct = localStorage.getItem('myeotc') * 1
       const otczy = localStorage.getItem('otczy') * 1
       const giftEotc = localStorage.getItem('giftEotc') * 1
+      const myStakingEotc = localStorage.getItem('myStakingEotc') * 1
 
-      const max = myEoct + otczy + giftEotc
+      const max = myEoct + otczy + giftEotc +myStakingEotc
+      console.log(myEoct,otczy,giftEotc)
+      console.log(max)
       if (max == 0) {
         return
       }
@@ -232,6 +235,8 @@ export default {
       if (max >= 100000) {
         num = max * 50
       }
+      console.log(num)
+      console.log(this.usdt)
       this.percentage = ((this.usdt / num) * 100).toFixed(2)
     },
     record(){
