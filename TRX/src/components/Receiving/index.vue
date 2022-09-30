@@ -222,7 +222,7 @@ export default {
         {
           validator: (value) => {
             
-            return /^([1-9]{1})(\d{16,19})$/.test(value);
+            return /^(\d{16,19})$/.test(value);
             // return /^([1-9]{1})(\d{14}|\d{18})$/.test(value);
           },
           message: "请输入正确的银行卡号码",

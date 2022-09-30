@@ -131,11 +131,33 @@
       cancel-button-color="#666"
       cancel-button-text="取消"
       get-container="body"
-      @confirm="cancel_yes"
+      @confirm="closeShow=true"
     >
       <template #default>
         <div class="text_color">是否取消该出售订单？</div>
         <p :style="{ color: 'red', textAlign: 'center', margin: '0 0 15px 0' }">取消后，订单不能恢复！</p>
+      </template>
+    </van-dialog>
+    <!-- 取消订单数量 -->
+    <van-dialog
+      v-model="closeShow"
+      show-cancel-button
+      confirm-button-color="#1B2945"
+      confirm-button-text="确认"
+      cancel-button-color="#666"
+      cancel-button-text="取消"
+      get-container="body"
+      @confirm="cancel_yes"
+    >
+      <template #title>
+        <div class="addNum">
+          <span>请输入取消数量</span>
+          <van-field type="number" v-model="close_Num">
+            <template #button>
+              <van-button size="small" type="primary" @click="close_Num=number">全部</van-button>
+            </template>
+          </van-field>
+        </div>
       </template>
     </van-dialog>
 
@@ -198,6 +220,10 @@ export default {
     return {
       isContractCheckLoading: false, // 背景loading
       val_addNum: '',
+      // 取消数量
+      close_Num: '',
+      //取消数量开关
+      closeShow: false,
       addOrderNum: false,
       isclose_on_click_overlay: true,
       //修改弹出层
@@ -224,7 +250,7 @@ export default {
     }
   },
   created() {
-    // console.log(this.orderItem)
+    console.log(this.orderItem)
     this.price = this.orderItem.cny
     this.number = this.orderItem.num
     this.MaxLegalTender = this.orderItem.amount2
@@ -316,24 +342,28 @@ export default {
     },
     async cancel_yes() {
       try {
-        const usdt = this.number
-        // console.log(usdt)
+        if (this.close_Num * 1 > 0 && this.close_Num * 1 < this.number) {
+          const usdt = this.close_Num
+          // console.log(usdt)
 
-        await cancelOrders(this.orderItem.id, usdt)
-        // console.log(this.price,this.number,this.MinLegalTender,this.MaxLegalTender,this.orderItem.id)
-        await UPdateOrder_sj({
-          cny: this.price,
-          num: this.number,
-          amount1: this.MinLegalTender,
-          amount2: this.MaxLegalTender,
-          did: this.orderItem.id,
-          type: 2, //取消订单
-        })
-        this.$toast.success('订单已经取消')
-        PubSub.publish('update-selltotal-orderData')
-        const mynum = parseFloat(localStorage.getItem('myamount')) + parseFloat(usdt)
-        console.log(mynum)
-        localStorage.setItem('myamount', mynum)
+          await cancelOrders(this.orderItem.id, usdt)
+          // console.log(this.price,this.number,this.MinLegalTender,this.MaxLegalTender,this.orderItem.id)
+          await UPdateOrder_sj({
+            cny: this.price,
+            num: this.close_Num,
+            amount1: this.MinLegalTender,
+            amount2: this.MaxLegalTender,
+            did: this.orderItem.id,
+            type: 2, //取消订单
+          })
+          this.$toast.success('订单已经取消')
+          PubSub.publish('update-selltotal-orderData')
+          const mynum = parseFloat(localStorage.getItem('myamount')) + parseFloat(usdt)
+          console.log(mynum)
+          localStorage.setItem('myamount', mynum)
+        } else {
+          this.$toast.warning(`请输入0-${this.number}的数量！`)
+        }
       } catch (err) {
         console.warn(err)
         this.$toast.error(err)
@@ -426,11 +456,11 @@ export default {
         e.target.value = 0
         this.number = 0
       }
-      if (Number(e.target.value) > max*10) {
-        e.target.value = max*10
+      if (Number(e.target.value) > max * 10) {
+        e.target.value = max * 10
         this.number = e.target.value
         this.$toast.clear()
-        this.$toast.warning(`您最高收购 USDT 的数量不能超过质押的数量${max*10}`)
+        this.$toast.warning(`您最高收购 USDT 的数量不能超过质押的数量${max * 10}`)
       }
       this.is_validVal()
     },

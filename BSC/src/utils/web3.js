@@ -262,6 +262,11 @@ export const userBaseMes = function () {
         localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
         localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
 
+        localStorage.setItem('lpZt', it.lpZt);//直推
+        localStorage.setItem('lpJt', it.lpJt);//间推
+        localStorage.setItem('lpTeams', it.lpTeams);//社区补贴
+        localStorage.setItem('lpNode', it.lpNode);//节点补贴
+
         localStorage.setItem('myStakingEotc', it.myStakingEotc);
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
