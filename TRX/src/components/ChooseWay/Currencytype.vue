@@ -199,12 +199,14 @@ export default {
         Eotcdis_Order({ type: 1, t1: -1, t2: 2 }).then((res) => {
           let data = res.data
           let count = 0
+          console.log(data)
           for (let i of data) {
             let show = /^[^0][8,9][\d]{8}$/g.test(i.id)
+            console.log(show)
             if (show) {
               if (i.dsx == '0' || i.dsx == '2') count++
             } else {
-              if (i.dsx != '2') count++
+              if (i.dsx != '1') count++
             }
           }
           this.count = count
@@ -217,9 +219,10 @@ export default {
           this.isShow_empty = true
           this.loading = false
           this.finished = true
-          this.listLoading = false
+          // this.listLoading = false
           return false
         }
+        this.isShow_empty = false
         const result = await this.filterData(data)
         this.list = result
         /**

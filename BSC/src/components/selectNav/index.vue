@@ -93,7 +93,7 @@ export default {
       money: "",
       pay_title: "收付款方式",
       pay_size: ["10", "100", "1000", "5000", "10000", "200000"],
-      pay_fun: ["隐藏验证单", "我的关注", "交易过", "仅显示交易单"],
+      pay_fun: ["大宗交易", "我的关注", "交易过", "仅显示交易单"],
       pay: [
         { text: "全部", value: 0 },
         { text: "银行卡", value: 1 },
@@ -127,9 +127,14 @@ export default {
       this.$refs["pay_size"].toggle();
     },
     //支付方式过滤
-    select_filter(e) {
-      this.filter_order()
-      e.target.classList.toggle("active-btn");
+     select_filter(e) {
+      if (e.target.innerText == '大宗交易') {
+        this.$emit('change-size', 100000)
+        this.$refs['item'].toggle()
+      } else {
+        this.filter_order()
+      }
+      e.target.classList.toggle('active-btn')
     },
     //重置支付交易方式
     reset_pay() {

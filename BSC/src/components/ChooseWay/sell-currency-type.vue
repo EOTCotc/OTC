@@ -213,6 +213,7 @@ export default {
           this.listLoading = false;
           return false;
         }
+        this.isShow_empty = false
         const result = await this.filterData(data);
         this.list = result;
         /**

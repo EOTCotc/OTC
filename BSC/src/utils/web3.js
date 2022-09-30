@@ -262,6 +262,8 @@ export const userBaseMes = function () {
         localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
         localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
 
+        localStorage.setItem('myStakingEotc', it.myStakingEotc);
+
         PubSub.publish("setUid", localStorage.getItem("uid"));
       } else {
         // sysMes("请先注册EOTC", function () { window.location.href = "login.html" });

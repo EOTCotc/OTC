@@ -381,23 +381,22 @@ export default {
             selectpayk: this.getMoneyInfo(this.cacheData.ordercuePayType),
             mail: this.cacheData.MerchanInfo.aipay,
           });
-          let item;
-          if (this.time2 - 1664255640000 > 0) {
-            this.time = 1000;
-            item = {
-              ...this.cacheData.payItem,
-              account:
-                this.cacheData.orderePayType === "yhk" ? this.payInfo : "",
-              account_wx:
-                this.cacheData.oercuePayType === "wx"
-                  ? this.wechartInfo[1]
-                  : "",
-              account_zfb:
-                this.cacheData.ordcuePayType === "zfb" ? this.zfbInfo[1] : "",
-            };
-            return false;
-          } else {
-            item = {
+          // if (this.time2 - 1664255640000 > 0) {
+          //   this.time = 1000;
+          //   item = {
+          //     ...this.cacheData.payItem,
+          //     account:
+          //       this.cacheData.orderePayType === "yhk" ? this.payInfo : "",
+          //     account_wx:
+          //       this.cacheData.oercuePayType === "wx"
+          //         ? this.wechartInfo[1]
+          //         : "",
+          //     account_zfb:
+          //       this.cacheData.ordcuePayType === "zfb" ? this.zfbInfo[1] : "",
+          //   };
+          //   return false;
+          // } else {
+            const item  = {
               ...this.cacheData.payItem,
               account:
                 this.cacheData.ordercuePayType === "yhk" ? this.payInfo : "",
@@ -422,7 +421,7 @@ export default {
                 sellerMthods: this.cacheData.sellerMthods,
               },
             });
-          }
+          // }
         } catch (err) {
           console.warn(err);
         }

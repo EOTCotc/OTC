@@ -134,6 +134,8 @@ export const UserInfo = function () {
   const ztvip = localStorage.getItem("ztvip"); //节点类型
   // const zyman = localStorage.getItem("zyman")*1; //团队有效人数
 
+  
+
 
   return {
     email,
@@ -259,6 +261,9 @@ export const userBaseMes = function () {
         localStorage.setItem('stakingMan', it.stakingMan);//推荐质押人数
         localStorage.setItem('stakingNum', it.stakingNum);// 推荐质押总量
         localStorage.setItem('handselBox', it.handselBox);//盲盒奖励
+
+        
+        localStorage.setItem('myStakingEotc', it.myStakingEotc);
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
         console.log('登录');
@@ -986,6 +991,8 @@ export const Reconstruction_getTrxBalance = async function () {
       const result = await window.tronWeb.trx.getBalance(
         window.tronWeb.defaultAddress.base58
       );
+      console.log(parseInt(result))
+      console.log(trxMin)
       if (parseInt(result) >= trxMin) {
         console.log("trx 余额足够支付");
         resolve();

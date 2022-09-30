@@ -365,11 +365,11 @@ export default {
         e.target.value = 0;
         this.number = 0;
       }
-      if (Number(e.target.value) > +max) {
-        e.target.value = max;
+      if (Number(e.target.value) > max*10) {
+        e.target.value = max*10;
         this.number = e.target.value;
         this.$toast.clear();
-        this.$toast.warning(`您最高收购 USDT 的数量不能超过质押的数量${max}`);
+        this.$toast.warning(`您最高收购 USDT 的数量不能超过质押的数量${max*10}`);
       }
       this.is_validVal();
     },

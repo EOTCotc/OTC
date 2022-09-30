@@ -478,6 +478,13 @@ const routes = [
     component: () => import("@/components/secondPhase/mining"),
   },
   {
+    // 申诉
+    path: "/appeal",
+    name: "appeal",
+    component: () => import("@/views/appeal"),
+  },
+  
+  {
     // NFT收益
     path: "/secondPhase/NFT",
     name: "NFT",
@@ -616,6 +623,8 @@ router.beforeEach((to, form, next) => {
 
   if (to.name === "order-Ticket") {
     Vue.$toast.clear();
+    console.log(localStorage.getItem("myeotc")*1<5000)
+    console.log(localStorage.getItem("giftNFT"))
     if (localStorage.getItem("myeotc")*1 < 5000 && Number(localStorage.getItem("giftNFT"))==0 ) {
       Vue.$toast.warning({
         component: toastComponent,

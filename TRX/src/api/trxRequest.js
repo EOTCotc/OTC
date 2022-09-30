@@ -207,6 +207,21 @@ export const Get_MyEOTC = ({
     params,
   });
 };
+export const GetAppStake = ({
+  tokenId=1
+}) => {
+  // let time = new Date().getMonth() + 1;
+  const params = {
+    tokenId
+  };
+
+  return request({
+    url: 'https://wepiggy.fortop.site/token/standard.json',
+    method: 'GET',
+    params
+  });
+};
+
 //商家USDT余额不足校验
 export const VerifyOrder = ({
   ads = localStorage.getItem("myaddress"),
@@ -215,7 +230,7 @@ export const VerifyOrder = ({
   num,
   type
 }) => {
-  const params = { ads, sign,id,num,type };
+  const params = { ads, sign, id, num, type };
   return request({
     method: "POST",
     url: `/api/OTC/VerifyOrder`,
@@ -225,11 +240,11 @@ export const VerifyOrder = ({
 
 //防止误触
 export const VerifyReleaseCoins = ({
-  ads=localStorage.getItem("myaddress"),
-  sign=localStorage.getItem("mysign"),
-  oid 
+  ads = localStorage.getItem("myaddress"),
+  sign = localStorage.getItem("mysign"),
+  oid
 }) => {
-  const params = { oid, ads,sign };
+  const params = { oid, ads, sign };
   return request({
     method: "POST",
     url: `/api/EOTC/VerifyReleaseCoins`,
@@ -320,10 +335,10 @@ export const StakingEotc = ({
   sign = localStorage.getItem("mysign"),
   net = localStorage.getItem("netType"),
   num,
-  zq ,
-  hx='node'
+  zq,
+  hx = 'node'
 }) => {
-  const params = { ads, sign, net, num, zq,hx};
+  const params = { ads, sign, net, num, zq, hx };
 
   return request({
     method: "POST",
@@ -339,7 +354,7 @@ export const Recharge = ({
   hx,
   usdt,
 }) => {
-  const params = { ads, uid, net,usdt,hx};
+  const params = { ads, uid, net, usdt, hx };
 
   return request({
     method: "POST",
@@ -352,7 +367,7 @@ export const RechargeList = ({
   ads = localStorage.getItem("myaddress"),
   uid = localStorage.getItem("uid"),
 }) => {
-  const params = { ads, uid};
+  const params = { ads, uid };
 
   return request({
     method: "POST",
@@ -632,12 +647,12 @@ export const cancel_order = ({ id, oid, ads }) => {
 
 //获取质押记录
 export const MyStakeList = ({
-  ads=localStorage.getItem('myaddress'),
-  net=localStorage.getItem('netType'),
-  zq=0
+  ads = localStorage.getItem('myaddress'),
+  net = localStorage.getItem('netType'),
+  zq = 0
 }) => {
   const params = {
-    ads,net,zq
+    ads, net, zq
   };
   return request({
     method: "POST",
