@@ -16,7 +16,8 @@
               size="mini"
               plain
               hairline
-            >节点类型:{{ item }}</van-button>
+              >节点类型:{{ item }}</van-button
+            >
           </div>
           <div class="person_asset">
             <p>
@@ -33,7 +34,7 @@
           v-for="(item, index) in moneylist"
           :key="index"
           @click="jump(item)"
-          :style="{visibility: item.isshow ? 'hidden':'visible'}"
+          :style="{ visibility: item.isshow ? 'hidden' : 'visible' }"
         >
           <template>
             <p>{{ item.title }}:{{ item.num }}</p>
@@ -41,10 +42,21 @@
         </div>
       </div>
     </div>
-    <div v-if="iskyc == 2" class="audit">
-      <van-cell title="认证审核" is-link @click="auditing('audit')">
+    <div class="audit">
+      <van-cell
+        v-if="iskyc == 2"
+        title="认证审核"
+        is-link
+        @click="auditing('audit')"
+      >
         <template #icon>
           <i class="iconfont icon-renzhengshenhe icon_left"></i>
+        </template>
+      </van-cell>
+      
+      <van-cell title="二期推广" is-link @click="auditing('secondPhase')">
+        <template #icon>
+          <img src="@/static/icon/second.png" alt="" />
         </template>
       </van-cell>
     </div>
@@ -78,6 +90,11 @@
       </van-collapse-item>
     </van-collapse>
     <div class="audit">
+      <van-cell title="交易数据" is-link @click="auditing('transaction')">
+        <template #icon>
+          <img src="@/static/icon/chart.png" alt="" />
+        </template>
+      </van-cell>
       <van-cell title="新手引导" is-link @click="auditing(1)">
         <template #icon>
           <i class="iconfont icon-xinshouyindao icon_left"></i>
@@ -134,7 +151,7 @@ export default {
             { title: '一期推广', event: 'firstPhase' },
             { title: '分享链接', event: 'share' },
             { title: '团队节点', event: 'team' },
-            { title: '二期推广', event: 'secondPhase' },
+            // { title: '二期推广', event: 'secondPhase' },
           ],
         },
 
@@ -231,8 +248,12 @@ export default {
             ) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">您质押的EOTC不足</p>
-                  <p style="font-size:14px;margin:5px 0;">EOTC质押5000以上的会员才能挂单</p>
+                  <p style="font-size:14px;margin:5px;color:red">
+                    您质押的EOTC不足
+                  </p>
+                  <p style="font-size:14px;margin:5px 0;">
+                    EOTC质押5000以上的会员才能挂单
+                  </p>
                 </div>
               )
               return false
@@ -240,8 +261,12 @@ export default {
             if (getItem('myjifen') < 9) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">您的积分不足</p>
-                  <p style="font-size:14px;margin:5px">拥有10积分的会员才能挂单</p>
+                  <p style="font-size:14px;margin:5px;color:red">
+                    您的积分不足
+                  </p>
+                  <p style="font-size:14px;margin:5px">
+                    拥有10积分的会员才能挂单
+                  </p>
                 </div>
               )
               return false
@@ -356,6 +381,9 @@ export default {
   .audit {
     .icon_left {
       font-size: 48px;
+    }
+    img {
+      width: 48px;
     }
   }
   .coll {

@@ -1,12 +1,12 @@
 <template>
   <div class="water-bill">
     <!-- 流水审查页面 -->
-    <header class="header" @click="$router.back(-1)">
-      <div>
+    <header class="header">
+      <div @click="$router.back(-1)">
         <van-icon name="arrow-left" />
         <span class="hd-txt">{{ item.sname }}</span>
       </div>
-      <p >申诉</p>
+      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">申诉</p>
     </header>
     <section class="water-bill-content">
       <div class="top-content" v-if="+item.dsx >= 1">
@@ -186,6 +186,7 @@ export default {
     window.preview = this.preview
     const tokenObj = getItem(this.odid)
     console.log(this.MerchanInfo)
+    console.log(123)
     /**
      * tokenObj = { buyer:{ token },seller:{ token }  }
      */
@@ -616,7 +617,7 @@ export default {
       font-weight: 700;
       margin-left: 25px;
     }
-    p{
+    p {
       color: #2483ff;
     }
   }

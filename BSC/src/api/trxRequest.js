@@ -646,3 +646,24 @@ export const MyStakeList = ({
     params,
   });
 };
+
+//申诉提交
+export const Petition = ({
+  uuid=localStorage.getItem('uid'),
+  oid,
+  type,
+  msg
+}) => {
+  const params = {
+    uuid,
+    oid,
+    msg,
+    type,
+  };
+
+  return request({
+    method: "POST",
+    url: "/api/OTC/Petition", //购买或出售 货币
+    params,
+  });
+};

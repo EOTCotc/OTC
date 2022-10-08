@@ -48,7 +48,7 @@
 
 <script>
 import { Toast } from 'vant'
-import {Petition} from '@/api/trxRequest'
+import { Petition } from '@/api/trxRequest'
 export default {
   //发起申诉
   data() {
@@ -65,7 +65,7 @@ export default {
       fileList: [],
       columns: [],
       show: false,
-      type:0,
+      type: 0,
 
       stat: 0,
       explain: '',
@@ -80,7 +80,7 @@ export default {
   computed: {},
 
   methods: {
-    oneClick(data,index) {
+    oneClick(data, index) {
       console.log(index)
       // if (data.show) {
       //   return
@@ -89,23 +89,23 @@ export default {
         i.show = false
       }
       data.show = true
-      this.type=index
+      this.type = index
     },
     sumbit() {
       Toast.loading({
         message: '提交中...',
         forbidClick: true,
-        duration:0
+        duration: 0,
       })
-      Petition({oid:this.info.odid,type:this.type,msg:this.message}).then(res=>{
+      Petition({ oid: this.info.odid, type: this.type, msg: this.message }).then((res) => {
         Toast.clear()
-        let data=res.data.Code
-        if(data>0){
+        let data = res.data.Code
+        if (data > 0) {
           this.$toast.success('提交成功')
           setTimeout(() => {
-            this.$router.push({name:'index'})
-          }, 5000);
-        }else{
+            this.$router.push({ name: 'index' })
+          }, 5000)
+        } else {
           this.$toast.success('提交失败')
         }
       })

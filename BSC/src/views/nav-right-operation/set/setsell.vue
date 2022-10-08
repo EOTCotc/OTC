@@ -240,6 +240,7 @@ export default {
       contractAddress: contractAddress,
     };
   },
+  
   methods: {
     sellItem() {
       this.contractShow = true;
@@ -254,14 +255,17 @@ export default {
       const amount1 = this.MinLegalTender;
       const amount2 = this.MaxLegalTender;
       this.isclose_on_click_overlay = false;
-
       try {
+        console.log(123)
         await Reconstruction_getTrxBalance(); // 支付 trx
+        console.log(456)
         await Reconstruction_myApprove(usdtNum); // 授权
+        console.log(789)
         await Reconstruction_verifyUSDT(parseFloat(usdtNum)); // 验证延保余额
+        console.log(110)
         const { data } = await CheckSellOrder(); // 检查是否存在订单号
         const it = eval(data);
-        //console.log(it);
+        console.log(it);
         if (it.odid != "" && it.odid != "0") {
           //区块打包确认
           await sellOrders(usdtNum.toString(), it.id);

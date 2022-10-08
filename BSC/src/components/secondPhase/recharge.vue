@@ -56,7 +56,7 @@ export default {
     }, 1000)
     this.netType = localStorage.getItem('netType')
     let net = localStorage.getItem('netType')
-    if (net == 'bsc') {
+    if (net == 'bsc'||net=='asd') {
       this.address = '0xdCAaB3E9Ade1000fd23Fa0EAcd2D7E1359300D8B'
     } else {
       this.address = 'TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq'
@@ -85,9 +85,17 @@ export default {
           }
         }
       }
+      // if (money == 'USDT') {
+      //   await myUsdtAmount()
+      //   num = Number(localStorage.getItem('myamount'))
+      // } else if (money == 'EOTC') {
+      //   await myEOTCAmount()
+      //   num = Number(localStorage.getItem('eotcAmount'))
+      // }
+      let min=money.toLowerCase()
 
       await Reconstruction_getTrxBalance()
-      SendUSDT(this.num, this.address, money).then((res) => {
+      SendUSDT(this.num, this.address, min).then((res) => {
         let net
         if (money == 'EOTC') {
           net = money.toLowerCase()

@@ -1,18 +1,18 @@
 
 // 主网链
-const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
-let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
-let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
+// const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
+// let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
+// let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+// let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
 //测试网
-// const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
-// let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
+let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
 
-// let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
 
-// let contractAddress_usdc = "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8";
+let contractAddress_usdc = "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8";
 
-// let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 
 
 
@@ -51,14 +51,17 @@ const trxMes = "为使交易顺畅,请确保钱包中不少于30 TRX";
 window.signMes = "EOTC请求您签名确认,签名不消耗GAS.";
 
 function eotcmes(message) {
+  Vue.$toast.warning(message)
   console.log(message);
 }
 
 function warnmes(mes) {
+  Vue.$toast.warning(mes)
   console.warn(mes);
 }
 
 function distsmes1(message) {
+  Vue.$toast.warning(message)
   console.log(message);
 }
 export const currency = function (type) {
@@ -134,7 +137,7 @@ export const UserInfo = function () {
   const ztvip = localStorage.getItem("ztvip"); //节点类型
   // const zyman = localStorage.getItem("zyman")*1; //团队有效人数
 
-  
+
 
 
   return {
@@ -267,8 +270,9 @@ export const userBaseMes = function () {
         localStorage.setItem('lpTeams', it.lpTeams);//社区补贴
         localStorage.setItem('lpNode', it.lpNode);//节点补贴
 
+        localStorage.setItem('teamName', it.teamName);//社区名字
 
-        
+
         localStorage.setItem('myStakingEotc', it.myStakingEotc);
 
         PubSub.publish("setUid", localStorage.getItem("uid"));
@@ -341,8 +345,8 @@ export const loadweb3 = async function (func) {
           myUsdtAmount();
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
-          // localStorage.setItem("netType", "xxx");
-          localStorage.setItem("netType", "trx");
+          localStorage.setItem("netType", "xxx");
+          // localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");
@@ -484,8 +488,9 @@ export const Approve = async function (func) {
   } catch {
     owancevalue = value._hex;
   }
-  if (parseInt(owancevalue, 16) / 1000000.0 > 0) func();
-  else eotcmes("该地址未授权，无须取消。");
+  let limit=parseInt(owancevalue, 16)
+  return limit
+  
 };
 
 //获取钱包余额
@@ -802,7 +807,7 @@ export const GetmyUSDT = async function (orderID, gusdt, type) {
             );
             let usdt = (parseInt(result[1]._hex, 16) / 1000000.0).toFixed(6);
             console.log("usdt", usdt);
-            console.log('gsdt',gusdt)
+            console.log('gsdt', gusdt);
             if (gusdt <= usdt) resolve();
             else {
               VerifyOrder({ id: orderID, num: usdt, type: type }).then(res => {
@@ -812,7 +817,7 @@ export const GetmyUSDT = async function (orderID, gusdt, type) {
                 } else {
                   if (res.data.Code > 0) {
                     reject(111);
-                    
+
                   }
                 }
               });
@@ -997,8 +1002,8 @@ export const Reconstruction_getTrxBalance = async function () {
       const result = await window.tronWeb.trx.getBalance(
         window.tronWeb.defaultAddress.base58
       );
-      console.log(parseInt(result))
-      console.log(trxMin)
+      console.log(parseInt(result));
+      console.log(trxMin);
       if (parseInt(result) >= trxMin) {
         console.log("trx 余额足够支付");
         resolve();
@@ -1293,6 +1298,23 @@ export const tcoinFee = function tcoinFee(val) {
       reject(err);
     }
   });
+};
+
+//单笔手续费转账
+export const oneSfeotc = async function (val) {
+  val = TronValues(val);
+  return new Promise(async (resolve, reject) => {
+    try {
+      let result = await window.tronWeb.trx
+        .sendTransaction("TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq", val);
+      resolve(result);
+    } catch (err) {
+      Vue.$toast.warning('转账失败！')
+      Toast.clear()
+      reject(err);
+    }
+  });
+
 };
 
 //获取链上质押总量

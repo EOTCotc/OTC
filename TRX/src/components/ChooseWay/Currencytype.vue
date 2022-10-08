@@ -120,6 +120,7 @@ import { payInfoUser } from '@/api/payverification'
 import { getItem, getItemSession, setItemSession } from '@/utils/storage'
 import { loadweb3, userBaseMes } from '@/utils/web3'
 
+
 import { SetPayType } from '@/api/payverification'
 
 export default {
@@ -153,6 +154,7 @@ export default {
   //交易类型列表
   props: ['method', 'typeList'],
   created() {
+    
     this.$emit('set-cur-state')
     //出售订单出错，关闭出售订单窗口
     this.$bus.$on('close-OrderSaleInfo', () => {

@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import store from "./store";
 import router from "./router";
+import echarts from "echarts";
 
 import Vant from "vant";
 
@@ -54,6 +55,9 @@ Vue.use(Toast, {
 Vue.use(VueCanvasPoster);
 
 Vue.config.productionTip = false;
+
+Vue.prototype.$echarts=echarts
+
 
 Vue.config.errorHandler = function (err, vm, info) {
   // router.replace({

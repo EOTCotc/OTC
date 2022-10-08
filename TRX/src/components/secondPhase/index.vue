@@ -1,11 +1,16 @@
 <template>
   <div class="content">
     <div class="header">
-      <p>二期可支配收益</p>
       <p>{{jdtype}}</p>
+      <div v-if="teamName!=null">
+        <img src="@/static/icon/shequ.png" alt />
+        <p>{{teamName}}</p>
+      </div>
     </div>
     <div class="center">
       <div class="dataBox">
+        <p class="boxTitle">二期可支配收益</p>
+
         <div>
           <p>USDT</p>
           <p>{{ USDT }}</p>
@@ -50,7 +55,8 @@
         </div>
       </div>
       <div class="recharge">
-        <van-button plain round type="info" :to="{name:'Withdraw'}">提现</van-button>
+        <van-button plain round type="info" :to="{name:'Withdraw',
+        params:{EOTC,USDT}}">提现</van-button>
         <van-button round type="info" :to="{name:'recharge'}">充值</van-button>
       </div>
     </div>
@@ -69,16 +75,19 @@ export default {
       card: 0,
       //节点类型
       jdtype: '',
+      teamName:''
     }
   },
   created() {
+    this.teamName=localStorage.getItem('teamName')
+    // console.log(localStorage.getItem('teamName'))
     let data = UserInfo()
     this.USDT = data.usdt_ye
-    this.EOTC = data.eotc_stake
+    this.EOTC = data.eotc_stake * 1 - localStorage.getItem('myeotc') * 1
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
-    if (data.myjifen > 10&&sum>100) {
+    if (data.myjifen > 10 && sum > 100) {
       this.jdtype = '有效用户'
-      
+
       if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
         this.jdtype = '信用节点'
       }
@@ -94,7 +103,6 @@ export default {
     } else {
       this.jdtype = '游客'
     }
-    
   },
   methods: {
     jump(index) {
@@ -125,6 +133,13 @@ export default {
   font-size: 32px;
   display: flex;
   justify-content: space-between;
+  div{
+    display: flex;
+    img{
+      width: 40px;
+      margin-right: 5px;
+    }
+  }
 }
 .center {
   padding: 0 32px;
@@ -140,6 +155,12 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    .boxTitle{
+      font-size: 32px;
+      font-weight: bolder;
+      width: 100%;
+      margin-bottom: 40px;
+    }
     div {
       width: 45%;
     }
@@ -156,8 +177,9 @@ export default {
       font-weight: bold;
     }
   }
+
   .function {
-    padding-top: 258px;
+    padding-top: 325px;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;

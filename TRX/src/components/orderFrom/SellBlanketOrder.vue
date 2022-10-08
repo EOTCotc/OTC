@@ -342,7 +342,7 @@ export default {
     },
     async cancel_yes() {
       try {
-        if (this.close_Num * 1 > 0 && this.close_Num * 1 < this.number) {
+        if (this.close_Num * 1 > 0 && this.close_Num * 1 <= this.number) {
           const usdt = this.close_Num
           // console.log(usdt)
 
