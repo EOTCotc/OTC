@@ -733,6 +733,7 @@ export const Reconstruction_getTrxBalance = async function () {
           }
         })
     } catch (err) {
+      Vue.$toast.error(err.message)
       reject(err)
     }
   })
@@ -817,10 +818,14 @@ export const Reconstruction_verifyUSDT = function verifyUSDT(amount, fuc) {
           if (!error) {
             let mynum = TypeShow(result)
             if (mynum >= amount) resolve()
-            else reject('钱包余额不足')
+            else{
+              reject('钱包余额不足')
+              Vue.$toast.warning("钱包余额不足")
+            } 
             localStorage.setItem('myamount', mynum.toFixed(2))
           } else {
             reject('操作失败，请重试  ' + error)
+            Vue.$toast.warning("操作失败，请重试  " + error)
           }
         })
     } catch (err) {
@@ -873,6 +878,7 @@ export const Reconstruction_myApprove = async function (num) {
           }
         })
     } catch (err) {
+      Vue.$toast.warning(err.message)
       console.warn(err)
       reject(err)
     }

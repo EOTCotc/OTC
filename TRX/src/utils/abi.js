@@ -13,15 +13,15 @@
 
 
 //测试网
-export const contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+// export const contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
 
-export const contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+// export const contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
 
-export const contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+// export const contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 //主网
-// export const contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
-// export const contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-// export const contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
+export const contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
+export const contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+export const contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u"; 
 
 
 

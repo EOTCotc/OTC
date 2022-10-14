@@ -81,7 +81,7 @@ export default {
     this.teamName=localStorage.getItem('teamName')
     let data = UserInfo()
     this.USDT = data.usdt_ye
-    this.EOTC = data.eotc_stake
+    this.EOTC = (data.eotc_stake * 1 - localStorage.getItem('myeotc') * 1).toFixed(2)
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
 
     if (data.myjifen > 10 && sum > 100) {

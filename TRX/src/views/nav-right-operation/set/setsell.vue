@@ -303,7 +303,7 @@ export default {
         } else this.$toast.error("挂单数量 超出限制！");
       } catch (err) {
         console.warn(err);
-        this.$toast.warning(err);
+        this.$toast.warning(err.message);
         this.$toast.error("挂出售单过程发生错误");
       }
       this.isclose_on_click_overlay = true;

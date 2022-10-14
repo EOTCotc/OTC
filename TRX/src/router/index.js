@@ -536,6 +536,23 @@ const routes = [
     component: () => import('@/components/transaction'),
   },
   {
+    path: '/arbitrationMsg', 
+    name: 'arbitrationMsg',
+    component: () => import('@/views/arbitrationMsg/arbitrationMsg.vue'),
+  },
+  
+  {
+    path: '/arbitrationList', 
+    name: 'arbitrationList',
+    component: () => import('@/views/arbitrationMsg'),
+  },
+  
+  {
+    path: '/start', 
+    name: 'start',
+    component: () => import('@/views/appeal/start.vue'),
+  },
+  {
     path: '/404',
     name: 'error',
     component: () => import('@/components/NotFound'),

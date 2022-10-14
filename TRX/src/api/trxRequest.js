@@ -703,3 +703,10 @@ export const WithdrawCoins = ({
     params,
   })
 }
+//查询otc交易总量
+export const TradingVolume = () => {
+  return request({
+    method: 'GET',
+    url: `/api/OTC/TradingVolume`,
+  })
+}

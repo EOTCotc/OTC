@@ -2,35 +2,27 @@
   <div>
     <white :title="title"></white>
     <div class="content">
-      <both
-        :leftnaem="details.leftnaem"
-        :rightname="details.rightname"
-        :lefturl="details.lefturl"
-        :righturl="details.righturl"
-        :wang="details.wang"
-        :leftbank="details.leftbank"
-        :rightbank="details.rightbank"
-      ></both>
+      <both :info='info'></both>
       <div class="textbox">
-        <div class="cause">卖家发起仲裁，仲裁事件为账户冻结</div>
+        <div class="cause">卖家发起仲裁，仲裁事件为{{ getArbitrateType(info.arbitrateInType) }}</div>
         <div class="result">
           <p>仲裁结果</p>
-          本次参与仲裁判决的仲裁员共计11人，通过双方提交举证，10位仲裁员判定原告方胜。
+          本次参与仲裁判决的仲裁员共计{{ info.total }}人，通过双方提交举证，{{info.plaintiffNum}}位仲裁员判定原告方胜。
         </div>
         <div class="time">
           <p>结案时间</p>
-          2022.05.27 09:21
+          {{ transformDate(info.voteDate) }}
         </div>
         <div class="judgment">
           <p class="title">公示判决</p>
-          <div class="flex" v-for="(item, index) in 11" :key="index">
+          <div class="flex" v-for="item in info.votes" :key="item.number">
             <div class="right">
-              <p>王**</p>
-              <p>459873564223</p>
+              <p>{{ item.name }}</p>
+              <p>{{ item.number }}</p>
             </div>
-            <div class="left" :class="show ? 'colour1' : 'colour2'">
+            <div class="left" :class="item.voteStatus === 1 ? 'colour1' : 'colour2'">
               <van-icon name="good-job-o" />
-              <p v-if="show">原告</p>
+              <p v-if="item.voteStatus === 1">原告</p>
               <p v-else>被告</p>
             </div>
           </div>
@@ -43,6 +35,9 @@
 <script>
 import white from "@/components/Nav/white.vue";
 import both from "@/components/arbitration/module/both.vue";
+import {detail} from '@/api/arbitration'
+import {$toast, transformDate, getArbitrateType} from '@/utils/utils'
+
 export default {
   //公示仲裁案详情
   components: {
@@ -52,19 +47,28 @@ export default {
   data() {
     return {
       title: "仲裁案详情",
-      details: {
-        leftnaem: "吴敏",
-        rightname: "王晓雷",
-        lefturl: require("@/static/image/usdt.svg"),
-        righturl: require("@/static/image/usdc.svg"),
-        wang: 0,
-        leftbank: 10,
-        rightbank: 1,
-      },
+      info: {},
       show: false,
     };
   },
-  mounted() {},
+  created() {
+    this.getDetail()
+  },
+  methods: {
+    transformDate,
+    getArbitrateType,
+    getDetail() {
+      const loading = $toast('loading', '加载中…')
+      detail(this.$route.query.id).then(res => {
+        console.log(res)
+        const data = res.items
+        data.total = data.plaintiffNum + data.defendantNum
+        this.info = data
+      }).finally(() => {
+        loading.clear()
+      })
+    }
+  }
 };
 </script>
 

@@ -554,9 +554,10 @@ const payWhitelist = [
 // "pledge"
 // ,"secondPhase"
 // 'zyzb'
+// 'transaction',
+
 const rightMenu_Whitelist = [
   'arbitration',
-  'transaction',
   'arbitrator',
   'Withdraw',
   'NFT',

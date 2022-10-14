@@ -7,12 +7,12 @@
         <div class="grossBox">
           <div>
             <p>总交易量(USDT)</p>
-            <p>50.45万</p>
+            <p>{{dealSum}}万</p>
           </div>
           <div></div>
           <div>
             <p>总交易人数(人)</p>
-            <p>5.28万</p>
+            <p>{{peopleSum}}</p>
           </div>
         </div>
       </div>
@@ -37,17 +37,15 @@
               >人数</p>
             </div>
           </div>
-          <div class="boxCenter">
+          <!-- <div class="boxCenter">
             <span
               :class="{'active':item.show}"
               v-for="(item,index) in date"
               :key="index"
               @click="dateClick(index)"
             >{{item.name}}</span>
-          </div>
-          <div class="cavan">
-            <div id="main"></div>
-          </div>
+          </div>-->
+          <div id="main"></div>
         </div>
       </div>
     </div>
@@ -56,6 +54,7 @@
 
 <script>
 // import { Dialog } from 'vant'
+import { TradingVolume } from '@/api/trxRequest'
 import white from '@/components/Nav/white.vue'
 export default {
   components: {
@@ -65,17 +64,84 @@ export default {
     return {
       title: '交易数据',
       isPledges: true,
-      date: [
-        { name: '日', show: true },
-        { name: '月', show: false },
-        { name: '年', show: false },
-      ],
+      //交易总人数
+      peopleSum: '',
+      //交易总量
+      dealSum: '',
+      //出售人数
+      sellPeoeleArr: '',
+      //购买人数
+      buyPeopleArr: '',
+      //出售交易量
+      sellDealArr: '',
+      //购买交易量
+      buyDealArr: '',
+      //日期
+      dateArr: '',
+      // date: [
+      //   { name: '日', show: true },
+      //   { name: '月', show: false },
+      //   { name: '年', show: false },
+      // ],
     }
   },
+  created() {},
   mounted() {
-    this.drawChart()
+    let dealData = localStorage.getItem('dealData')
+    console.log(dealData)
+
+    if (dealData != null) {
+      dealData = JSON.parse(dealData)
+    }
+    let time =
+      new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getMonth() +
+      1 +
+      '-' +
+      new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getDate()
+
+    console.log(time)
+    if (dealData != null && time == dealData[1].date) {
+      this.screen(dealData)
+      this.drawChart()
+    } else {
+      this.init()
+    }
   },
   methods: {
+    init() {
+      TradingVolume().then((res) => {
+        let data = res.data
+        this.screen(data)
+        this.drawChart()
+        let dealData = JSON.stringify(data)
+        localStorage.setItem('dealData', dealData)
+      })
+    },
+    screen(data) {
+      this.peopleSum = data[0].buyMan * 1 + data[0].sellMan * 1
+      this.dealSum = ((data[0].buyTotal * 1 + data[0].sellTotal * 1) / 10000).toFixed(2)
+      let dateArr = [],
+        sellPeoeleArr = [],
+        buyPeopleArr = [],
+        sellDealArr = [],
+        buyDealArr = []
+      for (let i = 1; i < data.length; i++) {
+        dateArr.unshift(data[i].date)
+      }
+      for (let i = 0; i < data.length - 1; i++) {
+        sellPeoeleArr.unshift(data[i].sellMan * 1 - data[i + 1].sellMan * 1)
+        buyPeopleArr.unshift(data[i].buyMan * 1 - data[i + 1].buyMan * 1)
+        sellDealArr.unshift(data[i].sellTotal * 1 - data[i + 1].sellTotal * 1)
+        buyDealArr.unshift((data[i].buyTotal * 1 - data[i + 1].buyTotal * 1).toFixed(0))
+      }
+
+      this.dateArr = dateArr
+      this.sellPeoeleArr = sellPeoeleArr
+      this.buyPeopleArr = buyPeopleArr
+      this.sellDealArr = sellDealArr
+      this.buyDealArr = buyDealArr
+    },
+
     dateClick(index) {
       for (let i of this.date) {
         i.show = false
@@ -84,19 +150,22 @@ export default {
     },
     isPledge() {
       this.isPledges = !this.isPledges
-      if (this.isPledges) {
-        this.drawChart(1)
-      } else {
-        this.drawChart()
-      }
+      // if (this.isPledges) {
+      //   this.drawChart(1)
+      // } else {
+      this.drawChart()
+      // }
     },
-    drawChart(index) {
-      let data1 = [10, 5, 30, 12, 3, 5, 8, 12, 16, 30, 20, 40]
-      let data2 = [20, 10, 5, 20, 30, 36, 40, 50, 32, 24, 10, 8]
-      if (index) {
-        data1 = [50, 57, 60, 10, 30, 50, 80, 20, 60, 30, 15, 9]
-        data2 = [60, 70, 3, 22, 33, 23, 44, 50, 36, 74, 10, 34]
+    drawChart() {
+      let data1, data2, date
+      if (this.isPledges) {
+        data1 = this.buyDealArr
+        data2 = this.sellDealArr
+      } else {
+        data1 = this.buyPeopleArr
+        data2 = this.sellPeoeleArr
       }
+      date = this.dateArr
       // 基于准备好的dom，初始化echarts实例
       var myChart = this.$echarts.init(document.getElementById('main'))
       // 绘制图表
@@ -110,21 +179,13 @@ export default {
             },
           },
         },
-        toolbox: {
-          // feature: {
-          //   dataView: { show: true, readOnly: false },
-          //   magicType: { show: true, type: ['line', 'bar'] },
-          //   restore: { show: true },
-          //   saveAsImage: { show: true }
-          // }
-        },
         legend: {
           data: ['购买(USDT)', '出售(USDT)'],
         },
         xAxis: [
           {
             type: 'category',
-            data: ['9/30', '10/1', '10/2', '10/3', '10/4', '10/5', '10/6'],
+            data: date,
             axisPointer: {
               type: 'shadow',
             },
@@ -141,22 +202,12 @@ export default {
             type: 'value',
             // name: 'Precipitation',
             min: 0,
-            max: 100,
-            interval: 20,
+            max: 'dataMax',
+            // interval: 20,
             axisLabel: {
-              formatter: '{value}万',
+              // formatter: '{value}',
             },
           },
-          // {
-          //   type: 'value',
-          //   name: 'Temperature',
-          //   min: 0,
-          //   max: 25,
-          //   interval: 5,
-          //   axisLabel: {
-          //     formatter: '{value} °C'
-          //   }
-          // }
         ],
         series: [
           {
@@ -272,11 +323,11 @@ export default {
             border-radius: 8px;
           }
         }
-        
-          #main {
-            width: 100%;
-            height: 600px;
-          }
+
+        #main {
+          width: 100%;
+          height: 600px;
+        }
       }
     }
   }

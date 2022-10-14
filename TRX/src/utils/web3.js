@@ -1,18 +1,18 @@
 
 // 主网链
-// const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
-// let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
-// let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
-// let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
+const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU';
+let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
+let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
 //测试网
-const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
-let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
+// const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77';
+// let contractAddress = "TH4oq291NoktCN345uxdBHd9YakAwG49H3";
 
-let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
+// let contractAddress_usdt = "TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w";
 
-let contractAddress_usdc = "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8";
+// let contractAddress_usdc = "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8";
 
-let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
+// let contractAddress_eotc = "TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K";
 
 
 
@@ -345,8 +345,8 @@ export const loadweb3 = async function (func) {
           myUsdtAmount();
           myEOTCAmount();
           // ethereum.chainId   xxx->测试链  netType 网络类型
-          localStorage.setItem("netType", "xxx");
-          // localStorage.setItem("netType", "trx");
+          // localStorage.setItem("netType", "xxx");
+          localStorage.setItem("netType", "trx");
           if (address != localStorage.getItem("myaddress")) {
             localStorage.removeItem("myaddress");
             localStorage.removeItem("mysign");
@@ -1008,9 +1008,11 @@ export const Reconstruction_getTrxBalance = async function () {
         console.log("trx 余额足够支付");
         resolve();
       } else {
+        Vue.$toast.error(trxMes)
         reject(trxMes);
       }
     } catch (err) {
+      Vue.$toast.error(err.message)
       reject(err);
     }
   });
@@ -1052,6 +1054,7 @@ export const Reconstruction_myApprove = async function (num) {
       }
       console.log("当前usdt", mnum);
     } catch (err) {
+      Vue.$toast.warning(err.message)
       reject(err);
     }
   });
@@ -1153,10 +1156,12 @@ export const Reconstruction_verifyUSDT = async function (amountUsdt) {
           } else {
             reject("钱包余额不足");
             console.warn("钱包余额不足");
+            Vue.$toast.warning("钱包余额不足")
           }
           localStorage.setItem("myamount", mynum.toFixed(2));
         } else {
           reject("操作失败，请重试  " + error);
+          Vue.$toast.warning("操作失败，请重试  " + error)
           console.warn("操作失败，请重试  " + error);
         }
       }
