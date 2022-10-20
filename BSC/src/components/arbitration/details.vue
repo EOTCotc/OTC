@@ -3,37 +3,34 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <div :class="proofStatic != 0 ? '' : 'black'">
-          <van-icon name="underway-o" />
+        <div :class="info.status === 0 ? 'black' : ''">
+          <van-icon color='#237ff8' name="underway-o" />
           <van-count-down
-            v-if="proofStatic != 0"
-            :time="time"
+            v-if="info.status === 0"
+            :time="info.time"
             format="DD 天 HH 时 mm 分 "
           />
-          <p v-else>双方举证中</p>
+          <p class='text' v-else>等待仲裁结果</p>
         </div>
+<!--        v-if="info.status === 0"-->
         <van-button
-          v-if="proofStatic == 1"
-          type="info"
           plain
-          size="small"
           round
-          :to="{ name: 'anew' }"
-          >重新举证</van-button
+          type="info"
+          size="mini"
+          v-if='!info.hasDelay'
+          :to="{ name: 'adjourn', query: { id: $route.query.id } }"
         >
+          申请延期
+        </van-button>
       </div>
       <div class="time">
         <p>仲裁发起时间</p>
-        <p>2022.05.26 12:54</p>
+        <p>{{ transformDate(info.createDate) }}</p>
       </div>
       <bothplan
-        v-if="proofStatic == 2"
-        :leftnaem="bothData.leftnaem"
-        :rightname="bothData.rightname"
-        :lefturl="bothData.lefturl"
-        :righturl="bothData.righturl"
-        :leftbank="bothData.leftbank"
-        :rightbank="bothData.rightbank"
+        v-if="info.status === 1"
+        :info='info'
       ></bothplan>
       <div v-else class="both">
         <div class="bothBox">
@@ -42,7 +39,6 @@
             <van-icon name="chat-o" color="#247FF7" size="16" />
           </div>
           <div>
-            <img src="@/static/image/usdt.svg" alt="" />
             <p>吴敏</p>
             <span>(卖家)</span>
           </div>
@@ -53,99 +49,39 @@
             <van-icon name="chat-o" color="#247FF7" size="16" />
           </div>
           <div>
-            <img src="@/static/image/usdc.svg" alt="" />
             <p>王晓雷</p>
             <span>(买家)</span>
           </div>
         </div>
       </div>
-      <div class="cause">卖家发起仲裁，仲裁事件为账户冻结</div>
-      <twosides :bothList="bothList"></twosides>
+      <div class="cause">卖家发起仲裁，仲裁事件为{{ getArbitrateType(info.arbitrateInType) }}</div>
+      <twosides
+        :plaintiffId='info.plaintiffId'
+        :defendantId='info.defendantId'
+        :list="info.adduce"
+      />
       <orderDetails
         :messagelist="messagelist"
         :orderlist="orderlist"
       ></orderDetails>
-      <div v-if="proofStatic == 1" class="footer">
-        <van-button color="#4EA0F5" round block @click="judgment(1)"
-          >原告胜</van-button
-        >
-        <van-button color="#EE786F" round block @click="judgment(2)"
-          >被告胜</van-button
-        >
-      </div>
-      <div class="judgmentbox" v-else-if="proofStatic == 2">
-        <div>
-          <p>你的判决</p>
-          <div>
-            <van-icon name="star-o" />
-            <p>{{ judgmentStatic }}胜</p>
-          </div>
-        </div>
-        <p class="message">{{ message }}</p>
-      </div>
-
-      <!-- 判决原因弹出层 -->
-      <van-popup
-        position="bottom"
-        v-model="show"
-        closeable
-        round
-        @click-overlay="close()"
-        @click-close-icon="close()"
-        :style="{ height: '35%' }"
-      >
-        <div class="judgment-pop">
-          <p>判决原因</p>
-          <p>维护安全稳定信任的交易环境</p>
-          <van-field
-            class="asd"
-            v-model="message"
-            rows="2"
-            autosize
-            type="textarea"
-            maxlength="1000"
-            placeholder="请描述做出该判决的说明"
-            show-word-limit
-          />
-          <div class="button">
-            <van-button round @click="close">我再想想</van-button>
-            <van-button
-              color="#1B2945"
-              round
-              :disabled="message == '' ? true : false"
-              @click="sentence"
-              >确定</van-button
-            >
-          </div>
-        </div>
-      </van-popup>
-      <!-- 判决胜利弹出层 -->
-      <van-popup
-        position="bottom"
-        v-model="winshow"
-        closeable
-        round
-        @click-overlay="close2()"
-        @click-close-icon="close2()"
-        ><div class="winpop">
-          <p>判决该仲裁案{{ judgmentStatic }}胜</p>
-          <p>判决说明</p>
-          <p>根据提交凭证判定当前仲裁案{{ judgmentStatic }}胜</p>
-          <van-checkbox v-model="checked" shape="square"
-            >我已确认决议</van-checkbox
-          >
-          <div class="button">
-            <van-button round @click="close2">我再想想</van-button>
-            <van-button
-              color="#1B2945"
-              round
-              :disabled="checked ? false : true"
-              @click="winevent"
-              >确定</van-button
-            >
-          </div>
-        </div></van-popup
-      >
+      <van-row :gutter='15' v-if="info.status < 2" class="footer">
+        <van-col :span='info.status === 0 ? 12 : 24' v-if='info.plaintiffUId === uid'>
+          <van-button
+            round
+            block
+            plain
+            @click="cancelArbitrate"
+          >取消仲裁</van-button>
+        </van-col>
+        <van-col v-if='info.status === 0' :span='info.plaintiffUId === uid ? 12 : 24'>
+          <van-button
+            round
+            block
+            color="#1B2945"
+            :to='{ name: "additionalProof", query: { id: $route.query.id } }'
+          >追加举证</van-button>
+        </van-col>
+      </van-row>
     </div>
   </div>
 </template>
@@ -155,7 +91,16 @@ import white from "@/components/Nav/white.vue";
 import orderDetails from "@/components/arbitration/module/orderDetails.vue";
 import twosides from "@/components/arbitration/module/twosides.vue";
 import bothplan from "@/components/arbitration/module/both.vue";
-import { Toast } from "vant";
+import {
+  cancel,
+  detail
+} from '@/api/arbitration'
+import {
+  $loading,
+  $toast,
+  getArbitrateType,
+  transformDate
+} from '@/utils/utils'
 export default {
   //仲裁员身份的待处理详情
   //仲裁案详情
@@ -168,31 +113,7 @@ export default {
   data() {
     return {
       title: "仲裁案详情",
-      time: 72 * 60 * 60 * 1000,
-      bothList: [
-        {
-          accuserList: [
-            { title: require("@/static/image/456.png"), show: true },
-            {
-              title:
-                "交易过程中账户被冻结，无法正常交易。核实电子回单查询密码: 12254",
-              show: false,
-            },
-            { title: require("@/static/image/789.png"), show: true },
-          ],
-        },
-        {
-          defendantList: [
-            { title: require("@/static/image/456.png"), show: true },
-            {
-              title:
-                "交易过程中账户被冻结，无法正常交易。核实电子回单查询密码: 12254",
-              show: false,
-            },
-            { title: require("@/static/image/789.png"), show: true },
-          ],
-        },
-      ],
+      uid: '',
       orderlist: [
         {
           title: "订单号",
@@ -221,56 +142,48 @@ export default {
         { title: "开户银行", value: "工商银行" },
         { title: "银行卡号", value: "4005633224656232" },
       ],
-      bothData: {
-        leftnaem: "吴敏",
-        rightname: "王晓雷",
-        lefturl: require("@/static/image/usdt.svg"),
-        righturl: require("@/static/image/usdc.svg"),
-        leftbank: 1,
-        rightbank: 0,
-      },
-      //双方举证状态
-      proofStatic: 1,
-      // 判决状态
-      judgmentStatic: "",
-      // 判决原因弹窗
-      show: false,
-      //判决确定弹出层
-      winshow: false,
-      //判决原因
-      message: "",
-      //复选框状态
-      checked: false,
+      info: {}
     };
   },
   methods: {
-    judgment(index) {
-      this.show = true;
-      if (index == 1) {
-        this.judgmentStatic = "原告";
-      } else {
-        this.judgmentStatic = "被告";
-      }
+    transformDate,
+    getArbitrateType,
+    getDetail() {
+      const loading = $loading('加载中…')
+      detail(this.$route.query.id).then(res => {
+        const items = res.items
+        items.total = items.plaintiffNum + items.defendantNum
+        items.adduce = items.adduce.map(item => ({...item, images: item.images.split(',')}))
+        items.time = this.$dayjs(items.status === 0 ? items.adduceDate : items.voteDate).add('-8', 'hour').diff(this.$dayjs(), 'millisecond')
+        this.info = items
+      }).catch((err) => {
+        $toast('fail', "加载失败！")
+      }).finally(() => {
+        loading.clear()
+      })
     },
-    sentence() {
-      this.show = false;
-      this.winshow = true;
-    },
-    winevent() {
-      this.winshow = false;
-      this.proofStatic = 2;
-      Toast("判决成功");
-    },
-    close() {
-      this.show = false;
-      this.message = "";
-    },
-    close2() {
-      this.winshow = false;
-      this.message = "";
-      this.checked = false;
-    },
+    // 取消仲裁
+    cancelArbitrate() {
+      this.$dialog.confirm({
+        title: "取消仲裁",
+        message: "确认取消当前仲裁案",
+        callback: action => {
+          if (action === 'confirm') {
+            const loading = $loading('loading', '仲裁取消中…')
+            cancel(this.$route.query.id).then(res => {
+              $toast('success', '取消成功', () => this.$router.go(-1))
+            }).finally(() => {
+              loading.clear()
+            })
+          }
+        }
+      })
+    }
   },
+  created() {
+    this.uid = localStorage.getItem('uid')
+    this.getDetail()
+  }
 };
 </script>
 
@@ -289,9 +202,11 @@ export default {
     div {
       display: flex;
       align-items: center;
-      color: #237ff8;
-      font-weight: bold;
-      font-size: 32px;
+      .text {
+        color: #237ff8;
+        font-weight: bold;
+        font-size: 32px;
+      }
       i {
         font-size: 42px;
         padding-right: 12px;
@@ -369,12 +284,7 @@ export default {
   }
 
   .footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 60px;
-    button {
-      width: 45%;
-    }
+    margin: 60px 0 30px;
   }
 
   .judgment-pop {

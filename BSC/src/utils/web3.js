@@ -35,8 +35,6 @@ const bscMin = 0.01
 const distime = 2000
 const bscMes = '为使交易顺畅，请确保钱包中不少于0.01BNB'
 
-const trxMin = 30000000
-const trxMes = '为使交易顺畅,请确保钱包中不少于30 TRX'
 
 function eotcmes(message) {
   Vue.$toast.warning(message)

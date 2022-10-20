@@ -45,10 +45,12 @@ export const yzm = function (email) {
             return
         }
         GetCode({ regPhone: email }).then(data => {
+            Toast.clear()
             Toast.success('成功')
             resolve()
         }).catch(err => {
             if (err.response.status == 429) {
+                Toast.clear()
                 Toast.fail('操作频繁')
                 reject()
             }

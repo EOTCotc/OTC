@@ -5,6 +5,7 @@ import Vue from "vue";
 import $router from "@/router";
 
 export const domain = "api.eotcyu.club";
+// export const domain = "api.eotc.me";
 
 export const baseUrl = `https://${domain}/Upload/`;
 

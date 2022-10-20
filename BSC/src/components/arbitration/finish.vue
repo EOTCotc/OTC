@@ -1,51 +1,53 @@
 <template>
-  <div class="content">
-    <div class="case">
-      <van-list
-        v-model="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
-      >
-        <div class="caselist" v-for="(item, index) in casedata" :key="index">
-          <div class="result">
-            <div class="left" :class="endStatic != 1 ? 'gray' : ''">
-              <van-icon v-if="endStatic == 1 || endStatic == 2" name="fire-o" />
-              <span>胜诉</span>
+  <van-pull-refresh v-model="loading" @refresh="getList">
+    <div class="content">
+      <div class="case">
+        <template v-if="!!list.data.length">
+          <div class="caselist" v-for="item in list.data" :key="item.arbitrateInfoId">
+            <div class="result" v-if='!item.isCancel'>
+              <div class="left" :class='item.isVictory ? "green" : "orange"'>
+                <van-icon v-if='item.isVictory' name="fire-o" />
+                <span>{{ item.isVictory ? '胜诉' : '败诉' }}</span>
+              </div>
+              <div :class="item.isVictory ? 'green' : 'orange'">{{ item.isVictory ? '+' : '-' }}{{ item.eotc }} EOTC</div>
             </div>
-            <div :class="textcolor()">+10 EOTC</div>
-          </div>
-          <both
-            :leftnaem="item.leftnaem"
-            :rightname="item.rightname"
-            :lefturl="item.lefturl"
-            :righturl="item.righturl"
-            :wang="item.wang"
-            :leftbank="item.leftbank"
-            :rightbank="item.rightbank"
-          ></both>
-          <div class="case_text" @click="details(item)">
-            <p class="title">仲裁结果</p>
-            <div class="text_flex">
-              <p class="van-multi-ellipsis--l2">
-                本次参与仲裁判决的仲裁员共计11人，通过双方提交举证，10位仲裁员判定原告方胜。
-              </p>
-              <div><van-icon name="orders-o" size="0.5rem" />详情</div>
+            <div class="result" v-else>
+              <div class="left gray">
+                <span>取消仲裁</span>
+              </div>
+            </div>
+            <both :info='item'></both>
+            <div class="case_text" @click="details(item)">
+              <p class="title">仲裁结果</p>
+              <div class="text_flex">
+                <p class="van-multi-ellipsis--l2">
+                  本次参与仲裁判决的仲裁员共计{{ item.total }}人，通过双方提交举证，{{ item.plaintiffNum > item.defendantNum ? `${item.plaintiffNum}位仲裁员判定原告方胜` : `${item.defendantNum}位仲裁员判定被告方胜` }}。
+                </p>
+                <div><van-icon name="orders-o" size="0.5rem" />详情</div>
+              </div>
+            </div>
+            <div v-if="!item.isVictory && !item.isOver" class="again">
+              <van-button color="#1B2945" round block :to="{name:'appeal', query: {id: item.arbitrateInfoId}}">申请再仲裁</van-button>
             </div>
           </div>
-          <div v-if="endStatic == 2" class="again">
-            <van-button color="#1B2945" round block :to="{name:'againArbitration'}"
-              >申请再仲裁</van-button
-            >
-          </div>
-        </div>
-      </van-list>
+        </template>
+        <van-empty
+          v-else
+          :image="require('../../assets/currency-icons/empty.png')"
+          description="暂无数据"
+        />
+      </div>
     </div>
-  </div>
+  </van-pull-refresh>
 </template>
 
 <script>
 import both from "@/components/arbitration/module/both.vue";
+import {
+  $loading,
+  $toast
+} from '@/utils/utils'
+import {list} from '@/api/arbitration'
 export default {
   //已结案
   components: {
@@ -53,70 +55,42 @@ export default {
   },
   data() {
     return {
-      endStatic: 2, //测试状态 1、胜诉 2、败诉 3、超时 4、取消
-      casedata: [
-        {
-          leftnaem: "吴敏",
-          rightname: "王晓雷",
-          lefturl: require("@/static/image/usdt.svg"),
-          righturl: require("@/static/image/usdc.svg"),
-          wang: 0,
-          leftbank: 11,
-          rightbank: 0,
-        },
-        {
-          leftnaem: "王晓雷",
-          rightname: "吴敏",
-          lefturl: require("@/static/image/usdt.svg"),
-          righturl: require("@/static/image/usdc.svg"),
-          wang: 0,
-          leftbank: 9,
-          rightbank: 2,
-        },
-        {
-          leftnaem: "王晓雷",
-          rightname: "吴敏",
-          lefturl: require("@/static/image/usdt.svg"),
-          righturl: require("@/static/image/usdc.svg"),
-          wang: 0,
-          leftbank: 9,
-          rightbank: 2,
-        },
-      ],
       loading: false,
-      finished: false,
-      list: [],
+      list: {
+        data: []
+      },
     };
   },
+  created() {
+    this.getList()
+  },
   methods: {
-    onLoad() {
-      // 异步更新数据
-      // setTimeout 仅做示例，真实场景中一般为 ajax 请求
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1);
-        }
-
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true;
-        }
-      }, 1000);
+    getList() {
+      const uid = localStorage.getItem('uid')
+      const loading = $loading('加载中…')
+      this.loading = true
+      list(1).then(res => {
+        const now = new Date().getTime()
+        this.list.data = res.items.map(item => {
+          if (item.status > 1) {
+            // 判断是否胜诉
+            item.isVictory = (item.status === 2 && item.plaintiffUId === uid) || (item.status === 3 && item.defendantUId === uid)
+            item.isOver = this.$dayjs().diff(this.$dayjs('2022-10-08T17:40:17.55Z').utc(), 'day') >= 7
+          } else {
+            item.time = new Date(item.status === 0 ? item.adduceDate : item.voteDate) - now
+          }
+          item.total = item.plaintiffNum + item.defendantNum
+          return item
+        })
+      }).catch(() => {
+        $toast('fail', "加载失败！")
+      }).finally(() => {
+        loading.clear()
+        this.loading = false
+      })
     },
     details(item) {
-      this.$router.push({ name: "finishDetails" });
-    },
-    textcolor() {
-      if (this.endStatic == 1) {
-        return "green";
-      } else if (this.endStatic == 2 || this.endStatic == 3) {
-        return "orange";
-      } else {
-        return "gray";
-      }
+      this.$router.push({ name: "finishDetails", query: {id: item.arbitrateInfoId} });
     },
   },
 };
