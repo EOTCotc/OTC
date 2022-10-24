@@ -1,7 +1,7 @@
 <template>
   <div>
     <White :title="title"></White>
-    <van-cell-group title="其他地址" :border="false">
+    <van-cell-group :title="$t('components.chain.other.navbar')" :border="false">
       <van-cell
         v-for="(item, index) of historyList"
         :key="index"
@@ -67,10 +67,10 @@ export default {
       const that = this;
       this.$copyText(val)
         .then(() => {
-          Toast("复制成功");
+          Toast(this.$t('components.chain.copy.success'));
         })
         .catch(() => {
-          Toast("复制失败");
+          Toast(this.$t('components.chain.copy.fail'));
         });
     },
   },

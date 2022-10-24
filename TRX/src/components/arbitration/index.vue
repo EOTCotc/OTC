@@ -8,7 +8,7 @@
       title-active-color="#fff"
       title-inactive-color="#8D94A2"
     >
-      <van-tab title="仲裁员公示" :replace="true" class="">
+      <van-tab :title="$t('components.arbitration.arbitration.public.person.title')" :replace="true">
         <div class="staff">
           <div class="staff_list" v-for="item in list" :key="item.number">
             <div class="staff_flex tiele">
@@ -16,17 +16,17 @@
               <p>{{ item.number }}</p>
             </div>
             <div class="staff_flex next">
-              <p>申请时间</p>
+              <p>{{ $t('components.arbitration.arbitration.public.person.createDate') }}</p>
               <p>{{ transformDate(item.createDate) }}</p>
             </div>
             <div class="staff_flex next">
-              <p>仲裁次数</p>
+              <p>{{ $t('components.arbitration.arbitration.public.person.count') }}</p>
               <p>{{item.arbitrateNum}}</p>
             </div>
           </div>
         </div>
       </van-tab>
-      <van-tab title="仲裁公示">
+      <van-tab :title="$t('components.arbitration.arbitration.public.case.title')">
         <div class="case">
           <div
             class="caselist"
@@ -36,45 +36,48 @@
           >
             <both :info='item'></both>
             <div class="case_text">
-              <p class="title">仲裁结果</p>
+              <p class="title">{{ $t('components.arbitration.arbitration.public.case.result') }}</p>
               <div class="text_flex">
                 <p class="van-multi-ellipsis--l2">
-                  本次参与仲裁判决的仲裁员共计{{ item.total }}人，通过双方提交举证，{{ item.plaintiffNum }}位仲裁员判定原告方胜。
+                  {{ $t('components.arbitration.arbitration.public.case.text[0]') }}{{ item.total }}{{ $t('components.arbitration.arbitration.unit') }}，{{ $t('components.arbitration.arbitration.public.case.text[1]') }}，{{ item.plaintiffNum }}{{ $t('components.arbitration.arbitration.public.case.text[2]') }}。
                 </p>
-                <div><van-icon name="orders-o"  size="0.5rem" />详情</div>
+                <div>
+                  <van-icon name="orders-o"  size="0.5rem" />
+                  {{ $t('components.arbitration.arbitration.public.case.detail') }}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </van-tab>
-      <van-tab title="我的仲裁案">
+      <van-tab :title="$t('components.arbitration.arbitration.my.title')">
         <my></my>
       </van-tab>
     </van-tabs>
-    <div class="message" @click='$router.push({name: "arbitrationMsg"})'>
+    <div class="message" @click='$router.push({name: "arbitrationList"})'>
       <van-icon name="envelop-o"  />
-      信息
+      {{ $t('components.arbitration.arbitration.message') }}
     </div>
     <!-- 即将超时 -->
     <van-dialog
       v-model="overtimeShow"
       theme="round-button"
-      confirm-button-text="前往处理"
+      :confirm-button-text="$t('components.arbitration.arbitration.dialog.button')"
       confirm-button-color="#237FF8"
       close-on-click-overlay
       @confirm="active=2"
     >
       <img class="popImg" src="@/static/image/overtime.png" alt="" />
-      <div class="popText">有 1 件裁案即将超时</div>
+      <div class="popText">{{ $t('components.arbitration.arbitration.dialog.text[0]') }} 1 {{ $t('components.arbitration.arbitration.dialog.text[1]') }}</div>
     </van-dialog>
     <van-popup v-model="anewShow" class="popup">
       <img class="envelope" src="@/static/image/envelope.png" alt="" />
       <div class="anewBox">
-        <p v-if="state==0">收到一条发起重新举证</p>
-        <p v-else>收到一条仲裁延期申请</p>
+        <p v-if="state==0">{{ $t('components.arbitration.arbitration.popup.text[0]') }}</p>
+        <p v-else>{{ $t('components.arbitration.arbitration.popup.text[1]') }}</p>
         <div class="button">
-          <van-button type="info" round plain @click="anewShow=false">稍后处理</van-button>
-          <van-button type="info" round @click="go(state)">前往处理</van-button>
+          <van-button type="info" round plain @click="anewShow=false">{{ $t('components.arbitration.arbitration.popup.cancel') }}</van-button>
+          <van-button type="info" round @click="go(state)">{{ $t('components.arbitration.arbitration.popup.confirm') }}</van-button>
         </div>
       </div>
     </van-popup>
@@ -125,19 +128,22 @@ export default {
     },
     // 获取仲裁员公示
     getPublicityPersonList() {
-      const loading = $toast('loading', '加载中…')
+      const loading = $toast('loading', this.$t('components.arbitration.arbitration.loading.text'))
       publicityPersonList().then(res => {
         this.list = res.items
+      }).catch(err => {
+        $toast('fail', err.message || this.$t('components.arbitration.arbitration.loading.fail'))
       }).finally(() => {
         loading.clear()
       })
     },
     // 获取仲裁员公示
     getPublicityCaseList() {
-      const loading = $toast('loading', '加载中…')
+      const loading = $toast('loading', this.$t('components.arbitration.arbitration.loading.text'))
       publicityCaseList().then(res => {
         this.casedata = res.items.map(item => ({...item, total: item.plaintiffNum + item.defendantNum}))
-        console.log(res.items)
+      }).catch(err => {
+        $toast('fail', err.message || this.$t('components.arbitration.arbitration.loading.fail'))
       }).finally(() => {
         loading.clear()
       })

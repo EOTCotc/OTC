@@ -9,12 +9,12 @@
     <van-empty
       class="null"
       v-else-if="dataList.length == 0"
-      description="暂无订单信息"
+      :description="$t('components.orderFrom.description')"
     />
     <div v-else class="order" v-for="(item, index) in dataList" :key="index">
       <div class="title">
         <p>
-          <span>订单号</span>&nbsp;
+          <span>{{$t('components.orderFrom.ordernum')}}</span>&nbsp;
           <span>{{ item.odid }}</span>
           <span>（{{ item.id }}）</span>
         </p>
@@ -29,23 +29,23 @@
       </div>
       <div class="text">
         <div>
-          <p>对方质押数量</p>
+          <p>{{$t('components.orderFrom.pending_duifang')}}</p>
           <p class="text-color">{{ item.stake }} EOTC</p>
         </div>
         <div>
-          <p>交易数量</p>
+          <p>{{$t('components.orderFrom.jiaoyinum')}}</p>
           <p>{{ item.num }} USDT</p>
         </div>
         <div>
-          <p>交易单价</p>
+          <p>{{$t('components.orderFrom.price')}}</p>
           <p>{{ item.cny }} CNY</p>
         </div>
         <div>
-          <p>交易总价</p>
+          <p>{{$t('components.orderFrom.tprice')}}</p>
           <span class="text-color">{{ item.amount1 }} CNY</span>
         </div>
         <div>
-          <p>提交时间</p>
+          <p>{{$t('components.orderFrom.subtime')}}</p>
           <p>{{ item.eotc }}</p>
         </div>
         <div class="sendBtn_coin">
@@ -53,7 +53,7 @@
             type="warning"
             :disabled="isAccountDetection(item)"
             @click="release_coinFun(item)"
-            >释放 USDT</van-button
+            >{{$t('components.orderFrom.spending')}}</van-button
           >
         </div>
       </div>
@@ -99,7 +99,7 @@ export default {
       this.activeItem = item;
       console.log(item)
       if ( !item.sname || item.sname === "" || item.dsx==='0') {
-        this.$toast.info("等待用户进行汇款！");
+        this.$toast.info(this.$t('components.orderFrom.spending_dengdai'));
         return false;
       }
       this.$router.push({

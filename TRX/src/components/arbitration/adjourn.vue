@@ -3,28 +3,28 @@
     <white :title="title"></white>
     <div class="content">
       <div class="reason">
-        <p>申请延期需满足以下一种条件</p>
+        <p>{{ $t('components.arbitration.adjourn.form.title') }}</p>
         <van-radio-group v-model="form.data.reason">
-          <van-radio :name="0">举证时间不足</van-radio>
-          <van-radio :name="1">核实信息还在审核中</van-radio>
-          <van-radio :name="2">举证不足,无法进行判决</van-radio>
-          <van-radio :name="3">部分举证不全</van-radio>
+          <van-radio :name="0">{{ $t('components.arbitration.adjourn.form.status[0]') }}</van-radio>
+          <van-radio :name="1">{{ $t('components.arbitration.adjourn.form.status[1]') }}</van-radio>
+          <van-radio :name="2">{{ $t('components.arbitration.adjourn.form.status[2]') }}</van-radio>
+          <van-radio :name="3">{{ $t('components.arbitration.adjourn.form.status[3]') }}</van-radio>
         </van-radio-group>
       </div>
       <div class="explain">
-        <p>申请延期说明</p>
+        <p>{{ $t('components.arbitration.adjourn.explain.title') }}</p>
         <van-field
           v-model="form.data.explain"
           rows="2"
           :autosize="{ maxHeight: 150, minHeight: 150 }"
           type="textarea"
           maxlength="3000"
-          placeholder="请描述申请延期的说明"
+          :placeholder="$t('components.arbitration.adjourn.explain.placeholder')"
           show-word-limit
         />
       </div>
       <div class="time">
-        <p class="time-title">申请延期时间</p>
+        <p class="time-title">{{ $t('components.arbitration.adjourn.time.title') }}</p>
         <div>
           <p
             v-for="item in 7"
@@ -32,16 +32,16 @@
             :class="{'action': form.data.day === item}"
             @click="form.data.day = item"
           >
-            {{ item }}天
+            {{ item }}{{$t('components.arbitration.adjourn.time.day')}}
           </p>
         </div>
       </div>
       <div class="pay">
         <div>
-          <p>需支付</p>
+          <p>{{ $t('components.arbitration.adjourn.pay.label') }}</p>
           <p>1100 USDT</p>
         </div>
-        <p>说明: 申请延期根据延期时间需支付1100~2200 EOTC</p>
+        <p>{{ $t('components.arbitration.adjourn.pay.text') }}1100~2200 EOTC</p>
       </div>
       <div class="footer">
         <van-button
@@ -51,7 +51,7 @@
           :disabled='disabled'
           @click="show = true"
         >
-          提交
+          {{ $t('components.arbitration.adjourn.submit.button') }}
         </van-button>
       </div>
       <van-popup
@@ -60,11 +60,11 @@
         position="bottom"
         @closed="checked=false">
         <div class="pop">
-          <p class="popTitle">确认提交并支付</p>
+          <p class="popTitle">{{ $t('components.arbitration.adjourn.popup.title') }}</p>
           <p class="hint">
-            每人仅可提交一次延期申请，请认真填写，是否确定提交该申请延期并支付？
+            {{ $t('components.arbitration.adjourn.popup.text') }}
           </p>
-          <van-checkbox v-model="checked" shape="square">我已确认</van-checkbox>
+          <van-checkbox v-model="checked" shape="square">{{ $t('components.arbitration.adjourn.popup.checkbox') }}</van-checkbox>
           <div class="buttons">
             <van-button
               color="#1B2945"
@@ -73,9 +73,9 @@
               :disabled="!checked"
               @click='onSubmit'
             >
-              确定提交并支付
+              {{ $t('components.arbitration.adjourn.popup.submit') }}
             </van-button>
-            <p @click='reset'>我再想想</p>
+            <p @click='reset'>{{ $t('components.arbitration.adjourn.popup.cancel') }}</p>
           </div>
         </div></van-popup
       >
@@ -97,7 +97,7 @@ export default {
   },
   data() {
     return {
-      title: "申请延期",
+      title: this.$t('components.arbitration.adjourn.navbar'),
       checked: false,
       show: false,
       form: {
@@ -125,9 +125,11 @@ export default {
       this.checked = false
     },
     onSubmit() {
-      const loading = $loading('提交中…')
+      const loading = $loading(this.$t('components.arbitration.adjourn.form.submit.loading'))
       delay(this.form.data).then(res => {
-        $toast('success', '提交成功', () => this.$router.go(-1))
+        $toast('success', this.$t('components.arbitration.adjourn.form.submit.success'), () => this.$router.go(-1))
+      }).catch(err => {
+        $toast('fail', err.message || this.$t('components.arbitration.adjourn.form.submit.fail'))
       }).finally(() => {
         loading.clear()
       })

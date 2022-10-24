@@ -11,52 +11,64 @@
     <div class="content">
       <div class="top">
         <div class="frist">
-          <p>累计收益</p>
-          <p>+{{allsy}}</p>
+          <p>{{ $t("components.secondPhase.ple_record_leiji") }}</p>
+          <p>+{{ allsy }}</p>
         </div>
         <div class="second">
           <div>
-            <p>当前质押</p>
-            <p>{{allzy}}</p>
+            <p>{{ $t("components.secondPhase.ple_record_dangqian") }}</p>
+            <p>{{ allzy }}</p>
           </div>
           <div>
-            <p>待赎回</p>
-            <p>{{allsh}}</p>
+            <p>{{ $t("components.secondPhase.ple_record_shuhui") }}</p>
+            <p>{{ allsh }}</p>
           </div>
         </div>
       </div>
       <div class="center">
-        <div class="empty" v-if="list.length==0">
+        <div class="empty" v-if="list.length == 0">
           <img src="@/static/icon/kong.png" alt />
-          <p>暂无数据</p>
+          <p>{{ $t("global.empty") }}</p>
         </div>
-        <div class="orderList" v-for="(item,index) in list" :key="index">
+        <div class="orderList" v-for="(item, index) in list" :key="index">
           <div class="listTop">
-            <p>订单编号: {{item.id}}</p>
+            <p>
+              {{ $t("components.secondPhase.ple_record_order") }}: {{ item.id }}
+            </p>
             <div class="topFlex">
-              <p>{{item.date}}</p>
-              <p v-if="item.state==1">质押到期:{{item.time}}</p>
+              <p>{{ item.date }}</p>
+              <p v-if="item.state == 1">
+                {{ $t("components.secondPhase.ple_record_daoqi") }}:{{
+                  item.time
+                }}
+              </p>
             </div>
           </div>
           <div class="listCenter">
             <div>
-              <p>质押数量</p>
-              <p>{{item.znum}}</p>
+              <p>{{ $t("components.secondPhase.from_num") }}</p>
+              <p>{{ item.znum }}</p>
             </div>
             <div>
-              <p v-if="item.state==3">累计收益</p>
-              <p v-else>预估收益</p>
-              <p>+{{item.reward}}</p>
+              <p v-if="item.state == 3">
+                {{ $t("components.secondPhase.ple_record_leiji") }}
+              </p>
+              <p v-else>{{ $t("components.secondPhase.ple_record_yugu") }}</p>
+              <p>+{{ item.reward }}</p>
             </div>
-            <div v-if="item.state==1">
-              <p>到期可赎回</p>
-              <p>{{item.zong}}</p>
+            <div v-if="item.state == 1">
+              <p>{{ $t("components.secondPhase.ple_record_keshuhui") }}</p>
+              <p>{{ item.zong }}</p>
             </div>
           </div>
           <div
             class="listState"
-            :class="item.state==1?'State2':item.state==2?'State3':'State1'"
-          >{{item.text}}</div>
+            :class="
+              item.state == 1 ? 'State2' : item.state == 2 ? 'State3' : 'State1'
+            "
+          >
+            {{ item.text }}
+          </div>
         </div>
       </div>
     </div>
@@ -64,14 +76,14 @@
 </template>
 
 <script>
-import { MyStakeList } from '@/api/trxRequest'
-import { Toast } from 'vant'
+import { MyStakeList } from "@/api/trxRequest";
+import { Toast } from "vant";
 export default {
   data() {
     return {
       list: [],
-      zq: '',
-      title: '质押记录',
+      zq: "",
+      title: this.$t("components.secondPhase.ple_record_title"),
 
       //总收益
       allsy: 0,
@@ -79,106 +91,106 @@ export default {
       allzy: 0,
       //总待赎回
       allsh: 0,
-    }
+    };
   },
   created() {
     Toast.loading({
       duration: 0, // 持续展示 toast
       forbidClick: true,
-      message: '加载中',
-    })
-    
-    this.StakeList()
+      message: this.$t("components.secondPhase.record_loading"),
+    });
+
+    this.StakeList();
   },
   methods: {
-    
     StakeList() {
       MyStakeList({}).then((res) => {
-        Toast.clear()
-        let data = res.data
+        Toast.clear();
+        let data = res.data;
         for (let i of data) {
-
-          var nowdate = Date.parse(new Date())
-          var Newdate = new Date(Date.parse(i.date.replace(/-/g, '/')))
-          Newdate = Newdate.setMonth(Newdate.getMonth() + Number(i.uid))
-          i.uid = i.uid * 1
+          var nowdate = Date.parse(new Date());
+          var Newdate = new Date(Date.parse(i.date.replace(/-/g, "/")));
+          Newdate = Newdate.setMonth(Newdate.getMonth() + Number(i.uid));
+          i.uid = i.uid * 1;
           if (i.uid == 6) {
-            i.reward = (i.znum * 1 * 0.48 * i.uid) / 12
+            i.reward = (i.znum * 1 * 0.48 * i.uid) / 12;
           } else if (i.uid == 12) {
-            i.reward = (i.znum * 1 * 0.72 * i.uid) / 12
+            i.reward = (i.znum * 1 * 0.72 * i.uid) / 12;
           } else if (i.uid == 24) {
-            i.reward = (i.znum * 1 * i.uid) / 12
+            i.reward = (i.znum * 1 * i.uid) / 12;
           } else if (i.uid == 36) {
-            i.reward = (i.znum * 1 * 1.2 * i.uid) / 12
+            i.reward = (i.znum * 1 * 1.2 * i.uid) / 12;
           }
 
           if (Newdate > nowdate) {
-            i.state = 1
-            i.text = '质押中'
-            i.time = this.getMyDate(Newdate, false)
-            i.zong = (i.znum * 1 + i.reward).toFixed(2)
-            this.allzy = Number(this.allzy * 1 + i.znum * 1).toFixed(2)
+            i.state = 1;
+            i.text = this.$t("components.secondPhase.ple_record_zhiyaing");
+            i.time = this.getMyDate(Newdate, false);
+            i.zong = (i.znum * 1 + i.reward).toFixed(2);
+            this.allzy = Number(this.allzy * 1 + i.znum * 1).toFixed(2);
           } else {
-            i.state = 2
-            i.text = '待赎回'
-            console.log(this.allsh)
-            this.allsh = Number(this.allsh * 1 + i.znum * 1 + i.reward).toFixed(2)
+            i.state = 2;
+            i.text = this.$t("components.secondPhase.ple_record_shuhui");
+            console.log(this.allsh);
+            this.allsh = Number(this.allsh * 1 + i.znum * 1 + i.reward).toFixed(
+              2
+            );
           }
         }
-        this.list = data.reverse()
-      })
+        this.list = data.reverse();
+      });
     },
     // 参数 str 为时间戳 可以传入10位也可以传入13位
     // 参数 bool的值可传true或者false或者不传，如果需要显示秒则传true，不需要显示则传false或者不传
     getMyDate(str, bool) {
       if (str > 9999999999) {
         // 这里判断：时间戳为几位数
-        var c_Date = new Date(parseInt(str))
+        var c_Date = new Date(parseInt(str));
       } else {
-        var c_Date = new Date(parseInt(str) * 1000)
+        var c_Date = new Date(parseInt(str) * 1000);
       }
       var c_Year = c_Date.getFullYear(),
         c_Month = c_Date.getMonth() + 1,
         c_Day = c_Date.getDate(),
         c_Hour = c_Date.getHours(),
         c_Min = c_Date.getMinutes(),
-        c_Sen = c_Date.getSeconds()
+        c_Sen = c_Date.getSeconds();
       if (bool) {
         // 判断是否需要显示秒
         var c_Time =
           c_Year +
-          '-' +
+          "-" +
           this.getzf(c_Month) +
-          '-' +
+          "-" +
           this.getzf(c_Day) +
-          ' ' +
+          " " +
           this.getzf(c_Hour) +
-          ':' +
+          ":" +
           this.getzf(c_Min) +
-          ':' +
-          this.getzf(c_Sen) //最后拼接时间
+          ":" +
+          this.getzf(c_Sen); //最后拼接时间
       } else {
         var c_Time =
           c_Year +
-          '-' +
+          "-" +
           this.getzf(c_Month) +
-          '-' +
+          "-" +
           this.getzf(c_Day) +
-          ' ' +
+          " " +
           this.getzf(c_Hour) +
-          ':' +
-          this.getzf(c_Min) //最后拼接时间
+          ":" +
+          this.getzf(c_Min); //最后拼接时间
       }
-      return c_Time
+      return c_Time;
     },
     getzf(c_num) {
       if (parseInt(c_num) < 10) {
-        c_num = '0' + c_num
+        c_num = "0" + c_num;
       }
-      return c_num
+      return c_num;
     },
   },
-}
+};
 </script>
 
 <style lang='less' scoped>

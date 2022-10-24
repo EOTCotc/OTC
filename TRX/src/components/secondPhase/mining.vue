@@ -5,64 +5,69 @@
       <div class="header">
         <img src="../../static/icon/shovel.png" alt />
         <p>
-          推广总收益
+          {{ $t("components.secondPhase.mining_shouyi") }}
           <span>(EOTC)</span>
         </p>
         <p>{{ num }}</p>
       </div>
       <div class="datum">
         <div>
-          <p>直推收益</p>
+          <p>{{ $t("components.secondPhase.mining_zhitui") }}</p>
           <p>{{ zt }}</p>
         </div>
         <div>
-          <p>间推收益</p>
+          <p>{{ $t("components.secondPhase.mining_jiantui") }}</p>
           <p>{{ jt }}</p>
         </div>
         <div>
-          <p>社区补贴</p>
+          <p>{{ $t("components.secondPhase.mining_shequ") }}</p>
           <p>{{ team }}</p>
         </div>
         <div>
-          <p>节点补贴</p>
+          <p>{{ $t("components.secondPhase.mining_jiedian") }}</p>
           <p>{{ node }}</p>
         </div>
       </div>
       <div class="rule">
-        <p class="title">流动性挖矿规则</p>
+        <p class="title">{{ $t("components.secondPhase.mining_rule") }}</p>
         <div>
-          <p>质押EOTC\USDT交易对LP凭证6个月</p>100-4999个双币质押LP凭证 正常年化收益
-          <br />5000-49999个双币质押LP凭证 1.2倍年化收益
-          <br />50000个及以上双币质押LP凭证 1.4倍年化收益
-          <br />年化收益计算按双币质押LP凭证个数乘以年化收益率，奖励EOTC代币
+          <p>{{ $t("components.secondPhase.mining_p1") }}</p>
+          {{ $t("components.secondPhase.mining_p2") }} <br />{{
+            $t("components.secondPhase.mining_p3")
+          }}<br />{{ $t("components.secondPhase.mining_p4") }} <br />{{
+            $t("components.secondPhase.mining_p5")
+          }}
         </div>
         <div>
-          <p>质押EOTCUSDT交易对LP凭证12-36个月</p>6个月收益48%
-          <br />12个月收益72%
-          <br />24个月收益100%
-          <br />收益根据二级市场价格自动调整
+          <p>{{ $t("components.secondPhase.mining_p6") }}</p>
+          {{ $t("components.secondPhase.mining_p7") }}<br />
+          {{ $t("components.secondPhase.mining_p8") }} <br />
+          {{ $t("components.secondPhase.mining_p9") }}
+          <br />{{ $t("components.secondPhase.mining_p10") }}
         </div>
         <div>
-          <p>流动性挖矿推广奖励</p>质押EOTC\USDT交易对LP凭证6-24个月到DAPP，用户和上级获得EOTC代币奖励
-          <br />直推收益的20%
-          <br />间推收益的5%
-          <br />社区补贴 收益的1%
-          向上分十代社区
-          <br />节点补贴 1、高级节点15%
-          <br />2、中级节点13%
-          <br />3、实时节点10%
-          <br />4、信用节点5%
+          <p>{{ $t("components.secondPhase.mining_p11") }}</p>
+          {{ $t("components.secondPhase.mining_p12") }}
+          <br />{{ $t("components.secondPhase.mining_p13") }} <br />
+          {{ $t("components.secondPhase.mining_p14") }} <br />
+          {{ $t("components.secondPhase.mining_p15") }}<br />{{
+            $t("components.secondPhase.mining_p16")
+          }}<br />{{ $t("components.secondPhase.mining_p17") }} <br />{{
+            $t("components.secondPhase.mining_p18")
+          }}<br />{{ $t("components.secondPhase.mining_p19") }}
         </div>
       </div>
       <div class="footer">
-        <van-button color="#f69540" block round @click="jump()">流动性挖矿</van-button>
+        <van-button color="#f69540" block round @click="jump()">{{
+          $t("components.secondPhase.wakuang")
+        }}</van-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import white from '@/components/Nav/white.vue'
+import white from "@/components/Nav/white.vue";
 //流动性挖矿收益
 export default {
   components: {
@@ -70,28 +75,28 @@ export default {
   },
   data() {
     return {
-      title: '流动性挖矿',
-      num: '',
-      zt: '',
-      jt: '',
-      team: '',
-      node: '',
-    }
+      title: this.$t("components.secondPhase.wakuang"),
+      num: "",
+      zt: "",
+      jt: "",
+      team: "",
+      node: "",
+    };
   },
   created() {
-    this.zt = localStorage.getItem('lpZt')
-    this.jt = localStorage.getItem('lpJt')
+    this.zt = localStorage.getItem("lpZt");
+    this.jt = localStorage.getItem("lpJt");
     // console.log()
-    this.team = localStorage.getItem('lpTeams')
-    this.node = localStorage.getItem('lpNode')
-    this.num = this.zt * 1 + this.jt * 1 + this.team * 1 + this.node * 1
+    this.team = localStorage.getItem("lpTeams");
+    this.node = localStorage.getItem("lpNode");
+    this.num = this.zt * 1 + this.jt * 1 + this.team * 1 + this.node * 1;
   },
   methods: {
     jump() {
-      window.location.href = 'https://trx.swap.eotc.im'
+      window.location.href = "https://trx.swap.eotc.im";
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

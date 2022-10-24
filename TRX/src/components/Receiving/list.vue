@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="top">
-      <div class="topTitle">收付款信息</div>
+      <div class="topTitle">{{ $t("components.Receiving.list_title") }}</div>
       <div class="currencyType">
         <div class="addCurrencyBtn">
           <van-button @click="handleClick" class="btn" size="small">
@@ -17,7 +17,7 @@
             @click="addpayFlgOpen(0, '', '')"
             class="btn bule"
             size="small"
-            >设置收付款账号</van-button
+            >{{ $t("components.Receiving.list_set") }}</van-button
           >
         </div>
       </div>
@@ -54,16 +54,16 @@
           <van-button
             square
             type="danger"
-            text="删除"
+            :text="$t('components.Receiving.list_del')"
             @click="delPaymentShou(receiving, index)"
           />
         </template>
       </van-swipe-cell>
-      <div class="hint">向买家仅展示已开启的收款账户</div>
+      <div class="hint">{{ $t("components.Receiving.list_kaiqi") }}</div>
     </div>
 
     <div v-else>
-      <van-empty description="还没有任何收付款方式" />
+      <van-empty :description="$t('components.Receiving.list_any')" />
     </div>
 
     <!-- 选择当前交易货币类型弹窗 -->
@@ -84,13 +84,15 @@
             name="moneyTtype"
             v-model.trim.lazy="moneyTtype"
             validate-trigger="onBlur"
-            placeholder="搜索"
+            :placeholder="$t('components.Receiving.list_serch')"
             :rules="currencyRules"
           />
         </van-form>
         <!-- title="默认货币"  label="CNY"  -->
         <div class="currency">
-          <div class="defaultCurrency">默认货币</div>
+          <div class="defaultCurrency">
+            {{ $t("components.Receiving.list_def") }}
+          </div>
           <div>
             <span class="span1" @click="changeCurID('CNY')">CNY</span>
             <van-icon
@@ -103,7 +105,9 @@
 
         <!-- 货币可选择交易类型 -->
         <div class="currencyList">
-          <div class="defaultCurrency">全部</div>
+          <div class="defaultCurrency">
+            {{ $t("components.Receiving.list_all") }}
+          </div>
           <div
             class="currencyContent"
             v-for="imgnAme in searchStatus ? seachcountrie : countrieImgs"
@@ -113,7 +117,7 @@
             <!-- 注意 图片路径  -->
             <img
               :src="require('@/assets/countrie-imgs/' + imgnAme + '.png')"
-              alt="资源未找到"
+              :alt="$t('components.Receiving.list_res')"
             />
             <span class="span1">{{ imgnAme }}</span>
             <van-icon
@@ -163,7 +167,7 @@ export default {
           validator: this.validator,
         },
       ],
-      addPaymentList: ["银行卡", "支付宝", "微信"],
+      addPaymentList: this.$t("components.Receiving.list_pay"),
       defaultIndex: 0,
       searchStatus: false, // 搜索状态
       countrieImgs: ["AUD", "CAD", "EUR", "INR", "JPY", "KRW", "THB", "USD"],
@@ -228,7 +232,7 @@ export default {
     },
     //删除收付款信息
     async delPaymentShou(item, index) {
-      console.log(item)
+      console.log(item);
       try {
         let type;
         if (item.icon === "wechat") {
@@ -242,7 +246,7 @@ export default {
           type,
           pay: "",
         });
-        
+
         this.receivingList.splice(index, index + 1);
       } catch (err) {
         console.warn(err);
@@ -269,7 +273,7 @@ export default {
           case "myalipay":
             if (hasCurrentPay(item[key])) {
               this.receivingList.push({
-                title: "支付宝",
+                title: this.$t('global.alipay'),
                 account: item[key].split("&")[0],
                 icon: "alipay",
                 checked: false,
@@ -279,7 +283,7 @@ export default {
           case "mybmywechatnk":
             if (hasCurrentPay(item[key])) {
               this.receivingList.push({
-                title: "微信",
+                title: this.$t('global.wechat'),
                 account: item[key].split("&")[0],
                 icon: "wechat",
                 checked: false,

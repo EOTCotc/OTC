@@ -25,8 +25,8 @@ export default {
   }),
   filters: {
     isxj(value) {
-      if (value && value.includes("现金")) {
-        return "现金交易";
+      if (value && value.includes(this.$t('components.dealFllow.dealPay.text[3]'))) {
+        return `${this.$t('components.dealFllow.dealPay.payType.value.xj')}${this.$t('components.dealFllow.dealPay.text[3]')}`;
       }
       return value;
     },
@@ -45,7 +45,8 @@ export default {
       this.$emit("close-input");
     },
     paytype(value) {
-      return paytype(value);
+      // return paytype(value);
+      return this.$t(`components.dealFllow.dealPay.payType.value.${value}`)
     },
     changePayMode() {
       this.cuePayType = "buyer_payMethod";
@@ -83,8 +84,8 @@ export default {
       this.$toast.clear();
       this.$toast.error(
         <div>
-          <p style="font-size:13px;margin:5px">您没有填写当前支付方式，</p>
-          <p style="font-size:16px;margin:5px">请重新选择!</p>
+          <p style="font-size:13px;margin:5px">${this.$t('components.dealFllow.dealPay.toast.error[0]')}，</p>
+          <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.dealPay.toast.error[1]')}</p>
         </div>
       );
     },
@@ -105,7 +106,7 @@ export default {
         this.orderPayLoading = true;
         this.showOrderPayModel();
       } else {
-        this.$toast.error("请选择支付方式");
+        this.$toast.error(this.$t('components.dealFllow.dealPay.payType.label'));
       }
     },
     async showOrderPayModel() {
@@ -128,9 +129,8 @@ export default {
           timeout: 2500,
         });
         if (err === "SignaturError") {
-          console.warn("错误签名", window.localStorage.getItem("mysign"));
-          this.$toast.error("请重新签名");
-          await userSign("EOTC请求您签名确认,签名不消耗GAS.");
+          this.$toast.error(this.$t('components.dealFllow.dealPay.toast.error[3]'));
+          await userSign(this.$t('components.dealFllow.dealPay.toast.error[4]'));
           await this.generate_orders(gusdt, totalPrice,true);
         }
       }
@@ -178,26 +178,26 @@ export default {
                 inTrading: true,
               },
             });
-          } else if (odid == 9) this.$toast.error("不能购买自己的订单");
+          } else if (odid == 9) this.$toast.error(this.$t('components.dealFllow.dealPay.toast.error[5]'));
           else if (odid == 3) {
             this.$toast.error(
               <div>
-                <p style="font-size:16px;margin:5px">该订单USDT数量已不足,</p>
-                <p style="font-size:16px;margin:5px">请选择其它订单"</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.dealPay.toast.error[6]')},</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.dealPay.toast.error[7]')}</p>
               </div>
             );
           } else if (odid == 2) {
-            this.$toast.error("商家已修改订单价格，请重新下单");
+            this.$toast.error(this.$t('components.dealFllow.dealPay.toast.error[8]'));
             //下单的时刻 < 商家修改订单价格时刻
             // 刷新数据 重新下单
             this.$bus.$emit("update-orderlist");
           } else if (odid == 1)
-            this.$toast.error("您多次撤销订单，请明天再下单");
+            this.$toast.error(this.$t('components.dealFllow.dealPay.toast.error[9]'));
           else if (odid == 0) {
             this.$toast.error(
               <div>
-                <p style="font-size:16px;margin:5px">您还有未处理的订单，</p>
-                <p style="font-size:16px;margin:5px">请完成该订单后再下单"</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.dealPay.toast.error[10]')}，</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.dealPay.toast.error[11]')}</p>
               </div>
             );
           }
@@ -218,7 +218,7 @@ export default {
       }
       if (this.item.cash === "-1") {
         this.cuePayType = "xj";
-        return `${uname}&现金交易&现金`;
+        return `${uname}&${this.$t('components.dealFllow.dealPay.payType.value.xj')}${this.$t('components.dealFllow.dealPay.text[3]')}&${this.$t('components.dealFllow.dealPay.payType.value.xj')}`;
       }
 
       switch (pay_Type) {
@@ -227,15 +227,15 @@ export default {
           return pay_data;
         }
         case "wx": {
-          const pay_data = `${this.item.wechat?.trim()}&微信`;
+          const pay_data = `${this.item.wechat?.trim()}&${this.$t('components.dealFllow.dealPay.text[4]')}`;
           return pay_data;
         }
         case "zfb": {
-          const pay_data = `${this.item.aipay?.trim()}&支付宝`;
+          const pay_data = `${this.item.aipay?.trim()}&${this.$t('components.dealFllow.dealPay.payType.value.zfb')}`;
           return pay_data;
         }
         case "xj": {
-          const pay_data = `${uname}&现金交易&现金`;
+          const pay_data = `${uname}&${this.$t('components.dealFllow.dealPay.payType.value.xj')}${this.$t('components.dealFllow.dealPay.text[3]')}&${this.$t('components.dealFllow.dealPay.payType.value.xj')}`;
           return pay_data;
         }
       }
@@ -327,18 +327,18 @@ export default {
         :rules="[{ validator: validato_pay_size }]"
       />
       <div class="pay-mid-main">
-        <span class="limit" ref="animate-div">限额： {{ limit }}</span>
+        <span class="limit" ref="animate-div">{{this.$t('components.dealFllow.dealPay.text[0]')}}： {{ limit }}</span>
       </div>
 
       <div class="pay-select-main">
-        <span>支付方式</span>
+        <span>{{ this.$t('components.dealFllow.dealPay.text[1]') }}</span>
         <span class="txt2" v-if="item.cash === '-1'">
           <img
             class="xj_moeny"
             src="@/assets/currency-icons/moeny-c.png"
             alt="xj"
           />&nbsp;&nbsp;&nbsp;
-          <p>现金交易</p>
+          <p>{{this.$t('components.dealFllow.dealPay.payType.value.xj')}}{{ this.$t('components.dealFllow.dealPay.text[3]') }}</p>
           &nbsp;&nbsp;&nbsp;
         </span>
         <span
@@ -346,7 +346,7 @@ export default {
           @click="changePayMode"
           v-else-if="cuePayType === 'default'"
           :style="{ color: 'red' }"
-          >支付方式&nbsp;
+          >{{ this.$t('components.dealFllow.dealPay.payType.label') }}&nbsp;
           <van-icon name="arrow" :style="{ marginTop: '4px' }" />
         </span>
         <span
@@ -354,7 +354,7 @@ export default {
           @click="changePayMode"
           v-else-if="cuePayType === 'buyer_payMethod'"
           :style="{ color: 'red' }"
-          >选择支付方式&nbsp;
+          >{{ this.$t('components.dealFllow.dealPay.text[2]') }}{{ this.$t('components.dealFllow.dealPay.text[1]') }}&nbsp;
           <!-- 选择支付方式 -->
           <payIcons
             v-show="false"
@@ -375,7 +375,7 @@ export default {
             :cuePayType="cuePayType"
             @get-playList="setPlay"
           />
-          <span class="pay-txt">{{ paytype(cuePayType) | isxj }}</span>
+          <span class="pay-txt">{{ $t(`components.dealFllow.dealPay.payType.value.${cuePayType}`) | isxj }}</span>
           <van-icon name="arrow" />
         </span>
       </div>
@@ -397,10 +397,10 @@ export default {
           native-type="submit"
           size="large"
           :loading="orderPayLoading"
-          loading-text="订单生成中..."
+          :loading-text="$t('components.dealFllow.dealPay.toast.loading.text[0]')"
           color="#2483ff"
         >
-          购买 {{ type }}
+          {{ $t('components.dealFllow.dealPay.text[7]') }} {{ type }}
         </van-button>
       </footer>
       <!-- end / 底部支付按钮 -->
@@ -419,13 +419,13 @@ export default {
         <div>
           <header class="header">
             <van-icon name="arrow-left" @click="goBack" />
-            <span class="header-text" @click="goBack">选择支付方式</span>
+            <span class="header-text" @click="goBack">{{ $t('components.dealFllow.dealPay.text[2]') }}{{ $t('components.dealFllow.dealPay.text[1]') }}</span>
           </header>
           <main class="main">
             <template v-if="item.cash === '1' || item.cash === '-1'">
               <van-cell center @click="handlePayChange('xj')">
                 <template #title>
-                  <span class="custom-title">&nbsp;现金交易</span>
+                  <span class="custom-title">&nbsp;{{ $t('components.dealFllow.dealPay.payType.value.xj') }}{{ $t('components.dealFllow.dealPay.text[3]') }}</span>
                 </template>
                 <template #icon>
                   <img
@@ -445,7 +445,7 @@ export default {
                 @click="handlePayChange(payType)"
               >
                 <template #title>
-                  <span class="custom-title">{{ paytype(payType) }}</span>
+                  <span class="custom-title">{{ $t(`components.dealFllow.dealPay.payType.value.${payType}`) }}</span>
                 </template>
                 <template #icon>
                   <van-icon>
@@ -463,10 +463,8 @@ export default {
             </template>
 
             <div class="salePay-info">
-              <span class="span1"
-                >*<i class="zy-info">请使用本人实名账户进行收款</i
-                >,否则会导致订单失败且账号存在被冻结风险</span
-              >
+              <span class="span1">
+                *<i class="zy-info">{{ $t('components.dealFllow.dealPay.tip[0]') }}</i>,{{ $t('components.dealFllow.dealPay.tip[1]') }}</span>
             </div>
           </main>
         </div>
@@ -478,12 +476,12 @@ export default {
     <van-dialog v-model="orderPayLoading" :showConfirmButton="false">
       <Spinner
         size="30"
-        message="订单生成中"
+        :message="$t('components.dealFllow.dealPay.loading.text[0]')"
         :spacing="15"
         :font-size="16"
       ></Spinner>
       <!-- <van-loading size="36px" text-color="#000" vertical>订单生成中</van-loading> -->
-      <div class="ld-text">正在下单，请稍等...</div>
+      <div class="ld-text">{{ $t('components.dealFllow.dealPay.loading.text[1]') }}</div>
     </van-dialog>
     <!-- end / 支付支付订单生成中  loading status  -->
   </div>

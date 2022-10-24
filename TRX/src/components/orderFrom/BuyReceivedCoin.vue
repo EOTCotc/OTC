@@ -9,7 +9,7 @@
     <van-empty
       class="null"
       v-else-if="dataList.length == 0"
-      description="暂无订单信息"
+      :description="$t('components.orderFrom.description')"
     />
     <template v-else v-for="(item, index) in dataList">
       <div class="order" v-if="item.dsx === '3'" :key="index">
@@ -19,27 +19,27 @@
             >&nbsp;
             <span>{{ item.amount2 }}</span>
           </p>
-          <span class="color-hui">已收币</span>
+          <span class="color-hui">{{ $t("components.orderFrom.yi") }}</span>
         </div>
         <div class="text">
           <div>
-            <p>订单号</p>
+            <p>{{ $t("components.orderFrom.ordernum") }}</p>
             <p>{{ item.odid }}({{ item.id }})</p>
           </div>
           <div>
-            <p>交易数量</p>
+            <p>{{ $t("components.orderFrom.jiaoyinum") }}</p>
             <p>{{ item.num }} USDT</p>
           </div>
           <div>
-            <p>交易单价</p>
+            <p>{{ $t("components.orderFrom.price") }}</p>
             <p>{{ item.cny }} CNY</p>
           </div>
           <div>
-            <p>交易总价</p>
+            <p>{{ $t("components.orderFrom.tprice") }}</p>
             <span class="color-org">{{ item.amount1 }} CNY</span>
           </div>
           <div>
-            <p>提交时间</p>
+            <p>{{ $t("components.orderFrom.subtime") }}</p>
             <p>{{ item.eotc }}</p>
           </div>
         </div>
@@ -48,34 +48,49 @@
           <div class="title">
             <p></p>
             <div class="color-blue" @click="appeal_issue(item)">
-              加入黑名单 <i class="iconfont icon-shensu"></i>
+              {{ $t("components.orderFrom.coin") }}
+              <i class="iconfont icon-shensu"></i>
             </div>
           </div>
 
           <div class="text">
             <div>
-              <p>姓名</p>
+              <p>{{ $t("global.name") }}</p>
               <p>{{ item.mes }}</p>
             </div>
             <div>
-              <p>收款方式</p>
-              <p v-if="getPayInfo(item)[2] === '支付宝'">支付宝</p>
-              <p v-else-if="getPayInfo(item)[2] === '微信'">微信</p>
-              <p v-else-if="getPayInfo(item)[2] === '现金'">现金交易</p>
+              <p>{{ $t("components.orderFrom.receipt_type") }}</p>
+              <p v-if="getPayInfo(item)[2] === $t('global.alipay')">
+                {{ $t("global.alipay") }}
+              </p>
+              <p v-else-if="getPayInfo(item)[2] === $t('global.wechat')">
+                {{ $t("global.wechat") }}
+              </p>
+              <p
+                v-else-if="
+                  getPayInfo(item)[2] === $t('components.orderFrom.cash2')
+                "
+              >
+                {{ $t("components.orderFrom.cash") }}
+              </p>
               <p v-else>{{ getPayInfo(item)[2] }}</p>
             </div>
 
-            <div v-if="getPayInfo(item)[2] === '支付宝'">
-              <p>支付宝账号</p>
+            <div v-if="getPayInfo(item)[2] === $t('global.alipay')">
+              <p>{{ $t("components.orderFrom.alipaynum") }}</p>
               <p>{{ getPayInfo(item)[1] }}</p>
             </div>
-            <div v-else-if="getPayInfo(item)[2] === '微信'">
-              <p>微信号</p>
+            <div v-else-if="getPayInfo(item)[2] === $t('global.wechat')">
+              <p>{{ $t("components.orderFrom.wechatnum") }}</p>
               <p>{{ getPayInfo(item)[1] }}</p>
             </div>
-            <div v-else-if="getPayInfo(item)[2] === '现金交易'"></div>
+            <div
+              v-else-if="
+                getPayInfo(item)[2] === $t('components.orderFrom.cash')
+              "
+            ></div>
             <div v-else>
-              <p>银行卡号</p>
+              <p>{{ $t("components.orderFrom.banknum") }}</p>
               <p>{{ getPayInfo(item)[1] }}</p>
             </div>
           </div>
@@ -88,8 +103,6 @@
 <script>
 import { Eotcdis_Order } from "@/api/trxRequest";
 import { VueLoading } from "vue-loading-template";
-
-
 import { UserBind } from "@/api/trxRequest";
 
 export default {
@@ -124,15 +137,20 @@ export default {
       if (!item.sname) {
         return " & & ";
       }
-      const value = item.sname?.split("&") ?? "未知姓名&未知方式&未知";
+      const value =
+        item.sname?.split("&") ??
+        `${this.$t("components.orderFrom.unknow_name")}&
+      ${this.$t("components.orderFrom.unknow_way")}&${this.$t(
+          "components.orderFrom.unknow"
+        )}`;
 
       if (!value[2]) {
-        return value.push("未知");
+        return value.push(this.$t("components.orderFrom.unknow"));
       }
       return [value[0]?.trim(), value[1]?.trim(), value[2]?.trim()];
     },
     async appeal_issue(cur_item) {
-      console.log(cur_item)
+      console.log(cur_item);
       //  await UserBind({
       //       gid: cur_item,
       //       type: 2, //关注

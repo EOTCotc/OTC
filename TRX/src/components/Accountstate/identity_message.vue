@@ -1,8 +1,8 @@
 <template>
   <div class="content">
     <div class="title">
-      <p class="bold">身份信息</p>
-      <van-button size="small" round type="info" @click="jump()">信用评分:{{grade}}</van-button>
+      <p class="bold">{{ $t('components.accountstate.message.title') }}</p>
+      <van-button size="small" round type="info" @click="jump()">{{ $t('components.accountstate.message.button') }}:{{grade}}</van-button>
     </div>
     <div>
       <div v-for="(item, index) in list" :key="index" class="cell_flex">
@@ -20,11 +20,11 @@ export default {
   data() {
     return {
       list: [
-        { title: "姓名", data: "陈粒" },
-        { title: "邮箱", data: "13445692541@qq.com" },
-        { title: "手机号", data: "13445692541" },
-        { title: "证件号", data: "435896155245878" },
-        { title: "推荐人", data: "李弥" },
+        { title: this.$t('components.accountstate.message.list[0]'), data: "陈粒" },
+        { title: this.$t('components.accountstate.message.list[1]'), data: "13445692541@qq.com" },
+        { title: this.$t('components.accountstate.message.list[2]'), data: "13445692541" },
+        { title: this.$t('components.accountstate.message.list[3]'), data: "435896155245878" },
+        { title: this.$t('components.accountstate.message.list[4]'), data: "李弥" },
         // { title: "审核节点", data: "ADD" },
       ],
       grade:''

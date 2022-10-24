@@ -7,13 +7,13 @@
       @click="tabHandler"
       background="#F3F4F5"
     >
-      <van-tab v-if="show" title="待处理">
+      <van-tab v-if="show" :title="$t('components.arbitration.my.tab[0]')">
         <pending></pending>
       </van-tab>
-      <van-tab title="待仲裁">
+      <!-- <van-tab title="待仲裁">
         <forArbitration></forArbitration>
-      </van-tab>
-      <van-tab title="已结案 ">
+      </van-tab> -->
+      <van-tab :title="$t('components.arbitration.my.tab[1]')">
         <finish></finish>
       </van-tab>
     </van-tabs>

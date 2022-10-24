@@ -2,27 +2,27 @@
   <div class="content">
     <div class="top">
       <div class="top_number">
-        <p>团队人数</p>
+        <p>{{ $t("components.team.tags1") }}</p>
         <p>{{ allMan }}</p>
       </div>
       <div class="top_flex">
         <div>
-          <p>直推人数</p>
+          <p>{{ $t("components.team.tags2") }}</p>
           <p>{{ number }}</p>
         </div>
         <div>
-          <p>有效节点</p>
+          <p>{{ $t("components.team.tags3") }}</p>
           <p>{{ stakeMan }}</p>
         </div>
       </div>
       <img src="@/static/image/teambg.png" alt="" />
       <div class="zong">
         <div>
-          <p>直推业绩</p>
+          <p>{{ $t("components.team.tags4") }}</p>
           <p>{{ performance }}</p>
         </div>
         <div>
-          <p>总业绩</p>
+          <p>{{ $t("components.team.tags5") }}</p>
           <p>{{ usdt_teams }}</p>
         </div>
       </div>
@@ -43,50 +43,63 @@
         </div>
         <div class="node_content">
           <div>
-            <p v-if="item.userName != ''">姓名: {{ item.userName }}</p>
-            <p v-else class="blue">未认证</p>
-            <p>直推节点: {{ item.ztrs }}</p>
+            <p v-if="item.userName != ''">
+              {{ $t("components.team.tags6") }}: {{ item.userName }}
+            </p>
+            <p v-else class="blue">{{ $t("components.team.tags7") }}</p>
+            <p>{{ $t("components.team.tags8") }}: {{ item.ztrs }}</p>
           </div>
           <div>
-            <p>节点类型: {{ item.item }}</p>
-            <p>节点级别: {{ item.vip }}</p>
+            <p>{{ $t("components.team.tags9") }}: {{ item.item }}</p>
+            <p>{{ $t("components.team.tags10") }}: {{ item.vip }}</p>
           </div>
-          <p class="time">注册日期: {{ item.regDate }}</p>
+          <p class="time">
+            {{ $t("components.team.tags11") }}: {{ item.regDate }}
+          </p>
         </div>
       </div>
 
       <div class="footer">
-        <van-button class="button" color="#1B2945" block @click="more()"
-          >更多节点</van-button
-        >
+        <van-button class="button" color="#1B2945" block @click="more()">{{
+          $t("components.team.tags12")
+        }}</van-button>
       </div>
     </div>
     <div v-else>
-      <van-empty image="error" description="暂无团队人员" />
+      <van-empty image="error" :description="$t('components.team.tags13')" />
     </div>
     <van-popup v-model="show" closeable class="pop">
       <div class="pop-content">
         <p class="title">UID:{{ uid }}</p>
         <div class="text">
-          <p v-if="phone!=''">
-            手机号: <a :href="'tel:' + phone">{{ phone }}</a>
+          <p v-if="phone != ''">
+            {{ $t("components.team.tags14") }}:
+            <a :href="'tel:' + phone">{{ phone }}</a>
           </p>
           <p>
-            邮 箱: <a :href="'mailto:' + email">{{ email }}</a>
+            {{ $t("components.team.tags15") }}:
+            <a :href="'mailto:' + email">{{ email }}</a>
           </p>
-          <p>一期质押: {{ EOTC }}</p>
+          <p>{{ $t("components.team.tags16") }}: {{ EOTC }}</p>
           <!-- <p>USDT余额: {{ USDT }}</p> -->
         </div>
-        <van-button class="button" round color="#1B2945" block @click="skip()"
-          >给他转账</van-button
+        <van-button
+          class="button"
+          round
+          color="#1B2945"
+          block
+          @click="skip()"
+          >{{ $t("components.team.tags17") }}</van-button
         >
       </div>
     </van-popup>
     <van-popup v-model="dialogShow" closeable class="more">
       <div class="moreBox">
-        <p>查看更多会员请联系EOTC DAO</p>
+        <p>{{ $t("components.team.tags18") }}</p>
         <a href="mailto:coin@eotc.me">
-          <van-button type="info" round block>确定</van-button>
+          <van-button type="info" round block>{{
+            $t("global.confirm2")
+          }}</van-button>
         </a>
       </div>
     </van-popup>
@@ -133,8 +146,7 @@ export default {
     this.stakeMan = asd.stakeMan;
     this.usdt_teams = asd.usdt_teams;
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     showClick(item) {
       this.phone = item.tel;
@@ -154,7 +166,7 @@ export default {
       GetMyTeams({}).then((res) => {
         let data = res.data;
         for (let i of data) {
-          if (i.item == "未质押") {
+          if (i.item == this.$t("components.team.data1")) {
             i.item = "A0";
           }
           if (i.level == "1") {
@@ -179,8 +191,6 @@ export default {
         { b: 1, c: "xvcxv" },
         { b: 2, c: "456" },
       ];
-      
-
     },
   },
 };

@@ -2,12 +2,11 @@
   <div>
     <white :title="title"></white>
     <div class="reminder">
-      特别提示:
-      伪造变造打款凭证是严重违法行为，如提交相关查询密码请注意保证个人资产安全
+      {{ $t("components.arbitration.again.form.title") }}
     </div>
     <div class="content">
       <div class="event">
-        <p class="event_title">仲裁事件</p>
+        <p class="event_title">{{ $t("components.arbitration.again.form.event.title") }}</p>
         <div>
           <p
             v-for="(item, index) in days"
@@ -20,19 +19,20 @@
         </div>
       </div>
       <div class="text">
-        <p>文字信息举证</p>
+        <p>{{ $t("components.arbitration.again.form.event.label") }}</p>
         <van-field
           v-model="message"
           rows="2"
           :autosize="{ maxHeight: 150, minHeight: 150 }"
           type="textarea"
           maxlength="300"
-          placeholder="描述具体情况及提供仲裁员可核实情况所需信息"
+          :placeholder="$t('components.arbitration.again.form.event.placeholder')"
           show-word-limit
         />
       </div>
       <div class="upimg">
-        <p>图片信息举证 <span>(具有法律效力的相关举证)</span></p>
+        <p>{{ $t("components.arbitration.again.form.upload.title[0]") }}
+          <span>({{ $t("components.arbitration.again.form.upload.title[1]") }})</span></p>
         <van-uploader
           v-model="fileList"
           :after-read="afterRead"
@@ -42,12 +42,14 @@
       </div>
       <div class="add" v-if="stat == 1">
         <div class="addFlex">
-          <p>增加仲裁员 <span>(默认11人)</span></p>
+          <p>{{ $t("components.arbitration.again.form.arbitrator.title") }}
+            <span>({{ $t("components.arbitration.again.form.arbitrator.default") }}11{{ $t("components.arbitration.again.unit") }})</span>
+          </p>
           <van-switch v-model="checked" @change="change()" />
         </div>
         <div v-if="checked" class="people" @click="showPicker = true">
           <p>{{ number }}</p>
-          <p>人</p>
+          <p>{{ $t("components.arbitration.again.unit") }}</p>
         </div>
         <van-popup v-model="showPicker" round position="bottom">
           <van-picker
@@ -60,7 +62,7 @@
       </div>
       <div class="pay">
         <div>
-          <p>需支付</p>
+          <p>{{ $t("components.arbitration.again.form.pay.title") }}</p>
           <p>{{ money }} EOTC</p>
         </div>
         <p class="explain">{{ explain }}</p>
@@ -72,8 +74,9 @@
           block
           :disabled="message != '' || fileList.length > 0 ? false : true"
           @click="show = true"
-          >提交</van-button
         >
+          {{ $t("components.arbitration.again.form.submit") }}
+        </van-button>
       </div>
       <van-popup
         v-model="show"
@@ -82,40 +85,47 @@
         @closed="checked = false"
       >
         <div class="pop">
-          <p class="popTitle">确认提交并支付</p>
+          <p class="popTitle">{{ $t('components.arbitration.again.popup.title') }}</p>
           <p class="hint">
-            每人仅可提交一次延期申请，请认真填写，是否确定提交该申请延期并支付？
+            {{ $t('components.arbitration.again.popup.text') }}
           </p>
-          <van-checkbox v-model="checked" shape="square">我已确认</van-checkbox>
+          <van-checkbox v-model="checked" shape="square">{{ $t('components.arbitration.again.popup.checkbox') }}</van-checkbox>
           <div class="buttons">
             <van-button
               color="#1B2945"
               round
               block
               :disabled="checked ? false : true"
-              >确定提交并支付</van-button
             >
-            <p>我再想想</p>
+              {{ $t('components.arbitration.again.popup.submit') }}
+            </van-button>
+            <p>{{ $t('components.arbitration.again.popup.cancel') }}</p>
           </div>
-        </div></van-popup
-      >
+        </div>
+      </van-popup>
     </div>
   </div>
 </template>
-
 <script>
 import white from "@/components/Nav/white.vue";
+
 export default {
   //申请再仲裁
-  components: { white },
+  components: {white},
   data() {
     return {
-      title: "申请再仲裁",
+      title: "",
       //文字信息
       message: "",
       days: [
-        { day: "仲裁异议", show: true },
-        { day: "其他", show: false },
+        {
+          day: this.$t('components.arbitration.again.form.event.type[0]'),
+          show: true
+        },
+        {
+          day: this.$t('components.arbitration.again.form.event.type[1]'),
+          show: false
+        }
       ],
       //图片上传
       fileList: [],
@@ -127,25 +137,22 @@ export default {
       showPicker: false,
       columns: [],
       show: false,
-      checked: false,
 
       stat: 0,
-      explain: "",
+      explain: ""
     };
   },
-  mounted() {
+  created() {
     this.stat = 1;
     if (this.stat == 1) {
-      this.explain =
-        "说明: 申请再仲裁需支付500 EOTC，仲裁员默认11人，追加仲裁员一名需支付10 EOTC";
-      this.title = "申请再仲裁";
+      this.explain = `${this.$t('components.arbitration.again.form.pay.explain.again[0]')}500 EOTC，${this.$t('components.arbitration.again.form.pay.explain.again[1]')}11${this.$t('components.arbitration.again.unit')}，${this.$t('components.arbitration.again.form.pay.explain.again[2]')}10 EOTC`;
+      this.title = this.$t('components.arbitration.again.navbar[0]');
       for (let i = 13; i <= 101; i += 2) {
         this.columns.push(i);
       }
     } else {
-      this.explain =
-        "说明: 发起仲裁后平台将委派11位仲裁员进行判决，需要支付100 EOTC，如取消仲裁或最终仲裁胜诉EOTC将返还至您的账户";
-      this.title = "发起仲裁";
+      this.explain = `${this.$t('components.arbitration.again.form.pay.explain.start[0]')}11${this.$t('components.arbitration.again.form.pay.explain.start[1]')}，${this.$t('components.arbitration.again.form.pay.explain.start[2]')}100 EOTC，${this.$t('components.arbitration.again.form.pay.explain.start[3]')}EOTC${this.$t('components.arbitration.again.form.pay.explain.start[4]')}`;
+      this.title = this.$t('components.arbitration.again.navbar[1]');
     }
   },
   computed: {
@@ -158,7 +165,7 @@ export default {
       } else {
         return 500 + (this.number - 11) * 10;
       }
-    },
+    }
   },
 
   methods: {
@@ -182,11 +189,10 @@ export default {
     onConfirm(value) {
       this.number = value;
       this.showPicker = false;
-    },
-  },
+    }
+  }
 };
 </script>
-
 <style lang="less" scoped>
 .reminder {
   padding: 24px;
@@ -202,6 +208,7 @@ export default {
     .event_title {
       font-size: 32px;
       margin-bottom: 30px;
+      white-space: pre-wrap;
     }
     div {
       display: flex;
@@ -230,7 +237,7 @@ export default {
       //   font-weight: bold;
       margin-bottom: 20px;
     }
-    /deep/.van-cell {
+    /deep/ .van-cell {
       border: 1px solid #c8cfde;
       border-radius: 20px;
     }

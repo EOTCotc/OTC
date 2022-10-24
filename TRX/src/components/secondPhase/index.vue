@@ -1,15 +1,15 @@
 <template>
   <div class="content">
     <div class="header">
-      <p>{{jdtype}}</p>
-      <div v-if="teamName!=null">
+      <p>{{ jdtype }}</p>
+      <div v-if="teamName != null">
         <img src="@/static/icon/shequ.png" alt />
-        <p>{{teamName}}</p>
+        <p>{{ teamName }}</p>
       </div>
     </div>
     <div class="center">
       <div class="dataBox">
-        <p class="boxTitle">二期可支配收益</p>
+        <p class="boxTitle">{{ $t("components.secondPhase.shouyi") }}</p>
 
         <div>
           <p>USDT</p>
@@ -24,40 +24,47 @@
           <p>{{ LPnum }}</p>
         </div>
         <div>
-          <p>卡牌</p>
+          <p>{{ $t("components.secondPhase.kapai") }}</p>
           <p>{{ card }}</p>
         </div>
       </div>
       <div class="function">
         <div @click="jump(1)">
-          <p>交易质押</p>
-          <p>OTC 币币质押明细</p>
-          <span>去查看></span>
+          <p>{{ $t("components.secondPhase.zhiya") }}</p>
+          <p>{{ $t("components.secondPhase.bibizhiya") }}</p>
+          <span>{{ $t("components.secondPhase.tochakan") }}></span>
           <img src="../../static/icon/gold.png" alt />
         </div>
         <div @click="jump(2)">
-          <p>链上理财赚币</p>
-          <p>质押收益明细</p>
-          <span>去查看></span>
+          <p>{{ $t("components.secondPhase.zhuanbi") }}</p>
+          <p>{{ $t("components.secondPhase.shouyimingxi") }}</p>
+          <span>{{ $t("components.secondPhase.tochakan") }}></span>
           <img src="../../static/icon/wallet.png" alt />
         </div>
         <div @click="jump(3)">
           <p>EOTC NFT</p>
-          <p>推广收益明细</p>
-          <span>去查看></span>
+          <p>{{ $t("components.secondPhase.tuiguang") }}</p>
+          <span>{{ $t("components.secondPhase.tochakan") }}></span>
           <img src="../../static/icon/nft.png" alt />
         </div>
         <div @click="jump(4)">
-          <p>流动性挖矿</p>
-          <p>推广收益明细</p>
-          <span>去查看></span>
+          <p>{{ $t("components.secondPhase.wakuang") }}</p>
+          <p>{{ $t("components.secondPhase.tuiguang") }}</p>
+          <span>{{ $t("components.secondPhase.tochakan") }}></span>
           <img src="../../static/icon/needle.png" alt />
         </div>
       </div>
       <div class="recharge">
-        <van-button plain round type="info" :to="{name:'Withdraw',
-        params:{EOTC,USDT}}">提现</van-button>
-        <van-button round type="info" :to="{name:'recharge'}">充值</van-button>
+        <van-button
+          plain
+          round
+          type="info"
+          :to="{ name: 'Withdraw', params: { EOTC, USDT } }"
+          >{{ $t("components.secondPhase.tixian") }}</van-button
+        >
+        <van-button round type="info" :to="{ name: 'recharge' }">{{
+          $t("components.secondPhase.chongzhi")
+        }}</van-button>
       </div>
     </div>
   </div>
@@ -65,7 +72,7 @@
 
 <script>
 //二期推广
-import { UserInfo } from '@/utils/web3'
+import { UserInfo } from "@/utils/web3";
 export default {
   data() {
     return {
@@ -74,55 +81,75 @@ export default {
       LPnum: 0,
       card: 0,
       //节点类型
-      jdtype: '',
-      teamName:''
-    }
+      jdtype: "",
+      teamName: "",
+    };
   },
   created() {
-    this.teamName=localStorage.getItem('teamName')
+    this.teamName = localStorage.getItem("teamName");
     // console.log(localStorage.getItem('teamName'))
-    let data = UserInfo()
-    this.USDT = data.usdt_ye
-    this.EOTC = (data.eotc_stake * 1 - localStorage.getItem('myeotc') * 1).toFixed(2)
-    let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+    let data = UserInfo();
+    this.USDT = data.usdt_ye;
+    this.EOTC = (
+      data.eotc_stake * 1 -
+      localStorage.getItem("myeotc") * 1
+    ).toFixed(2);
+    let sum =
+      Number(localStorage.getItem("otczy")) +
+      Number(localStorage.getItem("giftEotc"));
     if (data.myjifen > 10 && sum > 100) {
-      this.jdtype = '有效用户'
+      this.jdtype = this.$t("components.secondPhase.youxiao_user");
 
       if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
-        this.jdtype = '信用节点'
+        this.jdtype = this.$t("components.secondPhase.xinyong_node");
       }
-      if (sum > 10000 && data.ztman >= 7 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
-        this.jdtype = '实时节点'
+      if (
+        sum > 10000 &&
+        data.ztman >= 7 &&
+        data.stakeMan >= 300 &&
+        data.ztvip[1] * 1 >= 3
+      ) {
+        this.jdtype = this.$t("components.secondPhase.shishi_node");
       }
-      if (sum > 50000 && data.ztman >= 13 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
-        this.jdtype = '中级节点'
+      if (
+        sum > 50000 &&
+        data.ztman >= 13 &&
+        data.stakeMan >= 900 &&
+        data.ztvip[1] * 1 >= 4
+      ) {
+        this.jdtype = this.$t("components.secondPhase.zhongji_node");
       }
-      if (sum > 100000 && data.ztman >= 19 && data.stakeMan >= 3000 && data.ztvip[1] * 1 >= 5) {
-        this.jdtype = '高级节点'
+      if (
+        sum > 100000 &&
+        data.ztman >= 19 &&
+        data.stakeMan >= 3000 &&
+        data.ztvip[1] * 1 >= 5
+      ) {
+        this.jdtype = this.$t("components.secondPhase.gaoji_node");
       }
     } else {
-      this.jdtype = '游客'
+      this.jdtype = this.$t("components.secondPhase.youke");
     }
   },
   methods: {
     jump(index) {
       switch (index) {
         case 1:
-          this.$router.push({ name: 'pledge' })
-          break
+          this.$router.push({ name: "pledge" });
+          break;
         case 2:
-          this.$router.push({ name: 'zyzb' })
-          break
+          this.$router.push({ name: "zyzb" });
+          break;
         case 3:
-          this.$router.push({ name: 'NFT' })
-          break
+          this.$router.push({ name: "NFT" });
+          break;
         case 4:
-          this.$router.push({ name: 'mining' })
-          break
+          this.$router.push({ name: "mining" });
+          break;
       }
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -133,9 +160,9 @@ export default {
   font-size: 32px;
   display: flex;
   justify-content: space-between;
-  div{
+  div {
     display: flex;
-    img{
+    img {
       width: 40px;
       margin-right: 5px;
     }
@@ -155,7 +182,7 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    .boxTitle{
+    .boxTitle {
       font-size: 32px;
       font-weight: bolder;
       width: 100%;

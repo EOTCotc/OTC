@@ -74,8 +74,7 @@
           color="#1B2945"
           :disabled="!form.data.memo || !fileList.length"
           @click="show = true"
-          >提交</van-button
-        >
+          >提交</van-button>
       </div>
       <van-popup
         v-model="show"
@@ -97,7 +96,7 @@
               :disabled="!readChecked"
               @click="handleSubmit"
               >确定提交并支付</van-button>
-            <p @click="readChecked = false">我再想想</p>
+            <p @click="hide">我再想想</p>
           </div>
         </div>
       </van-popup>
@@ -169,11 +168,18 @@ export default {
   },
 
   methods: {
+    hide() {
+      this.readChecked = false
+      this.show = false
+    },
     init() {
       const { id, defendant, plaintiff, orderId } = this.$route.query
-      this.form.data.plaintiff = plaintiff
-      this.form.data.defendant = defendant
-      this.form.data.orderId = orderId
+      // this.form.data.plaintiff = plaintiff
+      // this.form.data.defendant = defendant
+      // this.form.data.orderId = orderId
+      this.form.data.plaintiff = '3'
+      this.form.data.defendant = '5'
+      this.form.data.orderId = 'string'
       this.columns = []
       for (let i = 11; i < 103; i++) {
         if (i % 2 === 1) {

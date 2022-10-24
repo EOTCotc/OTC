@@ -10,7 +10,7 @@
         @select="onSelect"
       >
         <template #reference> -->
-      <p class="hint">当前网络</p>
+      <p class="hint">{{ $t('components.login.sign.text[0]') }}</p>
       <van-field
         class="cell"
         v-model="value1"
@@ -19,9 +19,9 @@
       />
       <!-- </template>
       </van-popover> -->
-      <p class="hint">钱包地址</p>
+      <p class="hint">{{ $t('components.login.sign.text[1]') }}</p>
       <van-field readonly class="cell" clearable v-model="wallet" />
-      <p class="hint">输入邮箱地址</p>
+      <p class="hint">{{ $t('components.login.sign.text[2]') }}</p>
       <van-field
         class="cell"
         v-model="email"
@@ -39,7 +39,7 @@
             :disabled="!buttonShow"
             @click="gain"
           >
-            <span>发送验证码</span>
+            <span>{{ $t('components.login.sign.text[3]') }}</span>
           </van-button>
           <van-count-down
             ref="countDown"
@@ -51,7 +51,7 @@
           />
         </template>
       </van-field>
-      <p class="hint">输入邮箱验证码</p>
+      <p class="hint">{{ $t('components.login.sign.text[4]') }}</p>
       <van-field class="cell" clearable v-model="verification" />
     </van-cell-group>
     <div class="footer">
@@ -65,11 +65,11 @@
         "
         color="#1B2945"
         @click="login"
-        >登录</van-button
+        >{{ $t('components.login.sign.text[5]') }}</van-button
       >
       <p>
         还没有账户
-        <span @click="switched()">立即注册</span>
+        <span @click="switched()">{{ $t('components.login.sign.text[6]') }}</span>
       </p>
     </div>
   </div>

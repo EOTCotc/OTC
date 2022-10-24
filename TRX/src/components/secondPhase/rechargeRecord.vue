@@ -3,9 +3,9 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>提现</p>
-        <p>当前状态</p>
-        <p>充值日期</p>
+        <p>{{ $t("components.secondPhase.tixian") }}</p>
+        <p>{{ $t("components.secondPhase.record_statu") }}</p>
+        <p>{{ $t("components.secondPhase.record_date") }}</p>
       </div>
 
       <div class="list" v-for="(item, index) in list" :key="index">
@@ -14,67 +14,69 @@
         <p>{{ item.Zdate }}</p>
       </div>
       <div v-if="list.length == 0">
-        <van-empty image="error" description="暂无收益数据" />
+        <van-empty
+          image="error"
+          :description="$t('components.secondPhase.record_not')"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import white from '@/components/Nav/white.vue'
-import { Toast } from 'vant'
-import { RechargeList } from '@/api/trxRequest'
+import white from "@/components/Nav/white.vue";
+import { Toast } from "vant";
+import { RechargeList } from "@/api/trxRequest";
 export default {
   components: {
     white,
   },
   data() {
     return {
-      title: '充值记录',
+      title: this.$t("components.secondPhase.record_title"),
       list: [],
       loading: false,
       finished: false,
-    }
+    };
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init() {
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: '加载中',
-      })
+        message: this.$t("components.secondPhase.record_loading"),
+      });
       RechargeList({})
         .then((res) => {
-          let data = res.data
-          console.log(data)
+          let data = res.data;
+          console.log(data);
           for (let i of data) {
             switch (i.Chu) {
-              case '0':
-                i.Chu = '确认中'
-                break
-              case '1':
-                i.Chu = '已完成'
-                break
+              case "0":
+                i.Chu = this.$t("components.secondPhase.record_confing");
+                break;
+              case "1":
+                i.Chu = this.$t("components.secondPhase.record_wancheng");
+                break;
             }
-            if(i.Coin!='eotc')
-            i.Coin='usdt'
-            i.num=i.Ru + i.Coin.toUpperCase() 
+            if (i.Coin != "eotc") i.Coin = "usdt";
+            i.num = i.Ru + i.Coin.toUpperCase();
           }
-          
-          this.list = data
-          Toast.success('加载成功')
+
+          this.list = data;
+          Toast.success(this.$t("components.secondPhase.record_suc"));
           // console.log(data);
         })
         .catch((err) => {
-          Toast.fail('加载失败')
-          console.log(err)
-        })
+          Toast.fail(this.$t("components.secondPhase.record_fail"));
+          console.log(err);
+        });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -86,7 +88,6 @@ export default {
     font-size: 28px;
     display: flex;
     justify-content: space-between;
-
   }
   .list {
     padding: 28px 40px;
@@ -94,10 +95,10 @@ export default {
     font-size: 28px;
     display: flex;
     justify-content: space-around;
-    p{
+    p {
       width: 30%;
     }
-    p:last-child{
+    p:last-child {
       width: 40%;
       text-align: end;
     }

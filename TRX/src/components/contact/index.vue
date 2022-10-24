@@ -3,15 +3,15 @@
     <div class="transition"></div>
     <div class="center">
       <div class="flexbox">
-        <p>官方网站</p>
+        <p>{{ $t('components.contact.label[0]') }}</p>
         <a href="https://eotc.im">https://eotc.im</a>
       </div>
       <div class="flexbox">
-        <p>官方电报</p>
+        <p>{{ $t('components.contact.label[1]') }}</p>
         <a href="https://t.me/EOTOTC">https://t.me/EOTOTC</a>
       </div>
       <div class="flexbox">
-        <p>官方推特</p>
+        <p>{{ $t('components.contact.label[2]') }}</p>
         <a href="https://twitter.com/EOTC9">https://twitter.com/EOTC9</a>
       </div>
       <div class="flexbox">
@@ -19,7 +19,7 @@
         <p>coin@eotc.me</p>
       </div>
       <div class="flexbox" @click="show = true">
-        <p>我的推荐人</p>
+        <p>{{ $t('components.contact.label[3]') }}</p>
 
         <div>
           <p>
@@ -30,7 +30,7 @@
       </div>
       <van-popup v-model="show" round closeable :style="{ width: '80%' }">
         <div class="popBox">
-          <div class="top">我的推荐人</div>
+          <div class="top">{{ $t('components.contact.label[3]') }}</div>
           <div class="van-hairline--bottom"></div>
           <div class="center">
             <div>
@@ -38,7 +38,7 @@
             </div>
             <div>
               <p>
-                电话: <a :href="'tel:' + pidData.phone">{{ pidData.phone }}</a>
+                {{ $t('components.contact.label[4]') }}: <a :href="'tel:' + pidData.phone">{{ pidData.phone }}</a>
               </p>
               <i
                 class="iconfont icon-fuzhi icon"
@@ -47,7 +47,7 @@
             </div>
             <div>
               <p>
-                邮箱:
+                {{ $t('components.contact.label[5]') }}:
                 <a :href="'mailto:' + pidData.mail">{{ pidData.mail }}</a>
               </p>
               <i
@@ -57,7 +57,7 @@
             </div>
             <div v-if="pidData.telegram != ''">
               <p>
-                电报群: <a :href="pidData.telegram"></a>{{ pidData.telegram }}
+                {{ $t('components.contact.label[6]') }}: <a :href="pidData.telegram"></a>{{ pidData.telegram }}
               </p>
               <i
                 class="iconfont icon-fuzhi icon"
@@ -95,10 +95,10 @@ export default {
       const that = this;
       this.$copyText(val)
         .then(() => {
-          Toast("复制成功");
+          Toast(this.$t('components.contact.copy.susccess'));
         })
         .catch(() => {
-          Toast("复制失败");
+          Toast(this.$t('components.contact.copy.fail'));
         });
     },
     init() {

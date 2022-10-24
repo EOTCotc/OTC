@@ -12,7 +12,7 @@
         </div>
 
         <van-loading size="24px" vertical v-if="listLoading"
-          >加载中...</van-loading
+          >{{ $t('components.chooseWay.sellCurrencyType.loading.text') }}</van-loading
         >
         <payment_empty v-else-if="isShow_empty" />
 
@@ -25,7 +25,7 @@
           <van-list
             v-model="loading"
             :finished="finished"
-            finished-text="已经没有更多了..."
+            :finished-text="$t('components.chooseWay.sellCurrencyType.loading.finishedText')"
             @load="onLoad"
           >
             <!--  start  selsect 内容筛选 -->
@@ -60,19 +60,19 @@
               <van-cell>
                 <template #title>
                   <div class="left">
-                    数量 {{ items.num | ThousandSeparator }} {{ item }}
+                    {{ $t('components.chooseWay.sellCurrencyType.text[0]') }} {{ items.num | ThousandSeparator }} {{ item }}
                   </div>
                 </template>
                 <template #label>
                   <div>
-                    限额 {{ items.amount1 | ThousandSeparator }} -
+                    {{ $t('components.chooseWay.sellCurrencyType.text[1]') }} {{ items.amount1 | ThousandSeparator }} -
                     {{ items.amount2 | ThousandSeparator }} CNY
                   </div>
                   <Pay-Icons :items="items"></Pay-Icons>
                 </template>
                 <template>
                   <div class="right">
-                    <span>单价</span>
+                    <span>{{ $t('components.chooseWay.sellCurrencyType.text[2]') }}</span>
                   </div>
                 </template>
                 <template>
@@ -176,7 +176,7 @@ export default {
     //   otype: getItem("netType"),
     // });
     //console.log(getItem("netType"))
-    this.$toast("正在努力加载中", {
+    this.$toast(this.$t('components.chooseWay.sellCurrencyType.loading.text'), {
       position: "bottom-right",
       timeout: 500,
     });
@@ -225,7 +225,7 @@ export default {
         setItemSession("selldataList", result);
       } catch (err) {
         this.list = getItemSession("selldataList");
-        this.$toast.warning("数据请求过于频繁");
+        this.$toast.warning(this.$t('components.chooseWay.sellCurrencyType.loading.warning'));
         console.warn(err);
       } finally {
         this.loading = false;
@@ -335,9 +335,11 @@ export default {
         this.$toast.error(
           <div>
             <p style="font-size:13px;margin:5px">
-              需要实名认证之后才能进行交易
+              ${ this.$t('components.chooseWay.sellCurrencyType.toast.error[0]') }
             </p>
-            <p style="font-size:13px;margin:5px">请您先完成实名认证！</p>
+            <p style="font-size:13px;margin:5px">
+              ${ this.$t('components.chooseWay.sellCurrencyType.toast.error[1]') }
+            </p>
           </div>
         );
 
@@ -350,9 +352,11 @@ export default {
         this.$toast.error(
           <div>
             <p style="font-size:13px;margin:5px">
-              您存在一笔正在进行的出售订单，
+              ${ this.$t('components.chooseWay.sellCurrencyType.toast.error[2]') }
             </p>
-            <p style="font-size:16px;margin:5px">处理完成后方可继续交易!</p>
+            <p style="font-size:16px;margin:5px">
+              ${ this.$t('components.chooseWay.sellCurrencyType.toast.error[3]') }
+            </p>
           </div>
         );
         return false;
@@ -361,14 +365,14 @@ export default {
       if (userdsx >= "0") {
         payVeriFicationCount += 1;
       } else {
-        this.$toast.warning("您已连续多次撤销订单，请明天再下单！");
+        this.$toast.warning(this.$t('components.chooseWay.sellCurrencyType.toast.error[4]'));
         return false;
       }
       // myjifen 用户积分必须大于10
       if (Number(myjifen) >= 10) {
         payVeriFicationCount += 1;
       } else {
-        this.$toast.error("您积分已不足 10 ，无法出售！");
+          this.$toast.error(`${this.$t('components.chooseWay.sellCurrencyType.toast.error[5]')}10${this.$t('components.chooseWay.sellCurrencyType.toast.error[6]')}`);
         return false;
       }
       return payVeriFicationCount === 4;
@@ -383,7 +387,7 @@ export default {
         return true;
       } else {
         this.$toast.clear();
-        this.$toast.warning("您没有填写该收付款方式");
+        this.$toast.warning(this.$t('components.chooseWay.sellCurrencyType.toast.error[7]'));
         return false;
       }
     },
@@ -417,7 +421,7 @@ export default {
     currency_Change(tag_Name, title) {
       this.$toast.clear();
       if (title !== "USDT") {
-        this.$toast.error(`目前暂时不支持 ${title}`);
+        this.$toast.error(`${this.$t('components.chooseWay.sellCurrencyType.toast.error[8]')} ${title}`);
         this.$nextTick(() => {
           this.active = 0;
         });

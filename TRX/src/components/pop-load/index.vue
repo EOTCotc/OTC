@@ -33,11 +33,11 @@ export default {
     },
     text: {
       type: String,
-      default: "转币中",
+      default: this.$t('components.popload.transfer'),
     },
     loadtext: {
       type: String,
-      default: "正在向合约转币，请稍后…",
+      default: this.$t('components.popload.transfering'),
     },
   },
 };

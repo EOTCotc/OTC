@@ -3,9 +3,9 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>提现</p>
-        <p>当前状态</p>
-        <p>提现日期</p>
+        <p>{{ $t("components.secondPhase.tixian") }}</p>
+        <p>{{ $t("components.secondPhase.record_statu") }}</p>
+        <p>{{ $t("components.secondPhase.wrecord_date") }}</p>
       </div>
 
       <div class="list" v-for="(item, index) in list" :key="index">
@@ -14,7 +14,10 @@
         <p>{{ item.Zdate }}</p>
       </div>
       <div v-if="list.length == 0">
-        <van-empty image="error" description="暂无收益数据" />
+        <van-empty
+          image="error"
+          :description="$t('components.secondPhase.record_not')"
+        />
       </div>
     </div>
   </div>
@@ -30,7 +33,7 @@ export default {
   },
   data() {
     return {
-      title: "提现记录",
+      title: this.$t("components.secondPhase.wrecord_record"),
       list: [],
       loading: false,
       finished: false,
@@ -44,7 +47,7 @@ export default {
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: "加载中",
+        message: this.$t("components.secondPhase.record_loading"),
       });
       GetSymx({})
         .then((res) => {
@@ -52,34 +55,34 @@ export default {
           for (let i of data) {
             switch (i.Chu) {
               case "1":
-                i.Chu = "质押收益";
+                i.Chu = this.$t("components.secondPhase.wrecord_zhiya");
                 break;
               case "2":
-                i.Chu = "分享奖励";
+                i.Chu = this.$t("components.secondPhase.nft_share");
                 break;
               case "3":
-                i.Chu = "辅助奖励";
+                i.Chu = this.$t("components.secondPhase.nft_fuzhu");
                 break;
               case "4":
-                i.Chu = "节点补助";
+                i.Chu = this.$t("components.secondPhase.wrecord_buzhu");
                 break;
               case "5":
-                i.Chu = "平级奖";
+                i.Chu = this.$t("components.secondPhase.wrecord_pingji");
                 break;
               case "6":
-                i.Chu = "社区奖励";
+                i.Chu = this.$t("components.secondPhase.nft_shequ");
                 break;
               case "9":
-                i.Chu = "额外奖励";
+                i.Chu = this.$t("components.secondPhase.wrecord_ewai");
                 break;
             }
           }
           this.list = data;
-          Toast.success('加载成功')
+          Toast.success(this.$t("components.secondPhase.record_suc"));
           // console.log(data);
         })
         .catch((err) => {
-          Toast.fail('加载失败')
+          Toast.fail(this.$t("components.secondPhase.record_fail"));
           console.log(err);
         });
     },

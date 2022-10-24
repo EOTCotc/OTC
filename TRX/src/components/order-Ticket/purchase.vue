@@ -3,11 +3,11 @@
     <van-empty
       class="null"
       v-if="purchaseList.length == 0"
-      description="暂无订单信息"
+      :description="$t('components.orderTicket.offer')"
     />
     <div class="content-box" v-else>
       <van-tabs v-model="active" animated swipeable background="#F3F4F5">
-        <van-tab title="总订单">
+        <van-tab :title="$t('components.orderTicket.offer_zong')">
           <BuyBlanketOrder
             v-for="(orderItem, i) in purchaseList"
             :key="i"
@@ -16,16 +16,16 @@
         </van-tab>
 
         <!-- 待处理订单 -->
-        <van-tab title="待处理" >
+        <van-tab :title="$t('components.orderTicket.offer_dai')">
           <BuyPending></BuyPending>
         </van-tab>
 
         <!-- 等待收币订单 -->
-        <van-tab title="待收币">
+        <van-tab :title="$t('components.orderTicket.purchase')">
           <BuyAccomplish></BuyAccomplish>
         </van-tab>
         <!-- 已收币订单 -->
-        <van-tab title="已收币">
+        <van-tab :title="$t('components.orderTicket.purchase_yi')">
           <BuyReceivedCoin></BuyReceivedCoin>
         </van-tab>
       </van-tabs>
@@ -37,7 +37,7 @@
 import BuyBlanketOrder from "@/components/orderFrom/BuyBlanketOrder.vue";
 import BuyPending from "@/components/orderFrom/BuyPending.vue";
 import BuyAccomplish from "@/components/orderFrom/BuyAccomplish.vue";
-import BuyReceivedCoin from "@/components/orderFrom/BuyReceivedCoin.vue"
+import BuyReceivedCoin from "@/components/orderFrom/BuyReceivedCoin.vue";
 
 export default {
   name: "my-purchase",
@@ -54,8 +54,8 @@ export default {
       default: () => [],
     },
   },
-  created(){
-      //console.log(this.$route.query)
+  created() {
+    //console.log(this.$route.query)
   },
   data() {
     return {
@@ -63,8 +63,6 @@ export default {
       active: "",
     };
   },
-
-
 };
 </script>
 
@@ -86,7 +84,7 @@ export default {
   background: none;
 }
 
-.content-box-container{
+.content-box-container {
   height: 100%;
   display: flex;
   flex: 1;

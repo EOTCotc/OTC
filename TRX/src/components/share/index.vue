@@ -9,12 +9,16 @@
         <img src="@/static/image/222.png" alt="" />
       </div>
       <div class="invite">
-        <van-cell title="邀请链接" :value="link" icon-prefix="iconfont">
+        <van-cell
+          :title="$t('components.share.share_link')"
+          :value="link"
+          icon-prefix="iconfont"
+        >
           <template #right-icon>
             <i class="iconfont icon-fuzhi icon" @click="handleCopy(link)"></i>
           </template>
         </van-cell>
-        <van-cell title="邀请码" :value="code">
+        <van-cell :title="$t('components.share.share_code')" :value="code">
           <template #right-icon>
             <i class="iconfont icon-fuzhi icon" @click="handleCopy(code)"></i>
           </template>
@@ -23,7 +27,7 @@
 
       <div class="share" @click="rqShow = true">
         <i class="iconfont icon-erweima"></i>
-        <p>分享二维码</p>
+        <p>{{ $t("components.share.share_qrcode") }}</p>
       </div>
     </div>
     <!-- <vue-canvas-poster
@@ -40,10 +44,15 @@
       <img class="hai" :src="url" alt="" />
     </van-popup> -->
     <van-popup v-model="rqShow" round class="rq">
-      <p>面对面邀请</p>
-      <vue-qr :logoSrc="imageUrl" :logoScale="0.2" :text="link" :size="200"></vue-qr>
-      <p>请使用</p>
-      <p>DAPP浏览器扫码</p>
+      <p>{{ $t("components.share.share_face") }}</p>
+      <vue-qr
+        :logoSrc="imageUrl"
+        :logoScale="0.2"
+        :text="link"
+        :size="200"
+      ></vue-qr>
+      <p>{{ $t("components.share.share_use") }}</p>
+      <p>{{ $t("components.share.share_dapp") }}</p>
     </van-popup>
   </div>
 </template>
@@ -106,10 +115,10 @@ export default {
       const that = this;
       this.$copyText(val)
         .then(() => {
-          Toast("复制成功");
+          Toast(this.$t("components.share.share_copy_suc"));
         })
         .catch(() => {
-          Toast("复制失败");
+          Toast(this.$t("components.share.share_copy_fail"));
         });
     },
     success(src) {

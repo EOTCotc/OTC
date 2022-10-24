@@ -4,26 +4,29 @@
     <div class="content">
       <both :info='info'></both>
       <div class="textbox">
-        <div class="cause">卖家发起仲裁，仲裁事件为{{ getArbitrateType(info.arbitrateInType) }}</div>
+        <div class="cause">{{ $t('components.arbitration.publicityDetail.content.event') }}{{ getArbitrateType(info.arbitrateInType) }}</div>
         <div class="result">
-          <p>仲裁结果</p>
-          本次参与仲裁判决的仲裁员共计{{ info.total }}人，通过双方提交举证，{{info.plaintiffNum}}位仲裁员判定原告方胜。
+          <p>{{ $t('components.arbitration.publicityDetail.content.result.title') }}</p>
+          {{ $t('components.arbitration.publicityDetail.content.result.text[0]') }}{{ info.total }}{{ $t('components.arbitration.publicityDetail.unit') }}，{{ $t('components.arbitration.publicityDetail.content.result.text[1]') }}，{{info.plaintiffNum}}{{ $t('components.arbitration.publicityDetail.content.result.text[2]') }}。
         </div>
         <div class="time">
-          <p>结案时间</p>
+          <p>{{ $t('components.arbitration.publicityDetail.content.time.title') }}</p>
           {{ transformDate(info.voteDate) }}
         </div>
         <div class="judgment">
-          <p class="title">公示判决</p>
+          <p class="title">{{ $t('components.arbitration.publicityDetail.content.sentence.title') }}</p>
           <div class="flex" v-for="item in info.votes" :key="item.number">
             <div class="right">
               <p>{{ item.name }}</p>
               <p>{{ item.number }}</p>
             </div>
-            <div class="left" :class="item.voteStatus === 1 ? 'colour1' : 'colour2'">
+            <div class="left" v-if='item.voteStatus > 0' :class="item.voteStatus === 1 ? 'colour1' : 'colour2'">
               <van-icon name="good-job-o" />
-              <p v-if="item.voteStatus === 1">原告</p>
-              <p v-else>被告</p>
+              <p v-if="item.voteStatus === 1">{{ $t('components.arbitration.publicityDetail.plaintiff') }}</p>
+              <p v-else>{{ $t('components.arbitration.publicityDetail.defendant') }}</p>
+            </div>
+            <div class="left colour2" v-else>
+              <p>{{ $t('components.arbitration.publicityDetail.content.result.status') }}</p>
             </div>
           </div>
         </div>
@@ -46,7 +49,7 @@ export default {
   },
   data() {
     return {
-      title: "仲裁案详情",
+      title: this.$t('components.arbitration.publicityDetail.navbar'),
       info: {},
       show: false,
     };
@@ -58,7 +61,7 @@ export default {
     transformDate,
     getArbitrateType,
     getDetail() {
-      const loading = $toast('loading', '加载中…')
+      const loading = $toast('loading', this.$t('components.arbitration.publicityDetail.loading.text'))
       detail(this.$route.query.id).then(res => {
         console.log(res)
         const data = res.items

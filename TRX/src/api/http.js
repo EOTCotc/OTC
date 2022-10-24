@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const http = axios.create({
-  baseURL: 'http://192.168.2.110:5555/',
+  baseURL: 'http://192.168.10.107:5555/',
   timeout: 10000
 })
 
@@ -27,9 +27,9 @@ http.interceptors.request.use(
 //响应拦截器
 http.interceptors.response.use(
   function (res) {
-    const {code, items} = res.data
+    const {code} = res.data
     if (code) {
-      return Promise.reject(items)
+      return Promise.reject(res.data)
     }
     return res.data;
   },

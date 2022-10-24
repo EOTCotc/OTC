@@ -7,17 +7,21 @@
           <selectNav @change-pay="changePay" @change-size="changeSize" />
         </div>
         <div class="ordernum" v-if="count!=0">
-          <p>当前有 {{count}} 笔订单待处理</p>
-          <van-button round size="small" type="primary" :to="{name:'orderGather-full'}">去处理</van-button>
+          <p>{{$t('components.chooseWay.currencyType.title[0]')}} {{count}} {{ $t('components.chooseWay.currencyType.title[1]') }}</p>
+          <van-button round size="small" type="primary" :to="{name:'orderGather-full'}">
+            {{$t('components.chooseWay.currencyType.handle')}}
+          </van-button>
         </div>
-        <van-loading size="24px" vertical v-if="listLoading">加载中...</van-loading>
+        <van-loading size="24px" vertical v-if="listLoading">
+          {{$t('components.chooseWay.currencyType.loading.text')}}
+        </van-loading>
         <payment_empty v-else-if="isShow_empty" />
 
         <van-tab v-for="(item, index) in typeList" v-else :title="item" :key="index">
           <van-list
             v-model="loading"
             :finished="finished"
-            finished-text="已经没有更多了..."
+            :finished-text="$t('components.chooseWay.currencyType.loading.finishedText')"
             @load="onLoad"
           >
             <!-- 交易列表 start -->
@@ -44,18 +48,18 @@
               </van-cell>
               <van-cell>
                 <template #title>
-                  <div class="left">数量 {{ items.num | ThousandSeparator }} {{ item }}</div>
+                  <div class="left">{{ $t('components.chooseWay.currencyType.text[0]') }} {{ items.num | ThousandSeparator }} {{ item }}</div>
                 </template>
                 <template #label>
                   <div>
-                    限额 {{ items.amount1 | ThousandSeparator }} -
+                    {{ $t('components.chooseWay.currencyType.text[1]') }} {{ items.amount1 | ThousandSeparator }} -
                     {{ items.amount2 | ThousandSeparator }} CNY
                   </div>
                   <Pay-Icons :items="items"></Pay-Icons>
                 </template>
                 <template>
                   <div class="right">
-                    <span>单价</span>
+                    <span>{{ $t('components.chooseWay.currencyType.text[2]') }}</span>
                   </div>
                 </template>
                 <template>
@@ -191,7 +195,7 @@ export default {
   methods: {
     async onLoad(params) {
       // 异步更新数据
-      this.$toast('正在努力加载中', {
+      this.$toast(this.$t('components.chooseWay.currencyType.loading.text'), {
         position: 'bottom-right',
         timeout: false,
       })
@@ -338,8 +342,8 @@ export default {
       } else {
         this.$toast.error(
           <div>
-            <p style="font-size:13px;margin:5px">需要实名认证才能进行交易</p>
-            <p style="font-size:13px;margin:5px">请您先完成实名认证！</p>
+            <p style="font-size:13px;margin:5px">${this.$t("components.chooseWay.currencyType.toast.error[0]")}</p>
+            <p style="font-size:13px;margin:5px">${this.$t("components.chooseWay.currencyType.toast.error[1]")}</p>
           </div>
         )
         return false
@@ -350,8 +354,8 @@ export default {
       } else {
         this.$toast.error(
           <div>
-            <p style="font-size:13px;margin:5px">您已存在一笔正在进行的购买订单</p>
-            <p style="font-size:15px;margin:5px">处理完成后方可继续交易!</p>
+            <p style="font-size:13px;margin:5px">${this.$t("components.chooseWay.currencyType.toast.error[2]")}</p>
+            <p style="font-size:15px;margin:5px">${this.$t("components.chooseWay.currencyType.toast.error[3]")}</p>
           </div>
         )
         return false
@@ -360,14 +364,14 @@ export default {
       if (userdsx >= '0') {
         payVeriFicationCount += 1
       } else {
-        this.$toast.warning('您已连续多次撤销订单，请明天再下单！')
+        this.$toast.warning(this.$t("components.chooseWay.currencyType.toast.error[4]"))
         return false
       }
       // myjifen 用户积分必须大于10
       if (Number(myjifen) >= 10) {
         payVeriFicationCount += 1
       } else {
-        this.$toast.error('您积分已不足 10 ，无法购买！')
+        this.$toast.error(this.$t("components.chooseWay.currencyType.toast.error[5]") + '10' + this.$t("components.chooseWay.currencyType.toast.error[6]"))
         return false
       }
       return payVeriFicationCount === 4
@@ -382,7 +386,7 @@ export default {
         return true
       } else {
         this.$toast.clear()
-        this.$toast.warning('您没有填写该收付款方式')
+        this.$toast.warning(this.$t("components.chooseWay.currencyType.toast.error[7]"))
         return false
       }
     },
@@ -415,7 +419,7 @@ export default {
     currency_Change(tag_Name, title) {
       this.$toast.clear()
       if (title !== 'USDT') {
-        this.$toast.error(`目前暂时不支持 ${title}`)
+        this.$toast.error(`${this.$t("components.chooseWay.currencyType.toast.error[8]")} ${title}`)
         this.$nextTick(() => {
           // this.active = 0
         })

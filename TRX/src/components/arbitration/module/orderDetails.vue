@@ -1,13 +1,13 @@
 <template>
   <van-collapse v-model="activeNames" :border="false">
-    <van-collapse-item title="订单详情" name="1">
+    <van-collapse-item :title="this.$t('components.arbitration.order.order.title')" name="1">
       <div class="orderFrom">
         <div class="indent" v-for="(item, index) in orderlist" :key="index">
           <p>{{ item.title }}</p>
           <p :class="item.show ? 'orange' : ''">{{ item.number }}</p>
         </div>
         <div class="message">
-          <p class="title">付款信息</p>
+          <p class="title">{{ this.$t('components.arbitration.order.pay.title') }}</p>
           <div
             class="messageList"
             v-for="(item, index) in messagelist"

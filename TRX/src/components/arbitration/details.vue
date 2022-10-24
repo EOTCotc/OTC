@@ -10,7 +10,7 @@
             :time="info.time"
             format="DD 天 HH 时 mm 分 "
           />
-          <p class='text' v-else>等待仲裁结果</p>
+          <p class='text' v-else>{{ $t('components.arbitration.pendingDetail.top.title') }}</p>
         </div>
 <!--        v-if="info.status === 0"-->
         <van-button
@@ -21,40 +21,17 @@
           v-if='!info.hasDelay'
           :to="{ name: 'adjourn', query: { id: $route.query.id } }"
         >
-          申请延期
+          {{ $t('components.arbitration.pendingDetail.top.delay') }}
         </van-button>
       </div>
       <div class="time">
-        <p>仲裁发起时间</p>
+        <p>{{ $t('components.arbitration.pendingDetail.time.title') }}</p>
         <p>{{ transformDate(info.createDate) }}</p>
       </div>
       <bothplan
-        v-if="info.status === 1"
         :info='info'
       ></bothplan>
-      <div v-else class="both">
-        <div class="bothBox">
-          <p class="accuser">原告</p>
-          <div>
-            <van-icon name="chat-o" color="#247FF7" size="16" />
-          </div>
-          <div>
-            <p>吴敏</p>
-            <span>(卖家)</span>
-          </div>
-        </div>
-        <div class="bothBox">
-          <p class="accused">被告</p>
-          <div>
-            <van-icon name="chat-o" color="#247FF7" size="16" />
-          </div>
-          <div>
-            <p>王晓雷</p>
-            <span>(买家)</span>
-          </div>
-        </div>
-      </div>
-      <div class="cause">卖家发起仲裁，仲裁事件为{{ getArbitrateType(info.arbitrateInType) }}</div>
+      <div class="cause">{{ $t('components.arbitration.pendingDetail.reason.text') }}{{ getArbitrateType(info.arbitrateInType) }}</div>
       <twosides
         :plaintiffId='info.plaintiffId'
         :defendantId='info.defendantId'
@@ -71,7 +48,8 @@
             block
             plain
             @click="cancelArbitrate"
-          >取消仲裁</van-button>
+          >{{ $t('components.arbitration.pendingDetail.cancel.button') }}
+          </van-button>
         </van-col>
         <van-col v-if='info.status === 0' :span='info.plaintiffUId === uid ? 12 : 24'>
           <van-button
@@ -79,7 +57,9 @@
             block
             color="#1B2945"
             :to='{ name: "additionalProof", query: { id: $route.query.id } }'
-          >追加举证</van-button>
+          >
+            {{$t('components.arbitration.pendingDetail.append')}}
+          </van-button>
         </van-col>
       </van-row>
     </div>
@@ -112,35 +92,35 @@ export default {
   },
   data() {
     return {
-      title: "仲裁案详情",
+      title: this.$t('components.arbitration.pendingDetail.navbar'),
       uid: '',
       orderlist: [
         {
-          title: "订单号",
+          title: this.$t('components.arbitration.order.order.number'),
           number: "7777781205789",
         },
         {
-          title: "交易数量",
+          title: this.$t('components.arbitration.order.order.quantity'),
           number: "997.00000 USDT",
         },
         {
-          title: "交易单价",
+          title: this.$t('components.arbitration.order.order.price'),
           number: "6.35 CNY",
         },
         {
-          title: "交易总价",
+          title: this.$t('components.arbitration.order.order.totalPrice'),
           number: "6350.00 CNY",
           show: true,
         },
         {
-          title: "交易时间",
+          title: this.$t('components.arbitration.order.order.createDate'),
           number: "2022.05.26 15:00:21",
         },
       ],
       messagelist: [
-        { title: "姓名", value: "李牧" },
-        { title: "开户银行", value: "工商银行" },
-        { title: "银行卡号", value: "4005633224656232" },
+        { title: this.$t('components.arbitration.order.pay.name'), value: "李牧" },
+        { title: this.$t('components.arbitration.order.pay.bank'), value: "工商银行" },
+        { title: this.$t('components.arbitration.order.pay.id'), value: "4005633224656232" },
       ],
       info: {}
     };
@@ -149,15 +129,15 @@ export default {
     transformDate,
     getArbitrateType,
     getDetail() {
-      const loading = $loading('加载中…')
+      const loading = $loading(this.$t('components.arbitration.pendingDetail.loading.text'))
       detail(this.$route.query.id).then(res => {
         const items = res.items
         items.total = items.plaintiffNum + items.defendantNum
         items.adduce = items.adduce.map(item => ({...item, images: item.images.split(',')}))
-        items.time = this.$dayjs(items.status === 0 ? items.adduceDate : items.voteDate).add('-8', 'hour').diff(this.$dayjs(), 'millisecond')
+        items.time = this.$dayjs(items.status === 0 ? items.adduceDate : items.voteDate).add(-8, 'hour').diff(this.$dayjs().utc(), 'millisecond')
         this.info = items
       }).catch((err) => {
-        $toast('fail', "加载失败！")
+        $toast('fail', this.$t('components.arbitration.pendingDetail.loading.fail'))
       }).finally(() => {
         loading.clear()
       })
@@ -165,13 +145,15 @@ export default {
     // 取消仲裁
     cancelArbitrate() {
       this.$dialog.confirm({
-        title: "取消仲裁",
-        message: "确认取消当前仲裁案",
+        title: this.$t('components.arbitration.pendingDetail.cancel.button'),
+        message: this.$t('components.arbitration.pendingDetail.cancel.message'),
         callback: action => {
           if (action === 'confirm') {
-            const loading = $loading('loading', '仲裁取消中…')
+            const loading = $loading('loading', this.$t('components.arbitration.pendingDetail.cancel.loading'))
             cancel(this.$route.query.id).then(res => {
-              $toast('success', '取消成功', () => this.$router.go(-1))
+              $toast('success', this.$t('components.arbitration.pendingDetail.cancel.success'), () => this.$router.go(-1))
+            }).catch(err => {
+              $toast('fail', err.message || this.$t('components.arbitration.pendingDetail.cancel.fail'))
             }).finally(() => {
               loading.clear()
             })

@@ -1,14 +1,14 @@
 <template>
   <div class="content">
-    <p class="title">身份认证</p>
+    <p class="title">{{ $t('components.accountstate.error.title') }}</p>
 
     <van-cell-group :border="false" class="field">
       <van-field
         :border="false"
         v-model="name"
         readonly
-        label="姓名"
-        name="naem"
+        :label="$t('components.accountstate.error.form.name.label')"
+        name="name"
       />
       <van-field
         v-model="phone"
@@ -16,30 +16,30 @@
         readonly
         type="number"
         name="phone"
-        label="手机号"
+        :label="$t('components.accountstate.error.form.phone.label')"
       />
       <van-field
         :border="false"
         v-model="ID"
         readonly
-        label="证件号"
+        :label="$t('components.accountstate.error.form.id.label')"
         name="ID"
       />
     </van-cell-group>
-    <p class="secondary">上传身份证</p>
+    <p class="secondary">{{ $t('components.accountstate.error.portrait.title') }}</p>
     <div class="idcard">
       <van-image :src="fileList1" @click="preview(0)" fit="cover" alt="" />
       <van-image :src="fileList2" @click="preview(1)" fit="cover" alt="" />
     </div>
-    <p class="secondary">上传手持证件照</p>
+    <p class="secondary">{{ $t('components.accountstate.error.handHeld.title') }}</p>
     <div class="hand">
       <van-image :src="fileList3" @click="preview(2)" fit="cover" alt="" />
     </div>
     <div class="footer">
-      <p>打回原因</p>
+      <p>{{ $t('components.accountstate.error.reason') }}</p>
       <span e class="hint">{{ hintText }}</span>
       <van-button round block color="#1B2945" :to="{ name: 'identity' }"
-        >重新审核</van-button
+        >{{ $t('components.accountstate.error.button') }}</van-button
       >
     </div>
   </div>

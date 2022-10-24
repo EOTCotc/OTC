@@ -11,19 +11,19 @@
       title-active-color="#fff"
       title-inactive-color="#8D94A2"
     >
-      <van-tab title="收购单">
+      <van-tab :title="$t('components.orderTicket.orderTicket')">
         <!-- 收购单 -->
         <purchase :purchaseList="mypurchaseList" ref="shoping"></purchase>
       </van-tab>
-      <van-tab title="出售单">
+      <van-tab :title="$t('components.orderTicket.ticket')">
         <!-- 出售单 -->
         <OnOffer ref="sell"></OnOffer>
       </van-tab>
     </van-tabs>
 
     <div class="footer">
-      <div v-if="!setShow" @click="message">信息设置</div>
-      <div v-else @click="message">商家设置</div>
+      <div v-if="!setShow" @click="message">{{$t('components.orderTicket.tags1')}}</div>
+      <div v-else @click="message">{{$t('components.orderTicket.tags2')}}</div>
       <div
         :class="active == 0 ? 'back-color' : 'back-color2'"
         @click="buyEvent()"
@@ -35,12 +35,12 @@
     <!-- 未填写收付款信息，提示弹窗 -->
     <van-popup v-model="show" round closeable class="popup">
       <div class="popup_content">
-        <p class="popup_title">商家信息设置提示</p>
+        <p class="popup_title">{{$t('components.orderTicket.tags3')}}</p>
         <p class="popup_text">
-          当前信息设置未完善，缺少姓名、商家名称、联系电话、出售提示、收款提示
+          {{$t('components.orderTicket.tags4')}}
         </p>
         <van-button round type="info" color="#1B2945" block @click="message">
-          去设置
+          {{$t('components.orderTicket.tags5')}}
         </van-button>
       </div>
     </van-popup>
@@ -85,11 +85,11 @@ export default {
     });
     if (this.method && this.method === "buy") {
       this.active = 0;
-      this.buy = "收购";
+      this.buy = this.$t('components.orderTicket.buy');
       return false;
     } else if (this.method === "sell") {
       this.active = 1;
-      this.buy = "出售";
+      this.buy = this.$t('components.orderTicket.sell');
       return false;
     }
     this.active = 0;
@@ -107,9 +107,9 @@ export default {
     //切换时改变文字
     switched(name, title) {
       if (name == 0) {
-        this.buy = "收购";
+        this.buy = this.$t('components.orderTicket.buy');
       } else {
-        this.buy = "出售";
+        this.buy = this.$t('components.orderTicket.sell');
       }
     },
     //跳转商家设置
@@ -150,7 +150,7 @@ export default {
         }
         const { data } = await Bususer();
         if (data == null) {
-          this.$toast.warning("请完善商家基本信息");
+          this.$toast.warning(this.$t('components.orderTicket.warn'));
           return false;
         }
         this.$router.push({

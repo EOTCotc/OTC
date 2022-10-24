@@ -8,10 +8,10 @@
             v-model="userName"
             name="userName"
             type="text"
-            label="姓 名"
+            :label="$t('components.Receiving.name')"
             readonly
             :rules="nameRules"
-            placeholder="请输入真实姓名"
+            :placeholder="$t('components.Receiving.name_pla')"
           />
           <van-field
             v-model="userBankName"
@@ -19,9 +19,9 @@
             name="bankName"
             v-if="paymentIndex == 0"
             show-error
-            label="开户银行"
+            :label="$t('components.Receiving.kaihu')"
             :rules="bankRulesFlg ? bankNameRules : noRules"
-            placeholder="请输入开户银行"
+            :placeholder="$t('components.Receiving.kaihui_pla')"
             @focus="fieldFocus(0)"
           />
           <van-field
@@ -30,9 +30,9 @@
             name="bankNumber"
             v-if="paymentIndex == 0"
             show-error
-            label="银行卡号"
+            :label="$t('components.Receiving.banknum')"
             :rules="bankRulesFlg ? bankNumberRules : noRules"
-            placeholder="请输入银行卡账号"
+            :placeholder="$t('components.Receiving.banknum_pla')"
             @focus="fieldFocus(0)"
           />
           <van-field
@@ -41,9 +41,9 @@
             name="alipayName"
             v-if="paymentIndex == 1"
             show-error
-            label="支 付 宝"
+            :label="$t('components.Receiving.alipay')"
             :rules="alipayRulesFlg ? alipayNumberRules : noRules"
-            placeholder="请输入支付宝账号"
+            :placeholder="$t('components.Receiving.alipay_pla')"
             @focus="fieldFocus(0)"
           />
           <van-field
@@ -52,17 +52,17 @@
             name="wechatName"
             v-if="paymentIndex == 2"
             show-error
-            label="微 信 号"
+            :label="$t('components.Receiving.wechat')"
             :rules="wechatRulesFlg ? wechatNumberRules : noRules"
-            placeholder="请输入微信账号"
+            :placeholder="$t('components.Receiving.wechat_pla')"
             @focus="fieldFocus(0)"
           />
         </van-cell-group>
 
         <div class="bottomBtnDiv">
-          <van-button round block class="okBottomBtn" native-type="submit"
-            >提交</van-button
-          >
+          <van-button round block class="okBottomBtn" native-type="submit">{{
+            $t("global.submit")
+          }}</van-button>
         </div>
       </van-form>
     </div>
@@ -76,7 +76,9 @@
       @click-overlay="popclose()"
     >
       <div v-show="loadingFlg" class="loadingDiv">
-        <van-loading type="spinner" size="24px" vertical>加载中...</van-loading>
+        <van-loading type="spinner" size="24px" vertical>{{
+          $t("global.loading")
+        }}</van-loading>
       </div>
       <div class="popupTop">
         <van-row>
@@ -99,32 +101,32 @@
         <div class="popupForm" v-show="state == 1">
           <van-cell-group>
             <van-cell
-              title="姓名"
+              :title="$t('global.name')"
               :value="popup.popupForm.name"
               v-show="userName != ''"
               :border="false"
             />
             <van-cell
-              title="开户银行"
+              :title="$t('components.Receiving.kaihu')"
               :value="popup.popupForm.bankName"
               v-show="userBankName != ''"
               :border="false"
             />
             <van-cell
-              title="银行账号"
+              :title="$t('components.Receiving.bankaccount')"
               class="yh_accout"
               :value="popup.popupForm.bankNumber"
               v-show="userBankNumber != ''"
               :border="false"
             />
             <van-cell
-              title="支付宝"
+              :title="$t('global.alipay')"
               :value="popup.popupForm.alipayNumber"
               v-show="userAlipayNumber != ''"
               :border="false"
             />
             <van-cell
-              title="微信"
+              :title="$t('global.wechat')"
               :value="popup.popupForm.wechatNumber"
               v-show="userWechatNumber != ''"
               :border="false"
@@ -137,7 +139,7 @@
             @change="checked_change"
             icon-size="20px"
           >
-            我已认证核对
+            {{$t('components.Receiving.renzheng')}}
           </van-checkbox>
         </div>
         <div class="bottomBtnDiv">
@@ -166,7 +168,7 @@ export default {
   name: "my-receivig",
   data() {
     return {
-      title: "设置收付款信息",
+      title: this.$t('components.Receiving.title'),
       verfyMsg: "",
       show: false,
       state: 0,
@@ -196,7 +198,7 @@ export default {
       nameRules: [
         {
           required: true,
-          message: "名称不能为空",
+          message: this.$t('components.Receiving.msg'),
           trigger: "onBlur",
         },
         {
@@ -205,7 +207,7 @@ export default {
               value
             );
           },
-          message: "名称需要两位字符以上！",
+          message: this.$t('components.Receiving.msg2'),
           trigger: "onBlur",
         },
       ],
@@ -214,18 +216,17 @@ export default {
           validator: (value) => {
             return /^[\u4e00-\u9fa5]{4,}$/.test(value);
           },
-          message: "请输入正确的开户银行",
+          message: this.$t('components.Receiving.msg3'),
           trigger: "onBlur",
         },
       ],
       bankNumberRules: [
         {
           validator: (value) => {
-            
             return /^(\d{16,19})$/.test(value);
             // return /^([1-9]{1})(\d{14}|\d{18})$/.test(value);
           },
-          message: "请输入正确的银行卡号码",
+          message: this.$t('components.Receiving.msg4'),
           trigger: "onBlur",
         },
       ],
@@ -236,7 +237,7 @@ export default {
               value
             );
           },
-          message: "请输入正确的支付宝账号",
+          message: this.$t('components.Receiving.msg5'),
           trigger: "onBlur",
         },
       ],
@@ -245,35 +246,35 @@ export default {
           validator: (value) => {
             return /^[a-zA-Z][-_a-zA-Z0-9]{5,19}$/.test(value);
           },
-          message: "请输入正确的微信账号",
+          message: this.$t('components.Receiving.msg6'),
           trigger: "onBlur",
         },
       ],
       withdrawAddressRules: [
         {
           required: true,
-          message: "提币地址不能为空",
+          message: this.$t('components.Receiving.msg7'),
           trigger: "onBlur",
         },
         {
           validator: (value) => {
             return /(^[T][a-zA-Z0-9]{33}$)/.test(value);
           },
-          message: "请输入正确的提币地址",
+          message: this.$t('components.Receiving.msg8'),
           trigger: "onBlur",
         },
       ],
       dealPasswordRules: [
         {
           required: true,
-          message: "交易密码不能为空",
+          message: this.$t('components.Receiving.msg9'),
           trigger: "onBlur",
         },
         {
           validator: (value) => {
             return /^(?=.*[a-zA-Z])(?=.*\d)[^]{8,16}$/.test(value);
           },
-          message: "交易密码需要由字母和数字组成，且在8-16之间",
+          message: this.$t('components.Receiving.msg10'),
           trigger: "onBlur",
         },
       ],
@@ -298,7 +299,7 @@ export default {
     this.paymentIndex = this.$route.params.paymentIndex;
     if (![0, 1, 2].includes(this.paymentIndex)) {
       this.$router.back();
-      this.$toast.warning("暂不支持该收付款方式");
+      this.$toast.warning(this.$t('components.Receiving.warn'));
     }
     if (this.paymentIndex === 0) {
       this.userBankName = this.$route.params.curPay_type;
@@ -365,11 +366,11 @@ export default {
             (this.userBankName !== "" && this.userBankNumber === "") ||
             (this.userBankName === "" && this.userBankNumber !== "")
           ) {
-            Toast("银行信息请填写完整！");
+            Toast(this.$t('components.Receiving.toast'));
             this.formFlg = false;
           }
         } else {
-          Toast("请填写最少一种支付方式");
+          Toast(this.$t('components.Receiving.toast2'));
           this.formFlg = false;
         }
       }
@@ -419,7 +420,7 @@ export default {
         (this.userBankName != "" && this.userBankNumber == "") ||
         (this.userBankName == "" && this.userBankNumber != "")
       ) {
-        Toast("请输入银行卡的完整信息");
+        Toast(this.$t('components.Receiving.toast3'));
       }
       this.submitCheck();
       let flg = false;
@@ -442,9 +443,9 @@ export default {
             //console.log("信息验证成功", values);
             this.vaild_fromData = values;
             this.popup = {
-              title: "温馨提示",
-              msg: "收付款信息涉及交易，请核对信息无误之后再进行提交",
-              btnName: "好的",
+              title: this.$t('components.Receiving.tip'),
+              msg: this.$t('components.Receiving.msg11'),
+              btnName: this.$t('components.Receiving.ok'),
               popupFormFlg: false,
               popupForm: {
                 name: "",
@@ -464,8 +465,8 @@ export default {
       if (this.state == 0) {
         this.formBtnFlg = true;
         this.popup = {
-          title: "温馨提示",
-          msg: "请确认当前信息无误",
+          title: this.$t('components.Receiving.tip'),
+          msg: this.$t('components.Receiving.msg12'),
           popupFormFlg: true,
           popupForm: {
             name: this.userName,
@@ -474,7 +475,7 @@ export default {
             alipayNumber: this.userAlipayNumber,
             wechatNumber: this.userWechatNumber,
           },
-          btnName: "确定",
+          btnName: this.$t('global.confirm2'),
         };
         this.state++;
       } else {
@@ -500,7 +501,7 @@ export default {
           });
           //console.log(data);
           if (Number(data.State) < 0) {
-            this.$toast.error("设置失败，请重试。。。");
+            this.$toast.error(this.$t('components.Receiving.error'));
             return false;
           }
           if (this.paymentIndex === 0) {
@@ -516,7 +517,7 @@ export default {
             })
             .catch((err) => {});
         } catch (err) {
-          this.$toast.error("设置失败，请重试。。。");
+          this.$toast.error(this.$t('components.Receiving.error'));
           console.warn(err);
         }
 
@@ -525,7 +526,7 @@ export default {
         this.isclose_on_click_overlay = true;
         // 验证成功后，调用接口
         this.state = 0;
-        Toast("添加付款方式成功！");
+        Toast(this.$t('components.Receiving.toast4'));
       }
     },
   },
@@ -533,9 +534,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
-.yh_accout{
-  /deep/ .van-cell__title{
+.yh_accout {
+  /deep/ .van-cell__title {
     flex: 0;
     flex-basis: 150px;
   }

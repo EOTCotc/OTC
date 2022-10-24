@@ -7,8 +7,8 @@
           readonly
           clickable
           :value="value"
-          label="钱包地址"
-          placeholder="点击选择钱包地址"
+          :label="$t('components.team.transfer_wallet')"
+          :placeholder="$t('components.team.transfer_wallet_tab')"
           @click="showPicker = true"
         />
         <van-popup v-model="showPicker" round position="bottom">
@@ -24,8 +24,8 @@
           readonly
           clickable
           :value="money"
-          label="选择币种"
-          placeholder="点击选择币种"
+          :label="$t('components.team.transfer_currency')"
+          :placeholder="$t('components.team.transfer_currency_tab')"
           @click="moneyShow = true"
         />
         <van-popup v-model="moneyShow" round position="bottom">
@@ -40,8 +40,8 @@
         <van-field
           v-model="number"
           type="number"
-          name="转账数量"
-          label="转账数量"
+          :name="$t('components.team.transfer_accounts')"
+          :label="$t('components.team.transfer_accounts')"
           ref="num"
           :placeholder="text"
           @focus="focus()"
@@ -62,9 +62,11 @@
             :disabled="
               value != '' && money != '' && number != '' ? false : true
             "
-            >确定</van-button
+            >{{ $t("golbal.confirm2") }}</van-button
           >
-          <p class="transfer" @click="checkEvent">查看转账记录</p>
+          <p class="transfer" @click="checkEvent">
+            {{ $t("components.team.transfer_record") }}
+          </p>
         </div>
       </van-form>
     </div>
@@ -80,7 +82,7 @@ export default {
   //转账页面
   data() {
     return {
-      title: "转账",
+      title: this.$t("components.team.transfer_data1"),
       showPicker: false,
       value: "",
       columns: [],
@@ -97,7 +99,6 @@ export default {
 
       maxnum: "",
       text: "",
-
     };
   },
   components: {
@@ -118,11 +119,15 @@ export default {
     },
 
     checkEvent() {
-      let net =localStorage.getItem('netType')
-      if(net=='trx'){
-        window.location.href=`https://tronscan.io/#/address/${localStorage.getItem('myaddress')}/transfers`
-      }else if(net=='bsc'){
-        window.location.href=`https://bscscan.com/address/${localStorage.getItem('myaddress')}#tokentxns`
+      let net = localStorage.getItem("netType");
+      if (net == "trx") {
+        window.location.href = `https://tronscan.io/#/address/${localStorage.getItem(
+          "myaddress"
+        )}/transfers`;
+      } else if (net == "bsc") {
+        window.location.href = `https://bscscan.com/address/${localStorage.getItem(
+          "myaddress"
+        )}#tokentxns`;
       }
     },
     init(uid) {
@@ -152,28 +157,32 @@ export default {
       let data = UserInfo();
       if (value == "USDT") {
         this.maxnum = data.myamount;
-        this.text = `可转账 ${this.maxnum}USDT`;
+        this.text = `${this.$t("components.team.transfer_data2")} ${
+          this.maxnum
+        }USDT`;
       } else {
         this.maxnum = data.eotcAmount;
-        this.text = `可转账 ${this.maxnum}EOTC`;
+        this.text = `${this.$t("components.team.transfer_data2")} ${
+          this.maxnum
+        }EOTC`;
       }
       this.moneyShow = false;
     },
     focus() {
       if (this.money == "") {
         this.$refs.num.blur();
-        this.$toast.warning("请先选择币种！");
+        this.$toast.warning(this.$t("components.team.transfer_data3"));
         this.moneyShow = true;
       }
     },
     blur() {
       if (this.number <= 0) {
         this.number = "";
-        this.$toast.warning("请输入合法的数量！");
+        this.$toast.warning(this.$t("components.team.transfer_data4"));
       }
       if (this.number > this.maxnum) {
         this.number = "";
-        this.$toast.warning("您的钱包余额不足！");
+        this.$toast.warning(this.$t("components.team.transfer_data5"));
       }
     },
   },

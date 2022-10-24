@@ -3,7 +3,7 @@
     <White :title="title"></White>
     <div class="content">
       <div class="text">
-        <van-cell-group title="当前绑定地址" :border="false">
+        <van-cell-group :title="$t('components.chain.detail.title')" :border="false">
           <van-cell value="" :border="false">
             <template #title>
               <span>{{ myaddress }}</span>
@@ -13,9 +13,9 @@
               ></i>
             </template>
             <div class="changeBtn">
-              <span v-if="impower" @click="sure">重新授权</span>
+              <span v-if="impower" @click="sure">{{ $t('components.chain.detail.confirm') }}</span>
 
-              <span v-else @click="close">取消授权</span>
+              <span v-else @click="close">{{ $t('components.chain.detail.cancel') }}</span>
               <!-- <span>解除绑定</span> -->
             </div>
           </van-cell>
@@ -24,7 +24,7 @@
         <div class="line"></div>
 
         <van-cell-group
-          title="其他地址"
+          :title="$t('components.chain.other.title')"
           :border="false"
           v-if="historyList.length != 0"
         >
@@ -117,21 +117,21 @@ export default {
     },
 
     async close() {
-      await usdtsend(0, '取消授权')
+      await usdtsend(0, this.$t('components.chain.detail.cancel'))
       this.impower = true
     },
     async sure() {
-      await usdtsend(1000000, '请先给智能合约授权')
+      await usdtsend(1000000, this.$t('components.chain.tip[0]'))
       this.impower = false
     },
     handleCopy(val) {
       const that = this
       this.$copyText(val)
         .then(() => {
-          Toast('复制成功')
+          Toast(this.$t('components.chain.copy.success'))
         })
         .catch(() => {
-          Toast('复制失败')
+          Toast(this.$t('components.chain.copy.fail'))
         })
     },
   },

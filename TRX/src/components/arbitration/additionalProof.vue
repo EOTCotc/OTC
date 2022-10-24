@@ -3,36 +3,35 @@
     <white :title="title"></white>
     <div class="content">
       <div class="text">
-        <p>文字信息举证</p>
+        <p>{{ $t('components.arbitration.additionalProof.form.text.title') }}</p>
         <van-field
           v-model="message"
           rows="2"
           :autosize={maxHeight:192}
           type="textarea"
           maxlength="3000"
-          placeholder="描述具体情况及提供仲裁员可核实情况所需信息"
+          :placeholder="$t('components.arbitration.additionalProof.form.text.placeholder')"
           show-word-limit
         />
-        <p>如提交相关查询密码请注意保证个人资产安全</p>
+        <p>{{ $t('components.arbitration.additionalProof.form.text.text') }}</p>
       </div>
       <div class="image">
-        <p>图片信息举证</p>
+        <p>{{ $t('components.arbitration.additionalProof.form.upload.title') }}</p>
         <van-uploader
           v-model="fileList"
           :after-read="afterRead"
           preview-size=100
           :max-count="6"
         />
-        <p>
-          特别提示:
-          伪造变造打款凭证是严重违法行为，请确保提交证据为真实有效的信息
-        </p>
+        <p>{{ $t('components.arbitration.additionalProof.form.upload.text') }} </p>
       </div>
       <div class="stance">
 
       </div>
       <div class="button">
-        <van-button color="#1B2945" round block>提交</van-button>
+        <van-button color="#1B2945" round block>
+          {{ $t('components.arbitration.additionalProof.form.submit') }}
+        </van-button>
     </div>
     </div>
     
@@ -48,7 +47,7 @@ export default {
   },
   data() {
     return {
-      title: "追加举证",
+      title: this.$t('components.arbitration.additionalProof.navbar'),
       message: "",
       fileList: [],
     };
@@ -81,6 +80,9 @@ export default {
     }
   }
   .image {
+    p {
+      white-space: pre-wrap;
+    }
     p:first-child {
       font-size: 32px;
       margin-bottom: 20px;
