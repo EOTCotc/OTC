@@ -1,55 +1,10 @@
-<script>
-import dealPay from "./components-deal/sale-deal-pay.vue";
-
-export default {
-  name: "sale-fllow",
-  props: ["curPayData", "activePayType"],
-  components: {
-    dealPay,
-  },
-  data() {
-    return {
-      time: 45 * 1000,
-      activeName: "size",
-      delayTimeshow: false,
-    };
-  },
-  methods: {
-    initTime() {
-      setTimeout(() => {
-        this.delayTimeshow = true;
-        Promise.resolve().then(() => {
-          this.$refs["countDown"].reset();
-        });
-      }, 300);
-    },
-    closeDelayTimeModel() {
-      this.delayTimeshow = false;
-    },
-    finishReset() {
-      this.$refs["countDown"].reset();
-    },
-    open_input() {
-      const container = this.$refs["pay-fllow-container"].parentElement;
-      container.style.transition = "all .6s";
-      container.style.height = "80%";
-    },
-    close_input() {
-      const container = this.$refs["pay-fllow-container"].parentElement;
-      container.style.transition = "all .4s";
-      container.style.height = "54%";
-    },
-  },
-};
-</script>
-
 <template>
   <div class="pay-fllow" ref="pay-fllow-container">
     <!-- start 支付交易头信息 -->
     <header class="header">
       <img
         :src="
-          require(`@/assets/currency-icons/${activePayType.toLowerCase()}.svg`)
+          require(`@/assets/currency-icons/${activePayType.toLowerCase()}.png`)
         "
         class="icon-img"
         alt="USDC"
@@ -59,7 +14,7 @@ export default {
         <div class="top-main-container">
           <div class="top-txt">单价 ￥{{ curPayData.cny }}</div>
           <van-count-down
-           v-if="delayTimeshow"
+            v-if="delayTimeshow"
             ref="countDown"
             @finish="finishReset"
             :time="time"
@@ -101,6 +56,53 @@ export default {
     <!-- end / 支付交易主题信息 -->
   </div>
 </template>
+
+<script>
+import dealPay from './components-deal/sale-deal-pay.vue'
+
+export default {
+  name: 'sale-fllow',
+  props: ['curPayData', 'activePayType'],
+  components: {
+    dealPay,
+  },
+  data() {
+    return {
+      time: 45 * 1000,
+      activeName: 'size',
+      delayTimeshow: false,
+    }
+  },
+  methods: {
+    initTime() {
+      setTimeout(() => {
+        this.delayTimeshow = true
+        Promise.resolve().then(() => {
+          this.$refs['countDown'].reset()
+        })
+      }, 300)
+    },
+    closeDelayTimeModel() {
+      this.delayTimeshow = false
+    },
+    finishReset() {
+      this.$refs['countDown'].reset()
+    },
+    open_input() {
+      const container = this.$refs['pay-fllow-container'].parentElement
+      container.style.transition = 'all .6s'
+      container.style.height = '80%'
+    },
+    close_input() {
+      const container = this.$refs['pay-fllow-container'].parentElement
+      container.style.transition = 'all .4s'
+      container.style.height = '54%'
+    },
+  },
+}
+</script>
+
+
 
 <style lang="less" scoped>
 .pay-fllow {

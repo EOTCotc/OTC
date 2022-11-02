@@ -32,7 +32,7 @@
         </div>
         <div>
           <p>数量</p>
-          <p>{{ orderItem.num }} USDT</p>
+          <p>{{ orderItem.num }} {{kind}}</p>
         </div>
         <div>
           <p>限额</p>
@@ -80,7 +80,7 @@
             <p class="cell_title">数量</p>
             <div class="inputs">
               <input readonly type="number" v-model="number" @blur="onNumInput($event)" />
-              <p>USDT</p>
+              <p>{{kind}}</p>
             </div>
           </div>
           <div class="cell">
@@ -93,7 +93,7 @@
               </div>
               <div class="inputs cell_Width">
                 <input type="number" v-model="MinDigitalCash" @blur="onMinDigitalCash" />
-                <p>USDT</p>
+                <p>{{kind}}</p>
                 <span v-if="eror[1]" class="error-text">输入金额不正确</span>
               </div>
             </div>
@@ -105,7 +105,7 @@
               </div>
               <div class="inputs cell_Width">
                 <input type="number" v-model="MaxDigitalCash" @blur="onMaxDigitalCash" />
-                <p>USDT</p>
+                <p>{{kind}}</p>
                 <span v-if="eror[3]" class="error-text">输入金额不正确</span>
               </div>
             </div>
@@ -215,6 +215,9 @@ export default {
     orderItem: {
       type: [Object],
     },
+    coinId: {
+      type: [String, Number],
+    },
   },
   data() {
     return {
@@ -247,10 +250,23 @@ export default {
       isChange_orderInfo: false,
       eror: [false, false, false, false], // 对应错误信息展示
       vali_value: true, //所有值是否有效
+
+      address: '',
+      kind: '',
     }
   },
   created() {
-    console.log(this.orderItem)
+    console.log(this.coinId)
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == this.coinId) {
+        this.address = i.ads
+        this.kind=i.name
+        break
+      }else{
+        this.kind='TRX'
+      }
+    }
     this.price = this.orderItem.cny
     this.number = this.orderItem.num
     this.MaxLegalTender = this.orderItem.amount2
@@ -261,18 +277,22 @@ export default {
   methods: {
     //追加出售的usdt的数量
     async addOrderNum_yes() {
+      console.log(this.coinId)
       const usdtNum = this.val_addNum
-      // if (parseFloat(usdtNum) + parseFloat(this.number) > 5000) {
-      //   this.$toast.warning("数量已超出限制！");
-      //   return false;
-      // }
+
       this.isContractCheckLoading = true
 
       console.log(usdtNum)
       try {
-        await Reconstruction_getTrxBalance()
-        await Reconstruction_myApprove(usdtNum)
-        await addSellOrder(usdtNum.toString(), this.orderItem.id)
+        if (this.coinId != window.itself) {
+          await Reconstruction_getTrxBalance()
+          console.log(this.address)
+          await Reconstruction_myApprove(usdtNum, this.address)
+        } else {
+          await Reconstruction_getTrxBalance(usdtNum)
+        }
+        await addSellOrder(usdtNum.toString(), this.orderItem.id, this.coinId)
+
         //console.log(this.orderItem.id);
         await UPdateOrder_sj({
           amount1: this.MinLegalTender,
@@ -288,11 +308,11 @@ export default {
         localStorage.setItem('myamount', mynum)
         PubSub.publish('update-selltotal-orderData')
       } catch (err) {
-        console.warn('err', err)
+        console.log('err', err)
         this.$toast.clear()
-        this.$toast.warning(+err, {
-          timeout: false,
-        })
+        // this.$toast.warning(err, {
+        //   timeout: false,
+        // })
       }
       this.isContractCheckLoading = false
     },
@@ -344,10 +364,10 @@ export default {
       try {
         if (this.close_Num * 1 > 0 && this.close_Num * 1 <= this.number) {
           const usdt = this.close_Num
-          // console.log(usdt)
+          console.log(this.coinId)
 
-          await cancelOrders(this.orderItem.id, usdt)
-          // console.log(this.price,this.number,this.MinLegalTender,this.MaxLegalTender,this.orderItem.id)
+          await cancelOrders(this.orderItem.id, usdt,this.coinId)
+          
           await UPdateOrder_sj({
             cny: this.price,
             num: this.close_Num,
@@ -568,7 +588,7 @@ export default {
         message: '校验中...',
         forbidClick: true,
       })
-      GetmyUSDT(this.orderItem.id, this.orderItem.num, 1)
+      GetmyUSDT(this.orderItem.id, this.orderItem.num, 1,this.coinId)
         .catch((err) => {
           console.log(222)
           this.$emit('repetition', err)

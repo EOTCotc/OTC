@@ -6,11 +6,7 @@
       :size="{ width: '35px', height: '35px' }"
       :style="{ fill: 'rgb(219,9, 9)' }"
     ></VueLoading>
-    <van-empty
-      class="null"
-      v-else-if="dataList.length == 0"
-      description="暂无订单信息"
-    />
+    <van-empty class="null" v-else-if="dataList.length == 0" description="暂无订单信息" />
 
     <div v-else class="order" v-for="(item, index) in dataList" :key="index">
       <div class="title">
@@ -32,7 +28,7 @@
         </div>
         <div>
           <p>交易数量</p>
-          <p>{{ item.num }} USDT</p>
+          <p>{{ item.num }} {{coinType}}</p>
         </div>
         <div>
           <p>交易单价</p>
@@ -49,11 +45,14 @@
               v-if="!isContractCheckList[index]"
               :style="{ color: 'red' }"
               @click="handleContractCheck(item, index)"
-              >请先校验合约&nbsp;<van-icon name="arrow"
-            /></span>
-            <span v-else :style="{ color: '#999' }"
-              >详细信息&nbsp;<van-icon name="arrow-down"
-            /></span>
+            >
+              请先校验合约&nbsp;
+              <van-icon name="arrow" />
+            </span>
+            <span v-else :style="{ color: '#999' }">
+              详细信息&nbsp;
+              <van-icon name="arrow-down" />
+            </span>
           </p>
         </div>
         <div v-if="isContractCheckList[index]">
@@ -70,7 +69,7 @@
                     class="xj_moeny"
                     :style="{ marginTop: '5px' }"
                     src="@/assets/currency-icons/moeny-c.png"
-                    alt=""
+                    alt
                   />
                 </i>
                 <i
@@ -86,10 +85,7 @@
                   v-else-if="getPayInfo(item)[2].trim() === '微信'"
                   :class="['iconfont', `icon-wx`, `pay-iconwx`, `pay-icon3`]"
                 ></i>
-                <i
-                  v-else
-                  :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"
-                ></i>
+                <i v-else :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"></i>
                 &nbsp;{{ getPayInfo(item)[2] }}
               </span>
             </p>
@@ -119,9 +115,7 @@
           :disabled="!isContractCheckList[index]"
           type="info"
           @click="sure(item)"
-        >
-          确认已付款
-        </van-button>
+        >确认已付款</van-button>
       </div>
     </div>
 
@@ -138,16 +132,15 @@
         <p class="title">确认已付款</p>
         <van-divider />
         <p class="text">
-          尚未付款就点击<span :style="{ color: 'red' }">【我已完成转账】</span
-          >将被视为恶意操作，<span :style="{ color: 'red' }"
-            >恶意操作会冻结用户</span
-          >
+          尚未付款就点击
+          <span :style="{ color: 'red' }">【我已完成转账】</span>将被视为恶意操作，
+          <span :style="{ color: 'red' }">恶意操作会冻结用户</span>
         </p>
         <ul>
           <li>
             <span>转账金额</span>
-            <span
-              >￥
+            <span>
+              ￥
               {{ activeItem.amount1 }}
             </span>
           </li>
@@ -157,11 +150,7 @@
               :style="{ display: 'flex', alignItems: 'center' }"
               v-if="getPayInfo(activeItem)[2].trim() === '现金交易'"
             >
-              <img
-                class="xj_moeny"
-                src="@/assets/currency-icons/moeny-c.png"
-                alt="xj"
-              />
+              <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;
               <span>现金交易</span>
             </span>
@@ -174,13 +163,10 @@
                 v-else-if="getPayInfo(activeItem)[2].trim() === '微信'"
                 :class="['iconfont', `icon-wx`, `pay-iconwx`, `pay-icon3`]"
               ></i>
-              <i
-                v-else
-                :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"
-              ></i>
+              <i v-else :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"></i>
               {{ getPayInfo(activeItem)[2] }}
-              ({{ getPayInfo(activeItem)[1] | filterContent }})</span
-            >
+              ({{ getPayInfo(activeItem)[1] | filterContent }})
+            </span>
           </li>
         </ul>
         <van-checkbox shape="square" v-model="checked">我已确认</van-checkbox>
@@ -192,35 +178,43 @@
             color="#1B2945"
             block
             :disabled="!checked"
-            >我已完成转账</van-button
-          >
+          >我已完成转账</van-button>
           <p @click="close">我再想想</p>
         </div>
       </div>
     </van-popup>
 
-    <van-dialog
-      v-model="isContractCheckLoading"
-      get-container="body"
-      :showConfirmButton="false"
-    />
+    <van-dialog v-model="isContractCheckLoading" get-container="body" :showConfirmButton="false" />
   </div>
 </template>
 
 <script>
-import { Eotcdis_Order, UpdateOrderType } from "@/api/trxRequest";
+import { Eotcdis_Order, UpdateOrderType } from '@/api/trxRequest'
 
-import { GetmyUSDT_User } from "@/utils/web3";
+import { GetmyUSDT_User } from '@/utils/web3'
 
-import loadingToast from "@/components/loading-toast";
+import loadingToast from '@/components/loading-toast'
 
-import { VueLoading } from "vue-loading-template";
+import { VueLoading } from 'vue-loading-template'
+
+import { getcoinID } from '@/utils/utils'
 
 export default {
   // 待处理订单
-  name: "pending-order",
+  name: 'pending-order',
   components: {
     VueLoading,
+  },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    active: {
+      type: [String,Number],
+    },
+    coinType: {
+      type: [String],
+    },
   },
   data() {
     return {
@@ -228,37 +222,45 @@ export default {
       checked: false,
       dataList: [],
       showLoading: true, // 加载loading
-      activeItem: { sname: "xxx&xxx&xxx", amount1: "0" },
+      activeItem: { sname: 'xxx&xxx&xxx', amount1: '0' },
       isContractCheckList: [], // 合约校验结果列表
       isContractCheck: false, // 是否已校验合约
       isContractCheckLoading: false, //合约校验中的 loading
       isclose_on_click_overlay: true,
-    };
+    }
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '1') this.initData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '1')this.initData(this.coinId)
+    },
   },
   created() {
-    this.initData();
+    this.initData(this.coinId);
   },
   filters: {
     filterContent(value) {
-      return value.slice(0, 3) + "*".repeat(6) + value.slice(-3);
+      return value.slice(0, 3) + '*'.repeat(6) + value.slice(-3)
     },
   },
   methods: {
     async sure(item) {
       if (!item.updateDate) {
-        this.show = true;
-        this.activeItem = item;
+        this.show = true
+        this.activeItem = item
       } else {
-        this.$toast.clear();
-        this.$toast.warning("该订单正在仲裁中！");
+        this.$toast.clear()
+        this.$toast.warning('该订单正在仲裁中！')
       }
     },
     close() {
-      this.show = false;
-      this.checked = false;
+      this.show = false
+      this.checked = false
     },
     async finish() {
-      this.isclose_on_click_overlay = false;
+      this.isclose_on_click_overlay = false
       this.$toast.warning(
         {
           component: loadingToast,
@@ -267,101 +269,103 @@ export default {
           icon: false,
           timeout: false,
         }
-      );
+      )
       try {
         //跟新订单状态
         await UpdateOrderType({
           did: this.activeItem.id,
           mail: this.activeItem.aipay,
           busPay: this.getPayInfo(this.activeItem)[2].trim(),
-        });
-        this.initData(); //更新数据
+        })
+        this.initData(this.coinId) //更新数据
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
       }
-      this.show = false;
-      this.$toast.clear();
-      this.isclose_on_click_overlay = true;
+      this.show = false
+      this.$toast.clear()
+      this.isclose_on_click_overlay = true
     },
     //校验合约
     async handleContractCheck(item, index) {
+      console.log(this.coinId)
       if (item.updateDate) {
-        this.$toast.clear();
-        this.$toast.warning("该订单正在仲裁中！");
-        return false;
+        this.$toast.clear()
+        this.$toast.warning('该订单正在仲裁中！')
+        return false
       }
 
-      this.isContractCheckLoading = true;
+      this.isContractCheckLoading = true
       this.$toast.warning(
         {
           component: loadingToast,
           props: {
-            title: "合约校验中，请等待...",
+            title: '合约校验中，请等待...',
           },
         },
         {
           icon: false,
           timeout: false,
         }
-      );
+      )
       try {
-        await GetmyUSDT_User(item.id, item.num);
-        this.isContractCheckList[index] = true;
-        this.$toast.clear();
-        this.$toast.success("合约校验通过,可以给对方进行汇款！");
+        await GetmyUSDT_User(item.id, item.num,this.coinId)
+        this.isContractCheckList[index] = true
+        this.$toast.clear()
+        this.$toast.success('合约校验通过,可以给对方进行汇款！')
       } catch ({ usdt, zads }) {
-        console.log(usdt);
-        this.$toast.clear();
+        console.log(usdt)
+        this.$toast.clear()
         this.$toast.error(
           <div>
             <span style="font-size:15px;color:rgb(230,212,82)">订单异常</span>
             <p style="font-size:14px;">合约中订单余额为：{usdt}</p>
-            <p style="font-size:14px;line-height:24px">
-              订单绑定的地址为：{zads}
-            </p>
+            <p style="font-size:14px;line-height:24px">订单绑定的地址为：{zads}</p>
           </div>,
           {
             icon: false,
             timeout: false,
             showCloseButtonOnHover: false,
           }
-        );
+        )
       } finally {
-        this.isContractCheckLoading = false;
+        this.isContractCheckLoading = false
       }
     },
-    initData() {
-      const uid = localStorage.getItem("uid");
+    initData(coinID) {
+      console.log(222)
+      const uid = localStorage.getItem('uid')
+      // let  coinID=getcoinID()
       Eotcdis_Order({
         uid,
+        coinID: coinID,
       }).then((data) => {
-        this.dataList = data.data;
-        this.isContractCheckList = [];
+        this.dataList = data.data
+        this.isContractCheckList = []
         for (let i = data.data.length; i >= 0; i--) {
-          this.isContractCheckList.push(false);
+          this.isContractCheckList.push(false)
         }
-        this.showLoading = false;
-      });
+        this.showLoading = false
+      })
     },
     getPayInfo(item) {
-      if (!item.sname) return ["", "", ""];
-      const value = item.sname.split("&");
-      return value;
+      if (!item.sname) return ['', '', '']
+      const value = item.sname.split('&')
+      return value
     },
     handleCopy(val) {
-      this.$toast.clear();
+      this.$toast.clear()
       this.$copyText(val).then(
         (e) => {
-          this.$toast.success("账号 已复制");
+          this.$toast.success('账号 已复制')
         },
         (e) => {
-          this.$toast.error("请稍后重试");
+          this.$toast.error('请稍后重试')
         }
-      );
+      )
     },
     to_buyerOrder_will(cur_item) {
       this.$router.push({
-        name: "sellerBuy-water-bill",
+        name: 'sellerBuy-water-bill',
         params: {
           item: cur_item,
           odid: cur_item.id,
@@ -370,12 +374,12 @@ export default {
           },
         },
         query: {
-          role: "seller",
+          role: 'seller',
         },
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

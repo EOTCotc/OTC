@@ -14,7 +14,7 @@
         </div>
         <div>
           <p>数量</p>
-          <p>{{ orderItem.num }} USDT</p>
+          <p>{{ orderItem.num }} {{coinType}}</p>
         </div>
         <div>
           <p>限额</p>
@@ -85,7 +85,7 @@
                 v-model="number"
                 @blur="onNumInput($event)"
               />
-              <p>USDT</p>
+              <p>{{coinType}}</p>
             </div>
           </div>
           <div class="cell">
@@ -106,7 +106,7 @@
                   v-model="MinDigitalCash"
                   @blur="onMinDigitalCash"
                 />
-                <p>USDT</p>
+                <p>{{coinType}}</p>
                 <span v-if="eror[1]" class="error-text">输入金额不正确</span>
               </div>
             </div>
@@ -126,7 +126,7 @@
                   v-model="MaxDigitalCash"
                   @blur="onMaxDigitalCash"
                 />
-                <p>USDT</p>
+                <p>{{coinType}}</p>
                 <span v-if="eror[3]" class="error-text">输入金额不正确</span>
               </div>
             </div>
@@ -180,6 +180,9 @@ export default {
     orderItem: {
       type: [Object],
       require: true,
+    },
+    coinType: {
+      type: [String],
     },
   },
   data() {
@@ -245,7 +248,10 @@ export default {
             type,
           });
           this.$toast.success("订单修改成功");
+          console.log('成功')
           PubSub.publish("update_order");
+          // PubSub.unsubscribe('update_order');
+
         } catch (err) {
           this.$toast.error(err, {
             timeout: false,
@@ -274,7 +280,9 @@ export default {
           type: 2, //取消订单
         });
         this.$toast.success("订单已经取消");
+        console.log('取消')
         PubSub.publish("update_order");
+        // PubSub.unsubscribe('update_order');
       } catch (err) {
         console.warn(err);
       }
@@ -298,7 +306,9 @@ export default {
             type: 220, //下架
           }).then(() => {
             this.$toast.success("订单已下架");
+            console.log('下架')
             PubSub.publish("update_order");
+            // PubSub.unsubscribe('update_order');
           });
         })
         .catch(() => {});
@@ -322,7 +332,9 @@ export default {
             type: 221, 
           }).then(() => {
             this.$toast.success("订单已上架，可正常进行交易");
+            console.log('上架')
             PubSub.publish("update_order");
+            // PubSub.unsubscribe('update_order');
           });
         })
         .catch(() => {
@@ -371,7 +383,7 @@ export default {
         e.target.value = max*10;
         this.number = e.target.value;
         this.$toast.clear();
-        this.$toast.warning(`您最高收购 USDT 的数量不能超过质押的数量${max*10}`);
+        this.$toast.warning(`您最高收购 ${this.coinType} 的数量不能超过质押的数量${max*10}`);
       }
       this.is_validVal();
     },

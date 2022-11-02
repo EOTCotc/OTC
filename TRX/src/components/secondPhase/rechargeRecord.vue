@@ -48,6 +48,7 @@ export default {
       })
       RechargeList({})
         .then((res) => {
+          Toast.clear()
           let data = res.data
           console.log(data)
           for (let i of data) {
@@ -63,12 +64,13 @@ export default {
             i.Coin='usdt'
             i.num=i.Ru + i.Coin.toUpperCase() 
           }
-          
+          Toast.clear()
           this.list = data
           Toast.success('加载成功')
           // console.log(data);
         })
         .catch((err) => {
+          Toast.clear()
           Toast.fail('加载失败')
           console.log(err)
         })

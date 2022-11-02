@@ -11,70 +11,73 @@
           <van-button round size="small" type="primary" :to="{name:'orderGather-full'}">去处理</van-button>
         </div>
         <van-loading size="24px" vertical v-if="listLoading">加载中...</van-loading>
-        <payment_empty v-else-if="isShow_empty" />
 
         <van-tab v-for="(item, index) in typeList" v-else :title="item" :key="index">
-          <van-list
-            v-model="loading"
-            :finished="finished"
-            finished-text="已经没有更多了..."
-            @load="onLoad"
-          >
-            <!-- 交易列表 start -->
-            <van-cell-group inset v-for="(items, i) in list" :key="i">
-              <van-cell>
-                <template #title>
-                  <!-- store -->
-                  <div class="left" @click="to_merchantInfo(items)">
-                    <div class="aut-img">
-                      {{ items.sname.slice(0, 1) }}
-                      <div class="online-icon" v-if="isActive_user(items.updateDate)">
-                        <p class="online-status"></p>
+          <payment_empty v-if="isShow_empty" />
+
+          <div v-else>
+            <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="已经没有更多了..."
+              @load="onLoad"
+            >
+              <!-- 交易列表 start -->
+              <van-cell-group inset v-for="(items, i) in list" :key="i">
+                <van-cell>
+                  <template #title>
+                    <!-- store -->
+                    <div class="left" @click="to_merchantInfo(items)">
+                      <div class="aut-img">
+                        {{ items.sname.slice(0, 1) }}
+                        <div class="online-icon" v-if="isActive_user(items.updateDate)">
+                          <p class="online-status"></p>
+                        </div>
                       </div>
+                      <span class="text">{{ items.sname }}</span>
                     </div>
-                    <span class="text">{{ items.sname }}</span>
-                  </div>
-                </template>
-                <template>
-                  <div class="right">
-                    <!-- {{items.eotc}} EOTC | -->
-                    <span>{{ items.odid }} | {{ items.chenjiao }}%</span>
-                  </div>
-                </template>
-              </van-cell>
-              <van-cell>
-                <template #title>
-                  <div class="left">数量 {{ items.num | ThousandSeparator }} {{ item }}</div>
-                </template>
-                <template #label>
-                  <div>
-                    限额 {{ items.amount1 | ThousandSeparator }} -
-                    {{ items.amount2 | ThousandSeparator }} CNY
-                  </div>
-                  <Pay-Icons :items="items"></Pay-Icons>
-                </template>
-                <template>
-                  <div class="right">
-                    <span>单价</span>
-                  </div>
-                </template>
-                <template>
-                  <div class="right">
-                    <span class="txt">￥{{ items.cny }}</span>
-                  </div>
-                </template>
-                <template>
-                  <div>
-                    <van-button class="comfig-button" size="mini" @click="SubmitTrading(i)">
-                      {{ method }}
-                      <!--   去购买 -->
-                    </van-button>
-                  </div>
-                </template>
-              </van-cell>
-            </van-cell-group>
-            <!-- 交易列表 end -->
-          </van-list>
+                  </template>
+                  <template>
+                    <div class="right">
+                      <!-- {{items.eotc}} EOTC | -->
+                      <span>{{ items.odid }} | {{ items.chenjiao }}%</span>
+                    </div>
+                  </template>
+                </van-cell>
+                <van-cell>
+                  <template #title>
+                    <div class="left">数量 {{ items.num | ThousandSeparator }} {{ item }}</div>
+                  </template>
+                  <template #label>
+                    <div>
+                      限额 {{ items.amount1 | ThousandSeparator }} -
+                      {{ items.amount2 | ThousandSeparator }} CNY
+                    </div>
+                    <Pay-Icons :items="items"></Pay-Icons>
+                  </template>
+                  <template>
+                    <div class="right">
+                      <span>单价</span>
+                    </div>
+                  </template>
+                  <template>
+                    <div class="right">
+                      <span class="txt">￥{{ items.cny }}</span>
+                    </div>
+                  </template>
+                  <template>
+                    <div>
+                      <van-button class="comfig-button" size="mini" @click="SubmitTrading(i)">
+                        {{ method }}
+                        <!--   去购买 -->
+                      </van-button>
+                    </div>
+                  </template>
+                </van-cell>
+              </van-cell-group>
+              <!-- 交易列表 end -->
+            </van-list>
+          </div>
         </van-tab>
       </van-tabs>
     </div>
@@ -112,14 +115,13 @@ import selectNav from '@/components/selectNav'
 import payFllow from '@/components/deal-Fllow/pay-Fllow.vue'
 import payment_empty from '@/views/order-gather/payment-empty.vue'
 
-import { EotcBuyOrder, UserBind, Eotcdis_Order } from '@/api/trxRequest'
+import { EotcBuyOrder, UserBind, Eotcdis_Order, CoinList } from '@/api/trxRequest'
 
 import { myPayment } from '@/api/payverification'
 
 import { payInfoUser } from '@/api/payverification'
 import { getItem, getItemSession, setItemSession } from '@/utils/storage'
 import { loadweb3, userBaseMes } from '@/utils/web3'
-
 
 import { SetPayType } from '@/api/payverification'
 
@@ -149,12 +151,14 @@ export default {
       isShow_empty: false,
 
       count: 0,
+      //多币种列表
+      coinList: '',
+      // typeList: [],
     }
   },
   //交易类型列表
   props: ['method', 'typeList'],
   created() {
-    
     this.$emit('set-cur-state')
     //出售订单出错，关闭出售订单窗口
     this.$bus.$on('close-OrderSaleInfo', () => {
@@ -163,13 +167,10 @@ export default {
     this.$bus.$on('asd', () => {
       console.log('asd')
     })
+    this.coinList = JSON.parse(localStorage.getItem('coinList'))
+
     this.$bus.$on('update-orderlist', () => {
-      this.onLoad({
-        pay: this.select_pay_method,
-        dtype: 0,
-        otype: getItem('netType'),
-        amount: this.select_money_range,
-      })
+      this.onLoad()
     })
     loadweb3(userBaseMes)
     setTimeout(() => {
@@ -195,10 +196,17 @@ export default {
         position: 'bottom-right',
         timeout: false,
       })
-
+      localStorage.setItem('coinActive', this.active)
+      
       try {
+        // console.log(coinList)
         //查询待处理订单
-        Eotcdis_Order({ type: 1, t1: -1, t2: 2 }).then((res) => {
+        Eotcdis_Order({
+          type: 1,
+          t1: -1,
+          t2: 2,
+          coinID: this.coinList.length == this.active ? 0 : this.coinList[this.active].id,
+        }).then((res) => {
           let data = res.data
           let count = 0
           console.log(data)
@@ -214,7 +222,13 @@ export default {
           this.count = count
         })
 
-        const { data } = await EotcBuyOrder(params)
+        const { data } = await EotcBuyOrder({
+          pay: this.select_pay_method,
+          dtype: 0,
+          otype: getItem('netType'),
+          amount: this.select_money_range,
+          coinID: this.coinList.length == this.active ? 0 : this.coinList[this.active].id,
+        })
         this.$emit('asd')
 
         if (data.length === 0) {
@@ -235,6 +249,7 @@ export default {
         this.listLoading = false
         setItemSession('buydataList', result)
       } catch (err) {
+        console.log(err)
         this.list = getItemSession('buydataList')
         console.warn('请求数据过于频繁')
       } finally {
@@ -317,6 +332,7 @@ export default {
       })
     },
     SubmitTrading(index) {
+      console.log(this.typeList[this.active])
       // 购买订单
       let time = Date.now()
       if (time - this.curTime < 1000) {
@@ -325,6 +341,7 @@ export default {
       this.curTime = time
       const userInfo = payInfoUser()
       this.activeIndex = index //设置 商品激活选项
+      console.log(userInfo)
       // 付款方式是否满足
       if (this.payverification(userInfo) && this.isSatisfyPaymentMethod()) {
         this.isShowTradingPopup = true // 前提条件完成，弹出购买窗口
@@ -413,14 +430,17 @@ export default {
       return Icons
     },
     currency_Change(tag_Name, title) {
+      console.log(this.active)
       this.$toast.clear()
-      if (title !== 'USDT') {
-        this.$toast.error(`目前暂时不支持 ${title}`)
-        this.$nextTick(() => {
-          // this.active = 0
-        })
-        return false
-      }
+      // localStorage.setItem('coinActive', this.active)
+      this.onLoad()
+      // if (title !== 'USDT') {
+      //   this.$toast.error(`目前暂时不支持 ${title}`)
+      //   this.$nextTick(() => {
+      //     // this.active = 0
+      //   })
+      //   return false
+      // }
     },
     // 用户是否在线
     isActive_user(time) {

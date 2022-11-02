@@ -536,19 +536,19 @@ const routes = [
     component: () => import('@/components/transaction'),
   },
   {
-    path: '/arbitrationMsg', 
+    path: '/arbitrationMsg',
     name: 'arbitrationMsg',
     component: () => import('@/views/arbitrationMsg/arbitrationMsg.vue'),
   },
-  
+
   {
-    path: '/arbitrationList', 
+    path: '/arbitrationList',
     name: 'arbitrationList',
     component: () => import('@/views/arbitrationMsg'),
   },
-  
+
   {
-    path: '/start', 
+    path: '/start',
     name: 'start',
     component: () => import('@/views/appeal/start.vue'),
   },
@@ -573,10 +573,10 @@ const payWhitelist = [
 // 'transaction',
 
 const rightMenu_Whitelist = [
-  'Withdraw',
+  // 'Withdraw',
   'arbitrator',
   'arbitration',
-  'NFT',
+  // 'NFT',
   'important-userList',
 ]
 
@@ -593,6 +593,7 @@ VueRouter.prototype.push = function push(location) {
 }
 
 const router = new VueRouter({
+  // mode: 'hash',
   routes,
 })
 
@@ -602,6 +603,7 @@ const router = new VueRouter({
 // }
 
 router.beforeEach((to, form, next) => {
+  // console.log(to)
   window.document.title = 'EOTC全球首个去中心化OTC交易所'
 
   if (to.name === 'setmessage' || to.name === 'receiving') {
@@ -646,13 +648,14 @@ router.beforeEach((to, form, next) => {
     }
   }
 
-  if (to.name === 'order-Ticket') {
+  if (to.name === "order-Ticket") {
     Vue.$toast.clear()
-    
+
     if (
       localStorage.getItem('myeotc') * 1 < 5000 &&
       Number(localStorage.getItem('giftNFT')) == 0
     ) {
+      console.log(123)
       Vue.$toast.warning({
         component: toastComponent,
         props: {
@@ -662,8 +665,7 @@ router.beforeEach((to, form, next) => {
         },
       })
       return next(false)
-    }
-    if (localStorage.getItem('myjifen') < 9) {
+    } else if (localStorage.getItem('myjifen') < 9) {
       Vue.$toast.warning({
         component: toastComponent,
         props: {
@@ -673,26 +675,27 @@ router.beforeEach((to, form, next) => {
         },
       })
       return next(false)
+    } else {
+      Bususer().then((res) => {
+        if (res.data == null) {
+          return next()
+        }
+        localStorage.setItem('userData', JSON.stringify(res.data))
+        if (JSON.parse(localStorage.getItem('userData')).num === '0') {
+          Vue.$toast.warning({
+            component: toastComponent,
+            props: {
+              title: '您已经被限制下单',
+              content: '请联系管理员！.',
+              color: 'red',
+            },
+          })
+          return next(false)
+        }
+      })
     }
-    Bususer().then((res) => {
-      if(res.data==null){
-        return next()
-      }
-      localStorage.setItem('userData', JSON.stringify(res.data))
-      if (JSON.parse(localStorage.getItem('userData')).num === '0') {
-        Vue.$toast.warning({
-          component: toastComponent,
-          props: {
-            title: '您已经被限制下单',
-            content: '请联系管理员！.',
-            color: 'red',
-          },
-        })
-        return next(false)
-      }
-    })
+
     // console.log(localStorage.getItem('userData'))
-    
   }
 
   if (payWhitelist.includes(to.name)) {

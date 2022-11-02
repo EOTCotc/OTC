@@ -1,16 +1,16 @@
 <script>
-import payIcons from "@/components/ChooseWay/pay-Icons.vue";
+import payIcons from '@/components/ChooseWay/pay-Icons.vue'
 
-import Spinner from "vue-simple-spinner";
+import Spinner from 'vue-simple-spinner'
 
-import { paytype } from "@/utils/utils";
+import { paytype,getcoinID } from '@/utils/utils'
 
-import { GetmyUSDT, runSign, userSign, userBaseMes } from "@/utils/web3";
+import { GetmyUSDT, runSign, userSign, userBaseMes } from '@/utils/web3'
 
-import { Verification_UserXbuyOrder_before } from "@/api/payverification";
+import { Verification_UserXbuyOrder_before } from '@/api/payverification'
 
 export default {
-  name: "deal-pay",
+  name: 'deal-pay',
   components: {
     payIcons,
     Spinner,
@@ -19,151 +19,160 @@ export default {
     money: undefined, //选择支付金额
     showPayModel: false, //交易模态框 显示隐藏
     playList: [], // 当前可选支付方式
-    cuePayType: "default", // 默认 第一个
+    cuePayType: 'default', // 默认 第一个
     orderPayModel: false, // 购买货币，生成订单的谈窗
     orderPayLoading: false, // 购买货币，生成订单的谈窗中  loading显隐
   }),
   filters: {
     isxj(value) {
-      if (value && value.includes("现金")) {
-        return "现金交易";
+      if (value && value.includes('现金')) {
+        return '现金交易'
       }
-      return value;
+      return value
     },
   },
-  inject: ["sellerMthods"],
+  created() {},
+  inject: ['sellerMthods'],
   /**
    * type -> 当前交易支付类型   item -> 正在交易的 订单项  name-> 按 金额 or 数量进行购买
    * activeName  ->
    *  */
-  props: ["type", "item", "name", "activeName"],
+  props: ['type', 'item', 'name', 'activeName'],
   methods: {
     onFocus() {
-      this.$emit("open-input");
+      this.$emit('open-input')
     },
     onBlur() {
-      this.$emit("close-input");
+      this.$emit('close-input')
     },
     paytype(value) {
-      return paytype(value);
+      return paytype(value)
     },
     changePayMode() {
-      this.cuePayType = "buyer_payMethod";
-      this.showPayModel = true;
+      this.cuePayType = 'buyer_payMethod'
+      this.showPayModel = true
     },
     setPlay(e) {
-      this.playList = e;
-      if (this.cuePayType === "buyer_payMethod") {
-        return false;
+      this.playList = e
+      if (this.cuePayType === 'buyer_payMethod') {
+        return false
       }
-      this.cuePayType = e[0];
+      this.cuePayType = e[0]
     },
     goBack() {
-      this.showPayModel = false;
+      this.showPayModel = false
     },
     handlePayChange(curType) {
       if (!this.hasOwnthisPay(curType)) {
-        return false;
+        return false
       }
-      this.cuePayType = curType;
-      this.showPayModel = false;
+      this.cuePayType = curType
+      this.showPayModel = false
     },
     // 判断用户是否有填 改支付方式
     hasOwnthisPay(curType) {
-      if (curType === "xj") return true;
-      if (curType === "wx" && this.sellerMthods["mybmywechatnk"]) {
-        return true;
+      if (curType === 'xj') return true
+      if (curType === 'wx' && this.sellerMthods['mybmywechatnk']) {
+        return true
       }
-      if (curType === "zfb" && this.sellerMthods["myalipay"]) {
-        return true;
+      if (curType === 'zfb' && this.sellerMthods['myalipay']) {
+        return true
       }
-      if (curType === "yhk" && this.sellerMthods["mybank"]) {
-        return true;
+      if (curType === 'yhk' && this.sellerMthods['mybank']) {
+        return true
       }
-      this.$toast.clear();
+      this.$toast.clear()
       this.$toast.error(
         <div>
           <p style="font-size:13px;margin:5px">您没有填写当前支付方式，</p>
           <p style="font-size:16px;margin:5px">请重新选择!</p>
         </div>
-      );
+      )
     },
 
     hasCurrentPay(value) {
-      return Boolean(value.split("&")[1]);
+      return Boolean(value.split('&')[1])
     },
     confirm_pay() {
-      this.$toast.clear();
-      if (this.item.cash === "-1") {
-        this.orderPayLoading = true;
-        this.showOrderPayModel();
-        return true;
+      this.$toast.clear()
+      if (this.item.cash === '-1') {
+        this.orderPayLoading = true
+        this.showOrderPayModel()
+        return true
       }
 
-      if (["wx", "yhk", "zfb", "xj"].includes(this.cuePayType)) {
+      if (['wx', 'yhk', 'zfb', 'xj'].includes(this.cuePayType)) {
         // 购买交易加载loading
-        this.orderPayLoading = true;
-        this.showOrderPayModel();
+        this.orderPayLoading = true
+        this.showOrderPayModel()
       } else {
-        this.$toast.error("请选择支付方式");
+        this.$toast.error('请选择支付方式')
       }
     },
     async showOrderPayModel() {
-      let gusdt = undefined;
-      let totalPrice = undefined;
+      let gusdt = undefined
+      let totalPrice = undefined
       // 购买多少 usdt 总价格
-      if (this.activeName === "size") {
-        gusdt = this.transformMoney;
-        totalPrice = this.money;
-      } else if (this.activeName === "num") {
-        gusdt = this.money;
-        totalPrice = this.transformNum;
+      if (this.activeName === 'size') {
+        gusdt = this.transformMoney
+        totalPrice = this.money
+      } else if (this.activeName === 'num') {
+        gusdt = this.money
+        totalPrice = this.transformNum
       }
 
       try {
-        await this.generate_orders(gusdt, totalPrice);
+        await this.generate_orders(gusdt, totalPrice)
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
         this.$toast.error(err, {
           timeout: 2500,
-        });
-        if (err === "SignaturError") {
-          console.warn("错误签名", window.localStorage.getItem("mysign"));
-          this.$toast.error("请重新签名");
-          await userSign("EOTC请求您签名确认,签名不消耗GAS.");
-          await this.generate_orders(gusdt, totalPrice,true);
+        })
+        if (err === 'SignaturError') {
+          console.warn('错误签名', window.localStorage.getItem('mysign'))
+          this.$toast.error('请重新签名')
+          await userSign('EOTC请求您签名确认,签名不消耗GAS.')
+          await this.generate_orders(gusdt, totalPrice, true)
         }
       }
       // 关闭 出售信息 弹窗
-      this.orderPayLoading = false;
-      this.$bus.$emit("close-OrderSaleInfo");
+      this.orderPayLoading = false
+      this.$bus.$emit('close-OrderSaleInfo')
     },
 
-    async generate_orders(gusdt, totalPrice,messageError = false) {
+    async generate_orders(gusdt, totalPrice, messageError = false) {
       return new Promise(async (resolve, reject) => {
+       
         try {
           console.log(this.item)
-          const id = this.item.id;
-          await GetmyUSDT(id, gusdt,0);
-          if(!messageError) await runSign();
+
+          let coinID = getcoinID().id
+          const id = this.item.id
+          console.log(id)
+          await GetmyUSDT(id, gusdt, 0, coinID)
+          if (!messageError) await runSign()
           const { data } = await Verification_UserXbuyOrder_before({
             oid: id,
             cnyNum: totalPrice,
             dsx: this.item.dsx,
             userPay: this.get_buyerPay(this.cuePayType),
-          });
-          var it = eval(data);
-          it.bank = this.item.ads.trim();
-          let odid = parseInt(it.odid);
-          // console.log(odid,111)
+            coinID,
+          })
+          console.log(data)
+          var it = eval(data)
+
+          it.bank = this.item.ads.trim()
+          let odid = parseInt(it.odid)
           if (odid > 9) {
-            localStorage.setItem("xdnum", odid);
+            localStorage.setItem('xdnum', odid)
             console.log(this.item)
             console.log(it)
             console.log(this.sellerMthods)
 
+            localStorage.setItem('userIconId', getcoinID().id)
+            localStorage.setItem('userIconType', getcoinID().name)
             this.$router.push({
-              name: "order-pay",
+              name: 'order-pay',
               params: {
                 item: this.item,
                 cuePayType: this.cuePayType,
@@ -171,140 +180,139 @@ export default {
                 money: totalPrice,
                 MerchanInfo: it,
                 sellerMthods: this.sellerMthods,
-                servicefee:it.chenjiao,
+                servicefee: it.chenjiao,
               },
               query: {
                 id: it.odid,
                 inTrading: true,
               },
-            });
-          } else if (odid == 9) this.$toast.error("不能购买自己的订单");
+            })
+          } else if (odid == 9) this.$toast.error('不能购买自己的订单')
           else if (odid == 3) {
             this.$toast.error(
               <div>
                 <p style="font-size:16px;margin:5px">该订单USDT数量已不足,</p>
                 <p style="font-size:16px;margin:5px">请选择其它订单"</p>
               </div>
-            );
+            )
           } else if (odid == 2) {
-            this.$toast.error("商家已修改订单价格，请重新下单");
+            this.$toast.error('商家已修改订单价格，请重新下单')
             //下单的时刻 < 商家修改订单价格时刻
             // 刷新数据 重新下单
-            this.$bus.$emit("update-orderlist");
-          } else if (odid == 1)
-            this.$toast.error("您多次撤销订单，请明天再下单");
+            this.$bus.$emit('update-orderlist')
+          } else if (odid == 1) this.$toast.error('您多次撤销订单，请明天再下单')
           else if (odid == 0) {
             this.$toast.error(
               <div>
                 <p style="font-size:16px;margin:5px">您还有未处理的订单，</p>
                 <p style="font-size:16px;margin:5px">请完成该订单后再下单"</p>
               </div>
-            );
+            )
           }
-          resolve();
+          resolve()
         } catch (err) {
-          reject(err);
+          reject(err)
         }
-      });
+      })
     },
     get_buyerPay(pay_Type) {
-      let uname;
+      let uname
       if (this.item.aipay) {
-        uname = this.item.aipay.split("&")[0];
+        uname = this.item.aipay.split('&')[0]
       } else if (this.item.wechat) {
-        uname = this.item.wechat.split("&")[0];
+        uname = this.item.wechat.split('&')[0]
       } else if (this.item.bank) {
-        uname = this.item.bank.split("&")[0];
+        uname = this.item.bank.split('&')[0]
       }
-      if (this.item.cash === "-1") {
-        this.cuePayType = "xj";
-        return `${uname}&现金交易&现金`;
+      if (this.item.cash === '-1') {
+        this.cuePayType = 'xj'
+        return `${uname}&现金交易&现金`
       }
 
       switch (pay_Type) {
-        case "yhk": {
-          const pay_data = `${this.item.bank?.trim()}`;
-          return pay_data;
+        case 'yhk': {
+          const pay_data = `${this.item.bank?.trim()}`
+          return pay_data
         }
-        case "wx": {
-          const pay_data = `${this.item.wechat?.trim()}&微信`;
-          return pay_data;
+        case 'wx': {
+          const pay_data = `${this.item.wechat?.trim()}&微信`
+          return pay_data
         }
-        case "zfb": {
-          const pay_data = `${this.item.aipay?.trim()}&支付宝`;
-          return pay_data;
+        case 'zfb': {
+          const pay_data = `${this.item.aipay?.trim()}&支付宝`
+          return pay_data
         }
-        case "xj": {
-          const pay_data = `${uname}&现金交易&现金`;
-          return pay_data;
+        case 'xj': {
+          const pay_data = `${uname}&现金交易&现金`
+          return pay_data
         }
       }
     },
     merchants_gatheringMethod() {
-      const Icons = [];
+      const Icons = []
       for (const key of Object.keys(this.item)) {
         switch (key) {
-          case "bank":
+          case 'bank':
             if (this.hasCurrentPay(this.item[key])) {
-              Icons.push("yhk");
+              Icons.push('yhk')
             }
-            break;
-          case "aipay":
+            break
+          case 'aipay':
             if (this.hasCurrentPay(this.item[key])) {
-              Icons.push("zfb");
+              Icons.push('zfb')
             }
-            break;
-          case "wechat":
+            break
+          case 'wechat':
             if (this.hasCurrentPay(this.item[key])) {
-              Icons.push("wx");
+              Icons.push('wx')
             }
-            break;
+            break
         }
       }
-      return Icons;
+      return Icons
     },
     size_limit(val) {
-      const minSize = this.item.amount1;
-      const MaxSize = this.item.amount2;
+      const minSize = this.item.amount1
+      const MaxSize = this.item.amount2
       if (minSize <= val && val <= MaxSize) {
-        return true;
+        return true
       }
-      this.$refs["animate-div"].classList.add("animate__shakeX");
+      this.$refs['animate-div'].classList.add('animate__shakeX')
 
-      return false;
+      return false
     },
     validato_pay_size(val) {
-      if (this.activeName === "size") {
-        return this.size_limit(val);
-      } else if (this.activeName === "num") {
-        return this.size_limit(this.transformNum);
+      if (this.activeName === 'size') {
+        return this.size_limit(val)
+      } else if (this.activeName === 'num') {
+        return this.size_limit(this.transformNum)
       }
-      return false; //测试谈窗 true
+      return false //测试谈窗 true
     },
   },
   watch: {
     money: {
       handler() {
-        if ((this.money ?? "") !== "") {
-          this.$refs["animate-div"].classList.remove("animate__shakeX");
+        if ((this.money ?? '') !== '') {
+          this.$refs['animate-div'].classList.remove('animate__shakeX')
         }
       },
     },
   },
   computed: {
     limit() {
-      return `￥${this.ThousandSeparator(
-        this.item.amount1
-      )}-￥${this.ThousandSeparator(this.item.amount2)}`;
+      return `￥${this.ThousandSeparator(this.item.amount1)}-￥${this.ThousandSeparator(
+        this.item.amount2
+      )}`
     },
     transformMoney() {
-      return +(this.money / this.item.cny).toFixed(2);
+      return +(this.money / this.item.cny).toFixed(2)
     },
     transformNum() {
-      return +(this.money * this.item.cny).toFixed(2);
+      return +(this.money * this.item.cny).toFixed(2)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -333,20 +341,16 @@ export default {
       <div class="pay-select-main">
         <span>支付方式</span>
         <span class="txt2" v-if="item.cash === '-1'">
-          <img
-            class="xj_moeny"
-            src="@/assets/currency-icons/moeny-c.png"
-            alt="xj"
-          />&nbsp;&nbsp;&nbsp;
-          <p>现金交易</p>
-          &nbsp;&nbsp;&nbsp;
+          <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />&nbsp;&nbsp;&nbsp;
+          <p>现金交易</p>&nbsp;&nbsp;&nbsp;
         </span>
         <span
           class="txt2"
           @click="changePayMode"
           v-else-if="cuePayType === 'default'"
           :style="{ color: 'red' }"
-          >支付方式&nbsp;
+        >
+          支付方式&nbsp;
           <van-icon name="arrow" :style="{ marginTop: '4px' }" />
         </span>
         <span
@@ -354,27 +358,15 @@ export default {
           @click="changePayMode"
           v-else-if="cuePayType === 'buyer_payMethod'"
           :style="{ color: 'red' }"
-          >选择支付方式&nbsp;
+        >
+          选择支付方式&nbsp;
           <!-- 选择支付方式 -->
-          <payIcons
-            v-show="false"
-            :items="item"
-            :cuePayType="cuePayType"
-            @get-playList="setPlay"
-          />
+          <payIcons v-show="false" :items="item" :cuePayType="cuePayType" @get-playList="setPlay" />
           <van-icon name="arrow" :style="{ marginTop: '4px' }" />
         </span>
-        <span
-          class="txt2"
-          @click="changePayMode"
-          v-else-if="item.cash !== '-1'"
-        >
+        <span class="txt2" @click="changePayMode" v-else-if="item.cash !== '-1'">
           <!-- 选择支付方式 -->
-          <payIcons
-            :items="item"
-            :cuePayType="cuePayType"
-            @get-playList="setPlay"
-          />
+          <payIcons :items="item" :cuePayType="cuePayType" @get-playList="setPlay" />
           <span class="pay-txt">{{ paytype(cuePayType) | isxj }}</span>
           <van-icon name="arrow" />
         </span>
@@ -399,9 +391,7 @@ export default {
           :loading="orderPayLoading"
           loading-text="订单生成中..."
           color="#2483ff"
-        >
-          购买 {{ type }}
-        </van-button>
+        >购买 {{ type }}</van-button>
       </footer>
       <!-- end / 底部支付按钮 -->
     </van-form>
@@ -428,11 +418,7 @@ export default {
                   <span class="custom-title">&nbsp;现金交易</span>
                 </template>
                 <template #icon>
-                  <img
-                    class="xj_moeny"
-                    src="@/assets/currency-icons/moeny-c.png"
-                    alt="xj"
-                  />
+                  <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
                 </template>
               </van-cell>
             </template>
@@ -458,15 +444,15 @@ export default {
                     ></i>
                   </van-icon>
                 </template>
-                <template #right-icon> </template>
+                <template #right-icon></template>
               </van-cell>
             </template>
 
             <div class="salePay-info">
-              <span class="span1"
-                >*<i class="zy-info">请使用本人实名账户进行收款</i
-                >,否则会导致订单失败且账号存在被冻结风险</span
-              >
+              <span class="span1">
+                *
+                <i class="zy-info">请使用本人实名账户进行收款</i>,否则会导致订单失败且账号存在被冻结风险
+              </span>
             </div>
           </main>
         </div>
@@ -476,12 +462,7 @@ export default {
 
     <!-- start 支付支付订单生成中  loading status  -->
     <van-dialog v-model="orderPayLoading" :showConfirmButton="false">
-      <Spinner
-        size="30"
-        message="订单生成中"
-        :spacing="15"
-        :font-size="16"
-      ></Spinner>
+      <Spinner size="30" message="订单生成中" :spacing="15" :font-size="16"></Spinner>
       <!-- <van-loading size="36px" text-color="#000" vertical>订单生成中</van-loading> -->
       <div class="ld-text">正在下单，请稍等...</div>
     </van-dialog>

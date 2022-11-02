@@ -131,7 +131,7 @@ export default {
       for (let i = 0; i < data.length - 1; i++) {
         sellPeoeleArr.unshift(data[i].sellMan * 1 - data[i + 1].sellMan * 1)
         buyPeopleArr.unshift(data[i].buyMan * 1 - data[i + 1].buyMan * 1)
-        sellDealArr.unshift(data[i].sellTotal * 1 - data[i + 1].sellTotal * 1)
+        sellDealArr.unshift((data[i].sellTotal * 1 - data[i + 1].sellTotal * 1).toFixed(0))
         buyDealArr.unshift((data[i].buyTotal * 1 - data[i + 1].buyTotal * 1).toFixed(0))
       }
 

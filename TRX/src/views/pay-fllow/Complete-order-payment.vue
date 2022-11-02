@@ -1,8 +1,8 @@
 <template>
   <div class="order-pay-container">
     <header class="header-top">
-      <van-icon name="arrow-left" @click="$router.go(-1)" />
-      <span class="hd-txt" @click="$router.go(-1)"> 付款通知 </span>
+      <van-icon name="arrow-left" @click="$router.push({name:'orderGather-full'})" />
+      <span class="hd-txt" @click="$router.push({name:'orderGather-full'})"> 付款通知 </span>
       <van-icon @click="gotoRelation">
         <van-icon name="orders-o" :badge="cacheData.badge_info" />
       </van-icon>
@@ -69,13 +69,13 @@
       </van-step>
       <van-step v-else>
         向商家转账：<span class="importan-tTsxt"
-          >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span
+          >￥{{ ThousandSeparator(cacheData.ordermoney) }}</span
         >
       </van-step>
 
       <van-step>
         <div class="serviceCharge">
-          交易手续费：{{ cacheData.servicefee }} USDT
+          交易手续费：{{ cacheData.servicefee }} {{kindType}}
         </div>
 
         <section class="seller-info">
@@ -261,7 +261,7 @@ export default {
       info_tips: false,
       curTime: 0, 
       cacheData: {},
-      time2: Date.now(),
+      kindType:localStorage.getItem('userIconType')
     };
   },
   methods: {
@@ -381,21 +381,7 @@ export default {
             selectpayk: this.getMoneyInfo(this.cacheData.ordercuePayType),
             mail: this.cacheData.MerchanInfo.aipay,
           });
-          // if (this.time2 - 1664255640000 > 0) {
-          //   this.time = 1000;
-          //   item = {
-          //     ...this.cacheData.payItem,
-          //     account:
-          //       this.cacheData.orderePayType === "yhk" ? this.payInfo : "",
-          //     account_wx:
-          //       this.cacheData.oercuePayType === "wx"
-          //         ? this.wechartInfo[1]
-          //         : "",
-          //     account_zfb:
-          //       this.cacheData.ordcuePayType === "zfb" ? this.zfbInfo[1] : "",
-          //   };
-          //   return false;
-          // } else {
+          
             const item  = {
               ...this.cacheData.payItem,
               account:

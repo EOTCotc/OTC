@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="audit">
-      <van-cell
+      <!-- <van-cell
         v-if="iskyc == 2"
         title="认证审核"
         is-link
@@ -52,7 +52,7 @@
         <template #icon>
           <i class="iconfont icon-renzhengshenhe icon_left"></i>
         </template>
-      </van-cell>
+      </van-cell> -->
       <van-cell title="二期推广" is-link @click="auditing('secondPhase')">
         <template #icon>
           <img src="@/static/icon/second.png" alt="" />
@@ -149,7 +149,7 @@ export default {
           icon: 'iconfont icon-tuiguangxinxi',
           childlist: [
             { title: '一期推广', event: 'firstPhase' },
-            { title: '分享链接', event: 'share' },
+            // { title: '分享链接', event: 'share' },
             { title: '团队节点', event: 'team' },
             // { title: "分享收益", event: "earnings" },
             // { title: '二期推广', event: 'secondPhase' },
@@ -176,7 +176,7 @@ export default {
         },
       ],
       moneylist: [
-        { title: 'USDT', num: '12.00' },
+        { title: 'TRX', num: '12.00' },
         { title: 'EOTC', num: '1', event: 'release' },
       ],
       orderShow: false,

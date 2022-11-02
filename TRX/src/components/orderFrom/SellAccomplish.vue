@@ -7,16 +7,11 @@
       :style="{ fill: 'rgb(219,9, 9)' }"
     ></VueLoading>
 
-    <van-empty
-      class="null"
-      v-else-if="dataList.length == 0"
-      description="暂无订单信息"
-    />
+    <van-empty class="null" v-else-if="dataList.length == 0" description="暂无订单信息" />
     <div v-else class="order" v-for="(item, index) in dataList" :key="index">
       <div class="title">
         <p>
-          <span>{{ item.mes | viod_value }}</span
-          >&nbsp;
+          <span>{{ item.mes | viod_value }}</span>&nbsp;
           <span>{{ item.amount2 | viod_value }}</span>
         </p>
         <span class="color-hui">已收款</span>
@@ -28,7 +23,7 @@
         </div>
         <div>
           <p>交易数量</p>
-          <p>{{ item.num | viod_value }} USDT</p>
+          <p>{{ item.num | viod_value }} {{coinType}}</p>
         </div>
         <div>
           <p>交易单价</p>
@@ -86,61 +81,82 @@
 </template>
 
 <script>
-import { Eotcdis_Order } from "@/api/trxRequest";
-import { VueLoading } from "vue-loading-template";
+import { Eotcdis_Order } from '@/api/trxRequest'
+import { VueLoading } from 'vue-loading-template'
 
 export default {
   // 已完成订单
-  name: "Order-paid-ok",
+  name: 'Order-paid-ok',
   components: {
     VueLoading,
+  },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    coinType: {
+      type: [String],
+    },
+    active: {
+      type: [String, Number],
+    },
   },
   data() {
     return {
       dataList: [],
       showLoading: true,
-    };
+      kind: '',
+    }
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '2') this.initLoadingData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '2') this.initLoadingData(this.coinId)
+    },
   },
   created() {
-    this.initLoadingData();
+    this.initLoadingData(this.coinId)
   },
   methods: {
-    async initLoadingData() {
+    async initLoadingData(coinID) {
       try {
         const { data } = await Eotcdis_Order({
           type: 10,
           t1: 1,
           t2: 3,
-        });
-        this.dataList = data;
+          coinID: coinID,
+        })
+        this.dataList = data
       } catch (err) {
-        this.$toast.error("获取服务端数据错误！");
-        console.warn(err);
+        this.$toast.error('获取服务端数据错误！')
+        console.warn(err)
       }
-      this.showLoading = false;
+      this.showLoading = false
     },
     getPayInfo(item) {
       if (!item.sname) {
-        return " & & ";
+        return ' & & '
       }
-      const value = item.sname?.split("&") ?? "未知姓名&未知方式&未知";
+      const value = item.sname?.split('&') ?? '未知姓名&未知方式&未知'
 
       if (!value[2]) {
-        return value.push("未知");
+        return value.push('未知')
       }
-      return [value[0]?.trim(), value[1]?.trim(), value[2]?.trim()];
+      return [value[0]?.trim(), value[1]?.trim(), value[2]?.trim()]
     },
     appeal_issue(cur_item) {
-      this.$toast.clear();
-      this.$toast.warning("申诉功能暂未开放，请耐心等待！");
+      this.$toast.clear()
+      this.$toast.warning('申诉功能暂未开放，请耐心等待！')
     },
   },
   filters: {
     viod_value(value) {
-      return value ? value : "未知";
+      return value ? value : '未知'
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

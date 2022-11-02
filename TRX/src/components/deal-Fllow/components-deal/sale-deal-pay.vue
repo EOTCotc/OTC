@@ -1,14 +1,16 @@
 <script>
-import { runSign } from "@/utils/web3";
+import { runSign } from '@/utils/web3'
 
-import Spinner from "vue-simple-spinner";
+import Spinner from 'vue-simple-spinner'
 
-import { Verification_order_before } from "@/api/payverification";
+import { Verification_order_before } from '@/api/payverification'
 
-import { mapMutations } from "vuex";
+import { getcoinID } from '@/utils/utils'
+
+import { mapMutations } from 'vuex'
 
 export default {
-  name: "deal-pay",
+  name: 'deal-pay',
   components: {
     Spinner,
   },
@@ -16,82 +18,94 @@ export default {
     money: undefined, //选择支付金额
     orderSaleLoading: false, // 订单出售 loading显隐
   }),
-  inject: ["sellerMthods"],
+  inject: ['sellerMthods'],
   /**
    * type -> 当前交易支付类型   item -> 正在交易的 订单项
    * activeName   name-> 按 金额 or 数量进行购买
    *  */
-  props: ["type", "item", "name", "activeName"],
+  props: ['type', 'item', 'name', 'activeName'],
   methods: {
-    ...mapMutations(["setMerchantInfoMap"]),
+    ...mapMutations(['setMerchantInfoMap']),
     confirm_pay() {
       //出售中
-      this.orderSaleLoading = true;
-      this.SellCurrency();
+      this.orderSaleLoading = true
+      this.SellCurrency()
     },
     size_limit(val) {
-      const minSize = this.item.amount1;
-      const MaxSize = this.item.amount2;
+      const minSize = this.item.amount1
+      const MaxSize = this.item.amount2
       if (minSize <= Number(val) && Number(val) <= MaxSize) {
-        return true;
+        return true
       }
-      this.$refs["animate-div"].classList.add("animate__shakeX");
-      return false;
+      this.$refs['animate-div'].classList.add('animate__shakeX')
+      return false
     },
     fullNum(activeName) {
-      if (activeName === "size") {
-        this.money = this.item.amount2.substring(
-          0,
-          this.item.amount2.length - 3
-        );
-      } else if (activeName === "num") {
-        this.money = this.maxformNum;
+      if (activeName === 'size') {
+        this.money = this.item.amount2.substring(0, this.item.amount2.length - 3)
+      } else if (activeName === 'num') {
+        this.money = this.maxformNum
       }
     },
     validato_pay_size(val) {
-      if (this.activeName === "size") {
-        return this.size_limit(val);
-      } else if (this.activeName === "num") {
-        return this.size_limit(this.transformNum);
+      if (this.activeName === 'size') {
+        return this.size_limit(val)
+      } else if (this.activeName === 'num') {
+        return this.size_limit(this.transformNum)
       }
-      return false;
+      return false
     },
     SellCurrency() {
       //出售数据统计，进行最终页面跳转
-      let totalMoney = undefined; // 此次出售可以获得多少 money
-      let gusdt = undefined; // 此次出售多少 usdt
-      if (this.activeName === "size") {
-        totalMoney = this.money;
-        gusdt = this.transformMoney;
-      } else if (this.activeName === "num") {
-        totalMoney = this.transformNum;
-        gusdt = this.money;
+      let totalMoney = undefined // 此次出售可以获得多少 money
+      let gusdt = undefined // 此次出售多少 usdt
+      if (this.activeName === 'size') {
+        totalMoney = this.money
+        gusdt = this.transformMoney
+      } else if (this.activeName === 'num') {
+        totalMoney = this.transformNum
+        gusdt = this.money
       }
+      // let coinList = JSON.parse(localStorage.getItem('coinList'))
+      // let active = localStorage.getItem('coinActive') * 1
+      // let getcoinID
+      // if (active == coinList.length) {
+      //   getcoinID = { name: 'TRX', id: '0' }
+      // } else {
+      //   getcoinID = coinList[active]
+      // }
+      // console.log(coinID)
       // 签名检测 出售前数据前提条件判定
       runSign()
         .then(() => {
           //签名验证通过
+          let coinID = getcoinID().id
+
           return Verification_order_before({
             oid: this.item.id,
             gnum: gusdt,
             dsx: this.item.dsx,
-          });
+            coinID: coinID,
+          })
         })
         .then((data) => {
-          var it = eval(data.data);
+          var it = eval(data.data)
           //验证通过 保留该订单 和商家的信息
-          let odid = parseInt(it.odid);
+          let odid = parseInt(it.odid)
           if (odid > 9) {
             // 订单生成成功，把当前订单存进订单集合中,并把该订单单号存储在 本地
             // odid 子订单号
-            localStorage.setItem("csnum", odid);
+            localStorage.setItem('csnum', odid)
+
+            localStorage.setItem('userIconId', getcoinID().id)
+            localStorage.setItem('userIconType', getcoinID().name)
             this.setMerchantInfoMap({
               it, //商家信息
               item: this.item, //订单信息
-            });
+            })
             // 确认出售，跳转去 出售货币生成页面
             this.$router.push({
-              name: "outflows-currency",
+              name: 'outflows-currency',
               params: {
                 item: this.item, //当前订单信息
                 num: gusdt, //当前出售多少 udst
@@ -103,70 +117,69 @@ export default {
                 id: it.odid,
                 inTrading: true,
               },
-            });
-          } else if (odid == 9) this.$toast.error("不能出售自己的订单");
+            })
+          } else if (odid == 9) this.$toast.error('不能出售自己的订单')
           else if (odid == 3)
             this.$toast.error(
               <div>
                 <p style="font-size:16px;margin:5px">该订单USDT数量已不足,</p>
                 <p style="font-size:16px;margin:5px">请选择其它订单"</p>
               </div>
-            );
+            )
           else if (odid == 2) {
-            this.$toast.error("商家已修改订单价格，请重新下单");
+            this.$toast.error('商家已修改订单价格，请重新下单')
             //下单的时刻 < 商家修改订单价格时刻
             // 刷新数据 重新下单
-            this.$bus.$emit("update-orderlist");
-          } else if (odid == 1)
-            this.$toast.error("您多次撤销订单，请明天再下单");
+            this.$bus.$emit('update-orderlist')
+          } else if (odid == 1) this.$toast.error('您多次撤销订单，请明天再下单')
           else if (odid == 0)
             this.$toast.error(
               <div>
                 <p style="font-size:16px;margin:5px">您还有未处理的订单，</p>
                 <p style="font-size:16px;margin:5px">请完成该订单后再下单"</p>
               </div>
-            );
+            )
         })
         .catch((err) => {
-          console.warn(err);
-        });
+          console.warn(err)
+        })
       // 关闭 出售信息 弹窗
-      this.$bus.$emit("close-OrderSaleInfo");
-      this.orderSaleLoading = false;
+      this.$bus.$emit('close-OrderSaleInfo')
+      this.orderSaleLoading = false
     },
     onFocus() {
-      this.$emit("open-input");
+      this.$emit('open-input')
     },
     onBlur() {
-      this.$emit("close-input");
+      this.$emit('close-input')
     },
   },
   watch: {
     money: {
       handler() {
-        if ((this.money ?? "") !== "") {
-          this.$refs["animate-div"].classList.remove("animate__shakeX");
+        if ((this.money ?? '') !== '') {
+          this.$refs['animate-div'].classList.remove('animate__shakeX')
         }
       },
     },
   },
   computed: {
     limit() {
-      return `￥${this.ThousandSeparator(
-        this.item.amount1
-      )}-￥${this.ThousandSeparator(this.item.amount2)}`;
+      return `￥${this.ThousandSeparator(this.item.amount1)}-￥${this.ThousandSeparator(
+        this.item.amount2
+      )}`
     },
     transformMoney() {
-      return +(this.money / this.item.cny).toFixed(2);
+      return +(this.money / this.item.cny).toFixed(2)
     },
     transformNum() {
-      return +(this.money * this.item.cny).toFixed(2);
+      return +(this.money * this.item.cny).toFixed(2)
     },
     maxformNum() {
-      return (this.item.amount2 / this.item.cny).toFixed(2);
+      return (this.item.amount2 / this.item.cny).toFixed(2)
     },
   },
-};
+}
 </script>
 
 <template>
@@ -192,9 +205,7 @@ export default {
       <div class="lable-txt">
         <span>{{ name }}</span>
         <span>|</span>
-        <span @click="fullNum(activeName)" :style="{ color: 'blue' }"
-          >全部</span
-        >
+        <span @click="fullNum(activeName)" :style="{ color: 'blue' }">全部</span>
       </div>
 
       <div class="pay-mid-main">
@@ -202,7 +213,7 @@ export default {
       </div>
 
       <div class="pay-mid-main">
-        <span class="limit">资金账户可出售： {{ maxformNum }} {{ type }} </span>
+        <span class="limit">资金账户可出售： {{ maxformNum }} {{ type }}</span>
         <span class="business" :style="{ color: 'blue' }">去划算</span>
       </div>
 
@@ -228,9 +239,7 @@ export default {
           native-type="submit"
           size="large"
           color="#2483ff"
-        >
-          出售 {{ type }}
-        </van-button>
+        >出售 {{ type }}</van-button>
       </footer>
     </van-form>
 
@@ -238,12 +247,7 @@ export default {
 
     <!-- start 支付支付订单生成中  loading status  -->
     <van-dialog v-model="orderSaleLoading" :showConfirmButton="false">
-      <Spinner
-        size="30"
-        message="订单生成中"
-        :spacing="15"
-        :font-size="16"
-      ></Spinner>
+      <Spinner size="30" message="订单生成中" :spacing="15" :font-size="16"></Spinner>
       <!-- <van-loading size="36px" text-color="#000" vertical>订单生成中</van-loading> -->
       <div class="ld-text">正在下单，请稍等...</div>
     </van-dialog>

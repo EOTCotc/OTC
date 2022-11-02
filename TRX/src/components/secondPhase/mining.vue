@@ -48,11 +48,13 @@
           <br />间推收益的5%
           <br />社区补贴 收益的1%
           向上分十代社区
-          <br />节点补贴 1、高级节点15%
+          <br />节点补贴
+          <br />1、高级节点15%
           <br />2、中级节点13%
           <br />3、实时节点10%
           <br />4、信用节点5%
         </div>
+        <div>EOTC SWAP聚合币币交易所收取千分之3手续费，其中千分之0.5归属平台，千分之2.5按比例分给所有LP持有人。质押LP凭证进行流动性挖矿不影响手续费收益，可以获得手续费和流动性挖矿双重收益。</div>
       </div>
       <div class="footer">
         <van-button color="#f69540" block round @click="jump()">流动性挖矿</van-button>
@@ -88,7 +90,7 @@ export default {
   },
   methods: {
     jump() {
-      window.location.href = 'https://trx.swap.eotc.im'
+      window.location.href = 'https://swap.eotc.im/'
     },
   },
 }

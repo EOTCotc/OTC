@@ -92,12 +92,12 @@ export default {
       //弹出气泡状态
       showPopover: false,
       // 主链分支菜单
-      actions: [
-        { text: "BSC" },
-        { text: "TRX" },
-        { text: "HECO" },
-        { text: "ETH" },
-      ],
+      // actions: [
+      //   { text: "BSC" },
+      //   { text: "TRX" },
+      //   { text: "HECO" },
+      //   { text: "ETH" },
+      // ],
       //获取验证码按钮状态
       buttonShow: false,
 
@@ -151,7 +151,8 @@ export default {
       this.$refs.countDown.reset();
     },
     switched() {
-      this.$emit("switched");
+       window.location.href = 'https://did.eotc.im/';
+      // this.$emit("switched");
     },
     login() {
       reg(this, this.value1, this.wallet, this.email, this.verification, 1);

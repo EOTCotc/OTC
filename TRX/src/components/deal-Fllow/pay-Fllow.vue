@@ -1,50 +1,3 @@
-<script>
-import dealPay from "./components-deal/deal-pay.vue";
-
-export default {
-  name: "pay-fllow",
-  props: ["curPayData", "activePayType"],
-  components: {
-    dealPay,
-  },
-  data() {
-    return {
-      time: 45 * 1000,
-      activeName: "size",
-      delayTimeshow: false,
-    };
-  },
-  methods: {
-    initTime() {
-      setTimeout(() => {
-        this.delayTimeshow = true;
-        Promise.resolve().then(() => {
-          this.$refs["countDown"].reset();
-        });
-      }, 300);
-    },
-    closeDelayTimeModel() {
-      this.delayTimeshow = false;
-    },
-    finishReset() {
-      this.$refs["countDown"].reset();
-      this.$refs["pay-Model"].goBack();
-    },
-    open_input() {
-      const container = this.$refs["pay-fllow-container"].parentElement;
-      container.style.transition = "all .6s";
-      container.style.height = "80%";
-      // container.style.transform=`translateY(${-280}px)`
-    },
-    close_input() {
-      const container = this.$refs["pay-fllow-container"].parentElement;
-      container.style.transition = "all .4s";
-      container.style.height = "50%";
-      // container.style.transform=`translateY(${0}px)`
-    },
-  },
-};
-</script>
 
 <template>
   <div class="pay-fllow" ref="pay-fllow-container">
@@ -52,7 +5,7 @@ export default {
     <header class="header">
       <img
         :src="
-          require(`@/assets/currency-icons/${activePayType.toLowerCase()}.svg`)
+          require(`@/assets/currency-icons/${activePayType.toLowerCase()}.png`)
         "
         class="icon-img"
         alt="USDC"
@@ -104,6 +57,64 @@ export default {
     <!-- end / 支付交易主题信息 -->
   </div>
 </template>
+<script>
+import dealPay from './components-deal/deal-pay.vue'
+
+export default {
+  name: 'pay-fllow',
+  props: ['curPayData', 'activePayType'],
+  components: {
+    dealPay,
+  },
+  data() {
+    return {
+      time: 45 * 1000,
+      activeName: 'size',
+      delayTimeshow: false,
+    }
+  },
+  watch: {
+    activePayType: function (newVal, oldVal) {
+      console.log(newVal)
+      this.initTime()
+    },
+  },
+  created() {
+  },
+  methods: {
+    initTime() {
+      setTimeout(() => {
+        this.delayTimeshow = true
+        console.log(this.$refs['countDown'])
+        Promise.resolve().then(() => {
+          this.$refs['countDown'].reset()
+        })
+      }, 300)
+    },
+    closeDelayTimeModel() {
+      this.delayTimeshow = false
+    },
+    finishReset() {
+      this.$refs['countDown'].reset()
+      this.$refs['pay-Model'].goBack()
+    },
+    open_input() {
+      const container = this.$refs['pay-fllow-container'].parentElement
+      container.style.transition = 'all .6s'
+      container.style.height = '80%'
+      // container.style.transform=`translateY(${-280}px)`
+    },
+    close_input() {
+      const container = this.$refs['pay-fllow-container'].parentElement
+      container.style.transition = 'all .4s'
+      container.style.height = '50%'
+      // container.style.transform=`translateY(${0}px)`
+    },
+  },
+}
+</script>
+
+
 
 <style lang="less" scoped>
 .pay-fllow {

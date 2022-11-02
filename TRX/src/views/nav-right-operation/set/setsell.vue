@@ -5,13 +5,8 @@
       <div class="cell">
         <p class="cell_title">数量</p>
         <div class="inputs">
-          <input
-            type="number"
-            v-model="number"
-            @blur="onNumInput($event)"
-            placeholder="最大出售数量"
-          />
-          <p style="color:#237FF8" @click="kindShow=false">{{kind}}</p>
+          <input type="number" v-model="number" @blur="onNumInput($event)" placeholder="最大出售数量" />
+          <p>{{coin.coinType}}</p>
         </div>
       </div>
       <div class="cell">
@@ -20,13 +15,13 @@
           <input
             type="number"
             v-model="price"
-            @blur="onPriceInput(5, 7.5, $event,kind)"
-            :placeholder="'出售'+kind +'的单价(CNY)'"
+            @blur="onPriceInput(coinType.floor,coinType.ceiling, $event,coin.coinType)"
+            :placeholder="'出售'+coin.coinType +'的单价(CNY)'"
           />
           <p>CNY</p>
         </div>
       </div>
-      
+
       <div class="cell">
         <p class="cell_title">限售</p>
         <div class="cell_flex">
@@ -49,7 +44,7 @@
               @blur="onMinDigitalCash"
               placeholder="最低出售总额"
             />
-            <p>{{kind}}</p>
+            <p>{{coin.coinType}}</p>
             <span v-if="eror[1]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -73,7 +68,7 @@
               @blur="onMaxDigitalCash"
               placeholder="最高出售总额"
             />
-            <p>{{kind}}</p>
+            <p>{{coin.coinType}}</p>
             <span v-if="eror[3]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -86,21 +81,13 @@
       </h6>
       <van-cell center :border="false">
         <template #icon>
-          <img
-            class="pay-img"
-            :src="require('@/assets/currency-icons/unmoney.png')"
-            alt="aug-icon"
-          />
+          <img class="pay-img" :src="require('@/assets/currency-icons/unmoney.png')" alt="aug-icon" />
         </template>
         <template #title>
           <span class="custom-title">可接受现金</span>
         </template>
         <template #right-icon>
-          <van-switch
-            v-model="receiving_checked"
-            @change="check_change('isMoney')"
-            size="18px"
-          />
+          <van-switch v-model="receiving_checked" @change="check_change('isMoney')" size="18px" />
         </template>
       </van-cell>
       <van-cell center :border="false">
@@ -115,25 +102,13 @@
           <span class="custom-title">只接受现金</span>
         </template>
         <template #right-icon>
-          <van-switch
-            v-model="isMoney"
-            @change="check_change('receiving_checked')"
-            size="18px"
-          />
+          <van-switch v-model="isMoney" @change="check_change('receiving_checked')" size="18px" />
         </template>
       </van-cell>
     </footer>
 
     <div class="button">
-      <van-button
-        color="#FC7542"
-        block
-        round
-        @click="popswitch"
-        :disabled="vali_value"
-      >
-        生成出售订单
-      </van-button>
+      <van-button color="#FC7542" block round @click="popswitch" :disabled="vali_value">生成出售订单</van-button>
     </div>
 
     <van-popup
@@ -154,7 +129,7 @@
           </div>
           <div>
             <p>数量</p>
-            <p>{{ number }} {{kind}}</p>
+            <p>{{ number }} {{coin.coinType}}</p>
           </div>
           <div>
             <p>限额</p>
@@ -162,13 +137,11 @@
           </div>
           <div>
             <p>限额</p>
-            <p>{{ MinDigitalCash }} {{kind}} ~ {{ MaxDigitalCash }} {{kind}}</p>
+            <p>{{ MinDigitalCash }} {{coin.coinType}} ~ {{ MaxDigitalCash }} {{coin.coinType}}</p>
           </div>
         </div>
 
-        <van-checkbox shape="square" v-model="checked"
-          >我已认真核对</van-checkbox
-        >
+        <van-checkbox shape="square" v-model="checked">我已认真核对</van-checkbox>
         <van-button
           class="pop-button"
           @click="sellItem()"
@@ -176,18 +149,11 @@
           color="#1B2945"
           block
           :disabled="!checked"
-          >确认生成</van-button
-        >
+        >确认生成</van-button>
       </div>
     </van-popup>
 
-    <van-popup
-      v-model="contractShow"
-      :style="{ height: '30%' }"
-      round
-      closeable
-      position="bottom"
-    >
+    <van-popup v-model="contractShow" :style="{ height: '30%' }" round closeable position="bottom">
       <div class="heyue">
         <p class="heyue_title">合约转币</p>
         <div class="heyue-text">
@@ -197,43 +163,42 @@
           </div>
           <div>
             <p>数量</p>
-            <p>{{ number }} {{kind}}</p>
+            <p>{{ number }} {{coin.coinType}}</p>
           </div>
         </div>
-        <van-button block color="#1B2945" round @click="transfer"
-          >向合约转币</van-button
-        >
+        <van-button block color="#1B2945" round @click="transfer">向合约转币</van-button>
       </div>
     </van-popup>
-    <van-popup v-model="kindShow" round position="bottom">
+    <!-- <van-popup v-model="kindShow" round position="bottom">
       <van-picker
         show-toolbar
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirm"
       />
-    </van-popup>
+    </van-popup>-->
     <PopLoad :loadShow="loadshow"></PopLoad>
   </div>
 </template>
 
 <script>
-import Navwhite from "@/components/Nav/white.vue";
-import PopLoad from "@/components/pop-load/index.vue";
-import currency_mixin from "@/mixins/currency_mixins";
-import { contractAddress } from "@/utils/abi";
-import { CheckSellOrder } from "@/api/payverification";
-import { addOrder } from "@/api/trxRequest";
+import Navwhite from '@/components/Nav/white.vue'
+import PopLoad from '@/components/pop-load/index.vue'
+import currency_mixin from '@/mixins/currency_mixins'
+import { contractAddress } from '@/utils/abi'
+import { CheckSellOrder } from '@/api/payverification'
+import { addOrder } from '@/api/trxRequest'
+// import { getcoinID } from '@/utils/utils'
 
 import {
   Reconstruction_getTrxBalance,
   Reconstruction_myApprove,
   Reconstruction_verifyUSDT,
   sellOrders,
-} from "@/utils/web3";
+} from '@/utils/web3'
 
 export default {
-  name: "setpur-chase",
+  name: 'setpur-chase',
   components: {
     Navwhite,
     PopLoad,
@@ -242,46 +207,60 @@ export default {
   data() {
     return {
       hasInput: true,
-      title: "出售",
+      title: '出售',
       //合约转币
       contractShow: false,
       loadshow: false,
       contractAddress: contractAddress,
 
-      kindShow: false,
-      kind: 'USDT',
-      columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
-    };
+      coin: '',
+      address: '',
+      coinType: '',
+    }
+  },
+  created() {
+    this.coin = this.$route.params
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == this.coin.coinID) this.coinType = i
+    }
+    console.log(this.coin)
   },
   methods: {
-    onConfirm(value) {
-      this.kind = value
-      this.kindShow = false
-    },
     sellItem() {
-      this.contractShow = true;
+      this.contractShow = true
     },
     //向合约转币
     async transfer() {
-      this.contractShow = false;
-      this.loadshow = true;
+      this.contractShow = false
+      this.loadshow = true
 
-      const cny = this.price;
-      const usdtNum = this.number;
-      const amount1 = this.MinLegalTender;
-      const amount2 = this.MaxLegalTender;
-      this.isclose_on_click_overlay = false;
+      const cny = this.price
+      const usdtNum = this.number
+      const amount1 = this.MinLegalTender
+      const amount2 = this.MaxLegalTender
+      this.isclose_on_click_overlay = false
+      let coinList = JSON.parse(localStorage.getItem('coinList'))
+      for (let i of coinList) {
+        if (i.id == this.coin.coinID) this.address = i.ads
+      }
 
       try {
-        await Reconstruction_getTrxBalance(); // 支付 trx
-        await Reconstruction_myApprove(usdtNum); // 授权
-        await Reconstruction_verifyUSDT(parseFloat(usdtNum)); // 验证延保余额
-        const { data } = await CheckSellOrder(); // 检查是否存在订单号
-        const it = eval(data);
-        //console.log(it);
-        if (it.odid != "" && it.odid != "0") {
+        if (this.coin.coinID != window.itself) {
+          await Reconstruction_getTrxBalance() // 支付 trx
+          await Reconstruction_myApprove(usdtNum, this.address) // 授权
+          await Reconstruction_verifyUSDT(parseFloat(usdtNum), this.address) // 验证延保余额
+        } else {
+          await Reconstruction_getTrxBalance(usdtNum)
+        }
+
+        const { data } = await CheckSellOrder() // 检查是否存在订单号
+        const it = eval(data)
+        console.log(this.coin.coinID)
+        if (it.odid != '' && it.odid != '0') {
           //区块打包确认
-          await sellOrders(usdtNum.toString(), it.id);
+          // let coinID = getcoinID()
+          await sellOrders(usdtNum.toString(), it.id, this.coin.coinID, this.address)
           const { data } = await addOrder({
             cny,
             num: usdtNum,
@@ -290,27 +269,28 @@ export default {
             type: 0, // 0 出售
             did: it.id,
             cash: this.cash,
-          });
+            coinID: this.coin.coinID,
+          })
           const mynum = parseFloat(localStorage.getItem('myamount')) - parseFloat(usdtNum)
-          localStorage.setItem("myamount", mynum);
+          localStorage.setItem('myamount', mynum)
 
           this.$router.replace({
-            name: "order-Ticket",
+            name: 'order-Ticket',
             params: {
-              method: "sell",
+              method: 'sell',
             },
-          });
-        } else this.$toast.error("挂单数量 超出限制！");
+          })
+        } else this.$toast.error('挂单数量 超出限制！')
       } catch (err) {
-        console.warn(err);
-        this.$toast.warning(err.message);
-        this.$toast.error("挂出售单过程发生错误");
+        console.warn(err)
+        this.$toast.warning(err.message)
+        this.$toast.error('挂出售单过程发生错误')
       }
-      this.isclose_on_click_overlay = true;
-      this.loadshow = false;
+      this.isclose_on_click_overlay = true
+      this.loadshow = false
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

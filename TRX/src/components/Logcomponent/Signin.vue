@@ -118,12 +118,12 @@ export default {
       //弹出气泡状态
       showPopover: false,
       // 主链分支菜单
-      actions: [
-        { text: "BSC" },
-        { text: "TRX" },
-        { text: "HECO" },
-        { text: "ETH" },
-      ],
+      // actions: [
+      //   { text: "BSC" },
+      //   { text: "TRX" },
+      //   { text: "HECO" },
+      //   { text: "ETH" },
+      // ],
       //获取验证码按钮状态
       buttonShow: false,
       //倒计时切换

@@ -27,7 +27,7 @@
       <div class="footer">
         <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge(num)">提交</van-button>
         <p>最少提100 {{category[action].title}}，提币到账时间为T+1。</p>
-        <!-- <p @click="look()">查看提现记录</p> -->
+        <p @click="look()">查看提现记录</p>
       </div>
     </div>
   </div>
@@ -95,7 +95,7 @@ export default {
     recharge(num) {
       let coin = this.category[this.action].title.toLowerCase()
       console.log(coin)
-      if (this.action == 2 || this.action == 3) {
+      if (this.action !=0 ) {
         this.$toast.warning('功能暂未开放，请耐心等待。')
         return
       }
@@ -143,9 +143,11 @@ export default {
       if (this.action == 0) {
         // console.log(this.EOTC)
         this.num = this.EOTCnum
-      } else if (this.action == 1) {
-        this.num = this.USDTnum
-      } else {
+      } 
+      // else if (this.action == 1) {
+      //   this.num = this.USDTnum
+      // } 
+      else {
         this.$toast.warning('功能暂未开放，请耐心等待。')
       }
       console.log(this.num)
@@ -197,11 +199,11 @@ export default {
       margin-top: 40px;
       color: #999;
     }
-    // p:last-child {
-    //   text-align: center;
-    //   color: #237ff8;
-    //   margin-top: 30px;
-    // }
+    p:last-child {
+      text-align: center;
+      color: #237ff8;
+      margin-top: 30px;
+    }
   }
 }
 </style>

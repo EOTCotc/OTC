@@ -89,6 +89,7 @@
 import { Eotcdis_Order } from "@/api/trxRequest";
 import { VueLoading } from "vue-loading-template";
 
+import { getcoinID } from "@/utils/utils";
 
 import { UserBind } from "@/api/trxRequest";
 
@@ -104,15 +105,35 @@ export default {
       showLoading: true,
     };
   },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    active: {
+      type: [String,Number],
+    },
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '3') this.initLoadingData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '3')this.initLoadingData(this.coinId)
+    },
+  },
   created() {
-    this.initLoadingData();
+    console.log(this.coinId)
+    this.initLoadingData(this.coinId);
   },
   methods: {
-    async initLoadingData() {
+    async initLoadingData(coinID) {
+      console.log(3333)
       try {
+        // let  coinID=getcoinID()
         const { data } = await Eotcdis_Order({
           t1: 1,
           t2: 4,
+          coinID:coinID
         });
         this.dataList = data;
       } catch (err) {

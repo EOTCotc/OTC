@@ -7,7 +7,7 @@
         <span>出售</span>
         </van-tag>
         &nbsp;&nbsp;
-        <span class="header-top-left-test">USDT</span>
+        <span class="header-top-left-test">{{kind}}</span>
         &nbsp;&nbsp;
       </div>
       <p class="header-top">
@@ -23,7 +23,7 @@
         <span>收购</span>
         </van-tag>
         &nbsp;&nbsp;
-        <span class="header-top-left-test">USDT</span>
+        <span class="header-top-left-test">{{kind}}</span>
         &nbsp;&nbsp;
       </div>
       <p class="header-top">
@@ -46,7 +46,7 @@
             </span>
             <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
             <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} USDT</span>
+            <span>手续费:{{ order_item.amount2 }} {{kind}}</span>
           </p>
           <p>
             <span> </span>
@@ -107,6 +107,9 @@ export default {
       require: true,
       type: [Object],
     },
+    kind:{
+      type:[String]
+    }
   },
   data() {
     return {

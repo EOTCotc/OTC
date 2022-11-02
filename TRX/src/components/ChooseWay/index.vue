@@ -127,8 +127,8 @@
 
     <router-view
       @set-cur-state="setCurState"
-      :typeList="typeList"
       ref="dataList"
+      :typeList="typeList"
     ></router-view>
 
     <!-- 右侧图标小工具 -->
@@ -299,7 +299,11 @@ export default {
       if (this.curChain === "BSC") {
         this.typeList = ["USDT", "USDC", "BTC", "ETH", "BNB"];
       } else {
-        this.typeList = ["USDT", "USDC", "BTC", "ETH", "TRX"];
+        let coinList=JSON.parse(localStorage.getItem('coinList')) 
+         this.typeList=[]
+        for(let i of coinList){
+          this.typeList.push(i.name)
+        }
       }
       if (this.curState) {
         this.$refs["dataList"]?.onLoad();
@@ -323,10 +327,12 @@ export default {
       };
     },
     trading() {
+      console.log(this.action)
       // 购买状态
       this.curState = true;
     },
     sell() {
+      console.log(this.action)
       // 出售状态
       this.curState = false;
     },

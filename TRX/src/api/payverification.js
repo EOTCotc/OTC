@@ -65,6 +65,7 @@ export const Verification_UserXbuyOrder_before = ({
   cnyNum,
   dsx,
   userPay,
+  coinID
 }) => {
   const params = {
     uid: getItem("uid"),
@@ -74,6 +75,7 @@ export const Verification_UserXbuyOrder_before = ({
     cnyNum, // 本次购买 usdt 数量
     dsx, // 订单价格状态
     userPay, // 用户选择的支付方式
+    coinID
   };
   return request({
     method: "POST",
@@ -95,6 +97,7 @@ export const Verification_order_before = ({
   gnum,
   dsx,
   ads = localStorage.getItem("myaddress"),
+  coinID
 }) => {
   const params = {
     uid,
@@ -103,6 +106,7 @@ export const Verification_order_before = ({
     dsx,
     ads,
     sign: getItem("mysign"),
+    coinID
   };
   return request({
     method: "POST",

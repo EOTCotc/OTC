@@ -547,8 +547,9 @@ export default {
               cur_payData: $order.ads, // "清茶树&现金交易&现金"
             },
           };
+          console.log(params)
           this.$router.push({
-            name: "order-pay",
+            name: 'order-pay',
             params: params,
             query: {
               id: $order.id,

@@ -2,7 +2,7 @@
   <div class="water-bill">
     <!-- 流水审查页面 -->
     <header class="header">
-      <div @click="$router.back(-1)">
+      <div @click="$router.push({name:'orderGather-full'})">
         <van-icon name="arrow-left" />
         <span class="hd-txt">{{ item.sname }}</span>
       </div>
@@ -143,6 +143,7 @@ export default {
     'item',
     'money',
     'time',
+    'nowTime',
     'num',
     'cuePayType',
     'servicefee',
@@ -186,7 +187,7 @@ export default {
     window.preview = this.preview
     const tokenObj = getItem(this.odid)
     console.log(this.MerchanInfo)
-    console.log(123)
+    console.log(tokenObj)
     /**
      * tokenObj = { buyer:{ token },seller:{ token }  }
      */
@@ -324,18 +325,23 @@ export default {
       } else {
         MerchanInfo = this.MerchanInfo
       }
-
-      this.$router.replace({
-        name: 'CompleteOrderPayment',
-        params: {
-          item: this.item,
-          num: this.num,
-          cuePayType: this.cuePayType,
-          money: this.money,
-          MerchanInfo,
-          nowTime: this.time,
-          servicefee: this.servicefee,
-          sellerMthods: this.sellerMthods,
+      const params = {
+        item: this.item,
+        num: this.num,
+        cuePayType: this.cuePayType,
+        money: this.money,
+        MerchanInfo,
+        nowTime: this.nowTime,
+        servicefee: this.servicefee,
+        sellerMthods: this.sellerMthods,
+      }
+      console.log(params)
+      this.$router.push({
+        name: 'order-pay',
+        params: params,
+        query: {
+          id: this.odid,
+          inTrading: true,
         },
       })
     },
@@ -530,7 +536,8 @@ export default {
       if (this.item.rcoin === '-1') {
         this.ischangecheck_rcoin = true
         return true
-      } else if (+this.item.rcoin === 0 && +this.item.rcoin >= 0) {
+      } else if ( +this.item.rcoin >= 0) {
+        console.log(this.item.rcoin)
         this.ischangecheck_rcoin = false
         return false
       } else if (!this.item.rcoin) {

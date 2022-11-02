@@ -6,7 +6,7 @@
         <p class="cell_title">数量</p>
         <div class="inputs">
           <input type="number" v-model="number" @blur="onNumInput($event)" placeholder="最大收购数量" />
-          <p style="color:#237FF8" @click="kindShow=false">{{kind}}</p>
+          <p style="color:#237FF8">{{coin.coinType}}</p>
         </div>
       </div>
       <div class="cell">
@@ -15,8 +15,8 @@
           <input
             type="number"
             v-model="price"
-            @blur="onPriceInput(5, 7.5, $event,kind)"
-            :placeholder="'收购'+kind+'的单价(CNY)'"
+            @blur="onPriceInput(coinType.floor,coinType.ceiling , $event,coin.coinType)"
+            :placeholder="'收购'+coin.coinType+'的单价(CNY)'"
           />
           <p>CNY</p>
         </div>
@@ -44,7 +44,7 @@
               @blur="onMinDigitalCash"
               placeholder="最低收购总额"
             />
-            <p>{{kind}}</p>
+            <p>{{coin.coinType}}</p>
             <span v-if="eror[1]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -68,7 +68,7 @@
               @blur="onMaxDigitalCash"
               placeholder="最高收购总额"
             />
-            <p>{{kind}}</p>
+            <p>{{coin.coinType}}</p>
             <span v-if="eror[3]" class="error-text">输入金额不正确</span>
           </div>
         </div>
@@ -128,7 +128,7 @@
           </div>
           <div>
             <p>数量</p>
-            <p>{{ number }} {{kind}}</p>
+            <p>{{ number }} {{coin.coinType}}</p>
           </div>
           <div>
             <p>限额</p>
@@ -136,7 +136,7 @@
           </div>
           <div>
             <p>限额</p>
-            <p>{{ MinDigitalCash }} {{kind}} ~ {{ MaxDigitalCash }} {{kind}}</p>
+            <p>{{ MinDigitalCash }} {{coin.coinType}} ~ {{ MaxDigitalCash }} {{coin.coinType}}</p>
           </div>
         </div>
 
@@ -152,14 +152,14 @@
       </div>
     </van-popup>
 
-    <van-popup v-model="kindShow" round position="bottom">
+    <!-- <van-popup v-model="kindShow" round position="bottom">
       <van-picker
         show-toolbar
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirm"
       />
-    </van-popup>
+    </van-popup>-->
   </div>
 </template>
 
@@ -168,6 +168,7 @@ import Navwhite from '@/components/Nav/white.vue'
 import currency_mixin from '@/mixins/currency_mixins'
 import loadingToast from '@/components/loading-toast'
 import { addOrder } from '@/api/trxRequest'
+// import { getcoinID } from '@/utils/utils'
 
 export default {
   name: 'setpur-chase', //挂收购单
@@ -180,16 +181,28 @@ export default {
       hasInput: true,
       title: '收购',
 
-      kindShow: false,
-      kind: 'USDT',
-      columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
+      // kindShow: false,
+      // kind: 'USDT',
+      // columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
+
+      coin: '',
+      address: '',
+      coinType: '',
     }
   },
+  created() {
+    this.coin = this.$route.params
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == this.coin.coinID) this.coinType = i
+    }
+    console.log(this.coinType)
+  },
   methods: {
-    onConfirm(value) {
-      this.kind = value
-      this.kindShow = false
-    },
+    // onConfirm(value) {
+    //   this.kind = value
+    //   this.kindShow = false
+    // },
     //生成收购单
     async jump() {
       this.$toast.warning(
@@ -206,12 +219,14 @@ export default {
       )
       this.isclose_on_click_overlay = false
       try {
+        // let coinID = getcoinID().id
         const { data } = await addOrder({
           cny: this.price,
           num: this.number,
           amount1: this.MinLegalTender,
           amount2: this.MaxLegalTender,
           cash: this.cash,
+          coinID: this.coin.coinID,
         })
         this.$toast.clear()
         if (data.State === '1') {

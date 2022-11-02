@@ -1,4 +1,4 @@
-import {Toast, Notify} from 'vant'
+import { Toast, Notify } from 'vant'
 import dayjs from 'dayjs'
 
 Toast.allowMultiple()
@@ -14,20 +14,19 @@ function initFormData(data) {
   return formData
 }
 
-
 export default {
-  initFormData
+  initFormData,
 }
 
 export const paytype = (value) => {
   switch (value) {
-    case "yhk":
-      return "银行卡";
-    case "zfb":
-      return "支付宝";
-    case "wx":
-      return "微信支付";
-    case "xj":
+    case 'yhk':
+      return '银行卡'
+    case 'zfb':
+      return '支付宝'
+    case 'wx':
+      return '微信支付'
+    case 'xj':
       return '现金'
   }
 }
@@ -44,7 +43,7 @@ export function $toast(type = 'success', message, cb, duration = 2000) {
     duration,
     onClose: () => {
       cb && cb()
-    }
+    },
   })
 }
 
@@ -55,7 +54,7 @@ export function $notify(type = 'success', message, cb, duration = 1500) {
     duration,
     onClose: () => {
       cb && cb()
-    }
+    },
   })
 }
 
@@ -63,7 +62,7 @@ export function $loading(message) {
   return Toast.loading({
     forbidClick: true,
     message,
-    duration: 0
+    duration: 0,
   })
 }
 
@@ -76,4 +75,12 @@ export function transformDate(str) {
 export function getArbitrateType(type) {
   const arr = ['账户被冻结', '卖家未确认收款', '其他', '仲裁异议']
   return arr[type]
+}
+
+export function getcoinID() {
+  let coinList = JSON.parse(localStorage.getItem('coinList'))
+  let active = localStorage.getItem('coinActive')
+
+  console.log(coinList[active])
+  return coinList[active]
 }

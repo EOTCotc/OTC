@@ -1,32 +1,29 @@
 <template>
   <div class="content-box-container">
-    <van-empty
-      class="null"
-      v-if="purchaseList.length == 0"
-      description="暂无订单信息"
-    />
+    <van-empty class="null" v-if="purchaseList.length == 0" description="暂无订单信息" />
     <div class="content-box" v-else>
       <van-tabs v-model="active" animated swipeable background="#F3F4F5">
         <van-tab title="总订单">
           <BuyBlanketOrder
             v-for="(orderItem, i) in purchaseList"
+            :coinType="coinType"
             :key="i"
             :orderItem="orderItem"
           ></BuyBlanketOrder>
         </van-tab>
 
         <!-- 待处理订单 -->
-        <van-tab title="待处理" >
-          <BuyPending></BuyPending>
+        <van-tab title="待处理">
+          <BuyPending :coinId="coinId" :active="active" :coinType="coinType"></BuyPending>
         </van-tab>
 
         <!-- 等待收币订单 -->
         <van-tab title="待收币">
-          <BuyAccomplish></BuyAccomplish>
+          <BuyAccomplish :coinId="coinId" :active="active" :coinType="coinType"></BuyAccomplish>
         </van-tab>
         <!-- 已收币订单 -->
         <van-tab title="已收币">
-          <BuyReceivedCoin></BuyReceivedCoin>
+          <BuyReceivedCoin :coinId="coinId" :active="active" :coinType="coinType"></BuyReceivedCoin>
         </van-tab>
       </van-tabs>
     </div>
@@ -34,13 +31,13 @@
 </template>
 
 <script>
-import BuyBlanketOrder from "@/components/orderFrom/BuyBlanketOrder.vue";
-import BuyPending from "@/components/orderFrom/BuyPending.vue";
-import BuyAccomplish from "@/components/orderFrom/BuyAccomplish.vue";
-import BuyReceivedCoin from "@/components/orderFrom/BuyReceivedCoin.vue"
+import BuyBlanketOrder from '@/components/orderFrom/BuyBlanketOrder.vue'
+import BuyPending from '@/components/orderFrom/BuyPending.vue'
+import BuyAccomplish from '@/components/orderFrom/BuyAccomplish.vue'
+import BuyReceivedCoin from '@/components/orderFrom/BuyReceivedCoin.vue'
 
 export default {
-  name: "my-purchase",
+  name: 'my-purchase',
   components: {
     BuyBlanketOrder,
     BuyPending,
@@ -53,19 +50,21 @@ export default {
       type: [Object, Array],
       default: () => [],
     },
+    coinId: {
+      type: [String, Number],
+    },
+    coinType: {
+      type: [String],
+    },
   },
-  created(){
-      //console.log(this.$route.query)
-  },
+
   data() {
     return {
       action: 0,
-      active: "",
-    };
+      active: '',
+    }
   },
-
-
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -86,7 +85,7 @@ export default {
   background: none;
 }
 
-.content-box-container{
+.content-box-container {
   height: 100%;
   display: flex;
   flex: 1;
