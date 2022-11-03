@@ -8,31 +8,43 @@
 
 <template>
   <div class="content">
-    <div class="item" v-for="(item, index) of contentList" v-if="index == contentIndex">
-      <div class="top">
-        <span class="presentIndex">{{ index + 1 }}</span><span class="totalCount">/ {{ contentList.length }}</span>
-      </div>
-      <div class="topic">
-        {{ item.topic }}
-      </div>
-      <div class="answer">
-        <div :class="activeIndex == i || item.answerIndex == i ? 'answerActiveItem' : 'answerItem'"
-          v-for="(answerItem, i) of item.answerList" @click="answerItemClick(answerItem, index, i)">{{ answerItem }}
+    <template v-for="(item, index) of contentList">
+      <div class="item" v-if="index == contentIndex" :key="index">
+        <div class="top">
+          <span class="presentIndex">{{ index + 1 }}</span><span class="totalCount">/ {{ contentList.length }}</span>
+        </div>
+        <div class="topic">
+          {{ $t('components.arbitrator.exam.problem') }}{{index + 1}}----------------------------
+        </div>
+        <div class="answer">
+          <div
+            v-for="(answerItem, i) of item.answerList"
+            :key="i"
+            :class="(activeIndex == i || item.answerIndex == i) ? 'answerActiveItem' : 'answerItem'"
+            @click="answerItemClick(answerItem, index, i)">
+            {{ $t('components.arbitrator.exam.answer') }}{{ i + 1 }}
+          </div>
         </div>
       </div>
-    </div>
+    </template>
     <div class="bottomBtn">
       <div v-show="contentIndex == 0">
-        <van-button :disabled="bottomBtnFlg" block round color="#1B2945" @click="answerBtn(1)">下一题</van-button>
+        <van-button :disabled="bottomBtnFlg" block round color="#1B2945" @click="answerBtn(1)">
+          {{ $t('components.arbitrator.exam.next') }}
+        </van-button>
       </div>
       <div v-show="contentIndex != 0 && contentIndex < contentList.length - 1" style="display: flex;">
         <van-button block round color="#1B2945" @click="answerBtn(-1)" style="margin: 0 10px;">
-          上一题</van-button>
+          {{ $t('components.arbitrator.exam.prev') }}
+        </van-button>
         <van-button :disabled="bottomBtnFlg" block round color="#1B2945" @click="answerBtn(1)" style="margin: 0 10px;">
-          下一题</van-button>
+          {{ $t('components.arbitrator.exam.next') }}
+        </van-button>
       </div>
       <div v-show="contentIndex >= contentList.length - 1">
-        <van-button :disabled="bottomBtnFlg" block round color="#1B2945" @click="answerBtn(0)">提交</van-button>
+        <van-button :disabled="bottomBtnFlg" block round color="#1B2945" @click="answerBtn(0)">
+          {{ $t('components.arbitrator.exam.submit') }}
+        </van-button>
       </div>
     </div>
 
@@ -43,7 +55,7 @@
       </div>
       <!-- <div><img src= '@/static/image/examNo.png' alt=""></div> -->
       <div class="grade">{{ examGrade }}分</div>
-      <div class="msg">{{ examGrade < 90 ? '很遗憾未通过仲裁考试' : '恭喜通过仲裁考试' }}</div>
+      <div class="msg">{{ examGrade < 90 ? $t('components.arbitrator.exam.fail') : $t('components.arbitrator.exam.success') }}</div>
     </van-dialog>
 
   </div>
@@ -56,11 +68,10 @@ export default {
   data() {
     return {
       contentList: [{
-        topic: '问题1----------------------------',
         answerList: ['答案1', '答案2', '答案3', '答案4'],
         answerIndex: -1
       }, {
-        topic: '问题2----------------------------',
+        topic: `${this.$t('components.arbitrator.exam.problem')}2----------------------------`,
         answerList: ['答案1', '答案2', '答案3', '答案4'],
         answerIndex: -1
       }, {

@@ -12,7 +12,7 @@
             :time="time"
             format="HH:mm:sss"
           />
-          <span>内收到USDT</span>
+          <span>内收到{{userIconType}}</span>
         </div>
       </div>
     </header>
@@ -31,10 +31,10 @@
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
+          :src="require(`@/assets/currency-icons/${userIconType.toLowerCase()}.png`)"
           alt=""
         />
-        <span>购买 USDT</span>
+        <span>购买 {{userIconType}}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -48,7 +48,7 @@
           </li>
           <li>
             <span>数量</span>
-            <span>{{ num }} USDT</span>
+            <span>{{ num }} {{userIconType}}</span>
           </li>
           <li>
             <span>总金额</span>
@@ -58,7 +58,7 @@
           </li>
           <li>
             <span>手续费</span>
-            <span>{{ servicefee }} USDT</span>
+            <span>{{ servicefee }} {{userIconType}}</span>
           </li>
           <li :style="{display:'flex',alignItems:'center'}">
             <span>我的付款方式</span>
@@ -167,7 +167,12 @@ export default {
       time: 24 * 60 * 60 * 1000,
       appealTime: 300 * 1000,
       isDisabled: true,
+      userIconType:''
     };
+  },
+  created(){
+    this.userIconType=localStorage.getItem('userIconType')
+    // console.log()
   },
   methods: {
     to_orderList(){

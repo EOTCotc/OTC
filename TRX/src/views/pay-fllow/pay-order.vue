@@ -15,15 +15,19 @@
     </header>
     <!-- 边框线 -->
     <div class="van-hairline--bottom"></div>
-
     <!-- 卖家信息 -->
+
     <section class="seller-info">
       <div class="seller-info-top">
         <span class="pay-info1">卖家提示</span>
         <div class="info2">
           <span>
             {{ cacheData.payItem.sname }}
-            <img class="info-rz" src="@/assets/currency-icons/rz.png" alt="" />
+            <img
+              class="info-rz"
+              src="@/assets/currency-icons/rz.png"
+              alt
+            />
           </span>
           <!-- pending 1 订单 -->
           <van-icon name="orders-o" badge="1" @click="gotoWaterBill" />
@@ -33,16 +37,16 @@
         <div class="info-box" v-html="cacheData.payItem.mes"></div>
       </article>
     </section>
-
     <!-- 订单主要信息 -->
+
     <main class="main">
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
-          alt=""
+          :src="require(`@/assets/currency-icons/${type.toLowerCase()}.png`)"
+          alt
         />
-        <span>购买 USDT</span>
+        <span>购买 {{type}}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -55,10 +59,13 @@
           </li>
           <li v-show="isShowPayInfo">
             <span>交易钱包</span>
-            <span @click="copyContent(myaddress, '钱包地址已复制')"
-              >{{ briefMyAddress(myaddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+            <span @click="copyContent(myaddress, '钱包地址已复制')">
+              {{ briefMyAddress(myaddress) }}
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li v-show="isShowPayInfo">
             <span>商家钱包</span>
@@ -68,30 +75,33 @@
               "
             >
               {{ briefMyAddress(cacheData.MerchanInfo.bank) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li v-show="isShowPayInfo">
             <span>合约地址</span>
-            <span @click="copyContent(contractAddress, '合约地址 已复制')"
-              >{{ briefMyAddress(contractAddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+            <span @click="copyContent(contractAddress, '合约地址 已复制')">
+              {{ briefMyAddress(contractAddress) }}
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li v-show="isShowPayInfo">
             <span :style="{ color: '#000' }">合约查询订单</span>
-            <span @click="show_imgPreview" :style="{ color: 'red' }"
-              >指导查看步骤</span
-            >
+            <span @click="show_imgPreview" :style="{ color: 'red' }">指导查看步骤</span>
           </li>
-
           <li>
             <span>单价</span>
             <span>￥{{ cacheData.payItem.cny }}</span>
           </li>
           <li>
             <span>数量</span>
-            <span>{{ cacheData.ordernum }} USDT</span>
+            <span>{{ cacheData.ordernum }} {{type}}</span>
           </li>
           <li
             @click.stop="
@@ -102,9 +112,12 @@
             "
           >
             <span>总金额</span>
-            <span class="importan-tTsxt"
-              >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
+            <span class="importan-tTsxt">
+              ￥{{ ThousandSeparator(cacheData.ordermoney) }}
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
             </span>
           </li>
           <li>
@@ -124,20 +137,16 @@
               {{ cacheData.sellerMthods.mybank.split("&")[1] }}
               {{ cacheData.sellerMthods.mybank.split("&")[0] }}
             </span>
-            <span v-if="cacheData.ordercuePayType === 'zfb'">
-              {{ cacheData.sellerMthods.myalipay }}
-            </span>
-            <span v-if="cacheData.ordercuePayType === 'wx'">
-              {{ cacheData.sellerMthods.mybmywechatnk }}
-            </span>
-            <span v-if="cacheData.ordercuePayType === 'xj'"> 现金交易 </span>
+            <span v-if="cacheData.ordercuePayType === 'zfb'">{{ cacheData.sellerMthods.myalipay }}</span>
+            <span
+              v-if="cacheData.ordercuePayType === 'wx'"
+            >{{ cacheData.sellerMthods.mybmywechatnk }}</span>
+            <span v-if="cacheData.ordercuePayType === 'xj'">现金交易</span>
           </li>
           <li class="van-divider"></li>
           <li>
             <span>订单编号</span>
-            <span
-              @click="copyContent(cacheData.payItem.id, '大订单编号 已复制')"
-            >
+            <span @click="copyContent(cacheData.payItem.id, '大订单编号 已复制')">
               {{ cacheData.payItem.id }}
               (
               {{ cacheData.MerchanInfo.odid }} )
@@ -152,15 +161,14 @@
           </li>
           <li>
             <span>下单时间</span>
-            <span>
-              {{ cacheData.nowTime | transformTime_Zh }}
-            </span>
+            <span>{{ cacheData.nowTime | transformTime_Zh }}</span>
           </li>
         </ul>
       </div>
     </main>
 
     <!-- 底部取消订单 or 下一波 button -->
+
     <footer class="footer">
       <div class="cancel">
         <van-button type="default" @click="cancel_order">取消订单</van-button>
@@ -173,28 +181,29 @@
 </template>
 
 <script>
-import { toastComponent } from "@/utils/element-config";
+import { toastComponent } from '@/utils/element-config'
+import payIcons from '@/components/ChooseWay/pay-Icons.vue'
+import { contractAddress } from '@/utils/abi'
+import { ImagePreview } from 'vant'
+import loadingToast from '@/components/loading-toast'
+import { runSign, Buy_user, Buy_cancel, Buy_verify } from '@/utils/web3'
+import { subbuysellorder } from '@/api/trxRequest'
 
-import payIcons from "@/components/ChooseWay/pay-Icons.vue";
-import { contractAddress } from "@/utils/abi";
-import { ImagePreview } from "vant";
-import loadingToast from "@/components/loading-toast";
-import { runSign } from "@/utils/web3";
-import { subbuysellorder } from "@/api/trxRequest";
+import { paytype } from '@/utils/utils'
 
-import { paytype } from "@/utils/utils";
+import { OrderAudit } from '@/api/payverification'
 
 export default {
-  name: "order-pay-fllow",
+  name: 'order-pay-fllow',
   props: [
-    "item",
-    "cuePayType",
-    "num",
-    "money",
-    "MerchanInfo",
-    "sellerMthods",
-    "nowTime",
-    "servicefee",
+    'item',
+    'cuePayType',
+    'num',
+    'money',
+    'MerchanInfo',
+    'sellerMthods',
+    'nowTime',
+    'servicefee',
   ],
   components: {
     payIcons,
@@ -202,216 +211,228 @@ export default {
   data() {
     return {
       isShowPayInfo: false,
-      time: 30 * 60 * 1000,
+      time: '',
       contractAddress: contractAddress,
-      myaddress: localStorage.getItem("myaddress") || "暂时&未有地址",
-      netType: localStorage.getItem("netType") || "trx",
+      myaddress: localStorage.getItem('myaddress') || '暂时&未有地址',
+      netType: localStorage.getItem('netType') || 'trx',
       cacheData: {},
       imgs: [
-        require("../../assets/img-preview/sele-1.png"),
-        require("../../assets/img-preview/sele-2.png"),
+        require('../../assets/img-preview/sele-1.png'),
+        require('../../assets/img-preview/sele-2.png'),
       ], // 图片预览 列表
-    };
+
+      type: localStorage.getItem('userIconType'),
+      gas: '',
+    }
   },
   activated() {
-    this.initcacheData();
+    this.initcacheData()
+  },
+  mounted() {
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == localStorage.getItem('userIconId')) this.gas = i.gas
+    }
   },
   created() {
-    this.initcacheData();
+    this.initcacheData()
   },
   methods: {
     initcacheData() {
+      console.log(this.item)
       if (this.item) {
-        this.cacheData.payItem = this.item;
-        this.cacheData.ordercuePayType = this.cuePayType;
-        this.cacheData.ordernum = this.num;
-        this.cacheData.ordermoney = this.money;
-        this.cacheData.MerchanInfo = this.MerchanInfo;
-        this.cacheData.sellerMthods = this.sellerMthods;
-        this.cacheData.servicefee = this.servicefee;
-        this.cacheData.nowTime = this.nowTime || Date.now();
+        this.cacheData.payItem = this.item
+        this.cacheData.ordercuePayType = this.cuePayType
+        this.cacheData.ordernum = this.num
+        this.cacheData.ordermoney = this.money
+        this.cacheData.MerchanInfo = this.MerchanInfo
+        this.cacheData.sellerMthods = this.sellerMthods
+        this.cacheData.servicefee = this.servicefee
+        this.cacheData.nowTime = this.nowTime || Date.now()
         //数据缓存
-        this.$route.meta.cacheData = this.cacheData;
+        this.$route.meta.cacheData = this.cacheData
       } else {
         //console.log("页面回退数据缓存", this.$route.meta.cacheData);
-        this.cacheData = this.$route.meta.cacheData;
+        this.cacheData = this.$route.meta.cacheData
         // 页面进行了缓存，切换数据需要 计算每一个订单
       }
       this.time = this.diff_30timeout(
         this.trsfTime_30timeout(this.cacheData.nowTime, 30),
         this.transformTime_Zh(Date.now())
-      );
-      const rcoin = this.cacheData.payItem.rcoin;
-      if (!rcoin || rcoin === "-1") {
-        this.$toast.info("等待商家通过对您的流水审查！", {
+      )
+      const rcoin = this.cacheData.payItem.rcoin
+      if (!rcoin || rcoin === '-1') {
+        this.$toast.info('等待商家通过对您的流水审查！', {
           timeout: false,
-        });
+        })
       } else {
         this.$toast.success(
           <div>
             <p style="font-size:14px;margin:5px">商家已通过您的流水审查</p>
             <p style="font-size:15px;margin:5px">可进行下一步汇款!</p>
           </div>
-        );
+        )
       }
     },
     show_imgPreview() {
       ImagePreview({
         images: this.imgs,
         onClose() {
-          this.$toast.clear();
+          this.$toast.clear()
         },
         closeable: true,
-      });
-      this.$copyText(
-        "https://tronscan.io/#/contract/TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu/code"
-      ).then(
+      })
+      this.$copyText('https://tronscan.io/#/contract/TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu/code').then(
         (e) => {
           this.$toast.success(
             {
               component: toastComponent,
               props: {
-                title: "网页连接已复制",
-                content: "请在游览器中打开，按步骤查询！",
+                title: '网页连接已复制',
+                content: '请在游览器中打开，按步骤查询！',
               },
             },
             {
               timeout: false,
             }
-          );
+          )
         },
         (e) => {
-          this.$toast.error("复制失败，请稍后重试");
+          this.$toast.error('复制失败，请稍后重试')
         }
-      );
+      )
     },
     showPayInfo() {
-      this.isShowPayInfo = !this.isShowPayInfo;
+      this.isShowPayInfo = !this.isShowPayInfo
     },
     cancel_order() {
       this.$dialog
         .confirm({
-          title: "取消订单",
+          title: '取消订单',
           message:
             "<span class='activeInfo'>频繁取消订单会被 【限制下单】</span> <br />确定取消订单吗？",
         })
         .then(() => {
           if (!this.random()) {
-            return false;
+            return false
           }
-          this.countDown_finish();
+          this.countDown_finish()
         })
         .catch(() => {
           // on cancel 取消订单 取消选择
-        });
+        })
     },
     async countDown_finish() {
-      let oid; //子订单id
+      let oid //子订单id
       // 确认取消订单
       try {
-        this.cancelOrderModel_show = true;
+        this.cancelOrderModel_show = true
         this.$toast.warning(
           {
             component: loadingToast,
             props: {
-              title: "正在取消该订单。。。",
+              title: '正在取消该订单。。。',
             },
           },
           {
             icon: false,
             timeout: false,
           }
-        );
-        oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid; //子订单id
-        await runSign();
+        )
+        oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid //子订单id
+        await runSign()
+        if (this.cacheData.payItem.rcoin == 1)
+          await Buy_cancel(oid, localStorage.getItem('userIconId'))
         const { data } = await subbuysellorder({
           oid,
-          selectpayk: "",
+          selectpayk: '',
           type: 0,
-        });
-        this.$toast.clear();
-        if (data.State === "1") {
-          this.$toast.error(oid + "  号订单重复取消");
+        })
+        this.$toast.clear()
+        if (data.State === '1') {
+          this.$toast.error(oid + '  号订单重复取消')
           this.$router.replace({
-            name: "CurrencyTrading",
-          });
+            name: 'CurrencyTrading',
+          })
         } else {
-          this.$toast.warning(oid + "  号订单已取消");
+          this.$toast.warning(oid + '  号订单已取消')
           this.$router.replace({
-            name: "CurrencyTrading",
-          });
-          localStorage.setItem("xdnum", "0");
+            name: 'CurrencyTrading',
+          })
+          localStorage.setItem('xdnum', '0')
         }
       } catch (err) {
-        console.warn(err);
-        this.$toast.clear();
+        console.warn(err)
+        this.$toast.clear()
         this.$toast.error(err, {
           timeout: false,
-        });
+        })
       }
-      this.cancelOrderModel_show = false;
+      this.cancelOrderModel_show = false
     },
     random() {
       if (Math.random() * 10 < 2) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
     async autoCancel_order() {
-      let oid; //子订单id
+      let oid //子订单id
       // 确认取消订单
       try {
-        this.cancelOrderModel_show = true;
+        this.cancelOrderModel_show = true
         this.$toast.warning(
           {
             component: loadingToast,
             props: {
-              title: "正在取消该订单。。。",
+              title: '正在取消该订单。。。',
             },
           },
           {
             icon: false,
             timeout: false,
           }
-        );
-        oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid; //子订单id
+        )
+        oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid //子订单id
+        // Buy_cancel(oid,localStorage.getItem('userIconId'))
         const { data } = await subbuysellorder({
           oid,
-          selectpayk: "",
+          selectpayk: '',
           type: 0,
-        });
-        this.$toast.clear();
+        })
+        this.$toast.clear()
         //console.log(data);
-        if (data.State === "1") {
-          this.$toast.error(oid + "  号订单重复取消");
+        if (data.State === '1') {
+          this.$toast.error(oid + '  号订单重复取消')
           this.$router.replace({
-            name: "CurrencyTrading",
-          });
+            name: 'CurrencyTrading',
+          })
         } else {
-          this.$toast.warning(oid + "  号订单已取消");
+          this.$toast.warning(oid + '  号订单已取消')
           this.$router.replace({
-            name: "CurrencyTrading",
-          });
-          localStorage.setItem("xdnum", "0");
+            name: 'CurrencyTrading',
+          })
+          localStorage.setItem('xdnum', '0')
         }
       } catch (err) {
-        console.warn(err);
-        this.$toast.clear();
+        console.warn(err)
+        this.$toast.clear()
       }
     },
     gotoWaterBill() {
       const item = {
         ...this.cacheData.payItem,
-        dsx: "0",
-      };
+        dsx: '0',
+      }
 
       this.$router.replace({
-        name: "water-bill",
+        name: 'water-bill',
         params: {
           odid: this.cacheData.MerchanInfo.odid,
           MerchanInfo: this.cacheData.MerchanInfo,
           money: this.cacheData.ordermoney,
           time: this.time,
+          nowTime: this.cacheData.nowTime,
           item,
           num: this.cacheData.ordernum,
           cuePayType: this.cacheData.ordercuePayType,
@@ -419,50 +440,102 @@ export default {
           sellerMthods: this.cacheData.sellerMthods,
         },
         query: {
-          role: "buyer",
+          role: 'buyer',
         },
-      });
+      })
     },
-    payNextStep() {
+    async payNextStep() {
       //中间插入 流水审查页面
       // rcoin 隔多长时间放币， 必须大于 0
-      const rcoin = this.cacheData.payItem.rcoin;
-      //console.log(this.cacheData.payItem);
-      if (!rcoin || rcoin === "-1") {
+      const rcoin = this.cacheData.payItem.rcoin
+      console.log(this.cacheData)
+      if (!rcoin || rcoin === '-1') {
         this.$toast.warning(
           <div>
-            <p style="font-size:14px;margin:5px">
-              商家需要对您的账户进行流水审查
-            </p>
+            <p style="font-size:14px;margin:5px">商家需要对您的账户进行流水审查</p>
             <p style="font-size:15px;margin:5px">审查结果通过后可进行下一步!</p>
           </div>
-        );
+        )
         setTimeout(() => {
-          this.gotoWaterBill();
-        }, 1300);
-      } else {
-        console.log(this.cacheData.MerchanInfo);
-        this.$router.replace({
-          name: "CompleteOrderPayment",
-          params: {
-            item: this.cacheData.payItem,
-            num: this.cacheData.ordernum,
-            cuePayType: this.cacheData.ordercuePayType,
-            money: this.cacheData.ordermoney,
-            MerchanInfo: this.cacheData.MerchanInfo,
-            nowTime: this.time,
-            servicefee: this.cacheData.servicefee,
-            sellerMthods: this.cacheData.sellerMthods,
-          },
-        });
+          this.gotoWaterBill()
+        }, 1300)
+      } else if (rcoin === '1') {
+        let num = await Buy_verify(
+          this.cacheData.MerchanInfo.odid,
+          localStorage.getItem('userIconId')
+        )
+        if (num == this.cacheData.ordernum)
+          this.$router.replace({
+            name: 'CompleteOrderPayment',
+            params: {
+              item: this.cacheData.payItem,
+              num: this.cacheData.ordernum,
+              cuePayType: this.cacheData.ordercuePayType,
+              money: this.cacheData.ordermoney,
+              MerchanInfo: this.cacheData.MerchanInfo,
+              nowTime: this.time,
+              servicefee: this.cacheData.servicefee,
+              sellerMthods: this.cacheData.sellerMthods,
+            },
+          })
+        else this.$toast.warning('请重试！')
+      } else if (rcoin === '0') {
+        console.log(this.cacheData.payItem.id)
+        let num
+        //gas为0则商家交手续费，为1则用户交手续费
+        if (this.gas == 1) {
+          await Buy_user(
+            this.cacheData.ordernum,
+            this.cacheData.MerchanInfo.odid,
+            this.cacheData.MerchanInfo.bank,
+            this.cacheData.payItem.id,
+            localStorage.getItem('userIconId')
+          )
+          while (true) {
+            num = await Buy_verify(
+              this.cacheData.MerchanInfo.odid,
+              localStorage.getItem('userIconId')
+            )
+            if (num != 0) break
+          }
+        } else {
+          num = await Buy_verify(
+            this.cacheData.MerchanInfo.odid,
+            localStorage.getItem('userIconId')
+          )
+        }
+
+        OrderAudit({ rcoin: 1, oid: this.cacheData.MerchanInfo.odid }).then((res) => {
+          let state = res.data.State
+          if (state * 1 > 0 && num == this.cacheData.ordernum) {
+            this.$router.replace({
+              name: 'CompleteOrderPayment',
+              params: {
+                item: this.cacheData.payItem,
+                num: this.cacheData.ordernum,
+                cuePayType: this.cacheData.ordercuePayType,
+                money: this.cacheData.ordermoney,
+                MerchanInfo: this.cacheData.MerchanInfo,
+                nowTime: this.time,
+                servicefee: this.cacheData.servicefee,
+                sellerMthods: this.cacheData.sellerMthods,
+              },
+            })
+          } else {
+            this.$toast.warning('锁定订单失败！')
+            console.log(res)
+          }
+        })
       }
     },
     paytype(value) {
-      return paytype(value);
+      return paytype(value)
     },
   },
-};
+}
 </script>
+
+
 
 <style lang="less" scoped>
 /deep/ .icons9 {
@@ -511,7 +584,7 @@ export default {
   }
   .seller-info {
     // background: linear-gradient(to bottom,#d7e4e3,#b7e0de);
-    background: url("@/static/image/pay-info-bg.png");
+    background: url('@/static/image/pay-info-bg.png');
     background-size: cover;
     font-size: 30px;
     display: flex;
@@ -618,4 +691,5 @@ export default {
   }
 }
 </style>
+
 >

@@ -3,27 +3,25 @@
     <header class="header">
       <div class="header-top-left">
         <van-tag mark type="primary" v-if="order_type(+order_item.id)">
-          <span >出售</span>
+          <span>出售</span>
         </van-tag>
-         <van-tag mark type="warning" v-else>
+        <van-tag mark type="warning" v-else>
           <span>收购</span>
-        </van-tag>
-        &nbsp;&nbsp;
-        <span class="header-top-left-test">USDT</span>
+        </van-tag>&nbsp;&nbsp;
+        <span class="header-top-left-test">{{kind}}</span>
         &nbsp;&nbsp;
         <van-tag
-           v-if="order_type(+order_item.id)"
+          v-if="order_type(+order_item.id)"
           color="#ffe1e1"
           text-color="#ad0000"
           @click.stop="Verify_Coin"
-          >校验
-        </van-tag>
+        >校验</van-tag>
+        <van-tag v-else type="primary" @click="closeLock">解除锁定</van-tag>
       </div>
       <p class="header-top">
         <span class="header-topRight">
           <!-- <i class="iconfont  icon-lianximaijia"></i> -->
-          <van-icon name="guide-o" :style="{ fontSize: '20px' }" />
-          已取消
+          <van-icon name="guide-o" :style="{ fontSize: '20px' }" />已取消
         </span>
       </p>
     </header>
@@ -36,14 +34,13 @@
               @click.stop.self="
                 handle_showPhone(order_item.id, '订单编号 已复制')
               "
-              >订单编号:{{ order_item.id }}
-            </span>
+            >订单编号:{{ order_item.id }}</span>
             <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
             <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} USDT</span>
+            <span>手续费:{{ order_item.amount2 }} {{kind}}</span>
           </p>
           <p>
-            <span> </span>
+            <span></span>
             <span></span>
             <span class="total_price">{{ order_item.amount1 }} CNY</span>
             <span>总金额</span>
@@ -66,9 +63,11 @@
           <span>联系方式</span>
           <span>
             <b v-if="!isShowPhone" class="mask">{{ order_item.wechat }}</b>
-            <a v-else :href="'tel:' + order_item.wechat">{{
+            <a v-else :href="'tel:' + order_item.wechat">
+              {{
               order_item.wechat
-            }}</a>
+              }}
+            </a>
             <van-icon
               @click.stop.self="
                 handle_showPhone(order_item.wechat, '电话号码 复制成功')
@@ -82,18 +81,11 @@
     </main>
     <footer class="footer">
       <p>
-        <span>{{ order_item.sname }}</span
-        >&nbsp;
-        <img class="info-rz" src="@/assets/currency-icons/rz.png" alt="" />
+        <span>{{ order_item.sname }}</span>&nbsp;
+        <img class="info-rz" src="@/assets/currency-icons/rz.png" alt />
       </p>
-      <p>
-        {{ order_item.eotc | transformTime_MDMS }}
-      </p>
+      <p>{{ order_item.eotc | transformTime_MDMS }}</p>
     </footer>
-
-    
-
-
 
     <!-- start  收款方式 提示弹窗 -->
     <van-popup
@@ -106,7 +98,7 @@
       @close="close_model"
       :style="{ height: '350px' }"
     >
-     <template>
+      <template>
         <div>
           <header class="header">
             <van-icon name="arrow-left" />
@@ -119,11 +111,7 @@
                   <span class="custom-title">&nbsp;现金交易</span>
                 </template>
                 <template #icon>
-                  <img
-                    class="xj_moeny"
-                    src="@/assets/currency-icons/moeny-c.png"
-                    alt="xj"
-                  />
+                  <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
                 </template>
               </van-cell>
             </template>
@@ -149,15 +137,15 @@
                     ></i>
                   </van-icon>
                 </template>
-                <template #right-icon> </template>
+                <template #right-icon></template>
               </van-cell>
             </template>
 
             <div class="salePay-info">
-              <span class="span1"
-                >*<i class="zy-info">请使用本人实名账户进行收款</i
-                >,否则会导致订单失败且账号存在被冻结风险</span
-              >
+              <span class="span1">
+                *
+                <i class="zy-info">请使用本人实名账户进行收款</i>,否则会导致订单失败且账号存在被冻结风险
+              </span>
             </div>
           </main>
         </div>
@@ -168,18 +156,32 @@
 </template>
 
 <script>
-import sell_Mixin from "@/mixins/sell_mixins";
+import sell_Mixin from '@/mixins/sell_mixins'
+import { Buy_cancel, Buy_verify } from '@/utils/web3'
 
 export default {
-  name: "order-info",
+  name: 'order-info',
   props: {
     order_item: {
       require: true,
       type: [Object],
     },
+    kind: {
+      type: [String],
+    },
   },
   mixins: [sell_Mixin],
-};
+  methods: {
+    async closeLock() {
+      console.log(456)
+      let num=await Buy_verify(this.order_item.id, localStorage.getItem('userIconId'))
+      if(num!=0)
+      await Buy_cancel(this.order_item.id, localStorage.getItem('userIconId'))
+      else this.$toast.warning('该订单无需解除锁定！')
+
+    },
+  },
+}
 </script>
 <style lang="less" scoped>
 .order-container {

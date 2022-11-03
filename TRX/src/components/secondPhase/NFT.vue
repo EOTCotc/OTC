@@ -2,10 +2,9 @@
   <div>
     <white :title="title"></white>
     <div class="content">
-
       <div class="header">
         <img src="../../static/icon/nft2.png" alt="" />
-        <p>推广总收益</p>
+        <p>{{ $t("components.secondPhase.mining_shouyi") }}</p>
         <div class="currency">
           <div>
             <p>EOTC</p>
@@ -19,43 +18,57 @@
       </div>
       <div class="datum">
         <div>
-          <p>分享奖励(USDT)</p>
+          <p>{{ $t("components.secondPhase.nft_share") }}(USDT)</p>
           <p>154.23</p>
         </div>
         <div>
-          <p>辅助奖励(USDT)</p>
+          <p>{{ $t("components.secondPhase.nft_fuzhu") }}(USDT)</p>
           <p>456.00</p>
         </div>
         <div>
-          <p>社区奖励(USDT)</p>
+          <p>{{ $t("components.secondPhase.nft_shequ") }}(USDT)</p>
           <p>4899.08</p>
         </div>
         <div>
-          <p>盲盒奖励(个)</p>
+          <p>{{ $t("components.secondPhase.nft_manghe") }}</p>
           <p>23</p>
         </div>
         <div>
-          <p>卡牌奖励(个)</p>
+          <p>{{ $t("components.secondPhase.nft_kapai") }}</p>
           <p>23</p>
         </div>
       </div>
       <div class="datum">
         <div>
-          <p>EOTC资金池<br />合约分配</p>
+          <p>
+            {{ $t("components.secondPhase.nft_eotc") }}<br />{{
+              $t("components.secondPhase.nft_heyue")
+            }}
+          </p>
           <p>562.00</p>
         </div>
         <div>
-          <p>USDT资金池<br />合约分配</p>
+          <p>
+            {{ $t("components.secondPhase.nft_usdt") }}<br />{{
+              $t("components.secondPhase.nft_heyue")
+            }}
+          </p>
           <p>456.00</p>
         </div>
         <div>
-          <p>交易手续费<br />合约分配</p>
+          <p>
+            {{ $t("components.secondPhase.nft_jiaoyi") }}<br />{{
+              $t("components.secondPhase.nft_heyue")
+            }}
+          </p>
           <p>1564.00</p>
         </div>
       </div>
       <div class="box"></div>
       <div class="footer">
-        <van-button color="#1B2945" block round @click="jump()">EOTC NFT</van-button>
+        <van-button color="#1B2945" block round @click="jump()"
+          >EOTC NFT</van-button
+        >
       </div>
     </div>
   </div>
@@ -73,11 +86,11 @@ export default {
       title: "EOTC NFT",
     };
   },
-  methods:{
-    jump(){
-         window.location.href = 'https://nft.eotc.im/';
-    }
-  }
+  methods: {
+    jump() {
+      window.location.href = "https://nft.eotc.im/";
+    },
+  },
 };
 </script>
 
@@ -140,10 +153,10 @@ export default {
       font-weight: bold;
     }
   }
-  .datum:last-child{
+  .datum:last-child {
     margin-bottom: 100px;
   }
-  .box{
+  .box {
     height: 160px;
   }
   .footer {

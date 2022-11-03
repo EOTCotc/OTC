@@ -1,50 +1,3 @@
-<script>
-import dealPay from "./components-deal/deal-pay.vue";
-
-export default {
-  name: "pay-fllow",
-  props: ["curPayData", "activePayType"],
-  components: {
-    dealPay,
-  },
-  data() {
-    return {
-      time: 45 * 1000,
-      activeName: "size",
-      delayTimeshow: false,
-    };
-  },
-  methods: {
-    initTime() {
-      setTimeout(() => {
-        this.delayTimeshow = true;
-        Promise.resolve().then(() => {
-          this.$refs["countDown"].reset();
-        });
-      }, 300);
-    },
-    closeDelayTimeModel() {
-      this.delayTimeshow = false;
-    },
-    finishReset() {
-      this.$refs["countDown"].reset();
-      this.$refs["pay-Model"].goBack();
-    },
-    open_input() {
-      const container = this.$refs["pay-fllow-container"].parentElement;
-      container.style.transition = "all .6s";
-      container.style.height = "80%";
-      // container.style.transform=`translateY(${-280}px)`
-    },
-    close_input() {
-      const container = this.$refs["pay-fllow-container"].parentElement;
-      container.style.transition = "all .4s";
-      container.style.height = "50%";
-      // container.style.transform=`translateY(${0}px)`
-    },
-  },
-};
-</script>
 
 <template>
   <div class="pay-fllow" ref="pay-fllow-container">
@@ -52,21 +5,21 @@ export default {
     <header class="header">
       <img
         :src="
-          require(`@/assets/currency-icons/${activePayType.toLowerCase()}.svg`)
+          require(`@/assets/currency-icons/${activePayType.toLowerCase()}.png`)
         "
         class="icon-img"
         alt="USDC"
       />
       <section class="top-container">
-        <div class="top-title">购买1{{ activePayType }}</div>
+        <div class="top-title">{{ $t('components.dealFllow.pay.text[0]') }}{{ activePayType }}</div>
         <div class="top-main-container">
-          <div class="top-txt">单价 ￥{{ curPayData.cny }}</div>
+          <div class="top-txt">{{ $t('components.dealFllow.pay.text[1]') }} ￥{{ curPayData.cny }}</div>
           <van-count-down
             v-if="delayTimeshow"
             ref="countDown"
             @finish="finishReset"
             :time="time"
-            format="mm:sss 刷新"
+            :format="`mm:sss ${$t('components.dealFllow.pay.text[2]')}`"
           />
         </div>
       </section>
@@ -76,7 +29,7 @@ export default {
     <!-- start 支付交易主题信息 -->
     <main class="main">
       <van-tabs v-model="activeName" swipeable>
-        <van-tab title="按金额购买" name="size">
+        <van-tab :title="$t('components.dealFllow.pay.tab[0]')" name="size">
           <dealPay
             :item="curPayData"
             :activeName="activeName"
@@ -87,7 +40,7 @@ export default {
             ref="pay-Model"
           />
         </van-tab>
-        <van-tab title="按数量购买" name="num">
+        <van-tab :title="$t('components.dealFllow.pay.tab[1]')" name="num">
           <!-- 交易详细信息 支付方式选择 -->
           <dealPay
             :item="curPayData"
@@ -104,6 +57,64 @@ export default {
     <!-- end / 支付交易主题信息 -->
   </div>
 </template>
+<script>
+import dealPay from './components-deal/deal-pay.vue'
+
+export default {
+  name: 'pay-fllow',
+  props: ['curPayData', 'activePayType'],
+  components: {
+    dealPay,
+  },
+  data() {
+    return {
+      time: 45 * 1000,
+      activeName: 'size',
+      delayTimeshow: false,
+    }
+  },
+  watch: {
+    activePayType: function (newVal, oldVal) {
+      console.log(newVal)
+      this.initTime()
+    },
+  },
+  created() {
+  },
+  methods: {
+    initTime() {
+      setTimeout(() => {
+        this.delayTimeshow = true
+        console.log(this.$refs['countDown'])
+        Promise.resolve().then(() => {
+          this.$refs['countDown'].reset()
+        })
+      }, 300)
+    },
+    closeDelayTimeModel() {
+      this.delayTimeshow = false
+    },
+    finishReset() {
+      this.$refs['countDown'].reset()
+      this.$refs['pay-Model'].goBack()
+    },
+    open_input() {
+      const container = this.$refs['pay-fllow-container'].parentElement
+      container.style.transition = 'all .6s'
+      container.style.height = '80%'
+      // container.style.transform=`translateY(${-280}px)`
+    },
+    close_input() {
+      const container = this.$refs['pay-fllow-container'].parentElement
+      container.style.transition = 'all .4s'
+      container.style.height = '50%'
+      // container.style.transform=`translateY(${0}px)`
+    },
+  },
+}
+</script>
+
+
 
 <style lang="less" scoped>
 .pay-fllow {

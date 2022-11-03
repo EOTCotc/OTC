@@ -1,15 +1,15 @@
 <template>
   <div class="water-bill">
     <!-- 流水审查页面 -->
-    <header class="header" @click="$router.back(-1)">
-      <div>
+    <header class="header" >
+      <div @click="$router.back(-1)">
         <van-icon name="arrow-left" />
         <span class="hd-txt">
           <!-- 商家姓名 -->
           {{ MerchanInfo.sname }}
         </span>
       </div>
-      <p>申诉</p>
+      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">申诉</p>
     </header>
     <section class="water-bill-content">
       <div class="top-content">
@@ -531,6 +531,9 @@ export default {
     .hd-txt {
       font-weight: 700;
       margin-left: 25px;
+    }
+    p{
+      color: #2483ff;
     }
   }
   .water-bill-content {

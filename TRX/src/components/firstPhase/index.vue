@@ -3,25 +3,25 @@
     <div class="top">
       <div class="top-title">
         <div>
-          <p>一期可提</p>
+          <p>{{ $t('components.firstPhase.firstPhase.text[0]') }}</p>
           <van-icon name="point-gift-o" />
         </div>
         <!-- <button>提币</button> -->
       </div>
       <div class="top-content">
         <div>
-          <p>USDT余额</p>
+          <p>USDT{{$t('components.firstPhase.firstPhase.text[1]')}}</p>
           <p>{{ usdt_ye }}</p>
         </div>
         <div>
-          <p>释放EOTC</p>
+          <p>{{$t('components.firstPhase.firstPhase.text[2]')}}EOTC</p>
           <p>{{ eotc_sf }}</p>
         </div>
       </div>
     </div>
     <div class="content">
       <div class="information">
-        <p class="title">总数据 <span>（一期 ）</span></p>
+        <p class="title">{{ $t('components.firstPhase.firstPhase.text[3]') }} <span>（{{$t('components.firstPhase.firstPhase.text[4]')}}）</span></p>
         <div class="listbox">
           <div class="list" v-for="(item, index) in information" :key="index">
             <p>{{ item.title }}</p>
@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="information">
-        <p class="title">收益及奖励<span>（一期 ）</span></p>
+        <p class="title">{{ $t('components.firstPhase.firstPhase.text[5]') }}<span>（{{$t('components.firstPhase.firstPhase.text[4]')}}）</span></p>
         <div class="listbox">
           <div class="list" v-for="(item, index) in earnings" :key="index">
             <p>{{ item.title }}</p>
@@ -39,8 +39,8 @@
         </div>
       </div>
       <div class="footer">
-        <p class="look" @click="go()">查看收益明细</p>
-        <van-button color="#1B2945" round block :to="{name:'pledge'}" >转二期质押</van-button>
+        <p class="look" @click="go()">{{ $t('components.firstPhase.firstPhase.text[6]') }}</p>
+        <van-button color="#1B2945" round block :to="{name:'pledge'}" >{{ $t('components.firstPhase.firstPhase.text[7]') }}</van-button>
       </div>
     </div>
   </div>
@@ -56,17 +56,17 @@ export default {
       usdt_ye: "",
       eotc_sf: "",
       information: [
-        { title: "USDT总量", number: "" },
-        { title: "EOTC总量", number: "" },
-        { title: "质押(EOTC)", number: "" },
+        { title: `USDT${this.$t('components.firstPhase.firstPhase.text[8]')}`, number: "" },
+        { title: `EOTC${this.$t('components.firstPhase.firstPhase.text[8]')}`, number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[9]')}(EOTC)`, number: "" },
       ],
       earnings: [
-        { title: "空投(EOTC)", number: "" },
-        { title: "质押收益(EOTC)", number: "" },
-        { title: "平级奖(EOTC)", number: "" },
-        { title: "分享奖励(USDT)", number: "" },
-        { title: "辅助奖励(USDT)", number: "" },
-        { title: "节点补助(USDT)", number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[10]')}(EOTC)`, number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[11]')}(EOTC)`, number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[12]')}(EOTC)`, number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[13]')}(USDT)`, number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[14]')}(USDT)`, number: "" },
+        { title: `${this.$t('components.firstPhase.firstPhase.text[15]')}(USDT)`, number: "" },
       ],
     };
   },
@@ -118,7 +118,6 @@ export default {
         this.init();
       } else {
         // sysMes("请先注册EOTC", function () { window.location.href = "login.html" });
-        console.warn("请先注册EOTC");
         this.$router.replace({
           name: "login",
         });

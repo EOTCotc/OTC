@@ -4,15 +4,17 @@
     <div class="content">
       <div class="reason">
         <p>申请延期需满足以下一种条件</p>
-        <van-radio-group v-model="radio">
-          <van-radio name="1">举证时间不足</van-radio>
-          <van-radio name="2">核实信息还在审核中</van-radio>
+        <van-radio-group v-model="form.data.reason">
+          <van-radio :name="0">举证时间不足</van-radio>
+          <van-radio :name="1">核实信息还在审核中</van-radio>
+          <van-radio :name="2">举证不足,无法进行判决</van-radio>
+          <van-radio :name="3">部分举证不全</van-radio>
         </van-radio-group>
       </div>
       <div class="explain">
         <p>申请延期说明</p>
         <van-field
-          v-model="message"
+          v-model="form.data.explain"
           rows="2"
           :autosize="{ maxHeight: 150, minHeight: 150 }"
           type="textarea"
@@ -25,12 +27,12 @@
         <p class="time-title">申请延期时间</p>
         <div>
           <p
-            v-for="(item, index) in days"
-            :key="index"
-            :class="item.show ? 'action' : ''"
-            @click="oneClick(item)"
+            v-for="item in 7"
+            :key="item"
+            :class="{'action': form.data.day === item}"
+            @click="form.data.day = item"
           >
-            {{ item.day }}
+            {{ item }}天
           </p>
         </div>
       </div>
@@ -44,14 +46,19 @@
       <div class="footer">
         <van-button
           color="#1B2945"
-          :disabled="message == '' ? true : false"
           round
           block
+          :disabled='disabled'
           @click="show = true"
-          >提交</van-button
         >
+          提交
+        </van-button>
       </div>
-      <van-popup v-model="show" position="bottom" round @closed="checked=false">
+      <van-popup
+        v-model="show"
+        round
+        position="bottom"
+        @closed="checked=false">
         <div class="pop">
           <p class="popTitle">确认提交并支付</p>
           <p class="hint">
@@ -63,10 +70,12 @@
               color="#1B2945"
               round
               block
-              :disabled="checked ? false : true"
-              >确定提交并支付</van-button
+              :disabled="!checked"
+              @click='onSubmit'
             >
-            <p>我再想想</p>
+              确定提交并支付
+            </van-button>
+            <p @click='reset'>我再想想</p>
           </div>
         </div></van-popup
       >
@@ -76,6 +85,11 @@
 
 <script>
 import white from "@/components/Nav/white.vue";
+import {delay} from "@/api/arbitration"
+import {
+  $loading,
+  $toast
+} from '@/utils/utils'
 //申请延期
 export default {
   components: {
@@ -84,32 +98,41 @@ export default {
   data() {
     return {
       title: "申请延期",
-      radio: "1",
-      message: "",
-      days: [
-        { day: "1天", show: true },
-        { day: "2天", show: false },
-        { day: "3天", show: false },
-        { day: "4天", show: false },
-        { day: "5天", show: false },
-        { day: "6天", show: false },
-        { day: "7天", show: false },
-      ],
       checked: false,
       show: false,
+      form: {
+        data: {
+          arbitrateInfoId: null,
+          reason: null,
+          explain: "",
+          day: 1,
+          isArbitrate: 0
+        }
+      }
     };
   },
-  methods: {
-    oneClick(data) {
-      if (data.show) {
-        return;
-      }
-      for (let i of this.days) {
-        i.show = false;
-      }
-      data.show = true;
-    },
+  created() {
+    this.form.data.arbitrateInfoId = this.$route.query.id
   },
+  computed: {
+    disabled() {
+      return Object.values(this.form.data).includes('')
+    }
+  },
+  methods: {
+    reset() {
+      this.show = false
+      this.checked = false
+    },
+    onSubmit() {
+      const loading = $loading('提交中…')
+      delay(this.form.data).then(res => {
+        $toast('success', '提交成功', () => this.$router.go(-1))
+      }).finally(() => {
+        loading.clear()
+      })
+    }
+  }
 };
 </script>
 
@@ -122,7 +145,7 @@ export default {
     p {
       margin-bottom: 30px;
     }
-    /deep/.van-radio:first-child {
+    /deep/.van-radio:not(:last-child) {
       margin-bottom: 36px;
     }
   }

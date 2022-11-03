@@ -1,5 +1,3 @@
-
-
 <template>
   <div>
     <White :title="title"></White>
@@ -14,7 +12,8 @@
                 @click="handleCopy(address)"
               ></i>
             </template>
-            <div class="changeBtn" @click="close">取消授权</div>
+            <div class="changeBtn" v-if="impower" @click="sure">重新授权</div>
+            <div class="changeBtn" v-else @click="close">取消授权</div>
           </van-cell>
         </van-cell-group>
 
@@ -45,10 +44,10 @@
 </template>
 
 <script>
-import { Toast } from "vant";
-import { MemberWallet } from "@/api/trxRequest";
-import { usdtsend, Approve } from "@/utils/web3";
-import White from "@/components/Nav/white.vue";
+import { Toast } from 'vant'
+import { MemberWallet } from '@/api/trxRequest'
+import { Reconstruction_usdtsend, Approve } from '@/utils/web3'
+import White from '@/components/Nav/white.vue'
 export default {
   components: {
     White,
@@ -58,67 +57,78 @@ export default {
       show: false,
       selectActive: -1,
 
-      address: "sdkjsas134adssadasd",
-      myaddress: "",
+      address: 'sdkjsas134adssadasd',
+      myaddress: '',
       historyList: [],
       list: [],
       selectAddress: {},
 
-      title: "",
-      net: "",
-    };
+      title: '',
+      net: '',
+      impower: false,
+    }
+  },
+  created() {
+    let num = Approve()
+    if (num * 1 > 0) {
+      this.impower = false
+    } else {
+      this.impower = true
+    }
   },
   mounted() {
-    this.title = this.$route.params.addressItem;
-    this.net = this.title.toLowerCase();
-    this.address = localStorage.getItem("myaddress");
-    this.myaddress = this.string(this.address);
+    this.title = this.$route.params.addressItem
+    this.net = this.title.toLowerCase()
+    this.address = localStorage.getItem('myaddress')
+    this.myaddress = this.string(this.address)
 
-    this.init();
+    this.init()
   },
   methods: {
     init() {
-      MemberWallet({ uid: localStorage.getItem("uid"), net: this.net }).then(
+      MemberWallet({ uid: localStorage.getItem('uid'), net: this.net }).then(
         (res) => {
-          let data = res.data;
+          let data = res.data
           for (let i of data) {
-            i.ads = i.ads.trim();
+            i.ads = i.ads.trim()
             if (i.ads == this.address) {
-              break;
+              break
             } else {
-              this.list.push(i.ads);
-              this.historyList.push(this.string(i.ads));
+              this.list.push(i.ads)
+              this.historyList.push(this.string(i.ads))
             }
           }
         }
-      );
+      )
     },
     string(data) {
       return (
         data.substring(0, 10) +
-        "..." +
+        '...' +
         data.substring(data.length - 10, data.length)
-      );
+      )
     },
 
-    close() {
-      Approve(function () {
-        usdtsend(0, "取消授权");
-      });
-      // usdtsend()
+    async close() {
+        await Reconstruction_usdtsend(0, '取消授权')
+        this.impower = true
+    },
+    async sure() {
+      await Reconstruction_usdtsend(1000000, '请先给智能合约授权')
+      this.impower = false
     },
     handleCopy(val) {
-      const that = this;
+      const that = this
       this.$copyText(val)
         .then(() => {
-          Toast("复制成功");
+          Toast('复制成功')
         })
         .catch(() => {
-          Toast("复制失败");
-        });
+          Toast('复制失败')
+        })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

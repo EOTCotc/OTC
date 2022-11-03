@@ -10,73 +10,84 @@
     <van-empty
       class="null"
       v-else-if="dataList.length == 0"
-      description="暂无订单信息"
+      :description="$t('components.orderFrom.description')"
     />
     <div v-else class="order" v-for="(item, index) in dataList" :key="index">
       <div class="title">
         <p>
-          <span>{{ item.mes | viod_value }}</span
-          >&nbsp;
+          <span>{{ item.mes | viod_value }}</span>&nbsp;
           <span>{{ item.amount2 | viod_value }}</span>
         </p>
-        <span class="color-hui">已收款</span>
+        <span class="color-hui">{{ $t("components.orderFrom.lish") }}</span>
       </div>
       <div class="text">
         <div>
-          <p>订单号</p>
+          <p>{{ $t("components.orderFrom.ordernum") }}</p>
           <p>{{ item.odid | viod_value }}({{ item.id | viod_value }})</p>
         </div>
         <div>
-          <p>交易数量</p>
+          <p>{{ $t("components.orderFrom.jiaoyinum") }}</p>
           <p>{{ item.num | viod_value }} USDT</p>
         </div>
         <div>
-          <p>交易单价</p>
+          <p>{{ $t("components.orderFrom.price") }}</p>
           <p>{{ item.cny | viod_value }} CNY</p>
         </div>
         <div>
-          <p>交易总价</p>
+          <p>{{ $t("components.orderFrom.tprice") }}</p>
           <span class="color-org">{{ item.amount1 | viod_value }} CNY</span>
         </div>
         <div>
-          <p>提交时间</p>
+          <p>{{ $t("components.orderFrom.subtime") }}</p>
           <p>{{ item.eotc | viod_value }}</p>
         </div>
       </div>
       <div class="van-hairline--bottom"></div>
       <div class="pay-message">
         <div class="title">
-          <p>收款信息</p>
+          <p>{{ $t("components.orderFrom.receipt") }}</p>
           <div class="color-blue" @click="appeal_issue(item)">
             <i class="iconfont icon-shensu"></i>
-            申诉
+            {{ $t("components.orderFrom.lish_shensu") }}
           </div>
         </div>
         <div class="text">
           <div>
-            <p>姓名</p>
+            <p>{{ $t("global.name") }}</p>
             <p>{{ item.mes | viod_value }}</p>
           </div>
 
           <div>
-            <p>收款方式</p>
-            <p v-if="getPayInfo(item)[2] === '支付宝'">支付宝</p>
-            <p v-else-if="getPayInfo(item)[2] === '微信'">微信</p>
-            <p v-else-if="getPayInfo(item)[2] === '现金'">现金交易</p>
+            <p>{{ $t("components.orderFrom.receipt_type") }}</p>
+            <p v-if="getPayInfo(item)[2] === $t('global.alipay')">
+              {{ $t("global.alipay") }}
+            </p>
+            <p v-else-if="getPayInfo(item)[2] === $t('global.wechat')">
+              {{ $t("global.wechat") }}
+            </p>
+            <p
+              v-else-if="
+                getPayInfo(item)[2] === $t('components.orderFrom.cash2')
+              "
+            >
+              {{ $t("components.orderFrom.cash") }}
+            </p>
             <p v-else>{{ getPayInfo(item)[2] }}</p>
           </div>
 
-          <div v-if="getPayInfo(item)[2] === '支付宝'">
-            <p>支付宝账号</p>
+          <div v-if="getPayInfo(item)[2] === $t('global.alipay')">
+            <p>{{ $t("components.orderFrom.alipaynum") }}</p>
             <p>{{ getPayInfo(item)[1] }}</p>
           </div>
-          <div v-else-if="getPayInfo(item)[2] === '微信'">
-            <p>微信号</p>
+          <div v-else-if="getPayInfo(item)[2] === $t('global.wechat')">
+            <p>{{ $t("components.orderFrom.wechatnum") }}</p>
             <p>{{ getPayInfo(item)[1] }}</p>
           </div>
-          <div v-else-if="getPayInfo(item)[2] === '现金交易'"></div>
+          <div
+            v-else-if="getPayInfo(item)[2] === $t('components.orderFrom.cash')"
+          ></div>
           <div v-else>
-            <p>银行卡号</p>
+            <p>{{ $t("components.orderFrom.banknum") }}</p>
             <p>{{ getPayInfo(item)[1] }}</p>
           </div>
         </div>
@@ -86,61 +97,86 @@
 </template>
 
 <script>
-import { Eotcdis_Order } from "@/api/trxRequest";
-import { VueLoading } from "vue-loading-template";
+import { Eotcdis_Order } from '@/api/trxRequest'
+import { VueLoading } from 'vue-loading-template'
 
 export default {
   // 已完成订单
-  name: "Order-paid-ok",
+  name: 'Order-paid-ok',
   components: {
     VueLoading,
+  },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    coinType: {
+      type: [String],
+    },
+    active: {
+      type: [String, Number],
+    },
   },
   data() {
     return {
       dataList: [],
       showLoading: true,
-    };
+      kind: '',
+    }
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '2') this.initLoadingData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '2') this.initLoadingData(this.coinId)
+    },
   },
   created() {
-    this.initLoadingData();
+    this.initLoadingData(this.coinId)
   },
   methods: {
-    async initLoadingData() {
+    async initLoadingData(coinID) {
       try {
         const { data } = await Eotcdis_Order({
           type: 10,
           t1: 1,
           t2: 3,
-        });
-        this.dataList = data;
+          coinID: coinID,
+        })
+        this.dataList = data
       } catch (err) {
-        this.$toast.error("获取服务端数据错误！");
+        this.$toast.error(this.$t("components.orderFrom.lish_error1"));
         console.warn(err);
       }
-      this.showLoading = false;
+      this.showLoading = false
     },
     getPayInfo(item) {
       if (!item.sname) {
-        return " & & ";
+        return ' & & '
       }
-      const value = item.sname?.split("&") ?? "未知姓名&未知方式&未知";
+      const value =
+        item.sname?.split("&") ??
+        `${this.$t("components.orderFrom.unknow_name")}
+      &${this.$t("components.orderFrom.unknow_way")}
+      &${this.$t("components.orderFrom.unknow")}`;
 
       if (!value[2]) {
-        return value.push("未知");
+        return value.push(this.$t("components.orderFrom.unknow"));
       }
-      return [value[0]?.trim(), value[1]?.trim(), value[2]?.trim()];
+      return [value[0]?.trim(), value[1]?.trim(), value[2]?.trim()]
     },
     appeal_issue(cur_item) {
       this.$toast.clear();
-      this.$toast.warning("申诉功能暂未开放，请耐心等待！");
+      this.$toast.warning(this.$t("components.orderFrom.lish_warn1"));
     },
   },
   filters: {
     viod_value(value) {
-      return value ? value : "未知";
+      return value ? value : this.$t("components.orderFrom.unknow");
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

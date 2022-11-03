@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="accuserPapers" v-for="(item, index) in bothList" :key="index">
-      <p v-if="item.accuserList" class="accuser">原告举证</p>
-      <p v-else class="defendant">被告举证</p>
+      <p v-if="item.accuserList" class="accuser">{{ $t('components.arbitration.evidence.title[0]') }}</p>
+      <p v-else class="defendant">{{ $t('components.arbitration.evidence.title[1]') }}</p>
       <div v-if="item.accuserList">
         <div v-for="(item2, index2) in item.accuserList" :key="index2">
           <van-image

@@ -9,43 +9,40 @@
     <van-empty
       class="null"
       v-else-if="dataList.length == 0"
-      description="暂无订单信息"
+      :description="$t('components.orderFrom.description')"
     />
     <div v-else class="order" v-for="(item, index) in dataList" :key="index">
       <div class="title">
         <p>
-          <span>订单号</span>&nbsp;
+          <span>{{$t('components.orderFrom.ordernum')}}</span>&nbsp;
           <span>{{ item.odid }}</span>
           <span>（{{ item.id }}）</span>
         </p>
         <span class="text-color">
-          <van-icon
-            :badge="unRead_Map.get(item.id)"
-            @click="handle_waterBill(item)"
-          >
+          <van-icon :badge="unRead_Map.get(item.id)" @click="handle_waterBill(item)">
             <i class="iconfont icon-document" />
           </van-icon>
         </span>
       </div>
       <div class="text">
         <div>
-          <p>对方质押数量</p>
+          <p>{{$t('components.orderFrom.pending_duifang')}}</p>
           <p class="text-color">{{ item.stake }} EOTC</p>
         </div>
         <div>
-          <p>交易数量</p>
-          <p>{{ item.num }} USDT</p>
+          <p>{{$t('components.orderFrom.jiaoyinum')}}</p>
+          <p>{{ item.num }} {{coinType}}</p>
         </div>
         <div>
-          <p>交易单价</p>
+          <p>{{$t('components.orderFrom.price')}}</p>
           <p>{{ item.cny }} CNY</p>
         </div>
         <div>
-          <p>交易总价</p>
+          <p>{{$t('components.orderFrom.tprice')}}</p>
           <span class="text-color">{{ item.amount1 }} CNY</span>
         </div>
         <div>
-          <p>提交时间</p>
+          <p>{{$t('components.orderFrom.subtime')}}</p>
           <p>{{ item.eotc }}</p>
         </div>
         <div class="sendBtn_coin">
@@ -53,8 +50,7 @@
             type="warning"
             :disabled="isAccountDetection(item)"
             @click="release_coinFun(item)"
-            >释放 USDT</van-button
-          >
+          >释放 {{coinType}}</van-button>
         </div>
       </div>
     </div>
@@ -62,83 +58,115 @@
 </template>
 
 <script>
-import { Eotcdis_Order } from "@/api/trxRequest";
-import { VueLoading } from "vue-loading-template";
+import { Eotcdis_Order } from '@/api/trxRequest'
+import { VueLoading } from 'vue-loading-template'
+import { getcoinID } from '@/utils/utils'
 
 export default {
   // 商家出售 待处理订单
-  name: "pending-sellorder",
+  name: 'pending-sellorder',
   components: {
     VueLoading,
+  },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    coinType: {
+      type: [String],
+    },
+    active: {
+      type: [String,Number],
+    },
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+     if (this.active == '1') this.initData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '1')this.initData(this.coinId)
+    },
   },
   data() {
     return {
       release_coin: false,
       dataList: null,
       showLoading: true, // 加载loading
-      activeItem: { sname: "xxx&xxx&xxx", amount1: "0" },
+      activeItem: { sname: 'xxx&xxx&xxx', amount1: '0' },
       unRead_Map: new Map(),
-    };
+
+      kind: '',
+    }
   },
   created() {
-    this.initData();
+    // this.coinKind(this.coinId)
+    // console.log(this.coinType)
+    this.initData(this.coinId)
   },
   methods: {
     isAccountDetection(item) {
-      const rcoin = item.rcoin;
-      if (rcoin === "-1") {
-        return true;
+      const rcoin = item.rcoin
+      if (rcoin === '-1') {
+        return true
       } else if (rcoin && +rcoin >= 0) {
-        return false;
+        return false
       } else if (!rcoin) {
-        return true;
+        return true
       }
-      return true;
+      return true
     },
     release_coinFun(item) {
-      this.activeItem = item;
+      this.activeItem = item
+      item.coinId=this.coinId
+      item.coinType=this.coinType
       console.log(item)
       if ( !item.sname || item.sname === "" || item.dsx==='0') {
-        this.$toast.info("等待用户进行汇款！");
+        this.$toast.info(this.$t('components.orderFrom.spending_dengdai'));
         return false;
       }
       this.$router.push({
-        name: "release_coin",
+        name: 'release_coin',
         params: {
           item,
+
         },
-      });
+      })
     },
     handle_waterBill(item) {
       this.$router.push({
-        name: "seller-water-bill",
+        name: 'seller-water-bill',
         params: {
           odid: item.id,
           item,
+          coinId:this.coinId
         },
         query: {
-          role: "seller",
+          role: 'seller',
         },
-      });
+      })
     },
-    async initData() {
+    async initData(coinID) {
       try {
+        // let  coinID=getcoinID()
         const { data } = await Eotcdis_Order({
           type: 10,
           t1: -1,
-        });
+          coinID: coinID,
+        })
         // dsx = 0 未通过流水审查   1 用户已付款，待放币
-        this.dataList = data;
+        this.dataList = data
         data.forEach((order) => {
-          this.unRead_Map.set(order.id, 1);
-        });
-        this.showLoading = false;
+          this.unRead_Map.set(order.id, 1)
+        })
+        this.showLoading = false
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
       }
     },
+
+
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

@@ -1,13 +1,13 @@
 <template>
   <div class="content">
-    <p>账号信息</p>
+    <p>{{ $t('components.accountstate.account.title') }}</p>
     <div class="text">
       <!-- <van-uploader
         v-model="fileList"
         :after-read="afterRead"
         :preview-image="false"
       > -->
-      <van-cell title="头像" value="内容" is-link>
+      <van-cell :title="$t('components.accountstate.account.content.avatar.label')" :value="$t('components.accountstate.account.content.avatar.value')" is-link>
         <template #default>
           <div class="img_flex">
             <div class="img_bg">
@@ -18,15 +18,15 @@
       </van-cell>
       <!-- </van-uploader> -->
 
-      <van-cell title="邮箱" :value="email" />
+      <van-cell :title="$t('components.accountstate.account.content.email.label')" :value="email" />
       <van-cell title="UID" :value="uid">
         <template #right-icon>
           <i class="iconfont icon-fuzhi icon" @click="handleCopy(uid)"></i>
         </template>
       </van-cell>
-      <van-cell title="节点类型" :value="item" />
-      <van-cell title="设置电报群" is-link @click="show = true" />
-      <van-cell title="绑定钱包地址">
+      <van-cell :title="$t('components.accountstate.account.content.node.label')" :value="item" />
+      <van-cell :title="$t('components.accountstate.account.content.telegram.label')" is-link @click="show = true" />
+      <van-cell :title="$t('components.accountstate.account.content.walletAddress.label')">
         <template #default>
           <div class="van-ellipsis">{{ briefMyAddress(address) }}</div>
         </template>
@@ -37,12 +37,12 @@
           ></i>
         </template>
       </van-cell>
-      <van-cell title="" is-link value="退出登录" @click="outshow = true" />
+      <van-cell title="" is-link :value="$t('components.accountstate.account.content.signOut.button')" @click="outshow = true" />
       <van-dialog
         v-model="outshow"
         show-cancel-button
-        title="温馨提示"
-        message="确定要退出吗？"
+        :title="$t('components.accountstate.account.content.signOut.title')"
+        :message="$t('components.accountstate.account.content.signOut.message')"
         @confirm="logout"
       >
       </van-dialog>
@@ -50,7 +50,7 @@
       <van-dialog
         v-model="show"
         show-cancel-button
-        title="设置"
+        :title="$t('components.accountstate.account.content.setting.title')"
         @confirm="setSure"
         :before-close="beforeClose"
       >
@@ -60,7 +60,7 @@
               <van-field
                 v-model="value"
                 clearable
-                placeholder="请输入电报地址"
+                :placeholder="$t('components.accountstate.account.content.setting.placeholder')"
               />
             </van-cell-group>
           </div>
@@ -114,10 +114,10 @@ export default {
     handleCopy(val) {
       this.$copyText(val)
         .then(() => {
-          Toast("复制成功");
+          Toast(this.$t('global.copy.success'));
         })
         .catch(() => {
-          Toast("复制失败");
+          Toast(this.$t('components.accountstate.account.content.signOut.title'));
         });
     },
     afterRead(Fail) {
@@ -125,7 +125,7 @@ export default {
     },
     userData() {
       let asd = UserInfo();
-      if (asd.item == "未质押") {
+      if (asd.item == this.$t('components.accountstate.account.userData')) {
         this.item = "A0";
       } else {
         this.item = asd.item;
@@ -156,11 +156,11 @@ export default {
         SetTelegram({ telegram: this.value }).then((res) => {
           let data = res.data;
           if (data.State == "1") {
-            this.$toast.success("设置电报成功！");
+            this.$toast.success(this.$t('components.accountstate.account.setTelegram.success'));
           }
         });
       } else {
-        this.$toast.warning("请填写正确的电报地址");
+        this.$toast.warning(this.$t('components.accountstate.account.setTelegram.fail'));
         this.value = "";
       }
       // console.log(show)

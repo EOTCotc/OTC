@@ -46,16 +46,16 @@ export default {
     return {
       zhiyaShow: false,
       list: [
-        { title: "EOTC官网", event: "https://eotc.im" },
-        { title: "链上理财赚币", event: "https://fi.eotc.im/" },
-        { title: "去中心化币币交易所" },
-        { title: "去中心化借贷交易所" },
-        { title: "去中心化合约交易所" },
-        { title: "DID去中心化身份系统" },
-        { title: "去中心化应用系统" },
+        { title: `EOTC${this.$t('components.nav.menu[0]')}`, event: "https://eotc.im" },
+        { title: this.$t('components.nav.menu[1]'), event: "https://fi.eotc.im/" },
+        { title: this.$t('components.nav.menu[2]') ,event: "https://swap.eotc.im/"},
+        { title: this.$t('components.nav.menu[3]') },
+        { title: this.$t('components.nav.menu[4]') },
+        { title: `DID${this.$t('components.nav.menu[5]')}`,event: "https://did.eotc.im/" },
+        { title: this.$t('components.nav.menu[6]') },
         { title: "EOTC NFT", event: "https://nft.eotc.im/" },
-        { title: "EOTC 元宇宙" },
-        { title: "EOTC DAO" },
+        { title: `EOTC ${this.$t('components.nav.menu[7]')}` },
+        { title: "EOTC DAO",event: "https://dao.eotc.im/" },
       ],
       uid: "",
     };
@@ -91,12 +91,12 @@ export default {
       if (item.event != undefined) {
         const nextType = localStorage.getItem('netType')
         if(nextType ==='bsc' && item.event ==='https://fi.eotc.im/'){
-           this.$toast.warning("功能即将上线！");
+           this.$toast.warning(this.$t('components.nav.toast.text[0]'));
            return false
         }
         window.location.href = item.event;
       } else {
-        this.$toast.warning("功能即将上线！");
+        this.$toast.warning(this.$t('components.nav.toast.text[0]'));
       }
     },
 

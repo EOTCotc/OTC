@@ -12,7 +12,7 @@
             name: 'CurrencyTrading',
           }"
         >
-          购买
+          {{ $t('components.chooseWay.chooseWay.buy') }}
         </van-button>
         <van-button
           @click="sell"
@@ -24,7 +24,7 @@
             name: 'outflows',
           }"
         >
-          出售
+          {{ $t('components.chooseWay.chooseWay.sell') }}
         </van-button>
 
         <!-- 选择当前交易货币类型 -->
@@ -80,13 +80,13 @@
                 name="moneyTtype"
                 v-model.trim.lazy="moneyTtype"
                 validate-trigger="onBlur"
-                placeholder="搜索"
+                :placeholder="$t('components.chooseWay.chooseWay.search')"
                 :rules="CurrencyRules"
               />
             </van-form>
             <!-- title="默认货币"  label="CNY"  -->
             <div class="Currency">
-              <div class="defaultCurrency">默认货币</div>
+              <div class="defaultCurrency">{{ $t('components.chooseWay.chooseWay.default') }}</div>
               <div @click="changeCurID('CNY')">
                 <span class="span1">CNY</span>
                 <van-icon
@@ -99,7 +99,7 @@
 
             <!-- 货币可选择交易类型 -->
             <div class="CurrencyList">
-              <div class="defaultCurrency">全部</div>
+              <div class="defaultCurrency">{{ $t('components.chooseWay.chooseWay.all') }}</div>
               <div
                 class="CurrencyContent"
                 v-for="imgnAme in searchStatus ? seachcountrie : countrieImgs"
@@ -109,7 +109,6 @@
                 <!-- 注意 图片路径  -->
                 <img
                   :src="require('@/assets/countrie-imgs/' + imgnAme + '.png')"
-                  alt="资源未找到"
                 />
                 <span class="span1">{{ imgnAme }}</span>
                 <van-icon
@@ -127,8 +126,8 @@
 
     <router-view
       @set-cur-state="setCurState"
-      :typeList="typeList"
       ref="dataList"
+      :typeList="typeList"
     ></router-view>
 
     <!-- 右侧图标小工具 -->
@@ -193,29 +192,29 @@ export default {
       undone_order: undefined,
       shortcutActions: [
         {
-          text: "订单",
+          text: this.$t('components.chooseWay.chooseWay.menu[0]'),
           icon: require("@/assets/tools-svg/order_2.svg"),
           badge: this.undone_order,
           view_name: "orderGather-full",
         },
         {
-          text: "委托单",
+          text: this.$t('components.chooseWay.chooseWay.menu[1]'),
           icon: require("@/assets/tools-svg/wtd.svg"),
           view_name: "order-Ticket",
         },
         {
-          text: "收付款设置",
+          text: this.$t('components.chooseWay.chooseWay.menu[2]'),
           icon: require("@/assets/tools-svg/sfk.svg"),
           view_name: "receivingList",
         },
         {
-          text: "新手引导",
+          text: this.$t('components.chooseWay.chooseWay.menu[3]'),
           icon: require("@/assets/tools-svg/xsyz.svg"),
           isLink: true,
           view_name: "https://eotc.im/html/guide/guide.html",
         },
         {
-          text: "关注",
+          text: this.$t('components.chooseWay.chooseWay.menu[4]'),
           icon: require("@/assets/tools-svg/gz.svg"),
           // view_name: "important-userList",
           query: {
@@ -223,7 +222,7 @@ export default {
           },
         },
         {
-          text: "黑名单",
+          text: this.$t('components.chooseWay.chooseWay.menu[5]'),
           icon: require("@/assets/tools-svg/hmd.svg"),
           // view_name: "important-userList",
           query: {
@@ -231,17 +230,17 @@ export default {
           },
         },
         {
-          text: "系统语言",
+          text: this.$t('components.chooseWay.chooseWay.menu[6]'),
           icon: require("@/assets/tools-svg/yy.svg"),
         },
         {
-          text: "常见问题",
+          text: this.$t('components.chooseWay.chooseWay.menu[7]'),
           icon: require("@/assets/tools-svg/cjwt.svg"),
           isLink: true,
           view_name: "https://eotc.im/html/question/question.html",
         },
         {
-          text: "在线客服",
+          text: this.$t('components.chooseWay.chooseWay.menu[8]'),
           icon: require("@/assets/tools-svg/kf.svg"),
         },
       ],
@@ -287,7 +286,7 @@ export default {
 
       if (!view.view_name) {
         this.$toast.clear();
-        this.$toast.warning("此功能暂未开放，请等待！");
+        this.$toast.warning(this.$t('global.tip[0]'));
       }
     },
     get_Order_num() {
@@ -299,7 +298,11 @@ export default {
       if (this.curChain === "BSC") {
         this.typeList = ["USDT", "USDC", "BTC", "ETH", "BNB"];
       } else {
-        this.typeList = ["USDT", "USDC", "BTC", "ETH", "TRX"];
+        let coinList=JSON.parse(localStorage.getItem('coinList')) 
+         this.typeList=[]
+        for(let i of coinList){
+          this.typeList.push(i.name)
+        }
       }
       if (this.curState) {
         this.$refs["dataList"]?.onLoad();
@@ -323,10 +326,12 @@ export default {
       };
     },
     trading() {
+      console.log(this.action)
       // 购买状态
       this.curState = true;
     },
     sell() {
+      console.log(this.action)
       // 出售状态
       this.curState = false;
     },
@@ -336,7 +341,7 @@ export default {
     changeCurID(payType) {
       this.$toast.clear();
       if (payType) {
-        this.$toast.warning("暂时不支持切换 法币交易！！！");
+        this.$toast.warning(this.$t('components.chooseWay.chooseWay.tip[0]'));
         return false;
       }
       this.CurrencyId = payType;

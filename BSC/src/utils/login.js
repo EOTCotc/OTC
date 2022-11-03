@@ -46,9 +46,11 @@ export const yzm = function (email) {
         }
         GetCode({ regPhone: email }).then(data => {
             //console.log('成功', data)
+            Toast.clear()
             Toast.success('成功')
             resolve()
         }).catch(err => {
+            Toast.clear()
             //console.log('失败', err)
             if (err.response.status == 429) {
                 Toast.fail('操作频繁')

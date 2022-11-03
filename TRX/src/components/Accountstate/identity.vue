@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <p class="title">身份认证</p>
+    <p class="title">{{ $t('components.accountstate.identity.form.title') }}</p>
     <van-form
       v-if="homeShow"
       validate-first
@@ -11,42 +11,42 @@
         <van-field
           v-model="name"
           :border="false"
-          label="姓名"
-          name="naem"
-          placeholder="请输入真实姓名"
-          :rules="[{ validator: nameRule, message: '长度至少为三个字母' }]"
+          :label="$t('components.accountstate.identity.form.name.label')"
+          name="name"
+          :placeholder="$t('components.accountstate.identity.form.name.placeholder')"
+          :rules="[{ validator: nameRule, message: $t('components.accountstate.identity.form.name.message') }]"
         />
         <van-field
           v-model="phone"
           :border="false"
           type="number"
           name="phone"
-          label="手机号"
+          :label="$t('components.accountstate.identity.form.phone.label')"
           maxlength="11"
-          placeholder="请输入手机号码"
-          :rules="[{ validator: phoneRule, message: '请输入正确的手机号' }]"
+          :placeholder="$t('components.accountstate.identity.form.phone.placeholder')"
+          :rules="[{ validator: phoneRule, message: $t('components.accountstate.identity.form.phone.message') }]"
         />
         <van-field
           v-model="ID"
           :border="false"
-          label="证件号"
+          :label="$t('components.accountstate.identity.form.id.label')"
           name="ID"
           maxlength="18"
-          placeholder="请输入证件号码"
-          :rules="[{ validator: IDRule, message: '请输入正确的证件号码' }]"
+          :placeholder="$t('components.accountstate.identity.form.id.placeholder')"
+          :rules="[{ validator: IDRule, message: $t('components.accountstate.identity.form.id.message') }]"
         />
       </van-cell-group>
       <van-button round block native-type="submit" color="#1B2945"
-        >下一步</van-button
+        >{{ $t('components.accountstate.identity.form.next') }}</van-button
       >
     </van-form>
     <div v-else-if="personShow">
-      <p class="secondary">示例图片</p>
+      <p class="secondary">{{ $t('components.accountstate.identity.portrait.title') }}</p>
       <div class="sample">
         <img src="@/static/sample-picture/obverse.png" alt="" />
       </div>
 
-      <p class="secondary">上传身份证人像面</p>
+      <p class="secondary">{{ $t('components.accountstate.identity.portrait.text') }}</p>
       <div class="idcard">
         <van-uploader
           multiple
@@ -59,12 +59,12 @@
             <div class="upload">
               <div class="upload_text">
                 <i class="iconfont icon-paizhao"></i>
-                <p>点击上传人像面</p>
+                <p>{{ $t('components.accountstate.identity.portrait.button') }}</p>
               </div>
             </div>
           </template>
         </van-uploader>
-        <p class="hint">*请按照示例图来上传身份证人像面照片</p>
+        <p class="hint">{{$t('components.accountstate.identity.portrait.tip[0]')}}</p>
       </div>
       <div class="audit" v-if="url != ''">
         <van-image
@@ -88,7 +88,7 @@
         <van-notice-bar
           wrapable
           :scrollable="false"
-          text="您上传的身份证照片进行局部模糊后，将由不同的节点审核。"
+          :text="$t('components.accountstate.identity.portrait.tip[1]')"
         />
 
         <van-image-preview
@@ -111,16 +111,16 @@
         color="#1B2945"
         :disabled="fileList.length != 0 ? false : true"
         @click="updata(fileList)"
-        >下一步</van-button
+        >{{ $t('components.accountstate.identity.next') }}</van-button
       >
     </div>
     <div v-else-if="countryShow">
-      <p class="secondary">示例图片</p>
+      <p class="secondary">{{ $t('components.accountstate.identity.national.title') }}</p>
       <div class="sample">
         <img src="@/static/sample-picture/reverse.png" alt="" />
       </div>
 
-      <p class="secondary">上传身份证国徽面</p>
+      <p class="secondary">{{ $t('components.accountstate.identity.national.text') }}</p>
       <div class="idcard">
         <van-uploader
           multiple
@@ -133,12 +133,12 @@
             <div class="upload">
               <div class="upload_text">
                 <i class="iconfont icon-paizhao"></i>
-                <p>点击上传国徽面</p>
+                <p>{{ $t('components.accountstate.identity.national.button') }}</p>
               </div>
             </div>
           </template>
         </van-uploader>
-        <p class="hint">*请按照示例图来上传身份证国徽面照片</p>
+        <p class="hint">{{$t('components.accountstate.identity.national.tip[0]')}}</p>
       </div>
       <van-button
         round
@@ -146,17 +146,17 @@
         color="#1B2945"
         :disabled="fileList1.length != 0 ? false : true"
         @click="updata(fileList1)"
-        >下一步</van-button
+        >{{ $t('components.accountstate.identity.next') }}</van-button
       >
     </div>
     <div v-else-if="handShow">
 
-      <p class="secondary">示例图片</p>
+      <p class="secondary">{{ $t('components.accountstate.identity.handHeld.title') }}</p>
       <div class="sample">
         <img src="@/static/sample-picture/hand.png" alt="" />
       </div>
 
-      <p class="secondary">上传手持证件照</p>
+      <p class="secondary">{{ $t('components.accountstate.identity.handHeld.text') }}</p>
       <div class="idcard">
         <van-uploader
           multiple
@@ -169,12 +169,12 @@
             <div class="upload">
               <div class="upload_text">
                 <i class="iconfont icon-paizhao"></i>
-                <p>点击上传手持证件照</p>
+                <p>{{ $t('components.accountstate.identity.handHeld.button') }}</p>
               </div>
             </div>
           </template>
         </van-uploader>
-        <p class="hint">*请按照示例图来上传手持身份证照片</p>
+        <p class="hint">{{$t('components.accountstate.identity.handHeld.tip[0]')}}</p>
       </div>
       <!-- <div class="footer"> -->
       <van-button
@@ -183,7 +183,7 @@
         color="#1B2945"
         :disabled="fileList2.length != 0 ? false : true"
         @click="updata(fileList2)"
-        >提交</van-button
+        >{{ $t('components.accountstate.identity.submit.button') }}</van-button
       >
       <!-- </div> -->
     </div>
@@ -272,7 +272,7 @@ export default {
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: "加载中",
+        message: this.$t('global.loading'),
       });
       SetUID({
         username: this.name,
@@ -288,7 +288,7 @@ export default {
             this.personShow = true;
           } else {
             Toast.clear();
-            Notify({ type: "danger", message: "证件号码已被认证" });
+            Notify({ type: "danger", message: this.$t('components.accountstate.identity.validate.error') });
           }
         })
         .catch((err) => {});
@@ -297,7 +297,7 @@ export default {
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: "加载中",
+        message: this.$t('global.loading'),
       });
       let yanzheng;
       if (this.personShow) {
@@ -330,7 +330,7 @@ export default {
             this.$router.push({ name: "index" });
           }
         } else {
-          Toast.fail("请重新提交");
+          Toast.fail(this.$t('components.accountstate.identity.submit.error'));
         }
       });
     },

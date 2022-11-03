@@ -3,7 +3,7 @@
     <div class="top">
       <div class="top-title">
         <i class="iconfont icon-zongshouyi"></i>
-        <span>总收益</span>
+        <span>{{ $t('components.earnings.label[0]') }}</span>
       </div>
       <div class="top-content">
         <div>
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <p class="look" @click="go()">查看收益明细</p>
+    <p class="look" @click="go()">{{ $t('components.earnings.label[1]') }}</p>
   </div>
 </template>
 
@@ -43,37 +43,37 @@ export default {
     return {
       list: [
         {
-          title: "分享奖励",
+          title: this.$t('components.earnings.label[2]'),
           currency: "(USDT)",
           number: "4562.25",
           url: "201",
         },
         {
-          title: "辅助奖励",
+          title: this.$t('components.earnings.label[3]'),
           currency: "(USDT)",
           number: "154.12",
           url: "204",
         },
         {
-          title: "节点补助",
+          title: this.$t('components.earnings.label[4]'),
           currency: "(USDT)",
           number: "10000.00",
           url: "232",
         },
         {
-          title: "平级奖",
+          title: this.$t('components.earnings.label[5]'),
           currency: "(USDT)",
           number: "52.88",
           url: "209",
         },
         {
-          title: "社区补贴",
+          title: this.$t('components.earnings.label[6]'),
           currency: "(USDT)",
           number: "15000.00",
           url: "235",
         },
         {
-          title: "手续费分红",
+          title: this.$t('components.earnings.label[7]'),
           currency: "(USDT)",
           number: "452.63",
           url: "238",

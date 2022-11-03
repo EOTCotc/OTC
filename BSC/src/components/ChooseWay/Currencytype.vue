@@ -153,6 +153,7 @@ export default {
   //交易类型列表
   props: ['method', 'typeList'],
   created() {
+    
     this.$emit('set-cur-state')
     //出售订单出错，关闭出售订单窗口
     this.$bus.$on('close-OrderSaleInfo', () => {

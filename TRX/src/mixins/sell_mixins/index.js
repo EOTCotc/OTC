@@ -57,7 +57,7 @@ export default {
         const { data: sell_info } = await Getsjmes($order.odid);
         this.isType(sell_info.cash.trim())
         //console.log(sell_info.cash);
-        await GetmyUSDT_User($order.id, $order.num, sell_info.cny.trim());
+        await GetmyUSDT_User($order.id, $order.num, localStorage.getItem('userIconId'));
         this.item = {
           bank: sell_info.bank, //商家银行卡
           aipay: sell_info.aipay, // 商家支付宝

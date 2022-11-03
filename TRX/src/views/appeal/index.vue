@@ -1,10 +1,10 @@
 <template>
   <div>
-    <white :title="title"></white>
+    <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-2)" />
     <!-- <div class="reminder">
       特别提示:
       伪造变造打款凭证是严重违法行为，如提交相关查询密码请注意保证个人资产安全
-    </div> -->
+    </div>-->
     <div class="content">
       <div class="event">
         <p class="event_title">申诉事件</p>
@@ -13,10 +13,8 @@
             v-for="(item, index) in days"
             :key="index"
             :class="item.show ? 'action' : ''"
-            @click="oneClick(item)"
-          >
-            {{ item.day }}
-          </p>
+            @click="oneClick(item,index)"
+          >{{ item.day }}</p>
         </div>
       </div>
       <div class="text">
@@ -26,166 +24,94 @@
           rows="2"
           :autosize="{ maxHeight: 150, minHeight: 150 }"
           type="textarea"
-          maxlength="300"
+          maxlength="120"
           placeholder="描述具体情况及提供可核实情况所需信息"
           show-word-limit
         />
       </div>
-      <!-- <div class="upimg">
-        <p>图片信息举证 <span>(具有法律效力的相关举证)</span></p>
-        <van-uploader
-          v-model="fileList"
-          :after-read="afterRead"
-          preview-size="60"
-          :max-count="6"
-        />
+      <div class="hint">
+        <p>投诉提交后，客服会调取该订单的聊天记录。若有其他截图证据，请一并发送到聊天中！</p>
       </div>
-      <div class="add" v-if="stat == 1">
-        <div class="addFlex">
-          <p>增加仲裁员 <span>(默认11人)</span></p>
-          <van-switch v-model="checked" @change="change()" />
-        </div>
-        <div v-if="checked" class="people" @click="showPicker = true">
-          <p>{{ number }}</p>
-          <p>人</p>
-        </div>
-        <van-popup v-model="showPicker" round position="bottom">
-          <van-picker
-            show-toolbar
-            :columns="columns"
-            @cancel="showPicker = false"
-            @confirm="onConfirm"
-          />
-        </van-popup>
-      </div>
-      <div class="pay">
-        <div>
-          <p>需支付</p>
-          <p>{{ money }} EOTC</p>
-        </div>
-        <p class="explain">{{ explain }}</p>
-      </div> -->
+
       <div class="footer">
         <van-button
           color="#1B2945"
           round
           block
           :disabled="message != '' || fileList.length > 0 ? false : true"
-          @click="show = true"
-          >提交</van-button
-        >
+          @click="sumbit()"
+        >提交</van-button>
       </div>
-      <!-- <van-popup
-        v-model="show"
-        position="bottom"
-        round
-        @closed="checked = false"
-      >
-        <div class="pop">
-          <p class="popTitle">确认提交并支付</p>
-          <p class="hint">
-            每人仅可提交一次延期申请，请认真填写，是否确定提交该申请延期并支付？
-          </p>
-          <van-checkbox v-model="checked" shape="square">我已确认</van-checkbox>
-          <div class="buttons">
-            <van-button
-              color="#1B2945"
-              round
-              block
-              :disabled="checked ? false : true"
-              >确定提交并支付</van-button
-            >
-            <p>我再想想</p>
-          </div>
-        </div></van-popup
-      > -->
     </div>
   </div>
 </template>
 
 <script>
-import white from "@/components/Nav/white.vue";
+import { Toast } from 'vant'
+import {Petition} from '@/api/trxRequest'
 export default {
-  //申请再仲裁
-  components: { white },
+  //发起申诉
   data() {
     return {
-      title: "发起申诉",
+      title: '发起申诉',
       //文字信息
-      message: "",
+      message: '',
       days: [
-        { day: "联系不上商家", show: true },
-        { day: "付不了款", show: false },
-        { day: "其他", show: false },
+        { day: '联系不上商家', show: true },
+        { day: '付不了款', show: false },
+        { day: '其他', show: false },
       ],
       //图片上传
       fileList: [],
-      //增加开关
-      checked: false,
-      //人数   增加默认人数
-      number: 13,
-      //增加人数弹出层
-      showPicker: false,
       columns: [],
       show: false,
-      checked: false,
+      type:0,
 
       stat: 0,
-      explain: "",
-    };
+      explain: '',
+      info: '',
+    }
   },
   mounted() {
-    this.stat = 1;
-    // if (this.stat == 1) {
-    //   this.explain =
-    //     "说明: 申请再仲裁需支付500 EOTC，仲裁员默认11人，追加仲裁员一名需支付10 EOTC";
-    //   this.title = "申请再仲裁";
-    //   for (let i = 13; i <= 101; i += 2) {
-    //     this.columns.push(i);
-    //   }
-    // } else {
-    //   this.explain =
-    //     "说明: 发起仲裁后平台将委派11位仲裁员进行判决，需要支付100 EOTC，如取消仲裁或最终仲裁胜诉EOTC将返还至您的账户";
-    //   this.title = "发起仲裁";
-    // }
+    this.stat = 1
+    this.info = this.$route.params.MerchanInfo
+    console.log(this.info)
   },
-  computed: {
-    money() {
-      if (this.stat == 0) {
-        return 100;
-      }
-      if (!this.checked) {
-        return 500;
-      } else {
-        return 500 + (this.number - 11) * 10;
-      }
-    },
-  },
+  computed: {},
 
   methods: {
-    oneClick(data) {
-      if (data.show) {
-        return;
-      }
+    oneClick(data,index) {
+      console.log(index)
+      // if (data.show) {
+      //   return
+      // }
       for (let i of this.days) {
-        i.show = false;
+        i.show = false
       }
-      data.show = true;
+      data.show = true
+      this.type=index
     },
-    afterRead(file) {
-      // 此时可以自行将文件上传至服务器
-    },
-    change() {
-      if (this.checked) {
-        this.number = 13;
-      }
-    },
-    onConfirm(value) {
-      this.number = value;
-      this.showPicker = false;
+    sumbit() {
+      Toast.loading({
+        message: '提交中...',
+        forbidClick: true,
+        duration:0
+      })
+      Petition({oid:this.info.odid,type:this.type,msg:this.message}).then(res=>{
+        Toast.clear()
+        let data=res.data.Code
+        if(data>0){
+          this.$toast.success('提交成功')
+          setTimeout(() => {
+            this.$router.push({name:'index'})
+          }, 5000);
+        }else{
+          this.$toast.success('提交失败')
+        }
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -289,28 +215,9 @@ export default {
   .footer {
     margin-top: 80px;
   }
-  .pop {
-    padding: 32px 32px 40px;
-    .popTitle {
-      font-size: 40px;
-      font-weight: bold;
-      margin-bottom: 30px;
-      color: #1b2945;
-    }
-    .hint {
-      color: #f37a4c;
-      margin-bottom: 40px;
-    }
-    .buttons {
-      margin-top: 40px;
-      button {
-        margin-bottom: 40px;
-      }
-      p {
-        text-align: center;
-        color: #666;
-      }
-    }
+  .hint {
+    color: #f37a4c;
+    margin-bottom: 40px;
   }
 }
 </style>

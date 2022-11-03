@@ -49,22 +49,23 @@ export default {
     },
     onPriceInput(min, max, e,kind) {
       console.log(kind)
+      console.log(e.target.value)
       this.hasInput = false;
-      if(kind!='USDT'&&kind!='USDC'){
-        this.price = e.target.value;
-        this.is_validVal();
-        return
-      }
+      // if(kind!='USDT'&&kind!='USDC'){
+      //   this.price = e.target.value;
+      //   this.is_validVal();
+      //   return
+      // }
       if (min <= Number(e.target.value) && Number(e.target.value) <= max) {
         this.price = e.target.value;
       } else if (Number(e.target.value) <= min) {
-        e.target.value = 5;
-        this.price = 5;
-        this.$toast.warning("该货币价格不能低于 5 CNY");
+        e.target.value = min;
+        this.price = min;
+        this.$toast.warning(`该货币价格不能低于 ${min} CNY`);
       } else if (Number(e.target.value) >= max) {
-        this.price = 7.5;
-        e.target.value = 7.5;
-        this.$toast.warning("该货币价格不能高于 7.5 CNY");
+        this.price = max;
+        e.target.value = max;
+        this.$toast.warning(`该货币价格不能高于 ${max} CNY`);
       }
       this.is_validVal();
     },

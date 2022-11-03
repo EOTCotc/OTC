@@ -30,10 +30,10 @@
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
-          alt=""
+          :src="require(`@/assets/currency-icons/${kind.toLowerCase()}.png`)"
+          alt
         />
-        <span>出售 USDT</span>
+        <span>出售 {{kind}}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -44,15 +44,15 @@
               <van-icon name="arrow" />
             </span>
           </li>
-          <li
-            v-show="isShowPayInfo"
-            @click="copyContent(myaddress, '钱包地址 已复制')"
-          >
+          <li v-show="isShowPayInfo" @click="copyContent(myaddress, '钱包地址 已复制')">
             <span>交易钱包</span>
             <span>
               {{ briefMyAddress(myaddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li
             v-show="isShowPayInfo"
@@ -66,19 +66,22 @@
             <span>商家钱包</span>
             <span>
               {{ briefMyAddress(cacheData.MerchanInfo.bank.trim()) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
-          <li
-            v-show="isShowPayInfo"
-            @click="copyContent(contractAddress, '合约地址 已复制')"
-          >
+          <li v-show="isShowPayInfo" @click="copyContent(contractAddress, '合约地址 已复制')">
             <!-- 新增合约地址 -->
             <span>合约地址</span>
             <span>
               {{ briefMyAddress(contractAddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li>
             <span>单价</span>
@@ -86,7 +89,7 @@
           </li>
           <li>
             <span>数量</span>
-            <span>{{ cacheData.num }} USDT</span>
+            <span>{{ cacheData.num }} {{kind}}</span>
           </li>
           <li>
             <span>总金额</span>
@@ -98,22 +101,22 @@
                   '总金额 复制成功'
                 )
               "
-              >￥{{ ThousandSeparator(cacheData.totalMoney) }}.00
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+            >
+              ￥{{ ThousandSeparator(cacheData.totalMoney) }}
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li>
             <span>手续费</span>
-            <span>{{ cacheData.item.service_charge }} USDT</span>
+            <span>{{ cacheData.item.service_charge }} {{kind}}</span>
           </li>
           <li v-if="cacheData.item.cash === '-1'">
             <span>收款方式</span>
             <span :style="{ display: 'flex', alignItems: 'center' }">
-              <img
-                class="xj_moeny"
-                src="@/assets/currency-icons/moeny-c.png"
-                alt="xj"
-              />
+              <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;
               <span>现金交易</span>
             </span>
@@ -136,13 +139,13 @@
               {{ cacheData.sellerMthods.mybank.split("&")[1] }}
               {{ cacheData.sellerMthods.mybank.split("&")[0] }}
             </span>
-            <span v-else-if="cacheData.curpaymentterm === 'zfb'">
-              {{ cacheData.sellerMthods.myalipay }}
-            </span>
-            <span v-else-if="cacheData.curpaymentterm === 'wx'">
-              {{ cacheData.sellerMthods.mybmywechatnk }}
-            </span>
-            <span v-else> 现金交易 </span>
+            <span
+              v-else-if="cacheData.curpaymentterm === 'zfb'"
+            >{{ cacheData.sellerMthods.myalipay }}</span>
+            <span
+              v-else-if="cacheData.curpaymentterm === 'wx'"
+            >{{ cacheData.sellerMthods.mybmywechatnk }}</span>
+            <span v-else>现金交易</span>
           </li>
           <li class="van-divider"></li>
           <li>
@@ -161,7 +164,10 @@
             <span @click="copyContent(cacheData.item.id, '订单编号 已复制')">
               {{ cacheData.item.id }}
               （{{ cacheData.MerchanInfo.odid }}）
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
             </span>
           </li>
           <li>
@@ -172,12 +178,10 @@
       </div>
     </main>
 
-    <article class="Riskwarning">
-      买家转账时备注或您收到非实名汇款，请联系卖家退回或发起仲裁
-    </article>
+    <article class="Riskwarning">买家转账时备注或您收到非实名汇款，请联系卖家退回或发起仲裁</article>
 
     <!-- 底部 该收款按钮，默认禁用状态，买家点击已付款后，会变色，可以点击确认，
-         买家没点付款前灰色，禁用状态不能点击-->
+    买家没点付款前灰色，禁用状态不能点击-->
     <footer class="footer">
       <div :class="{ next: !isDisabled, 'default-pd': isDisabled }">
         <van-button
@@ -219,28 +223,16 @@
             borderColor: '#eee',
             padding: '0 3px',
           }"
-        >
-        </van-divider>
+        ></van-divider>
         <div class="notice-bar">
-          <van-notice-bar
-            wrapable
-            :scrollable="false"
-            text="请去第三方平台仔细核对以下收款信息，点击确认收款，合约将放币给对方。"
-          />
+          <van-notice-bar wrapable :scrollable="false" text="请去第三方平台仔细核对以下收款信息，点击确认收款，合约将放币给对方。" />
         </div>
         <ul>
           <li>
             <div>1.打开第三方收款账号</div>
-            <span
-              :style="{ display: 'flex', height: '30px ' }"
-              v-if="cacheData.item.cash === '-1'"
-            >
+            <span :style="{ display: 'flex', height: '30px ' }" v-if="cacheData.item.cash === '-1'">
               <span :style="{ display: 'flex', alignItems: 'center' }">
-                <img
-                  class="xj_moeny"
-                  src="@/assets/currency-icons/moeny-c.png"
-                  alt="xj"
-                />
+                <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
                 <span>现金交易</span>
               </span>
             </span>
@@ -264,9 +256,13 @@
                     '到账金额 复制成功'
                   )
                 "
-                >￥{{ ThousandSeparator(cacheData.totalMoney) }}.00 &nbsp;&nbsp;
-                <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-              ></span>
+              >
+                ￥{{ ThousandSeparator(cacheData.totalMoney) }}.00 &nbsp;&nbsp;
+                <i
+                  class="iconfont icon-copy"
+                  :style="{ color: '#999' }"
+                ></i>
+              </span>
             </span>
           </li>
 
@@ -276,9 +272,7 @@
               class="payFullinfo"
               :style="{ paddingTop: '20px !important' }"
               v-if="cacheData.item.cash === '1'"
-            >
-              付款方式：现金交易
-            </span>
+            >付款方式：现金交易</span>
           </li>
 
           <li v-else>
@@ -286,9 +280,7 @@
             <span
               class="payFullinfo"
               :style="{ paddingTop: '20px !important', color: 'red' }"
-            >
-              付款人姓名：{{ get_other_name() }}
-            </span>
+            >付款人姓名：{{ get_other_name() }}</span>
             <span class="payFullinfo" v-if="cacheData.item.cash !== '-1'">
               付款方式：
               {{ cacheData.MerchanInfo.payment_account[0] }}
@@ -301,11 +293,7 @@
         </ul>
 
         <van-form>
-          <van-field
-            name="infoIsOk"
-            label="我已确认【收到买家付款】"
-            @click="changeinfoIsOk"
-          >
+          <van-field name="infoIsOk" label="我已确认【收到买家付款】" @click="changeinfoIsOk">
             <template #input>
               <van-checkbox v-model="infoIsOk" class="info-ok" shape="square" />
             </template>
@@ -314,10 +302,8 @@
 
         <footer class="footer">
           <div>
-            <van-button @click="cencel"> 暂未收到 </van-button>
-            <van-button :disabled="!infoIsOk" @click="releaseCurrency">
-              确认收款
-            </van-button>
+            <van-button @click="cencel">暂未收到</van-button>
+            <van-button :disabled="!infoIsOk" @click="releaseCurrency">确认收款</van-button>
           </div>
         </footer>
       </div>
@@ -337,51 +323,42 @@
 </template>
 
 <script>
-import payIcons from "@/components/ChooseWay/pay-Icons.vue";
+import payIcons from '@/components/ChooseWay/pay-Icons.vue'
 
-import { GetBusinessAds, UpdateOrderType } from "@/api/trxRequest";
-import Dayjs from "dayjs";
+import { GetBusinessAds, UpdateOrderType } from '@/api/trxRequest'
+import Dayjs from 'dayjs'
 
-import loadingToast from "@/components/loading-toast";
+import loadingToast from '@/components/loading-toast'
 
-import {
-  Reconstruction_getTrxBalance,
-  Reconstruction_outOrder_user,
-} from "@/utils/web3";
+import { Reconstruction_getTrxBalance, Reconstruction_outOrder_user } from '@/utils/web3'
 
-import { paytype } from "@/utils/utils";
+import { paytype } from '@/utils/utils'
 
-import { contractAddress } from "@/utils/abi";
-import { getItem } from "@/utils/storage";
+import { contractAddress } from '@/utils/abi'
+import { getItem } from '@/utils/storage'
 
 export default {
-  name: "Payment-details",
+  name: 'Payment-details',
   //item --> 当前订单  num --> 出售udst的数量
   // totalMoney --> 该订单可以获得多少 money
-  props: [
-    "item",
-    "num",
-    "totalMoney",
-    "curpaymentterm",
-    "sellerMthods",
-    "MerchanInfo",
-  ],
+  props: ['item', 'num', 'totalMoney', 'curpaymentterm', 'sellerMthods', 'MerchanInfo'],
   components: {
     payIcons,
   },
   mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
-        document.querySelector(".payInfo .icons9").style.position = "static";
-      }, 1200);
-    });
+        // console.log(document.querySelector(".payInfo .icons9"))
+        // document.querySelector(".payInfo .icons9").style.position = "static";
+      }, 1200)
+    })
     // setInterval(() => {
     //   this.cencel();
     // }, this.time);
   },
   data() {
     return {
-      cuePayType: "wx", // 当前 收款方式
+      cuePayType: 'wx', // 当前 收款方式
       // appealTime: 300 * 1000, // 仲裁时间 启用时间 默认 五分钟
       isDisabled: true, // 仲裁按钮 是否禁用  默认 true
       showPaymentInfoAffirmWindow: false, // 已付款订单信息 弹窗
@@ -393,16 +370,19 @@ export default {
       cacheData: {},
       // time:
       //   new Date(Dayjs(new Date("2022-08-18 22:00"))).getTime() - Date.now(),
-      netType: localStorage.getItem("netType") || "trx",
-      myaddress: localStorage.getItem("myaddress") || contractAddress,
-      badge: getItem("bsnum"),
-    };
+      netType: localStorage.getItem('netType') || 'trx',
+      myaddress: localStorage.getItem('myaddress') || contractAddress,
+      badge: getItem('bsnum'),
+
+      kind: localStorage.getItem('userIconType'),
+      coinId: localStorage.getItem('userIconId'),
+    }
   },
   activated() {
-    this.handlecacheData();
+    this.handlecacheData()
   },
   created() {
-    this.handlecacheData();
+    this.handlecacheData()
   },
   methods: {
     gotoRelation() {
@@ -410,73 +390,73 @@ export default {
         ...this.cacheData.MerchanInfo,
         amount1: this.cacheData.totalMoney,
         sname: this.cacheData.item.sname,
-      };
+      }
       console.log(this.cacheData)
       this.$router.push({
-        name: "Payment-waterbill",
+        name: 'Payment-waterbill',
         params: {
           item: this.cacheData.item,
           MerchanInfo,
         },
         query: {
-          role: "buyer",
+          role: 'buyer',
         },
-      });
+      })
     },
     getArbitration_time() {
       // let time = new Date(Dayjs(new Date("2022-08-27"))).getTime() - Date.now();
       // if (time < 0) {
       //   return 0;
       // }
-      const order_5Time = this.trsfTime_30timeout(this.item.order_time, 5);
-      const curTime = this.trsfTime_30timeout(Date.now(), 0);
-      const diff_time = this.diff_30timeout(order_5Time, curTime);
+      const order_5Time = this.trsfTime_30timeout(this.item.order_time, 5)
+      const curTime = this.trsfTime_30timeout(Date.now(), 0)
+      const diff_time = this.diff_30timeout(order_5Time, curTime)
       console.log(diff_time)
       if (diff_time <= 0) {
-        return 0;
+        return 0
       } else {
-        return diff_time;
+        return diff_time
       }
     },
     handlecacheData() {
       if (this.item) {
-        this.cacheData.item = this.item;
-        this.cacheData.appealTime = this.getArbitration_time();
-        this.cacheData.num = this.num;
-        this.cacheData.totalMoney = this.totalMoney;
-        this.cacheData.curpaymentterm = this.curpaymentterm;
-        this.cacheData.sellerMthods = this.sellerMthods;
-        this.cacheData.MerchanInfo = this.MerchanInfo;
+        this.cacheData.item = this.item
+        this.cacheData.appealTime = this.getArbitration_time()
+        this.cacheData.num = this.num
+        this.cacheData.totalMoney = this.totalMoney
+        this.cacheData.curpaymentterm = this.curpaymentterm
+        this.cacheData.sellerMthods = this.sellerMthods
+        this.cacheData.MerchanInfo = this.MerchanInfo
         //二次备份 给路由备份
-        this.$route.meta.cacheData = this.cacheData;
+        this.$route.meta.cacheData = this.cacheData
       } else {
-        this.cacheData = this.$route.meta.cacheData;
+        this.cacheData = this.$route.meta.cacheData
       }
     },
     //根据大订单id 获取商家地址
     async showPayInfo(oid) {
       if (!this.cacheData.MerchanInfo.bank) {
         try {
-          const { data } = await GetBusinessAds(Number(oid));
-          this.cacheData.MerchanInfo.bank = data.State?.trim();
+          const { data } = await GetBusinessAds(Number(oid))
+          this.cacheData.MerchanInfo.bank = data.State?.trim()
         } catch (err) {
-          console.warn(err);
-          this.cacheData.MerchanInfo.bank = "地址&获取&错误";
+          console.warn(err)
+          this.cacheData.MerchanInfo.bank = '地址&获取&错误'
         }
       }
-      this.isShowPayInfo = !this.isShowPayInfo;
+      this.isShowPayInfo = !this.isShowPayInfo
     },
     cencel() {
-      this.showPaymentInfoAffirmWindow = false;
+      this.showPaymentInfoAffirmWindow = false
     },
     paytype(value) {
-      return paytype(value);
+      return paytype(value)
     },
     // 已确认收款，进行放币
     async releaseCurrency() {
       try {
-        this.showPaymentInfoAffirmWindow = false;
-        this.releaseLd = true; // 确认信息 放币中....
+        this.showPaymentInfoAffirmWindow = false
+        this.releaseLd = true // 确认信息 放币中....
         this.$toast.warning(
           {
             component: loadingToast,
@@ -488,40 +468,46 @@ export default {
             icon: false,
             timeout: false,
           }
-        );
-        await Reconstruction_getTrxBalance();
+        )
+        console.log(this.cacheData.num)
         //oid --当前子订单id  num 数量
-        const oid = this.cacheData.item.oid || this.cacheData.MerchanInfo.odid;
-        const mail =
-          this.cacheData.item.mail || this.cacheData.MerchanInfo.aipay;
-        await Reconstruction_outOrder_user(oid, this.cacheData.num);
+        const oid = this.cacheData.item.oid || this.cacheData.MerchanInfo.odid
+        const mail = this.cacheData.item.mail || this.cacheData.MerchanInfo.aipay
+        if (this.coinId != window.itself) {
+          await Reconstruction_getTrxBalance()
+          await Reconstruction_outOrder_user(oid, this.cacheData.num, this.coinId.toLowerCase())
+        } else {
+          await Reconstruction_getTrxBalance(this.cacheData.num)
+          await Reconstruction_outOrder_user(oid, this.cacheData.num)
+        }
+
         // 合约操作验证通过，订单可执行交易
         const { data } = await UpdateOrderType({
           did: String(oid),
           type: 12,
           mail: mail,
-        });
-        this.releaseLd = false;
+        })
+        this.releaseLd = false
 
-        console.log("Usdt 释放成功", data);
-        let bsnum = parseInt(localStorage.getItem("bsnum"));
-        localStorage.setItem("bsnum", --bsnum);
-        this.$toast.clear();
-        this.$toast.success("Usdt 释放完成，成功出售！", {
+        console.log(`${this.kind} 释放成功`, data)
+        let bsnum = parseInt(localStorage.getItem('bsnum'))
+        localStorage.setItem('bsnum', --bsnum)
+        this.$toast.clear()
+        this.$toast.success(`${this.kind} 释放完成，成功出售！`, {
           timeout: false,
-        });
+        })
         this.$router.replace({
-          name: "sell-success",
+          name: 'sell-success',
           params: {
             totalMoney: this.cacheData?.totalMoney ?? 0,
             num: this.cacheData?.num ?? 0,
           },
-        });
+        })
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
         this.$toast.error(err, {
           timeout: false,
-        });
+        })
         this.$toast.error(
           <div>
             <p style="font-size:14px">区块繁忙。。释放过程出现错误！</p>
@@ -530,40 +516,40 @@ export default {
           {
             timeout: false,
           }
-        );
+        )
       }
-      this.releaseLd = false;
+      this.releaseLd = false
     },
     // 改变我已确认信息 勾选
     changeinfoIsOk() {
-      this.infoIsOk = !this.infoIsOk;
+      this.infoIsOk = !this.infoIsOk
     },
     // 仲裁按钮是否禁用
     finishReset() {
-      this.isDisabled = false;
+      this.isDisabled = false
     },
     PaymentInfoAffirm() {
       // 展示 订单付款 信息 弹窗
       console.log(111)
-      this.infoIsOk = false;
-      this.showPaymentInfoAffirmWindow = true;
+      this.infoIsOk = false
+      this.showPaymentInfoAffirmWindow = true
       console.log(this.showPaymentInfoAffirmWindow)
     },
     // 获取订单 商家的姓名
     get_other_name() {
-      const item = this.cacheData.item;
-      if (item.aipay.includes("现金")) {
-        return "现金交易";
-      } else if (item.aipay?.split("&")[0]) {
-        return item.aipay?.split("&")[0] ?? ["", ""];
-      } else if (item.bank?.split("&")[0]) {
-        return item.bank?.split("&")[0] ?? ["", ""];
+      const item = this.cacheData.item
+      if (item.aipay.includes('现金')) {
+        return '现金交易'
+      } else if (item.aipay?.split('&')[0]) {
+        return item.aipay?.split('&')[0] ?? ['', '']
+      } else if (item.bank?.split('&')[0]) {
+        return item.bank?.split('&')[0] ?? ['', '']
       } else {
-        return item.wechat?.split("&")[0] ?? ["", ""];
+        return item.wechat?.split('&')[0] ?? ['', '']
       }
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

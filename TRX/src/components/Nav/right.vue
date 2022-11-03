@@ -7,7 +7,7 @@
         </div>
         <div class="person_text">
           <div class="person_title">
-            <p v-if="iskyc_text === '已认证'">{{ uname }}</p>
+            <p v-if="iskyc_text === $t('components.nav.right.status[3]')">{{ uname }}</p>
             <p v-else>{{ iskyc_text }}</p>
             <van-button
               v-if="iskyc == 2"
@@ -16,7 +16,8 @@
               size="mini"
               plain
               hairline
-            >节点类型:{{ item }}</van-button>
+              >{{ $t('components.nav.right.text[0]') }}:{{ item }}</van-button
+            >
           </div>
           <div class="person_asset">
             <p>
@@ -41,13 +42,24 @@
         </div>
       </div>
     </div>
-    <div v-if="iskyc == 2" class="audit">
-      <van-cell title="认证审核" is-link @click="auditing('audit')">
+    <div class="audit">
+      <!-- <van-cell
+        v-if="iskyc == 2"
+        :title="$t('components.nav.right.menu[0]')"
+        is-link
+        @click="auditing('audit')"
+      >
         <template #icon>
           <i class="iconfont icon-renzhengshenhe icon_left"></i>
         </template>
+      </van-cell>-->
+      <van-cell :title="$t('components.nav.right.menu[1]')" is-link @click="auditing('secondPhase')">
+        <template #icon>
+          <img src="@/static/icon/second.png" alt="" />
+        </template>
       </van-cell>
     </div>
+
     <van-collapse v-model="activeName" accordion class="coll">
       <van-collapse-item
         v-for="(item, index) in list"
@@ -78,22 +90,27 @@
       </van-collapse-item>
     </van-collapse>
     <div class="audit">
-      <van-cell title="新手引导" is-link @click="auditing(1)">
+      <van-cell :title="$t('components.nav.right.menu[2]')" is-link @click="auditing('transaction')">
+        <template #icon>
+          <img src="@/static/icon/chart.png" alt="" />
+        </template>
+      </van-cell>
+      <van-cell :title="$t('components.nav.right.menu[3]')" is-link @click="auditing(1)">
         <template #icon>
           <i class="iconfont icon-xinshouyindao icon_left"></i>
         </template>
       </van-cell>
-      <van-cell title="常见问题" is-link @click="auditing(2)">
+      <van-cell :title="$t('components.nav.right.menu[4]')" is-link @click="auditing(2)">
         <template #icon>
           <i class="iconfont icon-changjianwenti icon_left"></i>
         </template>
       </van-cell>
-      <van-cell title="联系我们" is-link @click="auditing('contact')">
+      <van-cell :title="$t('components.nav.right.menu[5]')" is-link @click="auditing('contact')">
         <template #icon>
           <i class="iconfont icon-lianxiwomen icon_left"></i>
         </template>
       </van-cell>
-      <van-cell title="反馈&建议" is-link @click="auditing('feedback')">
+      <van-cell :title="$t('components.nav.right.menu[6]')" is-link @click="auditing('feedback')">
         <template #icon>
           <i class="iconfont icon-fankuijianyi icon_left"></i>
         </template>
@@ -115,27 +132,27 @@ export default {
       activeName: null,
       list: [
         {
-          title: '个人信息',
+          title: this.$t('components.nav.right.menu[7]'),
           icon: 'iconfont icon-gerenxinxi',
           childlist: [
             {
-              title: '身份信息',
+              title: this.$t('components.nav.right.menu[8]'),
               iskyc: true,
               event: 'identity',
             },
-            { title: '收付款信息', event: 'receivingList' },
-            { title: '各公链绑定地址信息', event: 'chain' },
+            { title: this.$t('components.nav.right.menu[9]'), event: 'receivingList' },
+            { title: this.$t('components.nav.right.menu[10]'), event: 'chain' },
           ],
         },
         {
-          title: '推广信息',
+          title: this.$t('components.nav.right.menu[11]'),
           icon: 'iconfont icon-tuiguangxinxi',
           childlist: [
-            { title: '一期推广', event: 'firstPhase' },
-            { title: '分享链接', event: 'share' },
-            { title: '团队节点', event: 'team' },
+            { title: this.$t('components.nav.right.menu[12]'), event: 'firstPhase' },
+            //{ title: this.$t('components.nav.right.menu[13]'), event: 'share' },
+            { title: this.$t('components.nav.right.menu[14]'), event: 'team' },
             // { title: "分享收益", event: "earnings" },
-            { title: '二期推广', event: 'secondPhase' },
+            // { title: '二期推广', event: 'secondPhase' },
           ],
         },
         // {
@@ -147,19 +164,19 @@ export default {
         //   ],
         // },
         {
-          title: '交易管理',
+          title: this.$t('components.nav.right.menu[15]'),
           icon: 'iconfont icon-jiaoyiguanli',
           childlist: [
-            { title: '订单', event: 'orderGather-full' },
-            { title: '委托单', event: 'order-Ticket' },
-            { title: '仲裁', event: 'arbitration' },
-            { title: '仲裁员', event: 'arbitrator' },
-            { title: '关注/黑名单', event: 'important-userList' },
+            { title: this.$t('components.nav.right.menu[16]'), event: 'orderGather-full' },
+            { title: this.$t('components.nav.right.menu[17]'), event: 'order-Ticket' },
+            { title: this.$t('components.nav.right.menu[18]'), event: 'arbitration' },
+            { title: this.$t('components.nav.right.menu[19]'), event: 'arbitrator' },
+            { title: this.$t('components.nav.right.menu[20]'), event: 'important-userList' },
           ],
         },
       ],
       moneylist: [
-        { title: 'USDT', num: '12.00' },
+        { title: 'TRX', num: '12.00' },
         { title: 'EOTC', num: '1', event: 'release' },
       ],
       orderShow: false,
@@ -182,7 +199,7 @@ export default {
     this.moneylist[0].num = asd.myamount
 
     this.name = asd.uname
-    if (asd.item == '未质押') {
+    if (asd.item == this.$t('components.nav.right.status[4]')) {
       this.item = 'A0'
     } else {
       this.item = asd.item
@@ -198,16 +215,16 @@ export default {
     this.uname = asd.uname
     switch (asd.iskyc) {
       case '-1':
-        this.iskyc_text = '认证失败'
+        this.iskyc_text = this.$t('components.nav.right.status[0]')
         break
       case '0':
-        this.iskyc_text = '未认证'
+        this.iskyc_text = this.$t('components.nav.right.status[1]')
         break
       case '1':
-        this.iskyc_text = '审核中'
+        this.iskyc_text = this.$t('components.nav.right.status[2]')
         break
       case '2':
-        this.iskyc_text = '已认证'
+        this.iskyc_text = this.$t('components.nav.right.status[3]')
         break
     }
   },
@@ -225,7 +242,7 @@ export default {
           this.$router.push({ name: 'identity_message' })
         } else if (this.iskyc == 1 && data.iskyc) {
           Toast.loading({
-            message: '审核中...',
+            message: this.$t('components.nav.right.loading.text[0]'),
             forbidClick: true,
           })
         } else if (this.iskyc == -1 && data.iskyc) {
@@ -238,8 +255,12 @@ export default {
             ) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">您质押的EOTC不足</p>
-                  <p style="font-size:14px;margin:5px 0;">EOTC质押5000以上的会员才能挂单</p>
+                  <p style="font-size:14px;margin:5px;color:red">
+                    ${this.$t('components.nav.right.loading.text[1]')}EOTC${this.$t('components.nav.right.loading.text[2]')}
+                  </p>
+                  <p style="font-size:14px;margin:5px 0;">
+                    EOTC${this.$t('components.nav.right.loading.text[3]')}5000${this.$t('components.nav.right.loading.text[4]')}
+                  </p>
                 </div>
               )
               return false
@@ -247,8 +268,12 @@ export default {
             if (getItem('myjifen') < 9) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">您的积分不足</p>
-                  <p style="font-size:14px;margin:5px">拥有10积分的会员才能挂单</p>
+                  <p style="font-size:14px;margin:5px;color:red">
+                    ${this.$t('components.nav.right.loading.text[5]')}
+                  </p>
+                  <p style="font-size:14px;margin:5px">
+                    ${this.$t('components.nav.right.loading.text[6]')}10${this.$t('components.nav.right.loading.text[7]')}
+                  </p>
                 </div>
               )
               return false
@@ -363,6 +388,9 @@ export default {
   .audit {
     .icon_left {
       font-size: 48px;
+    }
+    img {
+      width: 48px;
     }
   }
   .coll {

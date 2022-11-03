@@ -1,11 +1,9 @@
-
-
 <template>
   <div>
     <White :title="title"></White>
     <div class="content">
       <div class="text">
-        <van-cell-group title="当前绑定地址" :border="false">
+        <van-cell-group :title="$t('components.chain.detail.title')" :border="false">
           <van-cell value="" :border="false">
             <template #title>
               <span>{{ myaddress }}</span>
@@ -15,7 +13,9 @@
               ></i>
             </template>
             <div class="changeBtn">
-              <span @click="close">取消授权</span>
+              <span v-if="impower" @click="sure">{{ $t('components.chain.detail.confirm') }}</span>
+
+              <span v-else @click="close">{{ $t('components.chain.detail.cancel') }}</span>
               <!-- <span>解除绑定</span> -->
             </div>
           </van-cell>
@@ -24,7 +24,7 @@
         <div class="line"></div>
 
         <van-cell-group
-          title="其他地址"
+          :title="$t('components.chain.other.title')"
           :border="false"
           v-if="historyList.length != 0"
         >
@@ -51,10 +51,10 @@
 </template>
 
 <script>
-import { Toast } from "vant";
-import { MemberWallet } from "@/api/trxRequest";
-import { usdtsend, Approve } from "@/utils/web3";
-import White from "@/components/Nav/white.vue";
+import { Toast } from 'vant'
+import { MemberWallet } from '@/api/trxRequest'
+import { usdtsend, Approve } from '@/utils/web3'
+import White from '@/components/Nav/white.vue'
 export default {
   components: {
     White,
@@ -64,68 +64,78 @@ export default {
       show: false,
       selectActive: -1,
 
-      address: "sdkjsas134adssadasd",
-      myaddress: "",
+      address: 'sdkjsas134adssadasd',
+      myaddress: '',
       historyList: [],
       list: [],
       selectAddress: {},
 
-      title: "",
-      net: "",
-    };
+      title: '',
+      net: '',
+      impower: false,
+    }
+  },
+  created() {
+    let num = Approve()
+    if (num * 1 > 0) {
+      this.impower = false
+    } else {
+      this.impower = true
+    }
   },
   mounted() {
-    this.title = this.$route.params.addressItem;
-    this.net = this.title.toLowerCase();
-    this.address = localStorage.getItem("myaddress");
-    this.myaddress = this.string(this.address);
+    this.title = this.$route.params.addressItem
+    this.net = this.title.toLowerCase()
+    this.address = localStorage.getItem('myaddress')
+    this.myaddress = this.string(this.address)
 
-    this.init();
+    this.init()
   },
   methods: {
     init() {
-      MemberWallet({ uid: localStorage.getItem("uid"), net: this.net }).then(
+      MemberWallet({ uid: localStorage.getItem('uid'), net: this.net }).then(
         (res) => {
-          let data = res.data;
+          let data = res.data
           for (let i of data) {
-            i.ads = i.ads.trim();
+            i.ads = i.ads.trim()
             if (i.ads == this.address) {
-              break;
+              break
             } else {
-              this.list.push(i.ads);
-              this.historyList.push(this.string(i.ads));
+              this.list.push(i.ads)
+              this.historyList.push(this.string(i.ads))
             }
           }
         }
-      );
+      )
     },
     string(data) {
       return (
         data.substring(0, 10) +
-        "..." +
+        '...' +
         data.substring(data.length - 10, data.length)
-      );
+      )
     },
 
-    close() {
-      console.log(1);
-      Approve(function () {
-        usdtsend(0, "取消授权");
-      });
-      // usdtsend()
+    async close() {
+      await usdtsend(0, this.$t('components.chain.detail.cancel'))
+      this.impower = true
+    },
+    async sure() {
+      await usdtsend(1000000, this.$t('components.chain.tip[0]'))
+      this.impower = false
     },
     handleCopy(val) {
-      const that = this;
+      const that = this
       this.$copyText(val)
         .then(() => {
-          Toast("复制成功");
+          Toast(this.$t('components.chain.copy.success'))
         })
         .catch(() => {
-          Toast("复制失败");
-        });
+          Toast(this.$t('components.chain.copy.fail'))
+        })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

@@ -3,31 +3,59 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>充值类别</p>
+        <p>{{$t('components.secondPhase.recharge_type')}}</p>
         <div class="category">
           <p
-            v-for="(item,index) in category"
+            v-for="(item, index) in category"
             :key="index"
-            :class="item.show?'action':''"
+            :class="item.show ? 'action' : ''"
             @click="switchTo(index)"
-          >{{item.title}}</p>
+          >
+            {{ item.title }}
+          </p>
         </div>
       </div>
       <div>
-        <van-field v-model="netType" :border="false" readonly label="充值网络" />
-        <van-field v-model="address2" :border="false" readonly label="充值地址" />
-        <van-field v-model="num" type="number" :border="false" label="充值数量" maxlength="10" placeholder="请输入充值数量" />
+        <van-field
+          v-model="netType"
+          :border="false"
+          readonly
+          :label="$t('components.secondPhase.recharge_net')"
+        />
+        <van-field
+          v-model="address2"
+          :border="false"
+          readonly
+          :label="$t('components.secondPhase.recharge_site')"
+        />
+        <van-field
+          v-model="num"
+          type="number"
+          :border="false"
+          :label="$t('components.secondPhase.recharge_num')"
+          maxlength="10"
+          :placeholder="$t('components.secondPhase.recharge_pla')"
+        />
       </div>
       <div class="footer">
-        <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge()">完成充值</van-button>
-        <p @click="look()">查看充值记录</p>
+        <van-button
+          type="info"
+          block
+          round
+          :disabled="num != '' ? false : true"
+          @click="recharge()"
+          >{{ $t("components.secondPhase.recharge_wancheng") }}</van-button
+        >
+        <p @click="look()">
+          {{ $t("components.secondPhase.recharge_recode") }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { SendUSDT, getTrxBalance, loadweb3, myUsdtAmount, myEOTCAmount } from '@/utils/web3'
+import { SendUSDT, getTrxBalance, loadweb3, myUsdtAmount, myEOTCAmount,userBaseMes } from '@/utils/web3'
 import { Recharge } from '@/api/trxRequest'
 import { Dialog } from 'vant'
 import white from '@/components/Nav/white.vue'
@@ -38,95 +66,103 @@ export default {
   },
   data() {
     return {
-      title: '充值',
+      title: this.$t("components.secondPhase.chongzhi"),
       category: [
-        { title: 'EOTC', show: true },
-        { title: 'USDT', show: false },
-        { title: 'LP', show: false },
-        { title: 'NFT', show: false },
+        { title: "EOTC", show: true },
+        { title: "USDT", show: false },
+        { title: "LP", show: false },
+        { title: "NFT", show: false },
       ],
-      netType: '',
-      address: '',
-      address2: '',
-      num: '',
-    }
+      netType: "",
+      address: "",
+      address2: "",
+      num: "",
+    };
   },
   created() {
     setTimeout(() => {
-      loadweb3()
+      loadweb3(userBaseMes)
     }, 1000)
     this.netType = localStorage.getItem('netType')
     let net = localStorage.getItem('netType')
     if (net == 'bsc') {
       this.address = '0xdCAaB3E9Ade1000fd23Fa0EAcd2D7E1359300D8B'
     } else {
-      this.address = 'TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq'
+      this.address = "TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq";
     }
     this.address2 =
       this.address.substring(0, 10) +
-      '...' +
-      this.address.substring(this.address.length - 10, this.address.length)
+      "..." +
+      this.address.substring(this.address.length - 10, this.address.length);
   },
   methods: {
     switchTo(index) {
       for (let i of this.category) {
-        i.show = false
+        i.show = false;
       }
-      this.category[index].show = true
+      this.category[index].show = true;
     },
     async recharge() {
-      let money, num
+      let money, num;
       for (let i of this.category) {
         if (i.show) {
-          if (i.title == 'EOTC' || i.title == 'USDT') {
-            money = i.title
+          if (i.title == "EOTC" || i.title == "USDT") {
+            money = i.title;
           } else {
-            this.$toast.warning(`${i.title}充值功能尚未开放！`)
-            return
+            this.$toast.warning(
+              `${i.title}${this.$t("components.secondPhase.recharge_data1")}`
+            );
+            return;
           }
         }
       }
-      if (money == 'USDT') {
-        await myUsdtAmount()
-        num = Number(localStorage.getItem('myamount'))
-      } else if (money == 'EOTC') {
-        await myEOTCAmount()
-        num = Number(localStorage.getItem('eotcAmount'))
+      if (money == "USDT") {
+        await myUsdtAmount();
+        num = Number(localStorage.getItem("myamount"));
+      } else if (money == "EOTC") {
+        await myEOTCAmount();
+        num = Number(localStorage.getItem("eotcAmount"));
       }
-      let that = this
+      let that = this;
       if (num >= that.num) {
         getTrxBalance(function () {
           SendUSDT(that.num, that.address, money).then((res) => {
-            let net
-            console.log(money)
-            if (money == 'EOTC') {
-              net = money.toLowerCase()
-            } else if (money == 'USDT') {
-              net = localStorage.getItem('netType')
+            let net;
+            console.log(money);
+            if (money == "EOTC") {
+              net = money.toLowerCase();
+            } else if (money == "USDT") {
+              net = localStorage.getItem("netType");
             }
-            console.log(net)
+            console.log(net);
             Recharge({ hx: res, usdt: that.num, net: net }).then((res) => {
-              console.log(res)
+              console.log(res);
               if (res.data.State > 0) {
                 Dialog.alert({
-                  message: '充值成功!\n您充值的金额将在3分钟之内到账.',
+                  message: `${this.$t(
+                    "components.secondPhase.recharge_data2"
+                  )}\n${this.$t("components.secondPhase.recharge_data3")}`,
                 }).then(() => {
                   // on close
-                })
+                });
               }
-            })
-          })
-        })
-      }else{
-        this.$toast.warning(`您的${money}余额不足！`)
+            });
+          });
+        });
+      } else {
+        this.$toast.warning(
+          `${this.$t("components.secondPhase.recharge_your")}${money}${this.$t(
+            "components.secondPhase.recharge_data4"
+          )}`
+        );
       }
     },
 
     look() {
-      this.$router.push({ name: 'rechargeRecord' })
+      this.$router.push({ name: "rechargeRecord" });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

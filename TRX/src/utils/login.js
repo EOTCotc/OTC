@@ -32,7 +32,7 @@ function fmenu() {
 
 export const yzm = function (email) {
     return new Promise(function (resolve, reject) {
-        Toast.loading({
+        const loading = Toast.loading({
             duration: 0, // 持续展示 toast
             forbidClick: true,
             message: '加载中',
@@ -52,6 +52,8 @@ export const yzm = function (email) {
                 Toast.fail('操作频繁')
                 reject()
             }
+        }).finally(() => {
+            loading.clear()
         })
     })
 }

@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Delayed coin release",
+  header_text: "Waiting for the seller to deposit the currency",
+  pay_text: "The money will be put later. Please check",
+  sell: "sell",
+  price: "Unit Price",
+  number: "quantity",
+  total: "Total amount",
+  site: "Wallet address",
+  Seller: "Seller Information",
+  relation: "Contact Seller",
+  nickname: "Seller nickname",
+  payment: "Down payment for tomatoes",
+  order_number: "Order No",
+  date: "Order time",
+  launch: "Initiate arbitration",
+};

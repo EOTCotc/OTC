@@ -3,95 +3,189 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>提现类别</p>
+        <p>{{ $t("components.secondPhase.withdraw_type") }}</p>
         <div class="category">
           <p
-            v-for="(item,index) in category"
+            v-for="(item, index) in category"
             :key="index"
-            :class="item.show?'action':''"
+            :class="item.show ? 'action' : ''"
             @click="switchTo(index)"
-          >{{item.title}}</p>
+          >
+            {{ item.title }}
+          </p>
         </div>
       </div>
       <div class="center">
-        <van-field v-model="netType" :border="false" readonly label="网络类型" />
-        <van-field v-model="address2" :border="false" readonly label="提现地址" />
-        <van-field v-model="num" type="number" :border="false" label="提现数量" placeholder="请输入提现数量">
+        <van-field
+          v-model="netType"
+          :border="false"
+          readonly
+          :label="$t('components.secondPhase.withdraw_net')"
+        />
+        <van-field
+          v-model="address2"
+          :border="false"
+          readonly
+          :label="$t('components.secondPhase.withdraw_site')"
+        />
+        <van-field
+          v-model="num"
+          type="number"
+          :border="false"
+          :label="$t('components.secondPhase.withdraw_num')"
+          :placeholder="$t('components.secondPhase.withdraw_pla')"
+        >
           <template #extra>
-            <div class="all">全部</div>
+            <div class="all" @click="all()">
+              {{ $t("components.secondPhase.withdraw_all") }}
+            </div>
           </template>
         </van-field>
-        <p v-if="netType=='bsc'">手续费{{random}}BSC</p>
-        <p v-else>手续费{{random}}TRX</p>
+        <p v-if="netType == 'bsc'">
+          {{ $t("components.secondPhase.withdraw_fee") }}{{ random }}BSC
+        </p>
+        <p v-else>
+          {{ $t("components.secondPhase.withdraw_fee") }}{{ random }}TRX
+        </p>
       </div>
       <div class="footer">
         <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge(num)">提交</van-button>
-        <p>最少提100 EOTC，提币到账时间为T+1。</p>
+        <p>最少提100 {{category[action].title}}，提币到账时间为T+1。</p>
         <p @click="look()">查看提现记录</p>
       </div>
     </div>
   </div>
 </template>
 
-
 <script>
-import white from '@/components/Nav/white.vue'
+import white from "@/components/Nav/white.vue";
+import { getTrxBalance, oneSfeotc } from "@/utils/web3";
+import { WithdrawCoins } from "@/api/trxRequest";
+import { Toast } from "vant";
 export default {
-  //充值
+  //提现
   components: {
     white,
   },
   data() {
     return {
-      title: '提现',
+      title: "提现",
       category: [
-        { title: 'EOTC', show: true },
-        { title: 'USDT', show: false },
-        { title: 'LP', show: false },
-        { title: 'NFT', show: false },
+        { title: "EOTC", show: true },
+        { title: "USDT", show: false },
+        { title: "LP", show: false },
+        { title: "NFT", show: false },
       ],
-      netType: '',
-      address: '',
-      address2: '',
-      num: '',
+      action: 0,
+      netType: "",
+      address: "",
+      address2: "",
+      num: "",
+
+      EOTCnum: "",
+      USDTnum: "",
 
       random: 0,
-      net: '',
-    }
+      // net: '',
+    };
   },
   created() {
-    this.netType = localStorage.getItem('netType')
-    this.address = localStorage.getItem('myaddress')
+    this.EOTCnum = this.$route.params.EOTC;
+    this.USDTnum = this.$route.params.USDT;
+
+    this.netType = localStorage.getItem("netType");
+    this.address = localStorage.getItem("myaddress");
     this.address2 =
       this.address.substring(0, 10) +
-      '...' +
-      this.address.substring(this.address.length - 10, this.address.length)
-    if (this.netType == 'bsc') {
-      this.random = this.getRandom(33, 66) / 10000
-    }else{
-      this.random = this.getRandom(15, 30)
+      "..." +
+      this.address.substring(this.address.length - 10, this.address.length);
+
+    if (this.netType == "bsc") {
+      this.random = this.getRandom(33, 66) / 10000;
+    } else {
+      this.random = this.getRandom(15, 30);
     }
   },
   methods: {
     switchTo(index) {
+      this.action = index;
+      this.num = "";
       for (let i of this.category) {
-        i.show = false
+        i.show = false;
       }
-      this.category[index].show = true
+      this.category[index].show = true;
     },
     recharge(num) {
-      if (num < 100) {
-        this.$toast.warning('最少提100EOTC！')
+      let coin = this.category[this.action].title.toLowerCase()
+      console.log(coin)
+      if (this.action !=0 ) {
+        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn"))
+        return
       }
+      if (num < 100) {
+        this.$toast.warning(
+          `${this.$t("components.secondPhase.withdraw_min")}${
+            this.category[this.action].title
+          }！`
+        );
+        return;
+      } else if (this.action == 0 && num > this.EOTCnum * 1) {
+        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn2"));
+        return;
+      } else if (this.action == 1 && num > this.USDTnum * 1) {
+        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn3"));
+        return;
+      }
+      let that = this;
+      Toast.loading({
+        message: this.$t("components.secondPhase.withdraw_load"),
+        forbidClick: true,
+        duration: 0,
+      });
+      getTrxBalance(function () {
+        oneSfeotc(that.random).then((success) => {
+          WithdrawCoins({ num: that.num, coin: coin, hx: success.txid }).then(
+            (res) => {
+              Toast.clear();
+              that.$toast.success(
+                this.$t("components.secondPhase.withdraw_suc")
+              );
+              if (coin == "eotc") {
+                that.EOTCnum = that.EOTCnum * 1 - that.num * 1;
+                let eotc =
+                  that.EOTCnum * 1 + localStorage.getItem("myeotc") * 1;
+                localStorage.setItem("eotc_stake", eotc);
+              } else {
+                that.USDTnum = that.USDTnum * 1 - that.num * 1;
+                localStorage.setItem("usdt_ye", that.USDTnum);
+                console.log(res);
+              }
+            }
+          );
+        });
+      });
     },
     look() {
-      this.$router.push({ name: 'WithdrawRecord' })
+      this.$router.push({ name: "WithdrawRecord" });
     },
     getRandom(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    all() {
+      if (this.action == 0) {
+        // console.log(this.EOTC)
+        this.num = this.EOTCnum
+      }
+      // else if (this.action == 1) {
+      //   this.num = this.USDTnum
+      // }
+      else {
+        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn"));
+      }
+      console.log(this.num);
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

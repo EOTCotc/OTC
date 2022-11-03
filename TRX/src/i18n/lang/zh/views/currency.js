@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "延时放币",
+  header_text: "等待卖家放币中",
+  pay_text: "后将会放币,请注意查收",
+  sell: "出售",
+  price: "单价",
+  number: "数量",
+  total: "总金额",
+  site: "钱包地址",
+  Seller: "卖家信息",
+  relation: "联系卖家",
+  nickname: "卖家昵称",
+  payment: "西红柿首付",
+  order_number: "订单编号",
+  date: "下单时间",
+  launch: "发起仲裁",
+};

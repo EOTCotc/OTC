@@ -1,11 +1,16 @@
 <template>
   <div class="content">
     <div class="header">
-      <p>二期可支配收益</p>
       <p>{{jdtype}}</p>
+      <div v-if="teamName!=null">
+        <img src="@/static/icon/shequ.png" alt />
+        <p>{{teamName}}</p>
+      </div>
     </div>
     <div class="center">
       <div class="dataBox">
+        <p class="boxTitle">二期可支配收益</p>
+
         <div>
           <p>USDT</p>
           <p>{{ USDT }}</p>
@@ -69,12 +74,14 @@ export default {
       card: 0,
       //节点类型
       jdtype: '',
+      teamName:''
     }
   },
   created() {
+    this.teamName=localStorage.getItem('teamName')
     let data = UserInfo()
     this.USDT = data.usdt_ye
-    this.EOTC = data.eotc_stake
+    this.EOTC = (data.eotc_stake * 1 - localStorage.getItem('myeotc') * 1).toFixed(2)
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
 
     if (data.myjifen > 10 && sum > 100) {
@@ -124,6 +131,13 @@ export default {
   font-size: 32px;
   display: flex;
   justify-content: space-between;
+  div{
+    display: flex;
+    img{
+      width: 40px;
+      margin-right: 5px;
+    }
+  }
 }
 .center {
   padding: 0 32px;
@@ -139,6 +153,12 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    .boxTitle{
+      font-size: 32px;
+      font-weight: bolder;
+      width: 100%;
+      margin-bottom: 40px;
+    }
     div {
       width: 45%;
     }
@@ -156,7 +176,7 @@ export default {
     }
   }
   .function {
-    padding-top: 258px;
+    padding-top: 325px;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;

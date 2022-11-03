@@ -1,12 +1,8 @@
 <template>
   <div class="order-pay-container">
     <div class="header-div">
-      <van-icon
-        :style="{ flex: '1' }"
-        name="arrow-left"
-        @click="$router.go(-1)"
-      />
-      <span class="span">释放 USDT</span>
+      <van-icon :style="{ flex: '1' }" name="arrow-left" @click="$router.go(-1)" />
+      <span class="span">释放 {{this.cacheData.item.coinType}}</span>
       <span class="hd-txt">
         <van-icon @click="gotoRelation">
           <van-icon name="orders-o" :badge="badge" />
@@ -35,10 +31,10 @@
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
-          alt=""
+          :src="require(`@/assets/currency-icons/${this.cacheData.item.coinType.toLowerCase()}.png`)"
+          alt
         />
-        <span>出售 USDT</span>
+        <span>出售 {{this.cacheData.item.coinType}}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -46,8 +42,11 @@
             <span>商家钱包</span>
             <span>
               {{ briefMyAddress(myaddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li
             @click="
@@ -57,8 +56,11 @@
             <span>交易钱包</span>
             <span>
               {{ briefMyAddress(cacheData.item.smes.trim()) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
           <li>
             <span>单价</span>
@@ -66,7 +68,7 @@
           </li>
           <li>
             <span>数量</span>
-            <span>{{ cacheData.item.num }} USDT</span>
+            <span>{{ cacheData.item.num }} {{cacheData.item.coinType}}</span>
           </li>
 
           <li>
@@ -79,43 +81,31 @@
                   '总金额 复制成功'
                 )
               "
-              >￥{{ ThousandSeparator(cacheData.item.amount1) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+            >
+              ￥{{ ThousandSeparator(cacheData.item.amount1) }}
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
+            </span>
           </li>
 
           <li class="payInfo">
             <span>收款方式</span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'yhk'"
-            >
-              <i class="iconfont icon-yhk pay-icon1 pay-iconyhk"> </i>
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'yhk'">
+              <i class="iconfont icon-yhk pay-icon1 pay-iconyhk"></i>
               &nbsp;&nbsp;{{ cuePayType[2] }}
             </span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'wx'"
-            >
-              <i class="iconfont icon-wx pay-icon2 pay-iconwx"> </i>
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'wx'">
+              <i class="iconfont icon-wx pay-icon2 pay-iconwx"></i>
               &nbsp;&nbsp;微信
             </span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'zfb'"
-            >
-              <i class="iconfont icon-zfb pay-icon2 pay-iconzfb"> </i>
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'zfb'">
+              <i class="iconfont icon-zfb pay-icon2 pay-iconzfb"></i>
               &nbsp;&nbsp;支付宝
             </span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'xj'"
-            >
-              <img
-                class="xj_moeny"
-                src="@/assets/currency-icons/moeny-c.png"
-                alt="xj"
-              />
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'xj'">
+              <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;现金交易
             </span>
           </li>
@@ -126,12 +116,8 @@
               {{ cuePayType[2] }}&nbsp;
               {{ cuePayType[1] }}
             </span>
-            <span v-if="cuePayType[0] === 'wx'">
-              {{ cuePayType[1] }}
-            </span>
-            <span v-if="cuePayType[0] === 'zfb'">
-              {{ cuePayType[1] }}
-            </span>
+            <span v-if="cuePayType[0] === 'wx'">{{ cuePayType[1] }}</span>
+            <span v-if="cuePayType[0] === 'zfb'">{{ cuePayType[1] }}</span>
           </li>
           <li class="van-divider"></li>
           <li>
@@ -147,36 +133,20 @@
           </li>
           <li class="payInfo">
             <span>用户付款方式</span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'yhk'"
-            >
-              <i class="iconfont icon-yhk pay-icon1 pay-iconyhk"> </i>
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'yhk'">
+              <i class="iconfont icon-yhk pay-icon1 pay-iconyhk"></i>
               &nbsp;&nbsp;{{ cueCollectmoney[2] }}
             </span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'wx'"
-            >
-              <i class="iconfont icon-wx pay-icon2 pay-iconwx"> </i>
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'wx'">
+              <i class="iconfont icon-wx pay-icon2 pay-iconwx"></i>
               &nbsp;&nbsp;微信
             </span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'zfb'"
-            >
-              <i class="iconfont icon-zfb pay-icon2 pay-iconzfb"> </i>
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'zfb'">
+              <i class="iconfont icon-zfb pay-icon2 pay-iconzfb"></i>
               &nbsp;&nbsp;支付宝
             </span>
-            <span
-              :style="{ display: 'flex', position: 'relative' }"
-              v-if="cuePayType[0] === 'xj'"
-            >
-              <img
-                class="xj_moeny"
-                src="@/assets/currency-icons/moeny-c.png"
-                alt="xj"
-              />
+            <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'xj'">
+              <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;现金交易
             </span>
           </li>
@@ -187,19 +157,18 @@
               {{ cueCollectmoney[2] }}&nbsp;
               {{ cueCollectmoney[1] }}
             </span>
-            <span v-if="cuePayType[0] === 'wx'">
-              {{ cueCollectmoney[1] }}
-            </span>
-            <span v-if="cuePayType[0] === 'zfb'">
-              {{ cueCollectmoney[1] }}
-            </span>
+            <span v-if="cuePayType[0] === 'wx'">{{ cueCollectmoney[1] }}</span>
+            <span v-if="cuePayType[0] === 'zfb'">{{ cueCollectmoney[1] }}</span>
           </li>
           <li>
             <span>订单编号</span>
             <span @click="copyContent(cacheData.item.id, '订单编号 已复制')">
               {{ cacheData.item.id }}
               （{{ cacheData.item.odid }}）
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
+              <i
+                class="iconfont icon-copy"
+                :style="{ color: '#999' }"
+              ></i>
             </span>
           </li>
           <li>
@@ -210,12 +179,10 @@
       </div>
     </main>
 
-    <article class="Riskwarning">
-      收到买家转账时备注或您收到非实名汇款，请联系卖家退回。
-    </article>
+    <article class="Riskwarning">收到买家转账时备注或您收到非实名汇款，请联系卖家退回。</article>
 
     <!-- 底部 该收款按钮，默认禁用状态，买家点击已付款后，会变色，可以点击确认，
-         买家没点付款前灰色，禁用状态不能点击-->
+    买家没点付款前灰色，禁用状态不能点击-->
     <footer class="footer">
       <div class="cancel">
         <van-button @click="verify" block>我已收到付款</van-button>
@@ -247,130 +214,122 @@
 </template>
 
 <script>
-import loadingToast from "@/components/loading-toast";
+import loadingToast from '@/components/loading-toast'
 
-import { Reconstruction_getTrxBalance, outOrder } from "@/utils/web3";
+import { Reconstruction_getTrxBalance, outOrder } from '@/utils/web3'
 
-import { UpdateOrderType,VerifyReleaseCoins } from "@/api/trxRequest";
+import { UpdateOrderType, VerifyReleaseCoins } from '@/api/trxRequest'
 
-import { paytype } from "@/utils/utils";
+import { paytype } from '@/utils/utils'
 
-import { contractAddress } from "@/utils/abi";
-import { getItem } from "@/utils/storage";
+import { contractAddress } from '@/utils/abi'
+import { getItem } from '@/utils/storage'
 
 export default {
-  name: "repease-currency",
+  name: 'repease-currency',
   //item --> 当前订单  num --> 出售udst的数量
   // totalMoney --> 该订单可以获得多少 money
-  props: ["item"],
+  props: ['item'],
   data() {
     return {
-      cuePayType: "", // 当前 收款方式
-      cueCollectmoney: "",
+      cuePayType: '', // 当前 收款方式
+      cueCollectmoney: '',
       releaseLd: false, // 放币 加载
       warning_Tips: false, //交易风险提示
       contractAddress: contractAddress,
       //数据缓存
       cacheData: {},
-      netType: localStorage.getItem("netType") || "trx",
-      myaddress: localStorage.getItem("myaddress") || contractAddress,
-      badge: getItem("bsnum"),
-    };
+      netType: localStorage.getItem('netType') || 'trx',
+      myaddress: localStorage.getItem('myaddress') || contractAddress,
+      badge: getItem('bsnum'),
+    }
   },
   created() {
-    this.handlecacheData();
+    this.handlecacheData()
   },
   methods: {
     gotoRelation() {
       this.$router.push({
-        name: "seller-water-bill",
+        name: 'seller-water-bill',
         params: {
           odid: this.cacheData.item.id,
           item: this.cacheData.item,
         },
         query: {
-          role: "seller",
+          role: 'seller',
         },
-      });
+      })
     },
     handlecacheData() {
       if (this.item) {
-        this.cacheData.item = this.item;
+        this.cacheData.item = this.item
         //二次备份 给路由备份
-        this.$route.meta.cacheData = this.cacheData;
+        this.$route.meta.cacheData = this.cacheData
       } else {
-        this.cacheData = this.$route.meta.cacheData;
+        this.cacheData = this.$route.meta.cacheData
       }
-      this.get_cuePayType();
+      this.get_cuePayType()
       console.log(this.cacheData)
     },
     get_cuePayType() {
-      const payMethod = this.cacheData.item.bank;
-      const CollectMethod = this.cacheData.item.sname;
+      const payMethod = this.cacheData.item.bank
+      const CollectMethod = this.cacheData.item.sname
       // console.log(payMethod);
       // console.log(CollectMethod);
-      const access_payMethod = payMethod
-        ? payMethod.split("&")
-        : ["未知", "未知", "未知"];
+      const access_payMethod = payMethod ? payMethod.split('&') : ['未知', '未知', '未知']
       // this.$toast.info(access_payMethod[0]);
       const access_CollectMethod = CollectMethod
-        ? CollectMethod.split("&")
-        : ["未知", "未知", "未知"];
+        ? CollectMethod.split('&')
+        : ['未知', '未知', '未知']
       // this.$toast.info(access_CollectMethod[0]);
 
-
-      if (access_payMethod[2]?.includes("微信")) {
-        this.cuePayType = ["wx", access_payMethod[1]?.trim()];
-        this.cueCollectmoney = ["wx", access_CollectMethod[1]?.trim()];
-      } else if (access_payMethod[2]?.includes("支付宝")) {
-        this.cuePayType = ["zfb", access_payMethod[1]?.trim()];
-        this.cueCollectmoney = ["zfb", access_CollectMethod[1]?.trim()];
-      } else if (access_payMethod[2]?.includes("现金")) {
-        this.cuePayType = ["xj", "现金交易"];
-        this.cueCollectmoney = ["xj", "现金交易"];
+      if (access_payMethod[2]?.includes('微信')) {
+        this.cuePayType = ['wx', access_payMethod[1]?.trim()]
+        this.cueCollectmoney = ['wx', access_CollectMethod[1]?.trim()]
+      } else if (access_payMethod[2]?.includes('支付宝')) {
+        this.cuePayType = ['zfb', access_payMethod[1]?.trim()]
+        this.cueCollectmoney = ['zfb', access_CollectMethod[1]?.trim()]
+      } else if (access_payMethod[2]?.includes('现金')) {
+        this.cuePayType = ['xj', '现金交易']
+        this.cueCollectmoney = ['xj', '现金交易']
       } else {
-        this.cuePayType = [
-          "yhk",
-          access_payMethod[1]?.trim(),
-          access_payMethod[2]?.trim(),
-        ];
+        this.cuePayType = ['yhk', access_payMethod[1]?.trim(), access_payMethod[2]?.trim()]
         this.cueCollectmoney = [
-          "yhk",
+          'yhk',
           access_CollectMethod[1]?.trim(),
           access_CollectMethod[2]?.trim(),
-        ];
+        ]
       }
     },
     paytype(value) {
-      return paytype(value);
+      return paytype(value)
     },
     //放币前校验
-    verify(){
-      VerifyReleaseCoins({oid:this.cacheData.item.id}).then(res=>{
-        console.log(this.cacheData)
-        if(res.data.State=='1'){
-          this.releaseCurrency()
-        }else{
-          this.$toast.warning('放币成功')
-          this.$router.replace({
-          name: "sell-success",
-          params: {
-            totalMoney: this.cacheData.item.amount1,
-            num: this.cacheData.item.num,
-          },
-          query: {
-            role: "merchant_seller",
-          },
-        });
-        }
-      })
+    verify() {
+      // VerifyReleaseCoins({ oid: this.cacheData.item.id }).then((res) => {
+      //   console.log(this.cacheData)
+      //   if (res.data.State == '1') {
+      this.releaseCurrency()
+      // } else {
+      //   this.$toast.warning('放币成功')
+      //   this.$router.replace({
+      //     name: 'sell-success',
+      //     params: {
+      //       totalMoney: this.cacheData.item.amount1,
+      //       num: this.cacheData.item.num,
+      //     },
+      //     query: {
+      //       role: 'merchant_seller',
+      //     },
+      //   })
+      // }
+      // })
     },
-    
+
     // 已确认收款，进行放币
     async releaseCurrency() {
-      
       try {
-        this.releaseLd = true; // 确认信息 放币中....
+        this.releaseLd = true // 确认信息 放币中....
         this.$toast.warning(
           {
             component: loadingToast,
@@ -382,65 +341,71 @@ export default {
             icon: false,
             timeout: false,
           }
-        );
-        let $order = this.cacheData.item;
+        )
+        let $order = this.cacheData.item
 
-        await Reconstruction_getTrxBalance();
+        if ($order.coinId != window.itself) {
+          await Reconstruction_getTrxBalance()
+        } else {
+          await Reconstruction_getTrxBalance($order.num)
+        }
+
         //oid --当前子订单id  num 数量
-        await outOrder($order.id, $order.odid, $order.num, $order.smes.trim());
+        await outOrder($order.id, $order.num, $order.coinId)
         const { data } = await UpdateOrderType({
           did: String($order.id),
           type: 10,
           mail: $order.aipay,
-        });
-        this.releaseLd = false;
+        })
+        this.releaseLd = false
+        localStorage.setItem('userIconType', $order.coinType)
         this.$router.replace({
-          name: "sell-success",
+          name: 'sell-success',
           params: {
             totalMoney: this.cacheData.item.amount1,
             num: this.cacheData.item.num,
           },
           query: {
-            role: "merchant_seller",
+            role: 'merchant_seller',
           },
-        });
-        this.$toast.clear();
+        })
+        this.$toast.clear()
       } catch (err) {
         this.$toast.clear()
-        console.warn(err);
+        console.warn(err)
         this.$toast.error(err, {
           timeout: false,
-        });
+        })
       } finally {
-        this.releaseLd = false;
+        this.releaseLd = false
       }
-      this.releaseLd = false;
+      this.releaseLd = false
 
       //测试专用 1000ms 后 关闭 loading
     },
     // 改变我已确认信息 勾选
     changeinfoIsOk() {
-      this.infoIsOk = !this.infoIsOk;
+      this.infoIsOk = !this.infoIsOk
     },
     // 仲裁按钮是否禁用
     finishReset() {
-      this.isDisabled = false;
+      this.isDisabled = false
     },
     // 获取订单 商家的姓名
     get_other_name() {
-      const item = this.cacheData.item;
-      if (item.aipay.includes("现金")) {
-        return "现金交易";
-      } else if (item.aipay.split("&")[0]) {
-        return item.aipay.split("&")[0];
-      } else if (item.bank.split("&")[0]) {
-        return item.bank.split("&")[0];
+      const item = this.cacheData.item
+      if (item.aipay.includes('现金')) {
+        return '现金交易'
+      } else if (item.aipay.split('&')[0]) {
+        return item.aipay.split('&')[0]
+      } else if (item.bank.split('&')[0]) {
+        return item.bank.split('&')[0]
       } else {
-        return item.wechat.split("&")[0];
+        return item.wechat.split('&')[0]
       }
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
