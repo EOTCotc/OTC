@@ -7,10 +7,19 @@
           <selectNav @change-pay="changePay" @change-size="changeSize" />
         </div>
         <div class="ordernum" v-if="count!=0">
-          <p>当前有 {{count}} 笔订单待处理</p>
-          <van-button round size="small" type="primary" :to="{name:'orderGather-full'}">去处理</van-button>
+          <p>{{$t('components.chooseWay.currencyType.title[0]')}} {{count}} {{ $t('components.chooseWay.currencyType.title[1]') }}</p>
+          <van-button
+            round
+            size="small"
+            type="primary"
+            :to="{name:'orderGather-full'}"
+          >{{$t('components.chooseWay.currencyType.handle')}}</van-button>
         </div>
-        <van-loading size="24px" vertical v-if="listLoading">加载中...</van-loading>
+        <van-loading
+          size="24px"
+          vertical
+          v-if="listLoading"
+        >{{$t('components.chooseWay.currencyType.loading.text')}}</van-loading>
 
         <van-tab v-for="(item, index) in typeList" v-else :title="item" :key="index">
           <payment_empty v-if="isShow_empty" />
@@ -19,7 +28,7 @@
             <van-list
               v-model="loading"
               :finished="finished"
-              finished-text="已经没有更多了..."
+              :finished-text="$t('components.chooseWay.currencyType.loading.finishedText')"
               @load="onLoad"
             >
               <!-- 交易列表 start -->
@@ -46,18 +55,20 @@
                 </van-cell>
                 <van-cell>
                   <template #title>
-                    <div class="left">数量 {{ items.num | ThousandSeparator }} {{ item }}</div>
+                    <div
+                      class="left"
+                    >{{ $t('components.chooseWay.currencyType.text[0]') }} {{ items.num | ThousandSeparator }} {{ item }}</div>
                   </template>
                   <template #label>
                     <div>
-                      限额 {{ items.amount1 | ThousandSeparator }} -
+                      {{ $t('components.chooseWay.currencyType.text[1]') }} {{ items.amount1 | ThousandSeparator }} -
                       {{ items.amount2 | ThousandSeparator }} CNY
                     </div>
                     <Pay-Icons :items="items"></Pay-Icons>
                   </template>
                   <template>
                     <div class="right">
-                      <span>单价</span>
+                      <span>{{ $t('components.chooseWay.currencyType.text[2]') }}</span>
                     </div>
                   </template>
                   <template>
@@ -81,7 +92,29 @@
         </van-tab>
       </van-tabs>
     </div>
-
+    <!-- 底部 -->
+    <div class="tail">
+      <div>
+        <!-- <img src="@/assets/imgs/c.png" />
+        <span>{{ $t("home.tags5") }}</span>-->
+      </div>
+      <div @click="handleTabLang">
+        <span class="tab-lang">{{ textLang }}</span>
+        <van-icon :name="iconLang" />
+      </div>
+    </div>
+    <!-- 选择语言 -->
+    <van-popup
+      v-model="showPopup2"
+      :style="{ height: '100vh', background: '#1b2946', zIndex: '55' }"
+      position="right"
+    >
+      <div class="menu">
+        <div class="menu-every" v-for="item in lang" @click="tabLang(item)" :key="item.id">
+          <span>{{ item.text }}</span>
+        </div>
+      </div>
+    </van-popup>
     <!-- 购买交易弹窗 -->
     <van-popup
       v-model="isShowTradingPopup"
@@ -154,6 +187,15 @@ export default {
       //多币种列表
       coinList: '',
       // typeList: [],
+
+      iconLang: 'arrow-down', //语言的箭头
+      showPopup2: false, //选择语言
+      lang: [
+        { id: 1, text: '简体中文', lang: 'zh' },
+        { id: 2, text: 'English', lang: 'en' },
+        { id: 3, text: '繁體中文', lang: 'zhTw' },
+      ],
+      textLang: '',
     }
   },
   //交易类型列表
@@ -181,6 +223,26 @@ export default {
 
     window.addEventListener('hashchange', this.hashChangeGoback)
   },
+  mounted() {
+    // 当前的语言
+    if (localStorage.getItem('lang')) {
+      this.textLang = JSON.parse(localStorage.getItem('lang')).text
+    } else {
+      let browserLang = navigator.language
+      let langText = browserLang.slice(0, 2)
+      switch (langText) {
+        case 'zh':
+          this.textLang = '简体中文'
+          break
+        case 'en':
+          this.textLang = 'English'
+          break
+        case 'zhTw':
+          this.textLang = '繁體中文'
+          break
+      }
+    }
+  },
   beforeDestroy() {
     window.removeEventListener('hashchange', this.hashChangeGoback)
   },
@@ -192,12 +254,12 @@ export default {
   methods: {
     async onLoad(params) {
       // 异步更新数据
-      this.$toast('正在努力加载中', {
+      this.$toast(this.$t('components.chooseWay.currencyType.loading.text'), {
         position: 'bottom-right',
         timeout: false,
       })
       localStorage.setItem('coinActive', this.active)
-      
+
       try {
         // console.log(coinList)
         //查询待处理订单
@@ -355,8 +417,12 @@ export default {
       } else {
         this.$toast.error(
           <div>
-            <p style="font-size:13px;margin:5px">需要实名认证才能进行交易</p>
-            <p style="font-size:13px;margin:5px">请您先完成实名认证！</p>
+            <p style="font-size:13px;margin:5px">
+              ${this.$t('components.chooseWay.currencyType.toast.error[0]')}
+            </p>
+            <p style="font-size:13px;margin:5px">
+              ${this.$t('components.chooseWay.currencyType.toast.error[1]')}
+            </p>
           </div>
         )
         return false
@@ -367,8 +433,12 @@ export default {
       } else {
         this.$toast.error(
           <div>
-            <p style="font-size:13px;margin:5px">您已存在一笔正在进行的购买订单</p>
-            <p style="font-size:15px;margin:5px">处理完成后方可继续交易!</p>
+            <p style="font-size:13px;margin:5px">
+              ${this.$t('components.chooseWay.currencyType.toast.error[2]')}
+            </p>
+            <p style="font-size:15px;margin:5px">
+              ${this.$t('components.chooseWay.currencyType.toast.error[3]')}
+            </p>
           </div>
         )
         return false
@@ -377,14 +447,18 @@ export default {
       if (userdsx >= '0') {
         payVeriFicationCount += 1
       } else {
-        this.$toast.warning('您已连续多次撤销订单，请明天再下单！')
+        this.$toast.warning(this.$t('components.chooseWay.currencyType.toast.error[4]'))
         return false
       }
       // myjifen 用户积分必须大于10
       if (Number(myjifen) >= 10) {
         payVeriFicationCount += 1
       } else {
-        this.$toast.error('您积分已不足 10 ，无法购买！')
+        this.$toast.error(
+          this.$t('components.chooseWay.currencyType.toast.error[5]') +
+            '10' +
+            this.$t('components.chooseWay.currencyType.toast.error[6]')
+        )
         return false
       }
       return payVeriFicationCount === 4
@@ -399,7 +473,7 @@ export default {
         return true
       } else {
         this.$toast.clear()
-        this.$toast.warning('您没有填写该收付款方式')
+        this.$toast.warning(this.$t('components.chooseWay.currencyType.toast.error[7]'))
         return false
       }
     },
@@ -428,6 +502,20 @@ export default {
         }
       }
       return Icons
+    },
+    // 选择语言更换图标
+    handleTabLang() {
+      this.showPopup2 = !this.showPopup2
+      if (this.showPopup2) {
+        this.iconLang = 'arrow-up'
+      } else {
+        this.iconLang = 'arrow-down'
+      }
+    },
+    tabLang(item) {
+      localStorage.setItem('lang', JSON.stringify(item))
+      this.textLang = item.text
+      this.$router.go(0)
     },
     currency_Change(tag_Name, title) {
       console.log(this.active)
@@ -574,5 +662,54 @@ export default {
 
 .van-cell::after {
   border-bottom: none;
+}
+.tail {
+  position: fixed;
+  bottom: 0;
+  padding: 0 40px;
+  width: 92%;
+  height: 96px;
+  font-size: 24px;
+  background: #111a2d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+  div:first-of-type {
+    display: flex;
+    align-items: center;
+    color: #dcdcdc;
+    img {
+      margin-right: 14px;
+      width: 36px;
+      height: 36px;
+    }
+  }
+  div:last-of-type {
+    color: #fff;
+    span {
+      margin-right: 10px;
+    }
+  }
+}
+// 语言
+.menu {
+  margin-top: 88px;
+  margin-bottom: 200px;
+  .menu-every {
+    margin: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    font-size: 32px;
+    color: #b4b7c2;
+    border-bottom: 1px solid #2b374f;
+    img {
+      margin-left: 50px;
+      width: 40px;
+      height: 40px;
+    }
+  }
 }
 </style>

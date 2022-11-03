@@ -7,10 +7,7 @@
     get-container="body"
   >
     <div class="loadbox">
-      <VueLoading
-        type="beat"
-        :size="{ width: '35px', height: '35px' }"
-      ></VueLoading>
+      <VueLoading type="beat" :size="{ width: '35px', height: '35px' }"></VueLoading>
       <p class="loading">{{ text }}</p>
       <p>{{ loadtext }}</p>
     </div>
@@ -18,10 +15,10 @@
 </template>
 
 <script>
-import { VueLoading } from "vue-loading-template";
+import { VueLoading } from 'vue-loading-template'
 
 export default {
-  name: "PopLoad",
+  name: 'PopLoad',
   components: {
     VueLoading,
   },
@@ -31,16 +28,16 @@ export default {
       default: false,
       require: true,
     },
-    text: {
-      type: String,
-      default: "转币中",
-    },
-    loadtext: {
-      type: String,
-      default: "正在向合约转币，请稍后…",
-    },
   },
-};
+  data() {
+    return {
+      text: this.$t('components.popload.transfer'),
+      loadtext: this.$t('components.popload.transfering'),
+    }
+  },
+  created() {
+  },
+}
 </script>
 
 <style lang="less" scoped>

@@ -3,9 +3,9 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>收益类型</p>
-        <p>收益金额</p>
-        <p>发放日期</p>
+        <p>{{ $t('components.firstPhase.look.text[0]') }}</p>
+        <p>{{ $t('components.firstPhase.look.text[1]') }}</p>
+        <p>{{ $t('components.firstPhase.look.text[2]') }}</p>
       </div>
 
       <div class="list" v-for="(item, index) in list" :key="index">
@@ -14,7 +14,7 @@
         <p>{{ item.Zdate }}</p>
       </div>
       <div v-if="list.length == 0">
-        <van-empty image="error" description="暂无收益数据" />
+        <van-empty image="error" :description="$t('components.firstPhase.look.empty')" />
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ export default {
   },
   data() {
     return {
-      title: "收益明细",
+      title: this.$t('components.firstPhase.look.navbar'),
       list: [],
       loading: false,
       finished: false,
@@ -44,7 +44,7 @@ export default {
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: "加载中",
+        message: this.$t('components.firstPhase.look.loading.text'),
       });
       GetSymx({})
         .then((res) => {
@@ -52,34 +52,34 @@ export default {
           for (let i of data) {
             switch (i.Chu) {
               case "1":
-                i.Chu = "质押收益";
+                i.Chu = this.$t('components.firstPhase.look.list[0]');
                 break;
               case "2":
-                i.Chu = "分享奖励";
+                i.Chu = this.$t('components.firstPhase.look.list[1]');
                 break;
               case "3":
-                i.Chu = "辅助奖励";
+                i.Chu = this.$t('components.firstPhase.look.list[2]');
                 break;
               case "4":
-                i.Chu = "节点补助";
+                i.Chu = this.$t('components.firstPhase.look.list[3]');
                 break;
               case "5":
-                i.Chu = "平级奖";
+                i.Chu = this.$t('components.firstPhase.look.list[4]');
                 break;
               case "6":
-                i.Chu = "社区奖励";
+                i.Chu = this.$t('components.firstPhase.look.list[5]');
                 break;
               case "9":
-                i.Chu = "额外奖励";
+                i.Chu = this.$t('components.firstPhase.look.list[6]');
                 break;
             }
           }
           this.list = data;
-          Toast.success('加载成功')
+          Toast.success(this.$t('components.firstPhase.look.loading.success'))
           // console.log(data);
         })
         .catch((err) => {
-          Toast.fail('加载失败')
+          Toast.fail(this.$t('components.firstPhase.look.loading.fail'))
           console.log(err);
         });
     },

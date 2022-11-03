@@ -1,27 +1,32 @@
 <template>
   <div class="content">
-    <van-nav-bar fixed placeholder :title="title" left-arrow @click-left="onClickLeft" />
+    <van-nav-bar
+      fixed
+      placeholder
+      :title="title"
+      left-arrow
+      @click-left="onClickLeft"
+    />
     <div class="top">
       <div @click="convert()">
         <p>{{ zyText }}</p>
         <img src="../../../static/icon/bothway.png" alt />
       </div>
-      <p>{{jdtype}}</p>
+      <p>{{ jdtype }}</p>
     </div>
     <div class="center">
       <div class="total">
         <div class="total_flex" @click="record()">
-          <div class="left_flex" >
+          <div class="left_flex">
             <img src="@/static/image/zhiya2.png" alt />
 
-            <p>质押总额</p>
+            <p>{{ $t("components.secondPhase.pledge_zong") }}</p>
           </div>
 
           <div class="right">
-          <p class="number">{{ eotc }} EOTC</p>
-          <p class="deli">质押明细</p>
+            <p class="number">{{ eotc }} EOTC</p>
+            <p class="deli">{{ $t("components.secondPhase.pledge_ming") }}</p>
           </div>
-          
         </div>
 
         <div class="van-hairline--bottom"></div>
@@ -42,72 +47,86 @@
         <div>
           <div>
             <img v-show="zyShow" src="@/static/image/zhiya.png" alt />
-            <p>免手续费额度</p>
+            <p>{{ $t("components.secondPhase.pledge_mian") }}</p>
           </div>
           <p v-if="zyShow">{{ usdt }} USDT</p>
         </div>
-        <van-progress class="progress" :percentage="percentage" color="#868BE9" stroke-width="8" />
+        <van-progress
+          class="progress"
+          :percentage="percentage"
+          color="#868BE9"
+          stroke-width="8"
+        />
       </div>
       <div v-show="zyShow" class="datum">
         <div>
-          <p>赠送质押EOTC</p>
-          <p>{{presenter}}</p>
+          <p>{{ $t("components.secondPhase.pledge_zen") }}EOTC</p>
+          <p>{{ presenter }}</p>
         </div>
         <div>
-          <p>手续费分红(USDT)</p>
+          <p>{{ $t("components.secondPhase.pledge_shou") }}(USDT)</p>
           <p>0</p>
         </div>
         <div>
-          <p>NFT权益卡</p>
+          <p>{{ $t("components.secondPhase.pledge_nft") }}</p>
           <p>0</p>
         </div>
         <div>
-          <p>赠送NFT卡牌</p>
+          <p>{{ $t("components.secondPhase.pledge_zen_nft") }}</p>
           <p>0</p>
         </div>
       </div>
       <div class="rule">
-        <p class="title">2.0质押链上节点规则</p>
+        <p class="title">2.0{{ $t("components.secondPhase.pledge_rule") }}</p>
         <div>
-          交易用户
-          <br />1、信用分10分以上
+          {{ $t("components.secondPhase.pledge_jiaoyi") }}
+          <br />{{ $t("components.secondPhase.pledge_p1") }}
         </div>
         <div>
-          有效用户(满足以下条件之一)
-          <br />1、质押100EOTC及以上
-          <br />2、定期理财质押1000EOTC及以上
-          <br />3、持有EOTC NFT任意一张卡牌及以上
-          <br />4、质押EOTC LP 100个及以上
-          <br />5、EOTC去中心化OTC交易所30天内交易三次及以上
+          {{ $t("components.secondPhase.pledge_youxiao") }}
+          <br />{{ $t("components.secondPhase.pledge_p2") }} <br />{{
+            $t("components.secondPhase.pledge_p3")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p4") }} <br />{{
+            $t("components.secondPhase.pledge_p5")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p6") }}
         </div>
         <div>
-          信用节点
-          <br />1、需要至少有5个直推有效用户
-          <br />2、质押代币数量5000个以上
-          <br />3、团队有效用户90人
+          {{ $t("components.secondPhase.pledge_xinyong") }}
+          <br />{{ $t("components.secondPhase.pledge_p7") }} <br />{{
+            $t("components.secondPhase.pledge_p8")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p9") }}
         </div>
         <div>
-          实时节点
-          <br />1、需要至少有7个直推有效用户
-          <br />2、质押代币数量10000个以上
-          <br />3、团队二条线有信用节点
-          <br />4、团队有效用户300人
+          {{ $t("components.secondPhase.pledge_shishi") }}
+          <br />{{ $t("components.secondPhase.pledge_p10") }} <br />{{
+            $t("components.secondPhase.pledge_p11")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p12") }} <br />{{
+            $t("components.secondPhase.pledge_p13")
+          }}
         </div>
         <div>
-          中级节点
-          <br />1、需要至少有13个直推有效用户
-          <br />2、质押代币数量前101-1100名
-          <br />3、团队三条线有实时节点或实时节点永久分红权益卡
-          <br />4、团队有效用户900人
-          <br />5、至少质押代币数量50000个以上
+          {{ $t("components.secondPhase.pledge_zhongji") }}
+          <br />{{ $t("components.secondPhase.pledge_p14") }} <br />{{
+            $t("components.secondPhase.pledge_p15")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p16") }} <br />{{
+            $t("components.secondPhase.pledge_p17")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p18") }}
         </div>
         <div>
-          高级节点
-          <br />1、需要至少有19个直推有效用户
-          <br />2、质押代币数量前100名
-          <br />3、团队三条线有中级节点或中级节点永久分红权益卡
-          <br />4、团队有效用户3000人
-          <br />5、至少质押代币数量100000个
+          {{ $t("components.secondPhase.pledge_gaoji") }}
+          <br />{{ $t("components.secondPhase.pledge_p19") }} <br />{{
+            $t("components.secondPhase.pledge_p20")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p21") }} <br />{{
+            $t("components.secondPhase.pledge_p22")
+          }}
+          <br />{{ $t("components.secondPhase.pledge_p23") }}
         </div>
       </div>
       <div v-show="!zyShow">
@@ -115,86 +134,110 @@
         <p>质押到期时间</p>
         <p>2022.05.20</p>
         </div>-->
-        <p class="hint">提示:今日链上理财赚币中定期质押(6个月、12个月、24个月)总计超过1000EOTC,次日即可减免25%的去中心化币币交易所手续费。</p>
+        <p class="hint">
+          {{ $t("components.secondPhase.pledge_p24") }}
+        </p>
       </div>
 
       <div v-show="zyShow" class="footer">
-        <van-button color="#1B2945" block round @click="jump(1)">交易质押</van-button>
-        <van-button color="#1B2945" plain block round @click="jump(2)">赎回</van-button>
+        <van-button color="#1B2945" block round @click="jump(1)">{{
+          $t("components.secondPhase.pledge_zhiya")
+        }}</van-button>
+        <van-button color="#1B2945" plain block round @click="jump(2)">{{
+          $t("components.secondPhase.pledge_shuhui")
+        }}</van-button>
       </div>
       <div class="footer2" v-show="!zyShow">
-        <van-button color="#1B2945" block round @click="jump(3)">链上理财赚币</van-button>
+        <van-button color="#1B2945" block round @click="jump(3)">{{
+          $t("components.secondPhase.pledge_lian")
+        }}</van-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { UserInfo } from '@/utils/web3'
-import { MyStakeList } from '@/api/trxRequest'
+import { UserInfo } from "@/utils/web3";
+import { MyStakeList } from "@/api/trxRequest";
 export default {
   //交易质押
   data() {
     return {
       zyShow: true,
-      zyText: 'OTC质押',
-      brokerage: '质押收益',
+      zyText: this.$t("components.secondPhase.pledge_otc"),
+      brokerage: this.$t("components.secondPhase.pledge_shouyi"),
 
       presenter: 0,
 
-      eotc: '',
+      eotc: "",
       usdt: 0,
       //质押收益
-      earnings:0,
-      title: '交易质押',
+      earnings: 0,
+      title: this.$t("components.secondPhase.zhiya"),
       //节点类型
-      jdtype: '',
+      jdtype: "",
       percentage: 0,
-    }
+    };
   },
   mounted() {
     // this.earnings=localStorage.getItem('nodeRate')
 
-    this.allearning()
+    this.allearning();
 
-    this.presenter = localStorage.getItem('giftEotc')
-    this.eotc = Number(localStorage.getItem('otczy'))
-    this.usdt = localStorage.getItem('freeNum') * 1
+    this.presenter = localStorage.getItem("giftEotc");
+    this.eotc = Number(localStorage.getItem("otczy"));
+    this.usdt = localStorage.getItem("freeNum") * 1;
 
-
-    let data = UserInfo()
-    let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
-    if (data.myjifen > 10&&sum>100) {
-      this.jdtype = '有效用户'
+    let data = UserInfo();
+    let sum =
+      Number(localStorage.getItem("otczy")) +
+      Number(localStorage.getItem("giftEotc"));
+    if (data.myjifen > 10 && sum > 100) {
+      this.jdtype = this.$t("components.secondPhase.youxiao_user");
       if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
-        this.jdtype = '信用节点'
+        this.jdtype = this.$t("components.secondPhase.xinyong_node");
       }
-      if (sum > 10000 && data.ztman >= 7 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
-        this.jdtype = '实时节点'
+      if (
+        sum > 10000 &&
+        data.ztman >= 7 &&
+        data.stakeMan >= 300 &&
+        data.ztvip[1] * 1 >= 3
+      ) {
+        this.jdtype = this.$t("components.secondPhase.shishi_node");
       }
-      if (sum > 50000 && data.ztman >= 13 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
-        this.jdtype = '中级节点'
+      if (
+        sum > 50000 &&
+        data.ztman >= 13 &&
+        data.stakeMan >= 900 &&
+        data.ztvip[1] * 1 >= 4
+      ) {
+        this.jdtype = this.$t("components.secondPhase.zhongji_node");
       }
-      if (sum > 100000 && data.ztman >= 19 && data.stakeMan >= 3000 && data.ztvip[1] * 1 >= 5) {
-        this.jdtype = '高级节点'
+      if (
+        sum > 100000 &&
+        data.ztman >= 19 &&
+        data.stakeMan >= 3000 &&
+        data.ztvip[1] * 1 >= 5
+      ) {
+        this.jdtype = this.$t("components.secondPhase.gaoji_node");
       }
     } else {
-      this.jdtype = '游客'
+      this.jdtype = this.$t("components.secondPhase.youke");
     }
-    this.plan()
+    this.plan();
   },
   methods: {
     jump(index) {
       if (index == 1) {
-        this.$router.push({ name: 'pledgFrom' })
+        this.$router.push({ name: "pledgFrom" });
       } else if (index == 2) {
-        this.$router.push({ name: 'shfrom' })
+        this.$router.push({ name: "shfrom" });
       } else {
-        window.location.href = 'https://fi.eotc.im/'
+        window.location.href = "https://fi.eotc.im/";
       }
     },
     onClickLeft() {
-      this.$router.back()
+      this.$router.back();
     },
     //切换
     convert() {
@@ -208,69 +251,69 @@ export default {
       // }
     },
     plan() {
-      const myEoct = localStorage.getItem('myeotc') * 1
-      const otczy = localStorage.getItem('otczy') * 1
-      const giftEotc = localStorage.getItem('giftEotc') * 1
-      const myStakingEotc = localStorage.getItem('myStakingEotc') * 1
+      const myEoct = localStorage.getItem("myeotc") * 1;
+      const otczy = localStorage.getItem("otczy") * 1;
+      const giftEotc = localStorage.getItem("giftEotc") * 1;
+      const myStakingEotc = localStorage.getItem("myStakingEotc") * 1;
 
-      const max = myEoct + otczy + giftEotc +myStakingEotc
-      console.log(myEoct,otczy,giftEotc)
-      console.log(max)
+      const max = myEoct + otczy + giftEotc + myStakingEotc;
+      console.log(myEoct, otczy, giftEotc);
+      console.log(max);
       if (max == 0) {
-        return
+        return;
       }
-      let num = max
+      let num = max;
       if (max >= 100 && max < 5000) {
-        num = max * 10
+        num = max * 10;
       }
       if (max >= 5000 && max < 10000) {
-        num = max * 20
+        num = max * 20;
       }
       if (max >= 10000 && max < 50000) {
-        num = max * 30
+        num = max * 30;
       }
       if (max >= 50000 && max < 100000) {
-        num = max * 40
+        num = max * 40;
       }
       if (max >= 100000) {
-        num = max * 50
+        num = max * 50;
       }
-      console.log(num)
-      console.log(this.usdt)
-      this.percentage = ((this.usdt / num) * 100).toFixed(2)
+      console.log(num);
+      console.log(this.usdt);
+      this.percentage = ((this.usdt / num) * 100).toFixed(2);
     },
-    record(){
-      this.$router.push({name:'PledgeRecord'})
+    record() {
+      this.$router.push({ name: "PledgeRecord" });
     },
-    allearning(){
+    allearning() {
       MyStakeList({}).then((res) => {
-        let zongnum=0
-        let data = res.data
-        for (let i of data){
-          i.uid = i.uid * 1
+        let zongnum = 0;
+        let data = res.data;
+        for (let i of data) {
+          i.uid = i.uid * 1;
           if (i.uid == 6) {
-            i.reward = (i.znum * 1 * 0.48 * i.uid) / 12
+            i.reward = (i.znum * 1 * 0.48 * i.uid) / 12;
           } else if (i.uid == 12) {
-            i.reward = (i.znum * 1 * 0.72 * i.uid) / 12
+            i.reward = (i.znum * 1 * 0.72 * i.uid) / 12;
           } else if (i.uid == 24) {
-            i.reward = (i.znum * 1 * i.uid) / 12
+            i.reward = (i.znum * 1 * i.uid) / 12;
           } else if (i.uid == 36) {
-            i.reward = (i.znum * 1 * 1.2 * i.uid) / 12
+            i.reward = (i.znum * 1 * 1.2 * i.uid) / 12;
           }
-          zongnum=zongnum + i.reward*1
+          zongnum = zongnum + i.reward * 1;
         }
-        this.earnings=zongnum
-      })
-    }
+        this.earnings = zongnum;
+      });
+    },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
 /deep/.van-nav-bar {
   background: #1b2945;
 }
-/deep/[class*='van-hairline']::after {
+/deep/[class*="van-hairline"]::after {
   border: none;
 }
 /deep/.van-nav-bar__title {
@@ -345,16 +388,16 @@ export default {
             font-size: 28px;
           }
         }
-        .right{
-          .deli{
+        .right {
+          .deli {
             display: flex;
             align-items: center;
             font-size: 24px;
             color: #237ff8;
-            &::after{
+            &::after {
               width: 11px;
               height: 11px;
-              content: '';
+              content: "";
               display: inline-block;
               border: 1px solid #237ff8;
               border-left: none;
@@ -388,9 +431,8 @@ export default {
       .total_flex:last-child {
         padding-top: 40px;
       }
-      
     }
-    .service{
+    .service {
       font-size: 28px;
       background: #fff;
       border-radius: 20px;
@@ -401,11 +443,11 @@ export default {
         height: 40px;
         margin-right: 12px;
       }
-      div{
+      div {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        div{
+        div {
           display: flex;
         }
       }

@@ -3,9 +3,9 @@
     <white :title="title"></white>
     <div class="content">
       <div class="top">
-        <p>提现</p>
-        <p>当前状态</p>
-        <p>提现日期</p>
+        <p>{{ $t("components.secondPhase.tixian") }}</p>
+        <p>{{ $t("components.secondPhase.record_statu") }}</p>
+        <p>{{ $t("components.secondPhase.wrecord_date") }}</p>
       </div>
 
       <div class="list" v-for="(item, index) in list" :key="index">
@@ -14,7 +14,10 @@
         <p>{{ item.Zdate }}</p>
       </div>
       <div v-if="list.length == 0">
-        <van-empty image="error" description="暂无收益数据" />
+        <van-empty
+          image="error"
+          :description="$t('components.secondPhase.record_not')"
+        />
       </div>
     </div>
   </div>
@@ -30,7 +33,7 @@ export default {
   },
   data() {
     return {
-      title: '提现记录',
+      title: this.$t("components.secondPhase.wrecord_record"),
       list: [],
       loading: false,
       finished: false,
@@ -44,9 +47,9 @@ export default {
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: '加载中',
-      })
-      Gettbjl({})
+        message: this.$t("components.secondPhase.record_loading"),
+      });
+      GetSymx({})
         .then((res) => {
           let data = res.data
           console.log(data)
@@ -63,16 +66,14 @@ export default {
                 break
             }
           }
-          this.list = data
-          Toast.clear()
-          Toast.success('加载成功')
+          this.list = data;
+          Toast.success(this.$t("components.secondPhase.record_suc"));
           // console.log(data);
         })
         .catch((err) => {
-          Toast.clear()
-          Toast.fail('加载失败')
-          console.log(err)
-        })
+          Toast.fail(this.$t("components.secondPhase.record_fail"));
+          console.log(err);
+        });
     },
   },
 }

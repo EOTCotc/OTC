@@ -6,12 +6,17 @@
       :size="{ width: '35px', height: '35px' }"
       :style="{ fill: 'rgb(219,9, 9)' }"
     ></VueLoading>
-    <van-empty class="null" v-else-if="dataList.length == 0" description="暂无订单信息" />
+    <van-empty
+      class="null"
+      v-else-if="dataList.length == 0"
+      :description="$t('components.orderFrom.pending')"
+    />
 
     <div v-else class="order" v-for="(item, index) in dataList" :key="index">
       <div class="title">
         <p>
-          <span>订单号</span>&nbsp;
+          <span>{{ $t("components.orderFrom.ordernum") }}</span
+          >&nbsp;
           <span>{{ item.odid }}</span>
           <span>（{{ item.id }}）</span>
         </p>
@@ -23,48 +28,52 @@
       </div>
       <div class="text">
         <div>
-          <p>对方质押数量</p>
+          <p>{{ $t("components.orderFrom.pending_duifang") }}</p>
           <p class="text-color">{{ item.stake }} EOTC</p>
         </div>
         <div>
-          <p>交易数量</p>
-          <p>{{ item.num }} {{coinType}}</p>
+          <p>{{ $t("components.orderFrom.jiaoyinum") }}</p>
+          <p>{{ item.num }} USDT</p>
         </div>
         <div>
-          <p>交易单价</p>
+          <p>{{ $t("components.orderFrom.price") }}</p>
           <p>{{ item.cny }} CNY</p>
         </div>
         <div>
-          <p>交易总价</p>
+          <p>{{ $t("components.orderFrom.tprice") }}</p>
           <span class="text-color">{{ item.amount1 }} CNY</span>
         </div>
         <div>
-          <p>卖家收款方式</p>
+          <p>{{ $t("components.orderFrom.pending_shoukuan") }}</p>
           <p>
             <span
               v-if="!isContractCheckList[index]"
               :style="{ color: 'red' }"
               @click="handleContractCheck(item, index)"
-            >
-              请先校验合约&nbsp;
-              <van-icon name="arrow" />
-            </span>
-            <span v-else :style="{ color: '#999' }">
-              详细信息&nbsp;
-              <van-icon name="arrow-down" />
-            </span>
+              >{{ $t("components.orderFrom.pending_jianyan") }}&nbsp;<van-icon
+                name="arrow"
+            /></span>
+            <span v-else :style="{ color: '#999' }"
+              >{{ $t("components.orderFrom.pending_xiangxi") }}&nbsp;<van-icon
+                name="arrow-down"
+            /></span>
           </p>
         </div>
         <div v-if="isContractCheckList[index]">
           <div class="payInfo">
             <p>
-              <span>收款方姓名</span>
+              <span>{{ $t("components.orderFrom.pending_name") }}</span>
               <span>{{ item.mes }}&nbsp;( {{ item.amount2 }} )</span>
             </p>
             <p>
-              <span>收款方式</span>
+              <span>{{ $t("components.orderFrom.receipt_type") }}</span>
               <span>
-                <i v-if="getPayInfo(item)[2].trim() === '现金交易'">
+                <i
+                  v-if="
+                    getPayInfo(item)[2].trim() ===
+                    $t('components.orderFrom.cash')
+                  "
+                >
                   <img
                     class="xj_moeny"
                     :style="{ marginTop: '5px' }"
@@ -73,7 +82,7 @@
                   />
                 </i>
                 <i
-                  v-else-if="getPayInfo(item)[2].trim() === '支付宝'"
+                  v-else-if="getPayInfo(item)[2].trim() === $t('global.alipay')"
                   :class="[
                     'iconfont',
                     `icon-zfb`,
@@ -82,15 +91,19 @@
                   ]"
                 ></i>
                 <i
-                  v-else-if="getPayInfo(item)[2].trim() === '微信'"
+                  v-else-if="getPayInfo(item)[2].trim() === $t('global.wechat')"
                   :class="['iconfont', `icon-wx`, `pay-iconwx`, `pay-icon3`]"
                 ></i>
                 <i v-else :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"></i>
                 &nbsp;{{ getPayInfo(item)[2] }}
               </span>
             </p>
-            <p v-if="getPayInfo(item)[2].trim() !== '现金交易'">
-              <span>收款账号</span>
+            <p
+              v-if="
+                getPayInfo(item)[2].trim() !== $t('components.orderFrom.cash')
+              "
+            >
+              <span>{{ $t("components.orderFrom.pending_account") }}</span>
               <span :style="{ color: '#f55d07' }">
                 {{ getPayInfo(item)[1] }}
                 &nbsp;
@@ -104,7 +117,7 @@
           </div>
         </div>
         <div>
-          <p>提交时间</p>
+          <p>{{ $t("components.orderFrom.subtime") }}</p>
           <p>{{ item.eotc }}</p>
         </div>
       </div>
@@ -115,7 +128,9 @@
           :disabled="!isContractCheckList[index]"
           type="info"
           @click="sure(item)"
-        >确认已付款</van-button>
+        >
+          {{ $t("components.orderFrom.pending_confirm") }}
+        </van-button>
       </div>
     </div>
 
@@ -129,38 +144,48 @@
       get-container="body"
     >
       <div class="pop-content">
-        <p class="title">确认已付款</p>
+        <p class="title">{{ $t("components.orderFrom.pending_confirm") }}</p>
         <van-divider />
         <p class="text">
-          尚未付款就点击
-          <span :style="{ color: 'red' }">【我已完成转账】</span>将被视为恶意操作，
-          <span :style="{ color: 'red' }">恶意操作会冻结用户</span>
+          {{ $t("components.orderFrom.pending_shangwei")
+          }}<span :style="{ color: 'red' }">{{
+            $t("components.orderFrom.pending_wancheng")
+          }}</span
+          >{{ $t("components.orderFrom.pending_shiwei")
+          }}<span :style="{ color: 'red' }">{{
+            $t("components.orderFrom.pending_eyi")
+          }}</span>
         </p>
         <ul>
           <li>
-            <span>转账金额</span>
-            <span>
-              ￥
+            <span>{{ $t("components.orderFrom.pending_jine") }}</span>
+            <span
+              >￥
               {{ activeItem.amount1 }}
             </span>
           </li>
           <li>
-            <span>收款账号</span>
+            <span>{{ $t("components.orderFrom.pending_account") }}</span>
             <span
               :style="{ display: 'flex', alignItems: 'center' }"
-              v-if="getPayInfo(activeItem)[2].trim() === '现金交易'"
+              v-if="
+                getPayInfo(activeItem)[2].trim() ===
+                $t('components.orderFrom.cash')
+              "
             >
               <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;
-              <span>现金交易</span>
+              <span>{{ $t("components.orderFrom.cash") }}</span>
             </span>
             <span v-else>
               <i
-                v-if="getPayInfo(activeItem)[2].trim() === '支付宝'"
+                v-if="getPayInfo(activeItem)[2].trim() === $t('global.alipay')"
                 :class="['iconfont', `icon-zfb`, `pay-iconzfb1`, `pay-iconzfb`]"
               ></i>
               <i
-                v-else-if="getPayInfo(activeItem)[2].trim() === '微信'"
+                v-else-if="
+                  getPayInfo(activeItem)[2].trim() === $t('global.wechat')
+                "
                 :class="['iconfont', `icon-wx`, `pay-iconwx`, `pay-icon3`]"
               ></i>
               <i v-else :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"></i>
@@ -169,7 +194,9 @@
             </span>
           </li>
         </ul>
-        <van-checkbox shape="square" v-model="checked">我已确认</van-checkbox>
+        <van-checkbox shape="square" v-model="checked">{{
+          $t("components.orderFrom.pending_me")
+        }}</van-checkbox>
         <div class="button">
           <van-button
             class="pop-button"
@@ -178,8 +205,9 @@
             color="#1B2945"
             block
             :disabled="!checked"
-          >我已完成转账</van-button>
-          <p @click="close">我再想想</p>
+            >{{ $t("components.orderFrom.pending_zhuan") }}</van-button
+          >
+          <p @click="close">{{ $t("components.orderFrom.pending_think") }}</p>
         </div>
       </div>
     </van-popup>
@@ -251,8 +279,8 @@ export default {
         this.show = true
         this.activeItem = item
       } else {
-        this.$toast.clear()
-        this.$toast.warning('该订单正在仲裁中！')
+        this.$toast.clear();
+        this.$toast.warning(this.$t("components.orderFrom.pending_zhongcai"));
       }
     },
     close() {
@@ -289,9 +317,9 @@ export default {
     async handleContractCheck(item, index) {
       console.log(this.coinId)
       if (item.updateDate) {
-        this.$toast.clear()
-        this.$toast.warning('该订单正在仲裁中！')
-        return false
+        this.$toast.clear();
+        this.$toast.warning(this.$t("components.orderFrom.pending_zhongcai"));
+        return false;
       }
 
       this.isContractCheckLoading = true
@@ -299,7 +327,7 @@ export default {
         {
           component: loadingToast,
           props: {
-            title: '合约校验中，请等待...',
+            title: this.$t("components.orderFrom.pending_heyue"),
           },
         },
         {
@@ -308,19 +336,25 @@ export default {
         }
       )
       try {
-        await GetmyUSDT_User(item.id, item.num,this.coinId)
-        this.isContractCheckList[index] = true
-        this.$toast.clear()
-        this.$toast.success('合约校验通过,可以给对方进行汇款！')
+        await GetmyUSDT_User(item.id, item.num,this.coinId);
+        this.isContractCheckList[index] = true;
+        this.$toast.clear();
+        this.$toast.success(this.$t("components.orderFrom.pending_heyue2"));
       } catch ({ usdt, zads }) {
         console.log(usdt)
         this.$toast.clear()
         this.$toast.error(
-          <div>
-            <span style="font-size:15px;color:rgb(230,212,82)">订单异常</span>
-            <p style="font-size:14px;">合约中订单余额为：{usdt}</p>
-            <p style="font-size:14px;line-height:24px">订单绑定的地址为：{zads}</p>
-          </div>,
+          `<div>
+            <span style="font-size:15px;color:rgb(230,212,82)">${this.$t(
+              "components.orderFrom.pending_yichang"
+            )}</span>
+            <p style="font-size:14px;">${this.$t(
+              "components.orderFrom.pending_yue"
+            )}：${usdt}</p>
+            <p style="font-size:14px;line-height:24px">
+              ${this.$t("components.orderFrom.pending_site")}：${zads}
+            </p>
+          </div>`,
           {
             icon: false,
             timeout: false,
@@ -356,10 +390,10 @@ export default {
       this.$toast.clear()
       this.$copyText(val).then(
         (e) => {
-          this.$toast.success('账号 已复制')
+          this.$toast.success(this.$t("components.orderFrom.pending_copy"));
         },
         (e) => {
-          this.$toast.error('请稍后重试')
+          this.$toast.error(this.$t("components.orderFrom.pending_error"));
         }
       )
     },

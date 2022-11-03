@@ -1,38 +1,35 @@
 <template>
-    
   <van-empty image="error" :description="a" />
 </template>
 
 <script>
-
-import {Toast } from "vant"
-
+import { Toast } from "vant";
 
 export default {
   name: "Not-Found",
-  data(){
+  data() {
     return {
-      a:'内容找不到了'
-    }
+      a: this.$t("components.notfound.a"),
+    };
   },
   created() {
     const toast = Toast.loading({
-      duration: 0, 
+      duration: 0,
       forbidClick: true,
-      message: "倒计时 3 秒",
+      message: this.$t("components.notfound.msg1"),
     });
 
     let second = 3;
     const timer = setInterval(() => {
       second--;
       if (second) {
-        toast.message = `${second} 秒后将返回`;
+        toast.message = `${second} ${this.$t("components.notfound.msg2")}`;
       } else {
         clearInterval(timer);
-       Toast.clear();
-       this.$router.replace({
-           name:"index"
-       })
+        Toast.clear();
+        this.$router.replace({
+          name: "index",
+        });
       }
     }, 1000);
   },
@@ -40,11 +37,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.van-empty{
+.van-empty {
   position: fixed;
   left: 0;
   right: 0;
-  bottom:0;
-  top:0;
+  bottom: 0;
+  top: 0;
 }
 </style>

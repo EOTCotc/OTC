@@ -3,38 +3,46 @@
     <white :title="title"></white>
     <div class="content">
       <div class="gross">
-        <p class="title">交易总量</p>
+        <p class="title">{{ $t("components.transaction.tags1") }}</p>
         <div class="grossBox">
           <div>
-            <p>总交易量(USDT)</p>
-            <p>{{dealSum}}万</p>
+            <p>{{ $t("components.transaction.tags2") }}(USDT)</p>
+            <p>{{ dealSum }}{{ $t("components.transaction.tags3") }}</p>
           </div>
           <div></div>
           <div>
-            <p>总交易人数(人)</p>
-            <p>{{peopleSum}}</p>
+            <p>
+              {{ $t("components.transaction.tags4") }}({{
+                $t("components.transaction.tags5")
+              }})
+            </p>
+            <p>{{ peopleSum }}</p>
           </div>
         </div>
       </div>
       <div class="chart">
-        <p class="chartTitle">交易数据图表</p>
+        <p class="chartTitle">{{ $t("components.transaction.tags6") }}</p>
         <div class="chartBox">
           <div class="boxTop">
-            <p>USDT购买出售情况</p>
+            <p>{{ $t("components.transaction.tags7") }}</p>
             <div class="zysh">
               <p
                 class="buysell"
                 :class="{ 'active-btn': !isPledges }"
                 size="large"
                 @click="isPledge()"
-              >交易量</p>
+              >
+                {{ $t("components.transaction.tags8") }}
+              </p>
               <p
                 :class="{ 'active-btn': isPledges }"
                 class="btn2 buysell"
                 plain
                 size="large"
                 @click="isPledge()"
-              >人数</p>
+              >
+                {{ $t("components.transaction.tags9") }}
+              </p>
             </div>
           </div>
           <!-- <div class="boxCenter">
@@ -54,140 +62,145 @@
 
 <script>
 // import { Dialog } from 'vant'
-import { TradingVolume } from '@/api/trxRequest'
-import white from '@/components/Nav/white.vue'
+import { TradingVolume } from "@/api/trxRequest";
+import white from "@/components/Nav/white.vue";
 export default {
   components: {
     white,
   },
   data() {
     return {
-      title: '交易数据',
+      title: this.$t("components.transaction.title1"),
       isPledges: true,
       //交易总人数
-      peopleSum: '',
+      peopleSum: "",
       //交易总量
-      dealSum: '',
+      dealSum: "",
       //出售人数
-      sellPeoeleArr: '',
+      sellPeoeleArr: "",
       //购买人数
-      buyPeopleArr: '',
+      buyPeopleArr: "",
       //出售交易量
-      sellDealArr: '',
+      sellDealArr: "",
       //购买交易量
-      buyDealArr: '',
+      buyDealArr: "",
       //日期
-      dateArr: '',
+      dateArr: "",
       // date: [
       //   { name: '日', show: true },
       //   { name: '月', show: false },
       //   { name: '年', show: false },
       // ],
-    }
+    };
   },
   created() {},
   mounted() {
-    let dealData = localStorage.getItem('dealData')
-    console.log(dealData)
+    let dealData = localStorage.getItem("dealData");
+    console.log(dealData);
 
     if (dealData != null) {
-      dealData = JSON.parse(dealData)
+      dealData = JSON.parse(dealData);
     }
     let time =
       new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getMonth() +
       1 +
-      '-' +
-      new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getDate()
+      "-" +
+      new Date(new Date().getTime() - 24 * 60 * 60 * 1000).getDate();
 
-    console.log(time)
+    console.log(time);
     if (dealData != null && time == dealData[1].date) {
-      this.screen(dealData)
-      this.drawChart()
+      this.screen(dealData);
+      this.drawChart();
     } else {
-      this.init()
+      this.init();
     }
   },
   methods: {
     init() {
       TradingVolume().then((res) => {
-        let data = res.data
-        this.screen(data)
-        this.drawChart()
-        let dealData = JSON.stringify(data)
-        localStorage.setItem('dealData', dealData)
-      })
+        let data = res.data;
+        this.screen(data);
+        this.drawChart();
+        let dealData = JSON.stringify(data);
+        localStorage.setItem("dealData", dealData);
+      });
     },
     screen(data) {
-      this.peopleSum = data[0].buyMan * 1 + data[0].sellMan * 1
-      this.dealSum = ((data[0].buyTotal * 1 + data[0].sellTotal * 1) / 10000).toFixed(2)
+      this.peopleSum = data[0].buyMan * 1 + data[0].sellMan * 1;
+      this.dealSum = (
+        (data[0].buyTotal * 1 + data[0].sellTotal * 1) /
+        10000
+      ).toFixed(2);
       let dateArr = [],
         sellPeoeleArr = [],
         buyPeopleArr = [],
         sellDealArr = [],
-        buyDealArr = []
+        buyDealArr = [];
       for (let i = 1; i < data.length; i++) {
-        dateArr.unshift(data[i].date)
+        dateArr.unshift(data[i].date);
       }
       for (let i = 0; i < data.length - 1; i++) {
-        sellPeoeleArr.unshift(data[i].sellMan * 1 - data[i + 1].sellMan * 1)
-        buyPeopleArr.unshift(data[i].buyMan * 1 - data[i + 1].buyMan * 1)
-        sellDealArr.unshift(data[i].sellTotal * 1 - data[i + 1].sellTotal * 1)
-        buyDealArr.unshift((data[i].buyTotal * 1 - data[i + 1].buyTotal * 1).toFixed(0))
+        sellPeoeleArr.unshift(data[i].sellMan * 1 - data[i + 1].sellMan * 1);
+        buyPeopleArr.unshift(data[i].buyMan * 1 - data[i + 1].buyMan * 1);
+        sellDealArr.unshift(data[i].sellTotal * 1 - data[i + 1].sellTotal * 1);
+        buyDealArr.unshift(
+          (data[i].buyTotal * 1 - data[i + 1].buyTotal * 1).toFixed(0)
+        );
       }
 
-      this.dateArr = dateArr
-      this.sellPeoeleArr = sellPeoeleArr
-      this.buyPeopleArr = buyPeopleArr
-      this.sellDealArr = sellDealArr
-      this.buyDealArr = buyDealArr
+      this.dateArr = dateArr;
+      this.sellPeoeleArr = sellPeoeleArr;
+      this.buyPeopleArr = buyPeopleArr;
+      this.sellDealArr = sellDealArr;
+      this.buyDealArr = buyDealArr;
     },
 
     dateClick(index) {
       for (let i of this.date) {
-        i.show = false
+        i.show = false;
       }
-      this.date[index].show = true
+      this.date[index].show = true;
     },
     isPledge() {
-      this.isPledges = !this.isPledges
+      this.isPledges = !this.isPledges;
       // if (this.isPledges) {
       //   this.drawChart(1)
       // } else {
-      this.drawChart()
+      this.drawChart();
       // }
     },
     drawChart() {
-      let data1, data2, date
+      let data1, data2, date;
       if (this.isPledges) {
-        data1 = this.buyDealArr
-        data2 = this.sellDealArr
+        data1 = this.buyDealArr;
+        data2 = this.sellDealArr;
       } else {
-        data1 = this.buyPeopleArr
-        data2 = this.sellPeoeleArr
+        data1 = this.buyPeopleArr;
+        data2 = this.sellPeoeleArr;
       }
-      date = this.dateArr
+      date = this.dateArr;
       // 基于准备好的dom，初始化echarts实例
-      var myChart = this.$echarts.init(document.getElementById('main'))
+      var myChart = this.$echarts.init(document.getElementById("main"));
       // 绘制图表
       let option = {
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'cross',
+            type: "cross",
             crossStyle: {
-              color: '#999',
+              color: "#999",
             },
           },
         },
         legend: {
-          data: ['购买(USDT)', '出售(USDT)'],
+          data: this.$t("components.transaction.data1"),
         },
         xAxis: [
           {
-            type: 'category',
+            type: "category",
             data: date,
             axisPointer: {
-              type: 'shadow',
+              type: "shadow",
             },
           },
         ],
@@ -199,10 +212,10 @@ export default {
         },
         yAxis: [
           {
-            type: 'value',
+            type: "value",
             // name: 'Precipitation',
             min: 0,
-            max: 'dataMax',
+            max: "dataMax",
             // interval: 20,
             axisLabel: {
               // formatter: '{value}',
@@ -211,37 +224,37 @@ export default {
         ],
         series: [
           {
-            name: '购买(USDT)',
-            type: 'bar',
+            name: this.$t("components.transaction.data2"),
+            type: "bar",
             tooltip: {
               valueFormatter: function (value) {
-                return value + ' ml'
+                return value + " ml";
               },
             },
             data: data1,
             itemStyle: {
-              color: '#00B87A',
+              color: "#00B87A",
             },
           },
           {
-            name: '出售(USDT)',
-            type: 'bar',
+            name: this.$t("components.transaction.data3"),
+            type: "bar",
             tooltip: {
               valueFormatter: function (value) {
-                return value + ' ml'
+                return value + " ml";
               },
             },
             data: data2,
             itemStyle: {
-              color: '#FC7542',
+              color: "#FC7542",
             },
           },
         ],
-      }
-      myChart.setOption(option)
+      };
+      myChart.setOption(option);
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

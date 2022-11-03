@@ -2,14 +2,16 @@
   <div>
     <white :title="title"></white>
     <div class="content">
-        <div class="top">
-          <span>转入(出)UID</span><span>USDT数量</span><span>转账日期</span>
-        </div>
+      <div class="top">
+        <span>{{ $t("components.team.record_tags1") }}</span
+        ><span>{{ $t("components.team.record_tags2") }}</span
+        ><span>{{ $t("components.team.record_date") }}</span>
+      </div>
 
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="没有更多了"
+        :finished-text="$t('components.team.record_not_more')"
         @load="onLoad"
       >
         <div class="list" v-for="item in list" :key="item">
@@ -28,7 +30,7 @@ export default {
   },
   data() {
     return {
-      title: "转账记录",
+      title:this.$t('components.team.record_data1'),
       list: [],
       loading: false,
       finished: false,

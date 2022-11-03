@@ -2,36 +2,36 @@
   <div class="content">
     <div class="order">
       <div class="title">
-        <p>总订单号: {{ orderItem.id }}</p>
+        <p>{{ $t("components.orderFrom.order_zong") }}: {{ orderItem.id }}</p>
         <p class="title-p" :style="{ display: 'flex' }">
           <i @click="amend" class="iconfont icon-bianji"></i>
         </p>
       </div>
       <div class="text">
         <div>
-          <p>单价</p>
+          <p>{{ $t("components.orderFrom.order_price") }}</p>
           <p>{{ orderItem.cny }} CNY</p>
         </div>
         <div>
-          <p>数量</p>
-          <p>{{ orderItem.num }} {{coinType}}</p>
+          <p>{{ $t("components.orderFrom.order_num") }}</p>
+          <p>{{ orderItem.num }} USDT</p>
         </div>
         <div>
-          <p>限额</p>
+          <p>{{ $t("components.orderFrom.order_xiane") }}</p>
           <div class="quota">
             <span>{{ orderItem.amount1 }}CNY ~ {{ orderItem.amount2 }}CNY</span>
           </div>
         </div>
 
         <div>
-          <p>更新时间</p>
+          <p>{{ $t("components.orderFrom.order_time") }}</p>
           <p>{{ orderItem.eotc }}</p>
         </div>
       </div>
 
       <div v-if="orderItem.dsx == '200'">
         <van-button block round class="cancel_button" :disabled="true">
-          已取消
+          {{ $t("components.orderFrom.order_cancel") }}
         </van-button>
       </div>
 
@@ -45,11 +45,11 @@
           type="warning"
           block
           @click="soldout"
-          >暂时下架</van-button
+          >{{ $t("components.orderFrom.order_xiajia") }}</van-button
         >
-        <van-button v-else round type="info" @click="putaway"
-          >继续上架</van-button
-        >
+        <van-button v-else round type="info" @click="putaway">{{
+          $t("components.orderFrom.order_shangjia")
+        }}</van-button>
       </div>
     </div>
 
@@ -64,10 +64,14 @@
       class="pop"
     >
       <div class="pop-content">
-        <div class="pop-title">收购单 {{ orderItem.id }}</div>
+        <div class="pop-title">
+          {{ $t("components.orderFrom.order_order") }} {{ orderItem.id }}
+        </div>
         <div class="cells">
           <div class="cell">
-            <p class="cell_title">单价</p>
+            <p class="cell_title">
+              {{ $t("components.orderFrom.order_price") }}
+            </p>
             <div class="inputs">
               <input
                 type="number"
@@ -78,7 +82,7 @@
             </div>
           </div>
           <div class="cell">
-            <p class="cell_title">数量</p>
+            <p class="cell_title">{{ $t("components.orderFrom.order_num") }}</p>
             <div class="inputs">
               <input
                 type="number"
@@ -89,7 +93,9 @@
             </div>
           </div>
           <div class="cell">
-            <p class="cell_title">限购</p>
+            <p class="cell_title">
+              {{ $t("components.orderFrom.order_xiangou") }}
+            </p>
             <div class="cell_flex">
               <div class="inputs cell_Width">
                 <input
@@ -98,7 +104,9 @@
                   @blur="onMinLegalTender"
                 />
                 <p>CNY</p>
-                <span v-if="eror[0]" class="error-text">输入金额不正确</span>
+                <span v-if="eror[0]" class="error-text">{{
+                  $t("components.orderFrom.order_in")
+                }}</span>
               </div>
               <div class="inputs cell_Width">
                 <input
@@ -106,8 +114,10 @@
                   v-model="MinDigitalCash"
                   @blur="onMinDigitalCash"
                 />
-                <p>{{coinType}}</p>
-                <span v-if="eror[1]" class="error-text">输入金额不正确</span>
+                <p>USDT</p>
+                <span v-if="eror[1]" class="error-text">{{
+                  $t("components.orderFrom.order_in")
+                }}</span>
               </div>
             </div>
             <div class="cell_flex">
@@ -118,7 +128,9 @@
                   @blur="onMaxLegalTender"
                 />
                 <p>CNY</p>
-                <span v-if="eror[2]" class="error-text">输入金额不正确</span>
+                <span v-if="eror[2]" class="error-text">{{
+                  $t("components.orderFrom.order_in")
+                }}</span>
               </div>
               <div class="inputs cell_Width">
                 <input
@@ -126,36 +138,42 @@
                   v-model="MaxDigitalCash"
                   @blur="onMaxDigitalCash"
                 />
-                <p>{{coinType}}</p>
-                <span v-if="eror[3]" class="error-text">输入金额不正确</span>
+                <p>USDT</p>
+                <span v-if="eror[3]" class="error-text">{{
+                  $t("components.orderFrom.order_in")
+                }}</span>
               </div>
             </div>
           </div>
         </div>
         <div class="buttons">
-          <van-button color="#1B2945" block round @click="updata(1)"
-            >更新订单</van-button
-          >
-          <p @click="cancel">取消订单</p>
+          <van-button color="#1B2945" block round @click="updata(1)">{{
+            $t("components.orderFrom.order_update")
+          }}</van-button>
+          <p @click="cancel">
+            {{ $t("components.orderFrom.order_cancel_order") }}
+          </p>
         </div>
       </div>
     </van-popup>
     <!-- 取消弹窗 -->
     <van-dialog
       v-model="cancelShow"
-      title="取消提示"
+      :title="$t('components.orderFrom.order_cancel_tip')"
       show-cancel-button
       confirm-button-color="#1B2945"
-      confirm-button-text="确认"
+      :confirm-button-text="$t('global.confirm')"
       cancel-button-color="#666"
-      cancel-button-text="取消"
+      :cancel-button-text="$t('global.cancel')"
       get-container="body"
       @confirm="cancel_yes"
     >
       <template #default>
-        <div class="text_color">是否取消该收购订单？</div>
+        <div class="text_color">
+          {{ $t("components.orderFrom.order_whether") }}
+        </div>
         <p :style="{ color: 'red', textAlign: 'center', margin: '0 0 15px 0' }">
-          取消后，订单不能恢复！
+          {{ $t("components.orderFrom.order_huifu") }}
         </p>
       </template>
     </van-dialog>
@@ -164,10 +182,7 @@
 
 <script>
 import { Dialog } from "vant";
-
-
 import { UPdateOrder_sj } from "@/api/trxRequest";
-
 import PubSub from "pubsub-js";
 
 export default {
@@ -247,8 +262,7 @@ export default {
             did: this.orderItem.id,
             type,
           });
-          this.$toast.success("订单修改成功");
-          console.log('成功')
+          this.$toast.success(this.$t("components.orderFrom.order_alter"));
           PubSub.publish("update_order");
           // PubSub.unsubscribe('update_order');
 
@@ -261,7 +275,7 @@ export default {
         }
       } else {
         this.$toast.clear();
-        this.$toast.warning("输入金额数量不正确，请重新输入");
+        this.$toast.warning(this.$t("components.orderFrom.order_warn"));
       }
       this.isclose_on_click_overlay = true;
     },
@@ -279,8 +293,7 @@ export default {
           did: this.orderItem.id,
           type: 2, //取消订单
         });
-        this.$toast.success("订单已经取消");
-        console.log('取消')
+        this.$toast.success(this.$t("components.orderFrom.order_quxiao"));
         PubSub.publish("update_order");
         // PubSub.unsubscribe('update_order');
       } catch (err) {
@@ -289,11 +302,13 @@ export default {
     },
     soldout() {
       Dialog.confirm({
-        title: "下架提示",
-        message: "暂时下架交易后会暂时停止对外收购，\n是否暂时下架该笔订单 ",
-        confirmButtonText: "下架",
+        title: this.$t("components.orderFrom.order_xiajia_tip"),
+        message: `${this.$t("components.orderFrom.order_msg1")}\n${this.$t(
+          "components.orderFrom.order_msg2"
+        )}`,
+        confirmButtonText: this.$t("components.orderFrom.order_xiajia2"),
         confirmButtonColor: "red",
-        cancelButtonText: "取消",
+        cancelButtonText: this.$t("global.cancel"),
         cancelButtonColor: "#666",
       })
         .then(async () => {
@@ -305,8 +320,7 @@ export default {
             did: this.orderItem.id,
             type: 220, //下架
           }).then(() => {
-            this.$toast.success("订单已下架");
-            console.log('下架')
+            this.$toast.success(this.$t("components.orderFrom.order_xiajia3"));
             PubSub.publish("update_order");
             // PubSub.unsubscribe('update_order');
           });
@@ -316,10 +330,12 @@ export default {
     putaway() {
       // 订单上架
       Dialog.confirm({
-        title: "上架提示",
-        message: "上架后订单可正常进行交易，\n是否上架该笔订单 ",
-        confirmButtonText: "上架",
-        cancelButtonText: "取消",
+        title: this.$t("components.orderFrom.order_shangjia_tip"),
+        message: `${this.$t("components.orderFrom.order_msg3")}\n${this.$t(
+          "components.orderFrom.order_msg4"
+        )}`,
+        confirmButtonText: this.$t("components.orderFrom.order_shangjia2"),
+        cancelButtonText: this.$t("global.cancel"),
         cancelButtonColor: "#666",
       })
         .then(() => {
@@ -329,10 +345,9 @@ export default {
             amount1: this.MinLegalTender,
             amount2: this.MaxLegalTender,
             did: this.orderItem.id,
-            type: 221, 
+            type: 221,
           }).then(() => {
-            this.$toast.success("订单已上架，可正常进行交易");
-            console.log('上架')
+            this.$toast.success(this.$t("components.orderFrom.order_suc"));
             PubSub.publish("update_order");
             // PubSub.unsubscribe('update_order');
           });
@@ -355,11 +370,11 @@ export default {
       } else if (Number(e.target.value) <= min) {
         e.target.value = 5;
         this.price = 5;
-        this.$toast.warning("该货币价格不能低于 5 CNY");
+        this.$toast.warning(this.$t("components.orderFrom.order_warn2"));
       } else if (Number(e.target.value) >= max) {
         this.price = 7.5;
         e.target.value = 7.5;
-        this.$toast.warning("该货币价格不能高于 7.5 CNY");
+        this.$toast.warning(this.$t("components.orderFrom.order_warn3"));
       }
       this.is_validVal();
     },
@@ -369,21 +384,23 @@ export default {
       // localStorage.getItem("otczy")
       // localStorage.getItem("giftEotc")
 
-      const myEoct=localStorage.getItem("myeotc")*1
-      const otczy= localStorage.getItem("otczy")*1
-      const giftEotc=localStorage.getItem("giftEotc")*1
+      const myEoct = localStorage.getItem("myeotc") * 1;
+      const otczy = localStorage.getItem("otczy") * 1;
+      const giftEotc = localStorage.getItem("giftEotc") * 1;
 
-      const max=myEoct+otczy+giftEotc
+      const max = myEoct + otczy + giftEotc;
 
       if (Number(e.target.value) < 0) {
         e.target.value = 0;
         this.number = 0;
       }
-      if (Number(e.target.value) > max*10) {
-        e.target.value = max*10;
+      if (Number(e.target.value) > max * 10) {
+        e.target.value = max * 10;
         this.number = e.target.value;
         this.$toast.clear();
-        this.$toast.warning(`您最高收购 ${this.coinType} 的数量不能超过质押的数量${max*10}`);
+        this.$toast.warning(
+          `${this.$t("components.orderFrom.order_warn4")}${max * 10}`
+        );
       }
       this.is_validVal();
     },

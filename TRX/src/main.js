@@ -1,15 +1,17 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
-import router from './router'
-import echarts from 'echarts'
+import Vue from "vue";
+import App from "./App.vue";
+import store from "./store";
+import router from "./router";
+import echarts from "echarts";
+import dayjs from 'dayjs'
+import utc from "dayjs/plugin/utc"
 
 import Vant from 'vant'
 
 import VueClipboard from 'vue-clipboard2'
 
-import Toast, { POSITION } from 'vue-toastification'
-import 'vue-toastification/dist/index.css'
+import Toast, { POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 import { time2 } from '@/api/autoRequest'
 
@@ -54,7 +56,10 @@ Vue.use(Toast, {
 })
 Vue.use(VueCanvasPoster)
 
-Vue.config.productionTip = false
+dayjs.extend(utc)
+
+Vue.config.productionTip = false;
+Vue.prototype.$dayjs = dayjs
 
 Vue.prototype.$echarts = echarts
 

@@ -6,17 +6,16 @@
           <div class="top">
             <div class="top-left">
               <van-icon name="underway-o" />
-              <p v-if="item.status === 0">双方举证中</p>
-              <p v-else-if="item.status === 1">
+              <p v-if="item.status === 0">
                 <van-count-down :time="item.time" format="DD 天 HH 时 mm 分 " />
               </p>
-              <p v-else>等待仲裁结果</p>
+              <p v-else>{{ $t('components.arbitration.pending.title') }}</p>
             </div>
             <p>{{ transformDate(item.adduceDate) }}</p>
           </div>
           <div class="van--bottom"></div>
           <both :info="item" />
-          <div class="text">原告卖家发起仲裁，仲裁事件为{{ getArbitrateType(item.arbitrateInType) }}</div>
+          <div class="text">{{ $t('components.arbitration.pending.event.text') }}{{ getArbitrateType(item.arbitrateInType) }}</div>
           <van-row class="buttons" :gutter='15'>
             <van-col
               v-if="!item.hasDelay && item.status === 0"
@@ -29,7 +28,7 @@
                 type="info"
                 :to="{ name: 'adjourn', query: { id: item.arbitrateInfoId }  }"
               >
-                申请延期
+                {{ $t('components.arbitration.pending.delay') }}
               </van-button>
             </van-col>
             <van-col :span='(!item.hasDelay && item.status === 0) ? 12 : 24'>
@@ -39,7 +38,7 @@
                 type="info"
                 :to="{ name: 'details', query: { id: item.arbitrateInfoId } }">
                 <van-icon name="description" />
-                仲裁详情
+                {{ $t('components.arbitration.pending.detail') }}
               </van-button>
             </van-col>
           </van-row>
@@ -48,7 +47,7 @@
       <van-empty
         v-else
         :image="require('../../assets/currency-icons/empty.png')"
-        description="暂无数据"
+        :description="$t('components.arbitration.pending.empty')"
       />
     </div>
   </van-pull-refresh>
@@ -83,17 +82,18 @@ export default {
     transformDate,
     getArbitrateType,
     getList() {
-      const loading = $loading('加载中…')
+      const loading = $loading(this.$t('components.arbitration.pending.loading.text'))
       this.loading = true
       list(0).then(res => {
         const now = this.$dayjs()
         this.list.data = res.items.map(item => {
-          item.time = this.$dayjs(item.status === 0 ? item.adduceDate : item.voteDate).add('-8', 'hour').diff(now, 'millisecond')
+          const start = this.$dayjs(item.status === 0 ? item.adduceDate : item.voteDate).add(-8, 'hour')
+          item.time = start.diff(now, 'millisecond')
           item.total = item.plaintiffNum + item.defendantNum
           return item
         })
       }).catch(err => {
-        $toast('fail', err.data.message)
+        $toast('fail', this.$t('components.arbitration.pending.loading.fail'))
       }).finally(() => {
         this.loading = false
         loading.clear()

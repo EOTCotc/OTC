@@ -6,7 +6,7 @@
         class="search"
         v-model="value"
         background="#F3F4F5"
-        placeholder="请输入搜索关键词"
+        :placeholder="$t('components.team.tags19')"
       />
       <div class="node" v-for="(item, index) in 10" :key="index">
         <div class="node_title">
@@ -18,14 +18,16 @@
         </div>
         <div class="node_content">
           <div>
-            <p>姓名: 颜**</p>
-            <p>直推节点: 1</p>
+            <p>{{ $t("components.team.tags6") }}: 颜**</p>
+            <p>{{ $t("components.team.tags20") }}: 1</p>
           </div>
           <div>
-            <p>节点类型: A6</p>
-            <p>节点级别: v6</p>
+            <p>{{ $t("components.team.node_type") }}: A6</p>
+            <p>{{ $t("components.team.node_grade") }}: v6</p>
           </div>
-          <p class="time">注册日期: 2020.05.24 00:25</p>
+          <p class="time">
+            {{ $t("components.team.more_date") }}: 2020.05.24 00:25
+          </p>
         </div>
       </div>
 
@@ -33,13 +35,18 @@
         <div class="pop-content">
           <p class="title">UID:123485</p>
           <div class="text">
-            <p>手机号: 13589632145</p>
-            <p>邮 箱: 13589632145qq.com</p>
-            <p>EOTC质押: 135.00</p>
-            <p>USDT余额: 5.00</p>
+            <p>{{ $t("components.team.tags14") }}: 13589632145</p>
+            <p>{{ $t("components.team.tags15") }}: 13589632145qq.com</p>
+            <p>{{ $t("components.team.more_eotc") }}: 135.00</p>
+            <p>{{ $t("components.team.more_usdt") }}: 5.00</p>
           </div>
-          <van-button class="button" round color="#1B2945" block @click="skip"
-            >给他转账</van-button
+          <van-button
+            class="button"
+            round
+            color="#1B2945"
+            block
+            @click="skip"
+            >{{ $t("components.team.tags17") }}</van-button
           >
         </div>
       </van-popup>
@@ -53,7 +60,7 @@ export default {
   //更多链接
   data() {
     return {
-      title: "更多节点",
+      title: this.$t("components.team.more_node"),
       value: "",
       show: false,
     };

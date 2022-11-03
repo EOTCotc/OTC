@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="rule">EOTC采用严格的邀请注册制</p>
+    <p class="rule">{{ $t('components.login.text[0]') }}</p>
     <van-cell-group :border="false">
       <!-- <van-popover
         v-model="showPopover"
@@ -11,7 +11,7 @@
         @select="onSelect"
       >
         <template #reference> -->
-      <p class="hint">当前网络</p>
+      <p class="hint">{{ $t('components.login.text[1]') }}</p>
       <van-field
         class="cell"
         v-model="value1"
@@ -21,9 +21,9 @@
       />
       <!-- </template>
       </van-popover> -->
-      <p class="hint">钱包地址</p>
+      <p class="hint">{{ $t('components.login.text[2]') }}</p>
       <van-field class="cell" readonly clearable v-model="wallet" />
-      <p class="hint">输入邮箱地址</p>
+      <p class="hint">{{ $t('components.login.text[3]') }}</p>
       <van-field
         class="cell"
         v-model="email"
@@ -42,7 +42,7 @@
             :disabled="!buttonShow"
             @click="gain"
           >
-            <span>发送验证码</span>
+            <span>{{ $t('components.login.text[4]') }}</span>
           </van-button>
           <van-count-down
             ref="countDown"
@@ -54,14 +54,14 @@
           />
         </template>
       </van-field>
-      <p class="hint">输入邮箱验证码</p>
+      <p class="hint">{{ $t('components.login.text[5]') }}</p>
       <van-field
         class="cell"
         autocomplete="off"
         clearable
         v-model="verification"
       />
-      <p class="hint">填写邀请地址</p>
+      <p class="hint">{{ $t('components.login.text[6]') }}</p>
       <van-field class="cell" clearable :readonly="readShow" v-model="invite" />
     </van-cell-group>
     <van-checkbox
@@ -70,8 +70,8 @@
       checked-color="#1B2945"
       v-model="checked"
     >
-      我已阅读并同意
-      <span>《用户协议》</span>
+      {{ $t('components.login.text[7]') }}
+      <span>《{{ $t('components.login.text[8]') }}》</span>
     </van-checkbox>
     <div class="footer">
       <van-button
@@ -89,11 +89,11 @@
         "
         color="#1B2945"
         @click="register"
-        >确定注册</van-button
+        >{{ $t('components.login.text[9]') }}</van-button
       >
       <p>
-        已有账户
-        <span @click="switched()">去登录</span>
+        {{ $t('components.login.text[10]') }}
+        <span @click="switched()">{{ $t('components.login.text[11]') }}</span>
       </p>
     </div>
   </div>

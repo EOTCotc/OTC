@@ -117,26 +117,27 @@ export default {
                 id: it.odid,
                 inTrading: true,
               },
-            })
-          } else if (odid == 9) this.$toast.error('不能出售自己的订单')
+            });
+          } else if (odid == 9) this.$toast.error(this.$t('components.dealFllow.saleDealPay.toast.error[0]'));
           else if (odid == 3)
             this.$toast.error(
               <div>
-                <p style="font-size:16px;margin:5px">该订单USDT数量已不足,</p>
-                <p style="font-size:16px;margin:5px">请选择其它订单"</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.saleDealPay.toast.error[1]')}</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.saleDealPay.toast.error[2]')}</p>
               </div>
             )
           else if (odid == 2) {
-            this.$toast.error('商家已修改订单价格，请重新下单')
+            this.$toast.error(this.$t('components.dealFllow.saleDealPay.toast.error[3]'));
             //下单的时刻 < 商家修改订单价格时刻
             // 刷新数据 重新下单
-            this.$bus.$emit('update-orderlist')
-          } else if (odid == 1) this.$toast.error('您多次撤销订单，请明天再下单')
+            this.$bus.$emit("update-orderlist");
+          } else if (odid == 1)
+            this.$toast.error(this.$t('components.dealFllow.saleDealPay.toast.error[4]'));
           else if (odid == 0)
             this.$toast.error(
               <div>
-                <p style="font-size:16px;margin:5px">您还有未处理的订单，</p>
-                <p style="font-size:16px;margin:5px">请完成该订单后再下单"</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.saleDealPay.toast.error[5]')}</p>
+                <p style="font-size:16px;margin:5px">${this.$t('components.dealFllow.saleDealPay.toast.error[6]')}</p>
               </div>
             )
         })
@@ -205,26 +206,28 @@ export default {
       <div class="lable-txt">
         <span>{{ name }}</span>
         <span>|</span>
-        <span @click="fullNum(activeName)" :style="{ color: 'blue' }">全部</span>
+        <span @click="fullNum(activeName)" :style="{ color: 'blue' }">
+          {{ $t('components.dealFllow.saleDealPay.text[0]') }}
+        </span>
       </div>
 
       <div class="pay-mid-main">
-        <span class="limit" ref="animate-div">限额： {{ limit }}</span>
+        <span class="limit" ref="animate-div">{{ $t('components.dealFllow.saleDealPay.text[1]') }}： {{ limit }}</span>
       </div>
 
       <div class="pay-mid-main">
-        <span class="limit">资金账户可出售： {{ maxformNum }} {{ type }}</span>
-        <span class="business" :style="{ color: 'blue' }">去划算</span>
+        <span class="limit">{{ $t('components.dealFllow.saleDealPay.text[2]') }}： {{ maxformNum }} {{ type }} </span>
+        <span class="business" :style="{ color: 'blue' }">{{ $t('components.dealFllow.saleDealPay.text[3]') }}</span>
       </div>
 
       <!-- 按金额购买 or 按数量购买 -->
       <div>
         <div class="harvest" v-if="activeName === 'num'">
-          <strong>出售</strong>
+          <strong>{{ $t('components.dealFllow.saleDealPay.text[4]') }}</strong>
           <span>{{ money ? money : "0" }} {{ type }}</span>
         </div>
         <div class="harvest" v-if="activeName === 'size'">
-          <strong>可得</strong>
+          <strong>{{ $t('components.dealFllow.saleDealPay.text[5]') }}</strong>
           <span>￥ {{ money ? money : "0" }}.00</span>
         </div>
       </div>
@@ -233,13 +236,15 @@ export default {
       <footer class="footer">
         <van-button
           :loading="orderSaleLoading"
-          loading-text="订单生成中..."
+          :loading-text="$t('components.dealFllow.saleDealPay.loading.text[0]')"
           :disabled="orderSaleLoading"
           type="primary"
           native-type="submit"
           size="large"
           color="#2483ff"
-        >出售 {{ type }}</van-button>
+        >
+          {{ $t('components.dealFllow.saleDealPay.text[4]') }} {{ type }}
+        </van-button>
       </footer>
     </van-form>
 
@@ -247,9 +252,14 @@ export default {
 
     <!-- start 支付支付订单生成中  loading status  -->
     <van-dialog v-model="orderSaleLoading" :showConfirmButton="false">
-      <Spinner size="30" message="订单生成中" :spacing="15" :font-size="16"></Spinner>
+      <Spinner
+        size="30"
+        :message="$t('components.dealFllow.saleDealPay.loading.text[0]')"
+        :spacing="15"
+        :font-size="16"
+      ></Spinner>
       <!-- <van-loading size="36px" text-color="#000" vertical>订单生成中</van-loading> -->
-      <div class="ld-text">正在下单，请稍等...</div>
+      <div class="ld-text">{{ $t('components.dealFllow.saleDealPay.loading.text[1]') }}</div>
     </van-dialog>
     <!-- end / 支付支付订单生成中  loading status  -->
   </div>

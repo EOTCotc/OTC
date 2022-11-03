@@ -1,21 +1,20 @@
 import { Toast, Notify } from 'vant'
 import dayjs from 'dayjs'
-
 Toast.allowMultiple()
 
 // 0 0 0 trx
 function initFormData(data) {
-  const formData = new FormData()
+    const formData = new FormData()
 
-  for (const [key, value] of Object.entries(data)) {
-    formData.append(key, value)
-  }
+    for (const [key, value] of Object.entries(data)) {
+        formData.append(key, value)
+    }
 
-  return formData
+    return formData
 }
 
 export default {
-  initFormData,
+  initFormData
 }
 
 export const paytype = (value) => {

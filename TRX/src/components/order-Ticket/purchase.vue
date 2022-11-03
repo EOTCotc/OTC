@@ -1,9 +1,13 @@
 <template>
   <div class="content-box-container">
-    <van-empty class="null" v-if="purchaseList.length == 0" description="暂无订单信息" />
+    <van-empty
+      class="null"
+      v-if="purchaseList.length == 0"
+      :description="$t('components.orderTicket.offer')"
+    />
     <div class="content-box" v-else>
       <van-tabs v-model="active" animated swipeable background="#F3F4F5">
-        <van-tab title="总订单">
+        <van-tab :title="$t('components.orderTicket.offer_zong')">
           <BuyBlanketOrder
             v-for="(orderItem, i) in purchaseList"
             :coinType="coinType"
@@ -13,16 +17,16 @@
         </van-tab>
 
         <!-- 待处理订单 -->
-        <van-tab title="待处理">
+        <van-tab :title="$t('components.orderTicket.offer_dai')">
           <BuyPending :coinId="coinId" :active="active" :coinType="coinType"></BuyPending>
         </van-tab>
 
         <!-- 等待收币订单 -->
-        <van-tab title="待收币">
+        <van-tab :title="$t('components.orderTicket.purchase')">
           <BuyAccomplish :coinId="coinId" :active="active" :coinType="coinType"></BuyAccomplish>
         </van-tab>
         <!-- 已收币订单 -->
-        <van-tab title="已收币">
+        <van-tab :title="$t('components.orderTicket.purchase_yi')">
           <BuyReceivedCoin :coinId="coinId" :active="active" :coinType="coinType"></BuyReceivedCoin>
         </van-tab>
       </van-tabs>

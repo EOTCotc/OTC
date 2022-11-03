@@ -8,7 +8,7 @@
 
 <template>
   <div class="content">
-    <p>账号信息</p>
+    <p>{{ $t('components.chain.navbar') }}</p>
     <div class="text">
       <van-cell
         v-for="(item, key) in chainList"

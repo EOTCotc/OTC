@@ -5,74 +5,87 @@
       <div class="header">
         <img src="../../static/icon/wallet2.png" alt />
         <p>
-          定期质押
+          {{ $t("components.secondPhase.zyzb_dingqi") }}
           <span>(EOTC)</span>
         </p>
-        <p>{{sum}}</p>
+        <p>{{ sum }}</p>
       </div>
       <div class="datum">
         <div>
-          <p>利息收益(EOTC)</p>
-          <p>{{interest}}</p>
+          <p>{{ $t("components.secondPhase.zyzb_lixi") }}(EOTC)</p>
+          <p>{{ interest }}</p>
         </div>
         <div>
-          <p>盲盒奖励(个)</p>
-          <p>{{boxnum}}</p>
+          <p>{{ $t("components.secondPhase.nft_manghe") }}</p>
+          <p>{{ boxnum }}</p>
         </div>
         <div>
-          <p>推荐质押(人数)</p>
-          <p>{{people}}</p>
+          <p>{{ $t("components.secondPhase.zyzb_tuijian") }}</p>
+          <p>{{ people }}</p>
         </div>
         <div>
-          <p>推荐质押总量(EOTC)</p>
-          <p>{{peopleNum}}</p>
+          <p>{{ $t("components.secondPhase.zyzb_zongshu") }}</p>
+          <p>{{ peopleNum }}</p>
         </div>
       </div>
       <div class="rule">
-        <p class="title">盲盒赠送规则</p>
+        <p class="title">{{ $t("components.secondPhase.zyzb_rule") }}</p>
         <div>
-          用户质押1000-1999EOTC赠送推荐人1个盲盒
-          <br />用户质押2000-2999EOTC赠送推荐人3个盲盒
-          <br />用户质押3000-3999EOTC赠送推荐人4个盲盒
-          <br />用户质押4000-4999EOTC赠送推荐人6个盲盒
-          <br />用户质押5000EOTC以上赠送推荐人10个盲盒
+          {{ $t("components.secondPhase.zyzb_p1") }}
+          <br />{{ $t("components.secondPhase.zyzb_p2") }} <br />{{
+            $t("components.secondPhase.zyzb_p3")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p4") }} <br />{{
+            $t("components.secondPhase.zyzb_p5")
+          }}
         </div>
         <div>
-          <p>定期质押六个月</p>1000-1999EOTC赠送用户1个盲盒
-          <br />2000-2999EOTC赠送用户3个盲盒
-          <br />3000-3999EOTC赠送用户4个盲盒
-          <br />4000-4999EOTC赠送用户6个盲盒
-          <br />5000EOTC赠送用户10个盲盒
-          <br />5000EOTC以上每质押多500EOTC则加送用户1个盲盒
+          <p>{{ $t("components.secondPhase.zyzb_p6") }}</p>
+          {{ $t("components.secondPhase.zyzb_p7") }}
+          <br />{{ $t("components.secondPhase.zyzb_p8") }} <br />{{
+            $t("components.secondPhase.zyzb_p9")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p10") }} <br />{{
+            $t("components.secondPhase.zyzb_p11")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p12") }}
         </div>
         <div>
-          <p>定期质押十二个月</p>1000-1999EOTC赠送用户2个盲盒
-          <br />2000-2999EOTC赠送用户5个盲盒
-          <br />3000-3999EOTC赠送用户7个盲盒
-          <br />4000-4999EOTC赠送用户10个盲盒
-          <br />5000EOTC赠送用户13个盲盒
-          <br />5000EOTC以上每质押多400EOTC则加送用户1个盲盒
+          <p>{{ $t("components.secondPhase.zyzb_p13") }}</p>
+          {{ $t("components.secondPhase.zyzb_p14") }}
+          <br />{{ $t("components.secondPhase.zyzb_p15") }} <br />{{
+            $t("components.secondPhase.zyzb_p16")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p17") }} <br />{{
+            $t("components.secondPhase.zyzb_p18")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p19") }}
         </div>
         <div>
-          <p>定期质押二十四个月</p>1000-1999EOTC赠送用户3个盲盒
-          <br />2000-2999EOTC赠送用户6个盲盒
-          <br />3000-3999EOTC赠送用户9个盲盒
-          <br />4000-4999EOTC赠送用户12个盲盒
-          <br />5000EOTC赠送用户14个盲盒
-          <br />5000EOTC以上每质押多300EOTC则加送用户1个盲盒
+          <p>{{ $t("components.secondPhase.zyzb_p20") }}</p>
+          {{ $t("components.secondPhase.zyzb_p21") }}
+          <br />{{ $t("components.secondPhase.zyzb_p22") }} <br />{{
+            $t("components.secondPhase.zyzb_p23")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p24") }} <br />{{
+            $t("components.secondPhase.zyzb_p25")
+          }}
+          <br />{{ $t("components.secondPhase.zyzb_p26") }}
         </div>
       </div>
 
       <div class="footer">
-        <van-button color="#1B2945" block round @click="jump()">链上理财质押</van-button>
+        <van-button color="#1B2945" block round @click="jump()">{{
+          $t("components.secondPhase.zyzb_sub")
+        }}</van-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { TotalNumber, allOrder } from '@/utils/web3'
-import white from '@/components/Nav/white.vue'
+import { TotalNumber, allOrder } from "@/utils/web3";
+import white from "@/components/Nav/white.vue";
 //流动性挖矿收益
 export default {
   components: {
@@ -80,7 +93,7 @@ export default {
   },
   data() {
     return {
-      title: '链上质押赚币',
+      title: this.$t("components.secondPhase.zyzb_title"),
       //链上定期总量
       sum: 0,
       //利息
@@ -91,53 +104,53 @@ export default {
       people: 0,
       //推荐质押总量
       peopleNum: 0,
-    }
+    };
   },
   mounted() {
-    this.boxnum = localStorage.getItem('handselBox')
-    this.people = localStorage.getItem('stakingMan')
-    this.peopleNum = localStorage.getItem('stakingNum')
+    this.boxnum = localStorage.getItem("handselBox");
+    this.people = localStorage.getItem("stakingMan");
+    this.peopleNum = localStorage.getItem("stakingNum");
   },
   created() {
-    this.init()
+    this.init();
   },
   methods: {
     jump() {
-      window.location.href = 'https://fi.eotc.im/'
+      window.location.href = "https://fi.eotc.im/";
     },
     init() {
       TotalNumber().then((res) => {
-        this.sum = res
-        console.log(res)
-      })
+        this.sum = res;
+        console.log(res);
+      });
       allOrder().then((res) => {
-        let list = []
+        let list = [];
         for (let i of res) {
           if (i.isStop == 0) {
-            this.interest += i.reward
+            this.interest += i.reward;
           }
           if (i.amount >= 1000) {
             if (i.cycle == 6) {
-              this.calculate(i.amount, 1)
+              this.calculate(i.amount, 1);
             } else if (i.cycle == 12) {
-              this.calculate(i.amount, 2)
+              this.calculate(i.amount, 2);
             } else if (i.cycle == 24) {
-              this.calculate(i.amount, 3)
+              this.calculate(i.amount, 3);
             }
-            list.push(i)
+            list.push(i);
           }
         }
-        this.interest = this.interest.toFixed(2)
-      })
+        this.interest = this.interest.toFixed(2);
+      });
     },
     calculate(num, type) {
-      let list
+      let list;
       if (type == 1) {
-        list = [1, 3, 4, 6, 10, 500]
+        list = [1, 3, 4, 6, 10, 500];
       } else if (type == 2) {
-        list = [2, 5, 7, 10, 13, 400]
+        list = [2, 5, 7, 10, 13, 400];
       } else if (type == 3) {
-        list = [3, 6, 9, 12, 14, 300]
+        list = [3, 6, 9, 12, 14, 300];
       }
       // if (num >= 1000 && num <= 1999) {
       //   this.boxnum += list[0]
@@ -154,7 +167,7 @@ export default {
       // }
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

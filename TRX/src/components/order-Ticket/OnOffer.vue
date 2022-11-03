@@ -6,10 +6,14 @@
       :size="{ width: '35px', height: '35px' }"
       :style="{ fill: 'rgb(219,9, 9)' }"
     />
-    <van-empty class="null" v-else-if="sellDatalist.length == 0" description="暂无订单信息" />
+    <van-empty
+      class="null"
+      v-else-if="sellDatalist.length == 0"
+      :description="$t('components.orderTicket.offer')"
+    />
     <div v-else>
-      <van-tabs v-model="active"  animated swipeable background="#F3F4F5">
-        <van-tab title="总订单">
+      <van-tabs v-model="active" animated swipeable background="#F3F4F5">
+        <van-tab :title="$t('components.orderTicket.offer_zong')">
           <SellBlanketOrder
             v-for="(orderItem, i) in sellDatalist"
             :key="random(i)"
@@ -18,11 +22,11 @@
             :coinId="coinId"
           />
         </van-tab>
-        <van-tab title="待处理">
-          <SellPending :active='active' :coinType="coinType"  :coinId="coinId"></SellPending>
+        <van-tab :title="$t('components.orderTicket.offer_dai')">
+          <SellPending :active="active" :coinType="coinType" :coinId="coinId"></SellPending>
         </van-tab>
-        <van-tab title="已完成">
-          <SellAccomplish :active='active' :coinType="coinType" :coinId="coinId"></SellAccomplish>
+        <van-tab :title="$t('components.orderTicket.offer_yi')">
+          <SellAccomplish :active="active" :coinType="coinType" :coinId="coinId"></SellAccomplish>
         </van-tab>
       </van-tabs>
     </div>

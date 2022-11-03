@@ -2,7 +2,7 @@
   <div class="container">
     <white title="仲裁案动态" />
     <div class="content">
-      <ul>
+      <ul v-if="list.length">
         <li
           v-for="(item, index) in list"
           @click="
@@ -25,6 +25,11 @@
           </div>
         </li>
       </ul>
+      <van-empty
+        v-else
+        :image="require('../../assets/currency-icons/empty.png')"
+        description="暂无数据"
+      />
     </div>
   </div>
 </template>

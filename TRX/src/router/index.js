@@ -470,7 +470,6 @@ const routes = [
     name: 'exam',
     component: () => import('@/views/rightItem/arbitrator/exam'),
   },
-
   {
     // 流动性挖矿
     path: '/secondPhase/mining',
@@ -575,8 +574,8 @@ const payWhitelist = [
 const rightMenu_Whitelist = [
   // 'Withdraw',
   'arbitrator',
-  'arbitration',
-  // 'NFT',
+  // 'arbitration',
+  'NFT',
   'important-userList',
 ]
 
