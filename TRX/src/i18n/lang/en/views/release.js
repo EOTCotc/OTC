@@ -8,5 +8,5 @@ export default {
   return: "Go back and wait",
   speed: "I need to speed up",
   speed_in: "Accelerating...",
-  message: ["Payment 20 TRX to:", "After successful payment, EOTC will be released to your wallet"],
+  message: ["Payment", "to:", "After successful payment, ", " will be released to your wallet"],
 };

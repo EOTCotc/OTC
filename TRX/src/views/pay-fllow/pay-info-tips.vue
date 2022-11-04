@@ -1,50 +1,54 @@
 <template>
   <div>
     <div class="tips-info" v-if="!againAffirmInfo">
-      <h3>确认付款信息</h3>
+      <h3>{{ $t("views.fllow.tips.title") }}</h3>
       <div class="tipMainmessage">
-        平台不会自动扣款，您需要打开第三方支付平台转账给卖家
+        {{ $t("views.fllow.tips.message") }}
       </div>
       <dl>
-        <dt>交易信息：</dt>
+        <dt>{{ $t("views.fllow.tips.info") }}</dt>
         <dd>
-          <span>交易类型：</span>
-          <span class="title" v-if="curPay === 'wx'">微信支付</span>
-          <span class="title" v-else-if="curPay === 'xj'">现金交易</span>
-          <span class="title" v-else-if="curPay === 'yhk'">银行卡</span>
-          <span v-else>支付宝</span>
+          <span>{{ $t("views.fllow.tips.type") }}</span>
+          <span class="title" v-if="curPay === 'wx'">{{
+            $t("views.fllow.tips.wechat_pay")
+          }}</span>
+          <span class="title" v-else-if="curPay === 'xj'">{{
+            $t("views.fllow.tips.transaction")
+          }}</span>
+          <span class="title" v-else-if="curPay === 'yhk'">{{
+            $t("views.fllow.tips.bank_card")
+          }}</span>
+          <span v-else>{{ $t("views.fllow.tips.Alipay") }}</span>
         </dd>
         <dd>
-          <span>对方姓名：</span>
+          <span>{{ $t("views.fllow.tips.name") }}</span>
           <span>{{ name }}</span>
         </dd>
         <dd v-if="curPay === 'yhk'">
-          <span>对方收款账号：</span>
+          <span>{{ $t("views.fllow.tips.account") }}</span>
           <span class="title">
               {{account}}
           </span>
         </dd>
         <dd v-else-if="curPay === 'wx'">
-          <span>对方收款账号：</span>
+          <span>{{ $t("views.fllow.tips.account") }}</span>
           <span class="title">
               {{account_wx}}
           </span>
         </dd>
         <dd v-else-if="curPay === 'zfb'">
-          <span>对方收款账号：</span>
+          <span>{{ $t("views.fllow.tips.account") }}</span>
           <span class="title">
               {{account_zfb}}
           </span>
         </dd>
       </dl>
 
-      <van-button @click="accountPaid" size="large">我已经完成转账</van-button>
-      <van-button @click="unAccountPaid" size="large"
-        >我还未完成转账</van-button
-      >
+      <van-button @click="accountPaid" size="large">>{{$t("views.fllow.tips.finish")}}</van-button>
+      <van-button @click="unAccountPaid" size="large">{{ $t("views.fllow.tips.unfinished") }}</van-button>
     </div>
     <div class="tips-info" v-if="againAffirmInfo">
-      <h3>确认付款</h3>
+      <h3>{{ $t("views.fllow.tips.van_form[0]") }}</h3>
       <div :style="{marginBottom:'20px'}">
         <van-form class="tips-form">
           <van-field name="checkbox">
@@ -57,9 +61,9 @@
             @click="handleAffirmInfo"
             :class="{ 'error-text': ischeckbox }"
           >
-            尚未付款就点击
-            <b :style="{ color: 'red' }">【我已转账，通知卖家】</b
-            >将被视为恶意操作，冻结用户
+            {{ $t("views.fllow.tips.van_form[1]") }}
+            <b :style="{ color: 'red' }">{{ $t("views.fllow.tips.van_form[2]") }}</b
+            >{{ $t("views.fllow.tips.van_form[3]") }}
           </span>
         </van-form>
       </div>
@@ -69,9 +73,9 @@
         type="default"
         size="large"
       >
-        我已经完成转账
+        {{ $t("views.fllow.tips.van_form[4]") }}
       </van-button>
-      <van-button @click="unAccountPaid" size="large">我再想想</van-button>
+      <van-button @click="unAccountPaid" size="large">{{$t("views.fllow.tips.van_form[5]")}}</van-button>
     </div>
   </div>
 </template>
@@ -105,7 +109,7 @@ export default {
       if (this.checkbox) {
         this.$emit("go-await-seller-affirm", true);
       } else {
-        this.$toast.warning("请点击同意确认付款协议。");
+        this.$toast.warning(this.$t("views.fllow.tips.toast"));
         this.ischeckbox = true;
         setTimeout(() => {
           this.ischeckbox = false;

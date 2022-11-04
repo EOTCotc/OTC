@@ -5,13 +5,13 @@
       v-model="number"
       autofocus="autofocus"
       @blur="on_input(number)"
-      label="年化收益率"
+      :label="$t('views.tempora.label')"
     >
       <template #button>
-        <van-button size="small" type="info" @click="setValue">设置</van-button>
+        <van-button size="small" type="info" @click="setValue">{{$t("views.tempora.set") }}</van-button>
       </template>
     </van-field>
-    <van-field readonly v-model="comValue" label="日收益率" />
+    <van-field readonly v-model="comValue" :label="$t('views.tempora.day')" />
   </div>
 </template>
 

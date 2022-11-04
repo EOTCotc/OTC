@@ -1,6 +1,6 @@
 <template>
   <div class="payment-empty">
-       <img src="../../assets/tools-svg/emptyData.svg" alt="暂无数据">
+       <img src="../../assets/tools-svg/emptyData.svg" :alt="$t('views.gather.empty.not_data')">
        <span>{{title}}</span> 
   </div>
 </template>
@@ -8,11 +8,11 @@
 <script>
 export default {
   name: "payment-empty",
-  props:{
-    title:{
-      default:"暂无数据"
-    }
-  }
+  props: {
+    title: {
+      default: this.$t("views.gather.empty.not_data"),
+    },
+  },
 };
 </script>
 

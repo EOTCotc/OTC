@@ -7,13 +7,13 @@
     </header>
     <section class="water-bill-content">
       <div class="top-content" v-if="item.dsx === '0'">
-        对方待付款
-        <van-tag type="warning" size="large" v-if="!isReminders" @click="urge_payMoney">催付款</van-tag>
-        <van-tag type="primary" size="large" v-else>已催付款</van-tag>
+        {{$t('views.waterBill.seller_bill.state1')}}
+        <van-tag type="warning" size="large" v-if="!isReminders" @click="urge_payMoney">{{$t('views.waterBill.seller_bill.state2')}}</van-tag>
+        <van-tag type="primary" size="large" v-else>{{$t('views.waterBill.seller_bill.state3')}}</van-tag>
       </div>
 
       <div class="top-mid-content" v-if="item.dsx === '1'">
-        <span>对方已付款</span>
+        <span>{{$t('views.waterBill.seller_bill.state4')}}</span>
       </div>
 
       <div class="top-mid-content">
@@ -26,14 +26,20 @@
             class="cancelBtn"
             v-if="ischangecheck_rcoin"
             @click="cancelOrder"
-          >取消订单</van-button>
+          >
+            {{$t('views.waterBill.seller_bill.cancel')}}
+          </van-button>
           <van-button
             type="danger"
             v-if="ischangecheck_rcoin"
             @click="Security_throughMoney"
             size="mini"
-          >流水审查</van-button>
-          <van-button v-else type="danger" size="mini">账户审核通过</van-button>
+          >
+            {{$t('views.waterBill.seller_bill.text')}}
+          </van-button>
+          <van-button v-else type="danger" size="mini">
+            {{$t('views.waterBill.seller_bill.passed')}}
+          </van-button>
         </span>
       </div>
     </section>
@@ -43,8 +49,8 @@
         <van-icon name="cash-back-record" />
       </span>
       <span :style="{ paddingLeft: '10px' }">
-        为了防止黑钱流通、账号被封，
-        只有您对对方账户进行通过流水审查之后，对方才可看到您的收付款账号进行汇款。
+        {{$t('views.waterBill.seller_bill.tips')}}
+        {{$t('views.waterBill.seller_bill.tips2')}}
       </span>
     </section>
 
@@ -105,19 +111,21 @@
         size="small"
         native-type="submit"
         type="primary"
-      >{{ isSend ? "连线中" : "发送" }}</van-button>
+      >
+        {{ isSend ? $t('views.waterBill.index.online') : $t('views.waterBill.index.send') }}
+      </van-button>
     </van-form>
 
     <van-popup class="popup" v-model="imageShow" round position="bottom">
       <div class="popBox">
-        <p>请上传图片</p>
+        <p>{{ $t('views.waterBill.index.please')}}</p>
         <van-uploader :after-read="afterRead" v-model="fileList" multiple :max-count="9" />
         <!-- <img src="" width="100px" alt=""> -->
-        <van-button @click="updata()" size="small" type="primary">上传</van-button>
+        <van-button @click="updata()" size="small" type="primary">{{ $t('views.waterBill.index.uploading')}}</van-button>
       </div>
     </van-popup>
     <van-image-preview v-model="show" :images="images">
-      <template v-slot:index>第{{ index }}页</template>
+      <template v-slot:index>{{ $t('views.waterBill.index.ospf')}}{{ index }}{{ $t('views.waterBill.index.page')}}</template>
     </van-image-preview>
   </div>
 </template>
@@ -159,7 +167,7 @@ export default {
         {
           required: true,
           validator: this.validator,
-          message: '发送内容不能为空',
+          message: this.$t('views.waterBill.index.empty'),
         },
       ],
       megList: [],
@@ -217,13 +225,13 @@ export default {
     //图片上传
     async updata() {
       if (this.fileList.length <= 0) {
-        this.$toast.warning('请至少上传一张图片！')
+        this.$toast.warning(this.$t('views.waterBill.index.atleast'))
         return
       }
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: '加载中',
+        message: this.$t('views.waterBill.index.loading'),
       })
 
       let urlTop = 'https://api.eotcyu.club/img/'
@@ -253,7 +261,7 @@ export default {
             this.soket.send(urlTop + url)
           })
           .catch((err) => {
-            this.$toast.warning('图片上传失败，请稍后上传！')
+            this.$toast.warning(this.$t('views.waterBill.index.fail'))
             console.log(err)
           })
       }
@@ -309,12 +317,12 @@ export default {
           // this.megList.push(this.cinit_mes('buyer', result.data, true))
         }
         this.soket.onerror = function (error) {
-          console.warn('连接错误 error', error)
+          console.warn(this.$t('views.waterBill.index.err'), error)
           this.reconnect(url)
           //console.log(error.data);
         }
         this.soket.onclose = () => {
-          console.warn('连接错误，断开连接。。')
+          console.warn(this.$t('views.waterBill.index.warn'))
           this.reconnect(url)
         }
       }
@@ -357,7 +365,7 @@ export default {
         this.cinit_mes(
           'buyer',
           ` <div style="padding:10px">
-            联系方式
+            ${this.$t('views.waterBill.index.contactway')}
              <a href="tel:${this.item.amount2}">${this.item.amount2}</a>\n
               <a href="mailto:${this.item.aipay}">${this.item.aipay}</a>
           </div>
@@ -383,9 +391,9 @@ export default {
     },
     Security_throughMoney() {
       Dialog.confirm({
-        title: '是否通过对方的流水审查',
-        cancelButtonText: '我在想想',
-        confirmButtonText: '通过',
+        title: this.$t('views.waterBill.seller_bill.title'),
+        cancelButtonText: this.$t('views.waterBill.seller_bill.text2'),
+        confirmButtonText: this.$t('views.waterBill.seller_bill.text3'),
       })
         .then(async () => {
           // on confirm
@@ -420,19 +428,19 @@ export default {
             this.$nextTick(this.changecheck_rcoin)
             this.$toast.success(
               <div>
-                <p style="font-size:13px;margin:5px">流水审查已通过</p>
-                <p style="font-size:15px;margin:5px">等待买家汇款!</p>
+                <p style="font-size:13px;margin:5px">${this.$t('views.waterBill.seller_bill.text4')}</p>
+                <p style="font-size:15px;margin:5px">${this.$t('views.waterBill.seller_bill.text5')}!</p>
               </div>
             )
             this.megList.push(
               this.cinit_mes(
                 'seller',
-                `<div style="padding:10px">我已通过您的流水审查，您可以进行下一步付款！</div>`,
+                `<div style="padding:10px">${this.$t('views.waterBill.index.alreadypassed')}</div>`,
                 true,
                 Date.now()
               )
             )
-            this.soket.send(`我已通过您的流水审查，您可以进行下一步付款`)
+            this.soket.send(this.$t('views.waterBill.index.alreadypassed'))
           } catch (err) {
             console.warn(err)
           }
@@ -449,7 +457,7 @@ export default {
           {
             component: loadingToast,
             props: {
-              title: ' 正在取消订单。。。',
+              title: this.$t('views.waterBill.index.cancelorder'),
             },
           },
           {
@@ -459,9 +467,8 @@ export default {
         )
         this.$dialog
           .confirm({
-            title: '取消订单',
-            message:
-              "<span class='activeInfo'>恶意取消订单会被 【限制交易】</span> <br />确定取消订单吗？",
+            title: this.$t('views.waterBill.index.canorder'),
+            message: this.$t('views.waterBill.index.message'),
           })
           .then(async () => {
             const { data } = await cancel_order({
@@ -470,7 +477,7 @@ export default {
               ads: this.item.smes.trim(),
             })
             if (data.State === '3') {
-              this.$toast.error('订单取消成功')
+              this.$toast.error(this.$t('views.waterBill.index.cancleerr'))
             }
             this.$router.back()
           })
@@ -495,21 +502,21 @@ export default {
         })
         this.$toast.success(
           <div>
-            <p style="font-size:13px;margin:5px">已发送邮件至对方邮箱！</p>
+            <p style="font-size:13px;margin:5px">${this.$t('views.waterBill.index.sendeamil')}</p>
           </div>
         )
         this.isReminders = true
         this.megList.push(
           this.cinit_mes(
             'seller',
-            `<div style="padding:10px">老板您好，请尽快完成订单支付！</div>`,
+            `<div style="padding:10px">${this.$t('views.waterBill.seller_bill.payment')}</div>`,
             true
           )
         )
-        this.soket.send('老板您好，请尽快完成订单支付！')
+        this.soket.send(this.$t('views.waterBill.seller_bill.payment'))
       } catch (err) {
         this.isReminders = true
-        this.$toast.error('请不要频繁催促对方！！！')
+        this.$toast.error(this.$t('views.waterBill.index.urge'))
       }
     },
     validator(value) {
@@ -566,7 +573,7 @@ export default {
             .then(() => {
               console.log('newDataList', newDataList)
               this.megList = []
-              return '首次刷新数据'
+              return this.$t('views.waterBill.index.first')
             })
             .then(() => {
               for (let i of newDataList) {

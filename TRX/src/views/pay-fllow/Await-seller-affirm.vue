@@ -2,17 +2,17 @@
   <div class="order-pay-container">
     <aside></aside>
     <header class="header">
-      <h4 class="title">等待卖家确认收款</h4>
+      <h4 class="title">{{ $t("views.fllow.affirm.title") }}</h4>
       <div class="pay-timeDown">
         <div class="pay-text">
-          <span>预计</span>
+          <span>{{ $t("views.fllow.affirm.pay_text") }}</span>
           <van-count-down
             class="pay-time"
             ref="countDown"
             :time="time"
             format="HH:mm:sss"
           />
-          <span>内收到{{userIconType}}</span>
+          <span>{{ $t("views.fllow.affirm.away") }}{{userIconType}}</span>
         </div>
       </div>
     </header>
@@ -34,51 +34,55 @@
           :src="require(`@/assets/currency-icons/${userIconType.toLowerCase()}.png`)"
           alt=""
         />
-        <span>购买 {{userIconType}}</span>
+        <span>{{ $t("views.fllow.affirm.buy") }} {{userIconType}}</span>
       </div>
       <div class="top-main">
         <ul>
           <li>
-            <span>订单编号</span>
+            <span>{{ $t("views.fllow.affirm.number") }}</span>
             <span>{{ item.id }}({{ odid }})</span>
           </li>
           <li>
-            <span>单价</span>
-            <span>￥{{item.cny}}</span>
+            <span>{{ $t("views.fllow.affirm.price") }}</span>
+            <span>￥{{ item.cny }}</span>
           </li>
           <li>
-            <span>数量</span>
-            <span>{{ num }} {{userIconType}}</span>
+            <span>{{ $t("views.fllow.affirm.count") }}</span>
+            <span>{{ num }} USDT</span>
           </li>
           <li>
-            <span>总金额</span>
-            <span class="importan-tTsxt"
-              >￥{{ ThousandSeparator(money) }}</span
+            <span>{{ $t("views.fllow.affirm.total") }}</span>
+            <span class="importan-tTsxt">￥{{ ThousandSeparator(money) }}</span>
+          </li>
+          <li>
+            <span>{{ $t("views.fllow.affirm.service") }}</span>
+            <span>{{ servicefee }} USDT</span>
+          </li>
+          <li :style="{ display: 'flex', alignItems: 'center' }">
+            <span>{{ $t("views.fllow.affirm.payment") }}</span>
+            <span
+              v-if="cuePayType === 'wx'"
+              :style="{ display: 'flex', alignItems: 'center' }"
             >
-          </li>
-          <li>
-            <span>手续费</span>
-            <span>{{ servicefee }} {{userIconType}}</span>
-          </li>
-          <li :style="{display:'flex',alignItems:'center'}">
-            <span>我的付款方式</span>
-            <span v-if="cuePayType === 'wx'" :style="{display:'flex',alignItems:'center'}">
               <i
                 :class="['iconfont', `icon-wx`, `pay-iconwx`, `pay-icon3`]"
               ></i>
-              &nbsp;&nbsp;微信支付
+              &nbsp;&nbsp;{{ $t("views.fllow.affirm.wechat_pay") }}
             </span>
-            <span v-if="cuePayType === 'zfb'" :style="{display:'flex',alignItems:'center'}">
+            <span
+              v-if="cuePayType === 'zfb'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
               <i
                 :class="['iconfont', `icon-zfb`, `pay-iconzfb1`, `pay-iconzfb`]"
               ></i>
-              &nbsp;&nbsp;支付宝
+              &nbsp;&nbsp;{{ $t("views.fllow.affirm.Alipay") }}
             </span>
             <span v-if="cuePayType === 'yhk'" :style="{display:'flex',alignItems:'center'}">
               <i
                 :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"
               ></i>
-              &nbsp;&nbsp;银行卡
+              &nbsp;&nbsp;{{ $t("views.fllow.affirm.bank_card") }}
             </span>
             <span v-if="cuePayType === 'xj'" :style="{display:'flex',alignItems:'center'}">
               <img
@@ -87,11 +91,11 @@
                 src="@/assets/currency-icons/moeny-c.png"
                 alt=""
               />
-              &nbsp;&nbsp;现金交易
+              &nbsp;&nbsp;{{ $t("views.fllow.affirm.transaction") }}
             </span>
           </li>
-          <li v-if="cuePayType !== 'xj'"> 
-            <span>商家收款账号</span>
+          <li v-if="cuePayType !== 'xj'">
+            <span>{{ $t("views.fllow.affirm.merchant") }}</span>
              <span v-if="cuePayType === 'wx'" :style="{display:'flex',alignItems:'center'}">
               &nbsp;&nbsp;{{item.account_wx}}
             </span>
@@ -104,14 +108,14 @@
             </span>
           </li>
           <li>
-            <span>卖家姓名</span>
+            <span>{{ $t("views.fllow.affirm.seller") }}</span>
             <span>
               {{ MerchanInfo.sname }}
               <img class="info-rz" src="@/assets/currency-icons/rz.png" alt=""
             /></span>
           </li>
           <li>
-            <span>商家钱包地址</span>
+            <span>{{ $t("views.fllow.affirm.wallet") }}</span>
             <span>
               {{briefMyAddress(MerchanInfo.bank)}}
             </span>
@@ -123,10 +127,10 @@
 
     <!-- 底部取消订单 or 下一波 button -->
     <footer class="footer">
-      <div class='cancel'>
-          <van-button @click='to_orderList'>
-              查看订单
-          </van-button>
+      <div class="cancel">
+        <van-button @click="to_orderList">
+          {{ $t("views.fllow.affirm.look") }}
+        </van-button>
       </div>
       <div class="next">
         <van-button
@@ -135,7 +139,8 @@
           type="default"
           @click="payNextStep"
         >
-          <span>申诉</span>&nbsp;
+          <span> {{ $t("views.fllow.affirm.appeal") }}</span
+          >&nbsp;
           <van-count-down
             ref="countDown"
             v-if="isDisabled"
@@ -184,7 +189,7 @@ export default {
         })
     },
     payNextStep() {
-      this.$toast.warning("申诉功能暂未开放，请耐心等待")
+      this.$toast.warning(this.$t("views.fllow.affirm.toast"));
     },
     finishReset() {
       this.isDisabled = false;

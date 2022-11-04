@@ -10,9 +10,11 @@
     </div>
 
     <header class="header">
-      <h4 class="title">买家已付款</h4>
+      <h4 class="title">{{ $t("views.sell_fllow.details.title") }}</h4>
       <div class="pay-timeDown">
-        <div class="pay-text">买家已标记为转账成功，请确认收款</div>
+        <div class="pay-text">
+          {{ $t("views.sell_fllow.details.pay_text") }}
+        </div>
       </div>
     </header>
 
@@ -33,19 +35,19 @@
           :src="require(`@/assets/currency-icons/${kind.toLowerCase()}.png`)"
           alt
         />
-        <span>出售 {{kind}}</span>
+        <span>{{ $t("views.sell_fllow.details.sell") }} {{kind}}</span>
       </div>
       <div class="top-main">
         <ul>
           <li @click="showPayInfo(cacheData.item.id)">
-            <span>交易主链</span>
+            <span>{{ $t("views.sell_fllow.details.backbone") }}</span>
             <span>
               {{ netType }}
               <van-icon name="arrow" />
             </span>
           </li>
-          <li v-show="isShowPayInfo" @click="copyContent(myaddress, '钱包地址 已复制')">
-            <span>交易钱包</span>
+          <li v-show="isShowPayInfo" @click="copyContent(myaddress, $t('views.sell_fllow.details.copy'))">
+            <span>{{ $t("views.sell_fllow.details.wallet") }}</span>
             <span>
               {{ briefMyAddress(myaddress) }}
               <i
@@ -59,11 +61,11 @@
             @click="
               copyContent(
                 cacheData.MerchanInfo.bank.trim(),
-                '商家钱包地址 已复制'
+                $t('views.sell_fllow.details.copy_merchant')
               )
             "
           >
-            <span>商家钱包</span>
+            <span>{{ $t("views.sell_fllow.details.merchant") }}</span>
             <span>
               {{ briefMyAddress(cacheData.MerchanInfo.bank.trim()) }}
               <i
@@ -74,7 +76,7 @@
           </li>
           <li v-show="isShowPayInfo" @click="copyContent(contractAddress, '合约地址 已复制')">
             <!-- 新增合约地址 -->
-            <span>合约地址</span>
+            <span>{{ $t("views.sell_fllow.details.contract") }}</span>
             <span>
               {{ briefMyAddress(contractAddress) }}
               <i
@@ -84,21 +86,21 @@
             </span>
           </li>
           <li>
-            <span>单价</span>
+            <span>{{ $t("views.sell_fllow.details.price") }}</span>
             <span>￥{{ cacheData.item.cny }}</span>
           </li>
           <li>
-            <span>数量</span>
+            <span>{{ $t("views.sell_fllow.details.count") }}</span>
             <span>{{ cacheData.num }} {{kind}}</span>
           </li>
           <li>
-            <span>总金额</span>
+            <span>{{ $t("views.sell_fllow.details.total") }}</span>
             <span
               class="importan-tTsxt"
               @click="
                 copyContent(
                   ThousandSeparator(cacheData.totalMoney),
-                  '总金额 复制成功'
+                  $t('views.sell_fllow.details.total_copy')
                 )
               "
             >
@@ -110,19 +112,19 @@
             </span>
           </li>
           <li>
-            <span>手续费</span>
+            <span>{{ $t("views.sell_fllow.details.proceeds") }}</span>
             <span>{{ cacheData.item.service_charge }} {{kind}}</span>
           </li>
           <li v-if="cacheData.item.cash === '-1'">
-            <span>收款方式</span>
+            <span>{{ $t("views.sell_fllow.details.proceeds") }}</span>
             <span :style="{ display: 'flex', alignItems: 'center' }">
               <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;
-              <span>现金交易</span>
+              <span>{{ $t("views.sell_fllow.details.transaction") }}</span>
             </span>
           </li>
           <li class="payInfo" v-else-if="cacheData.item.cash !== '-1'">
-            <span>收款方式</span>
+            <span>{{ $t("views.sell_fllow.details.proceeds") }}</span>
             <span :style="{ display: 'flex', position: 'relative' }">
               <payIcons
                 :style="{ marginRight: '10px' }"
@@ -134,7 +136,7 @@
           </li>
 
           <li v-if="cacheData.item.cash !== '-1'">
-            <span>收款账号</span>
+            <span>{{ $t("views.sell_fllow.details.payer") }}</span>
             <span v-if="cacheData.curpaymentterm === 'yhk'">
               {{ cacheData.sellerMthods.mybank.split("&")[1] }}
               {{ cacheData.sellerMthods.mybank.split("&")[0] }}
@@ -145,11 +147,11 @@
             <span
               v-else-if="cacheData.curpaymentterm === 'wx'"
             >{{ cacheData.sellerMthods.mybmywechatnk }}</span>
-            <span v-else>现金交易</span>
+            <span v-else>{{ $t("views.sell_fllow.details.transaction") }}</span>
           </li>
           <li class="van-divider"></li>
           <li>
-            <span>卖家昵称</span>
+            <span> {{ $t("views.sell_fllow.details.name") }}</span>
             <span>
               {{ cacheData.item.sname }}
               <img
@@ -160,8 +162,8 @@
             </span>
           </li>
           <li>
-            <span>订单编号</span>
-            <span @click="copyContent(cacheData.item.id, '订单编号 已复制')">
+            <span>{{ $t("views.sell_fllow.details.number") }}</span>
+            <span @click="copyContent(cacheData.item.id, $t('views.sell_fllow.details.copy_order'))">
               {{ cacheData.item.id }}
               （{{ cacheData.MerchanInfo.odid }}）
               <i
@@ -171,14 +173,14 @@
             </span>
           </li>
           <li>
-            <span>下单时间</span>
+            <span> {{ $t("views.sell_fllow.details.placeTime") }}</span>
             <span>{{ cacheData.item.order_time | transformTime_Zh }}</span>
           </li>
         </ul>
       </div>
     </main>
 
-    <article class="Riskwarning">买家转账时备注或您收到非实名汇款，请联系卖家退回或发起仲裁</article>
+    <article class="Riskwarning">{{ $t("views.sell_fllow.details.Riskwarning") }}</article>
 
     <!-- 底部 该收款按钮，默认禁用状态，买家点击已付款后，会变色，可以点击确认，
     买家没点付款前灰色，禁用状态不能点击-->
@@ -186,11 +188,11 @@
       <div :class="{ next: !isDisabled, 'default-pd': isDisabled }">
         <van-button
           :disabled="isDisabled"
-          @click="$toast.warning('仲裁功能暂未开放，请等待！')"
+          @click="$toast.warning(this.$t('views.sell_fllow.details.toast[0]'))"
           class="appeal"
           type="default"
         >
-          <span>仲裁</span>&nbsp;
+          <span>{{ $t("views.sell_fllow.details.appeal") }}</span>&nbsp;
           <van-count-down
             ref="countDown"
             v-if="isDisabled"
@@ -201,7 +203,7 @@
         </van-button>
       </div>
       <div class="cancel">
-        <van-button @click="PaymentInfoAffirm">我已收到付款</van-button>
+        <van-button @click="PaymentInfoAffirm">{{ $t("views.sell_fllow.details.paymentInfo") }}</van-button>
       </div>
     </footer>
 
@@ -216,7 +218,7 @@
       :style="{ height: '500px' }"
     >
       <div class="PaymentInfoAffirm">
-        <h6 class="PaymentInfoAffirm-info">确认收款</h6>
+        <h6 class="PaymentInfoAffirm-info">{{ $t("views.sell_fllow.details.sure") }}</h6>
         <van-divider
           :style="{
             color: '#1989fa',
@@ -225,15 +227,15 @@
           }"
         ></van-divider>
         <div class="notice-bar">
-          <van-notice-bar wrapable :scrollable="false" text="请去第三方平台仔细核对以下收款信息，点击确认收款，合约将放币给对方。" />
+          <van-notice-bar wrapable :scrollable="false" :text="$t('views.sell_fllow.details.notice_text')" />
         </div>
         <ul>
           <li>
-            <div>1.打开第三方收款账号</div>
+            <div>{{ $t("views.sell_fllow.details.thirdparty") }}</div>
             <span :style="{ display: 'flex', height: '30px ' }" v-if="cacheData.item.cash === '-1'">
               <span :style="{ display: 'flex', alignItems: 'center' }">
                 <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
-                <span>现金交易</span>
+                <span>{{ $t("views.sell_fllow.details.transaction") }}</span>
               </span>
             </span>
             <span :style="{ display: 'flex' }" v-else>
@@ -246,14 +248,14 @@
             </span>
           </li>
           <li>
-            <div>2.确认到账金额</div>
+            <div>{{ $t("views.sell_fllow.details.account_of") }}</div>
             <span>
               <span
                 class="importan-tTsxt"
                 @click="
                   copyContent(
                     ThousandSeparator(cacheData.totalMoney),
-                    '到账金额 复制成功'
+                    $t('views.sell_fllow.details.money_copy')
                   )
                 "
               >
@@ -266,34 +268,34 @@
             </span>
           </li>
 
-          <li v-if="get_other_name() === '现金交易'">
-            <div>3.我确认付款人信息</div>
+          <li v-if="get_other_name() === $t('views.sell_fllow.details.transaction')">
+            <div>{{ $t("views.sell_fllow.details.three") }}</div>
             <span
               class="payFullinfo"
               :style="{ paddingTop: '20px !important' }"
               v-if="cacheData.item.cash === '1'"
-            >付款方式：现金交易</span>
+            >{{ $t("views.sell_fllow.details.payment_way") }}</span>
           </li>
 
           <li v-else>
-            <div>3.我确认付款人信息</div>
+            <div>{{ $t("views.sell_fllow.details.three") }}</div>
             <span
               class="payFullinfo"
               :style="{ paddingTop: '20px !important', color: 'red' }"
-            >付款人姓名：{{ get_other_name() }}</span>
+            >{{ $t("views.sell_fllow.details.payment_name") }}：{{ get_other_name() }}</span>
             <span class="payFullinfo" v-if="cacheData.item.cash !== '-1'">
-              付款方式：
+              {{ $t("views.sell_fllow.details.proceeds") }}：
               {{ cacheData.MerchanInfo.payment_account[0] }}
             </span>
             <span class="payFullinfo" v-if="cacheData.item.cash !== '-1'">
-              付款账号：
+              {{ $t("views.sell_fllow.details.payer") }}：
               {{ cacheData.MerchanInfo.payment_account[1] }}
             </span>
           </li>
         </ul>
 
         <van-form>
-          <van-field name="infoIsOk" label="我已确认【收到买家付款】" @click="changeinfoIsOk">
+          <van-field name="infoIsOk" :label="$t('views.sell_fllow.details.label')" @click="changeinfoIsOk">
             <template #input>
               <van-checkbox v-model="infoIsOk" class="info-ok" shape="square" />
             </template>
@@ -302,8 +304,8 @@
 
         <footer class="footer">
           <div>
-            <van-button @click="cencel">暂未收到</van-button>
-            <van-button :disabled="!infoIsOk" @click="releaseCurrency">确认收款</van-button>
+            <van-button @click="cencel">{{ $t("views.sell_fllow.details.cencel_foot") }}</van-button>
+            <van-button :disabled="!infoIsOk" @click="releaseCurrency">{{ $t("views.sell_fllow.details.sure") }}</van-button>
           </div>
         </footer>
       </div>
@@ -316,8 +318,8 @@
       :showCancelButton="false"
       :showConfirmButton="false"
     >
-      <van-loading size="36px" text-color="#000" vertical>放币中</van-loading>
-      <div class="ld-text">正在放币给对方，请稍等...</div>
+      <van-loading size="36px" text-color="#000" vertical>{{ $t("views.sell_fllow.details.send") }}</van-loading>
+      <div class="ld-text">{{ $t("views.sell_fllow.details.moment") }}</div>
     </van-dialog>
   </div>
 </template>
@@ -441,7 +443,7 @@ export default {
           this.cacheData.MerchanInfo.bank = data.State?.trim()
         } catch (err) {
           console.warn(err)
-          this.cacheData.MerchanInfo.bank = '地址&获取&错误'
+          this.cacheData.MerchanInfo.bank = this.$t("views.sell_fllow.details.network");
         }
       }
       this.isShowPayInfo = !this.isShowPayInfo
@@ -461,7 +463,7 @@ export default {
           {
             component: loadingToast,
             props: {
-              title: `我已收到买家付款：<br/><span style="color:red">￥ ${this.cacheData.totalMoney}</span> CNY`,
+              title: `${$t("views.sell_fllow.details.toast[1]")}：<br/><span style="color:red">￥ ${this.cacheData.totalMoney}</span> CNY`,
             },
           },
           {
@@ -493,7 +495,7 @@ export default {
         let bsnum = parseInt(localStorage.getItem('bsnum'))
         localStorage.setItem('bsnum', --bsnum)
         this.$toast.clear()
-        this.$toast.success(`${this.kind} 释放完成，成功出售！`, {
+        this.$toast.success(`${this.kind} ${$t("views.sell_fllow.details.toast[2]")}`, {
           timeout: false,
         })
         this.$router.replace({
@@ -510,8 +512,8 @@ export default {
         })
         this.$toast.error(
           <div>
-            <p style="font-size:14px">区块繁忙。。释放过程出现错误！</p>
-            <p style="font-size:14px">USDT 释放请稍后重试！</p>
+            <p style="font-size:14px">{$t("views.sell_fllow.details.toast[3]")}</p>
+            <p style="font-size:14px">USDT {$t("views.sell_fllow.details.toast[4]")}</p>
           </div>,
           {
             timeout: false,
@@ -539,7 +541,7 @@ export default {
     get_other_name() {
       const item = this.cacheData.item
       if (item.aipay.includes('现金')) {
-        return '现金交易'
+        return this.$t("views.sell_fllow.details.transaction")
       } else if (item.aipay?.split('&')[0]) {
         return item.aipay?.split('&')[0] ?? ['', '']
       } else if (item.bank?.split('&')[0]) {

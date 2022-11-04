@@ -9,18 +9,20 @@
           {{ MerchanInfo.sname }}
         </span>
       </div>
-      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">申诉</p>
+      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">{{ $t("views.sell_fllow.waterbill.appeal") }}</p>
     </header>
     <section class="water-bill-content">
       <div class="top-content">
-        待收款&nbsp;
+        {{ $t("views.sell_fllow.waterbill.paccount") }}&nbsp;
         <van-tag
           type="warning"
           size="large"
           v-if="!isReminders && +item.dsx === 1"
           @click="urge_payMoney"
-        >催付款</van-tag>
-        <van-tag type="primary" v-if="isReminders" size="large">已催付款</van-tag>
+        >
+          {{ $t("views.sell_fllow.waterbill.press") }}
+        </van-tag>
+        <van-tag type="primary" v-if="isReminders" size="large">{{ $t("views.sell_fllow.waterbill.already") }}</van-tag>
       </div>
       <div class="top-mid-content">
         <span class="price">
@@ -37,8 +39,7 @@
         <van-icon name="warn-o" />
       </span>
       <span :style="{ marginLeft: '15px' }">
-        收款请认准订单详情中展示的买家收款账号，或买家分享
-        的付款账号卡片。其余买家私聊发送的账号信息一律不要接受。
+        {{ $t("views.sell_fllow.waterbill.water_text") }}
       </span>
     </section>
 
@@ -105,19 +106,19 @@
         size="small"
         native-type="submit"
         type="primary"
-      >{{ isSend ? "连线中" : "发送" }}</van-button>
+      >{{ isSend ? $t("views.sell_fllow.waterbill.isSend[0]") : $t("views.sell_fllow.waterbill.isSend[1]") }}</van-button>
     </van-form>
 
     <van-popup class="popup" v-model="imageShow" round position="bottom">
       <div class="popBox">
-        <p>请上传图片</p>
+        <p>{{ $t("views.sell_fllow.waterbill.uploadImg") }}</p>
         <van-uploader :after-read="afterRead" v-model="fileList" multiple :max-count="9" />
         <!-- <img src="" width="100px" alt=""> -->
         <van-button @click="updata()" size="small" type="primary">上传</van-button>
       </div>
     </van-popup>
     <van-image-preview v-model="show" :images="images">
-      <template v-slot:index>第{{ index }}页</template>
+      <template v-slot:index>{{ $t("views.sell_fllow.waterbill.word") }}{{ index }}{{ $t("views.sell_fllow.waterbill.page") }}</template>
     </van-image-preview>
   </div>
 </template>
@@ -151,7 +152,7 @@ export default {
         {
           required: true,
           validator: this.validator,
-          message: '发送内容不能为空',
+          message: this.$t("views.sell_fllow.waterbill.message[0]"),
         },
       ],
       megList: [],
@@ -211,13 +212,13 @@ export default {
     //图片上传
     async updata() {
       if (this.fileList.length <= 0) {
-        this.$toast.warning('请至少上传一张图片！')
+        this.$toast.warning(this.$t("views.sell_fllow.waterbill.toast[0]"))
         return
       }
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: '加载中',
+        message: this.$t("views.sell_fllow.waterbill.message[1]"),
       })
 
       let urlTop = 'https://api.eotcyu.club/img/'
@@ -247,7 +248,7 @@ export default {
             this.soket.send(urlTop + url)
           })
           .catch((err) => {
-            this.$toast.warning('图片上传失败，请稍后上传！')
+            this.$toast.warning(this.$t("views.sell_fllow.waterbill.toast[1]"))
             console.log(err)
           })
       }
@@ -277,7 +278,7 @@ export default {
         })
         this.$toast.success(
           <div>
-            <p style="font-size:13px;margin:5px">已发送邮件至对方邮箱！</p>
+            <p style="font-size:13px;margin:5px">{this.$t("views.sell_fllow.waterbill.toast[2]")}</p>
           </div>
         )
         this.isReminders = true
@@ -285,15 +286,15 @@ export default {
         this.megList.push(
           this.cinit_mes(
             'buyer',
-            '<div style="padding:10px;">我转币至合约，请尽快完成订单支付！</div>',
+            `<div style="padding:10px;">${this.$t("views.sell_fllow.waterbill.cinit_mes")}</div>`,
             true
           )
         )
-        this.soket.send('我转币至合约，请尽快完成订单支付！')
+        this.soket.send(this.$t("views.sell_fllow.waterbill.cinit_mes"))
         this.messageScrollIntoView()
       } catch (err) {
         this.isReminders = true
-        this.$toast.error('请不要频繁催促对方！！！')
+        this.$toast.error(this.$t("views.sell_fllow.waterbill.toast[3]"))
       }
     },
     messageScrollIntoView() {
@@ -395,7 +396,7 @@ export default {
         this.cinit_mes(
           'seller',
           `
-           <div style="padding:10px"> 联系方式
+           <div style="padding:10px"> ${this.$t("views.sell_fllow.waterbill.lian")}
              <a href="tel:${this.MerchanInfo.wechat}">${this.MerchanInfo.wechat}</a>\n
               <a href="mailto:${this.item.mail}">${this.item.mail}</a></div>
          `,
@@ -452,7 +453,7 @@ export default {
           Promise.resolve()
             .then(() => {
               this.megList = []
-              return '首次刷新数据'
+              return this.$t("views.sell_fllow.waterbill.first")
             })
             .then(() => {
               for (let i of newDataList) {

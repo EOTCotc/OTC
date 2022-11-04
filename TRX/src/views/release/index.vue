@@ -4,32 +4,34 @@
     <div class="top">
       <div v-if="data.num != 0">
         <img width="240" src="@/static/image/release.gif" alt="" />
-        <p>等待释放中…</p>
+        <p>{{ $t("views.release.await") }}</p>
       </div>
       <div v-else>
         <img width="240" src="@/static/image/release.png" alt="" />
-        <p>暂无可释放EOTC</p>
+        <p>{{ $t("views.release.renewable") }}EOTC</p>
       </div>
     </div>
     <div class="content">
       <div class="text">
-        <p>释放数量: {{ data.num }} EOTC</p>
-        <p>排队释放序号: {{ data.ads }}</p>
-        <p>点击我要加速支付GAS加速释放</p>
+        <p>{{ $t("views.release.num") }} {{ data.num }} EOTC</p>
+        <p>{{ $t("views.release.serial") }} {{ data.ads }}</p>
+        <p>{{ $t("views.release.expedite") }}</p>
       </div>
       <div class="footer">
-        <van-button color="#1B2945" round plain @click="$router.back()"
-          >返回继续等待</van-button
-        >
+        <van-button color="#1B2945" round plain @click="$router.back()">{{
+          $t("views.release.return")
+        }}</van-button>
         <van-button
           color="#1B2945"
           v-if="data.iskt == 1"
           round
           :disabled="data.num == 0 ? true : false"
           @click="expedite()"
-          >我要加速</van-button
+          >{{ $t("views.release.speed") }}</van-button
         >
-        <van-button color="#1B2945" disabled v-else round>加速中...</van-button>
+        <van-button color="#1B2945" disabled v-else round>{{
+          $t("views.release.speed_in")
+        }}</van-button>
       </div>
     </div>
   </div>
@@ -46,7 +48,7 @@ export default {
   },
   data() {
     return {
-      title: "释放EOTC",
+      title: `${this.$t("views.release.title")}EOTC`,
       data: "",
       text: "",
     };
@@ -73,8 +75,7 @@ export default {
     //加速事件
     expedite() {
       Dialog.alert({
-        message:
-          "支付20 TRX至：\nTHNYKGqFBcs3V6WrEr1Qq4LCV8mvKuK6Hh\n支付成功后，将加速释放EOTC至您的钱包",
+        message: `${this.$t("views.release.message[0]")}20 TRX${this.$t("views.release.message[1]")}：\nTHNYKGqFBcs3V6WrEr1Qq4LCV8mvKuK6Hh\n${this.$t("views.release.message[2]")}EOTC${this.$t("views.release.message[3]")}`,
         width: "360px",
         confirmButtonColor: "#237FF8",
         closeOnClickOverlay: true,

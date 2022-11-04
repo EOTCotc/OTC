@@ -4,7 +4,7 @@
     <header class="header" v-if="order_type(+order_item.id)">
       <div class="header-top-left"  >
         <van-tag mark type="primary">
-        <span>出售</span>
+          <span>{{ $t("views.gather.comOrder.sell") }}</span>
         </van-tag>
         &nbsp;&nbsp;
         <span class="header-top-left-test">{{kind}}</span>
@@ -13,23 +13,23 @@
       <p class="header-top">
         <span class="header-topRight"  @click='Contact_buyer(order_item)'>
           <van-icon name="guide-o" :style="{ fontSize: '20px' }" />
-          联系买家
+          {{ $t("views.gather.comOrder.buyer") }}
         </span>
       </p>
     </header>
     <header class="header" v-else>
       <div class="header-top-left"  >
         <van-tag mark type="warning">
-        <span>收购</span>
+          <span>{{ $t("views.gather.comOrder.purchase") }}</span>
         </van-tag>
         &nbsp;&nbsp;
         <span class="header-top-left-test">{{kind}}</span>
         &nbsp;&nbsp;
       </div>
       <p class="header-top">
-        <span class="header-topRight" @click='Contact_seller(order_item)'>
-          <van-icon name="guide-o" :style="{ fontSize: '20px' }"  />
-          联系卖家
+        <span class="header-topRight" @click="Contact_seller(order_item)">
+          <van-icon name="guide-o" :style="{ fontSize: '20px' }" />
+          {{ $t("views.gather.comOrder.seller") }}
         </span>
       </p>
     </header>
@@ -40,36 +40,36 @@
             <span
               :style="{ color: '#000' }"
               @click.stop.self="
-                handle_showPhone(order_item.id, '订单编号 已复制')
+                handle_showPhone(order_item.id, $t('views.gather.comOrder.copy'))
               "
-              >订单编号:{{ order_item.id }}
+              >{{ $t("views.gather.comOrder.number") }}:{{ order_item.id }}
             </span>
-            <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
-            <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} {{kind}}</span>
+            <span :style="{ color: '#000' }">{{ $t("views.gather.comOrder.price") }}:{{ order_item.cny }}</span>
+            <span>{{ $t("views.gather.comOrder.count") }}:{{ Number(order_item.num).toFixed(2) }}</span>
+            <span>{{ $t("views.gather.comOrder.service_charge") }}:{{ order_item.amount2 }} {{kind}}</span>
           </p>
           <p>
             <span> </span>
             <span></span>
             <span class="total_price">{{ order_item.amount1 }} CNY</span>
-            <span>总金额</span>
+            <span> {{ $t("views.gather.comOrder.total") }}</span>
           </p>
         </li>
 
         <li class="showFullInfo" v-if="!isShowFullInfo">
           <span></span>
           <span class="showFullInfo-btn" @click.stop="showFullInfo">
-            展示完整信息
+            {{ $t("views.gather.comOrder.show") }}
             <van-icon name="arrow-down" />
           </span>
         </li>
 
         <li v-if="isShowFullInfo">
-          <span>商家姓名</span>
+          <span> {{ $t("views.gather.comOrder.name") }}</span>
           <span>{{ order_item.mes }}</span>
         </li>
         <li v-if="isShowFullInfo" class="lx-fs">
-          <span>联系方式</span>
+          <span>{{ $t("views.gather.comOrder.way") }}</span>
           <span class="lx-tel">
             <b v-if="!isShowPhone" class="mask">{{ order_item.wechat }}</b>
             <a v-else :href="'tel:' + order_item.wechat">{{
@@ -77,7 +77,7 @@
             }}</a>
             <van-icon
               @click.stop.self="
-                handle_showPhone(order_item.wechat, '电话号码 复制成功')
+                handle_showPhone(order_item.wechat, $t('views.gather.comOrder.phone'))
               "
               name="eye-o"
               class="eye-o"
@@ -183,7 +183,7 @@ export default {
       this.isShowFullInfo = true;
     },
     handle_showPhone(message, tips) {
-      if (tips.includes("电话号码")) {
+      if (tips.includes(this.$t("views.gather.comOrder.plate"))) {
         this.isShowPhone = !this.isShowPhone;
       }
       this.$toast.clear();
@@ -194,7 +194,7 @@ export default {
           });
         },
         (e) => {
-          this.$toast.error("复制失败，请稍后重试");
+          this.$toast.error(this.$t("views.gather.comOrder.toast"));
         }
       );
     },
