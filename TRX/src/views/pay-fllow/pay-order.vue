@@ -262,7 +262,7 @@ export default {
       )
       const rcoin = this.cacheData.payItem.rcoin
       if (!rcoin || rcoin === '-1') {
-        this.$toast.info(this.$t("views.fllow.order.toast[0]", {
+        this.$toast.info(this.$t("views.fllow.order.toast[0]"), {
           timeout: false,
         })
       } else {
@@ -406,12 +406,12 @@ export default {
         this.$toast.clear()
         //console.log(data);
         if (data.State === '1') {
-          this.$toast.error(oid + '  ' + this.$t("views.fllow.order.toast[7]")
+          this.$toast.error(oid + '  ' + this.$t("views.fllow.order.toast[7]"))
           this.$router.replace({
             name: 'CurrencyTrading',
           })
         } else {
-          this.$toast.warning(oid + '  ' + this.$t("views.fllow.order.toast[8]")
+          this.$toast.warning(oid + '  ' + this.$t("views.fllow.order.toast[8]"))
           this.$router.replace({
             name: 'CurrencyTrading',
           })

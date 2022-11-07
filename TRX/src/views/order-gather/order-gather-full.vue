@@ -19,7 +19,7 @@
         <van-tab :title="$t('views.gather.full.finished')">
           <OrderCompleted ref="Completed" :id="option1[value1].id"></OrderCompleted>
         </van-tab>
-        <van-tab :title="$t('views.gather.full.other)">
+        <van-tab :title="$t('views.gather.full.other')">
           <OrderCanceled ref="Canceled" :id="option1[value1].id" ></OrderCanceled>
         </van-tab>
         <van-tab disabled>
