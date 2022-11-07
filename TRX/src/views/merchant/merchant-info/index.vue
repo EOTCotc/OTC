@@ -1,7 +1,7 @@
 <template>
   <div class="merchant-info-container">
     <van-nav-bar
-      title="商家主页"
+      :title="$t('views.merchant.merchant.title')"
       left-arrow
       @click-left="$router.back()"
       @click-right="to_blacklist"
@@ -19,7 +19,7 @@
         <template>
           <div class="merchant-info1">{{ sell_Info.sname }}</div>
           <div class="merchant-info2">
-            最近上线时间 &nbsp;&nbsp;
+            {{ $t("views.merchant.merchant.recently") }} &nbsp;&nbsp;
             {{ sell_Info.updateDate | transformTime_MDMS }}
           </div>
         </template>
@@ -32,7 +32,7 @@
             size="small"
             @click="Attention"
           >
-            关注TA
+            {{ $t("views.merchant.merchant.attention") }}
           </van-button>
           <van-button
             v-else
@@ -41,19 +41,23 @@
             size="small"
             @click="cancel_Attention"
           >
-            已关注
+            {{ $t("views.merchant.merchant.yi_attention") }}
           </van-button>
         </template>
       </van-cell>
 
       <div class="order-info">
-        <span>TA的委托单</span>
+        <span>{{ $t("views.merchant.merchant.client") }}</span>
         <p>
           <span>
-            <van-button class="btn-order" size="mini">购买</van-button>
+            <van-button class="btn-order" size="mini">{{
+                $t("views.merchant.merchant.buy")
+              }}</van-button>
           </span>
           <span>
-            <van-button class="btn-order" size="mini">出售</van-button>
+            <van-button class="btn-order" size="mini">{{
+                $t("views.merchant.merchant.sell")
+              }}</van-button>
           </span>
         </p>
       </div>
@@ -66,13 +70,16 @@
         :style="{ marginTop: '25px' }"
         vertical
         v-if="listLoading"
-        >加载中...</van-loading
+      >{{ $t("views.merchant.merchant.listLoading") }}</van-loading
       >
-      <payment_empty v-else-if="isShow_empty" title="暂无订单" />
+      <payment_empty
+        v-else-if="isShow_empty"
+        :title="$t('views.merchant.merchant.not_data')"
+      />
       <van-list
         v-model="loading"
         :finished="finished"
-        finished-text="已经没有更多了..."
+        :finished-text="$t('views.merchant.merchant.finished')"
         @load="onLoad"
         v-else
       >
@@ -99,19 +106,21 @@
           <van-cell>
             <template #title>
               <div class="left">
-                数量 {{ items.num | ThousandSeparator }} {{ item }}
+                {{ $t("views.merchant.merchant.number") }}
+                {{ items.num | ThousandSeparator }} {{ item }}
               </div>
             </template>
             <template #label>
               <div>
-                限额 {{ items.amount1 | ThousandSeparator }} -
+                {{ $t("views.merchant.merchant.quota") }}
+                {{ items.amount1 | ThousandSeparator }} -
                 {{ items.amount2 | ThousandSeparator }} CNY
               </div>
               <Pay-Icons :items="items"></Pay-Icons>
             </template>
             <template>
               <div class="right">
-                <span>单价</span>
+                <span> {{ $t("views.merchant.merchant.price") }}</span>
               </div>
             </template>
             <template>
@@ -188,8 +197,11 @@ export default {
     to_blacklist() {
       this.$dialog
         .confirm({
-          title: "温馨提示",
-          message: "<span class='activeInfo'>确认将该商家拉入黑名单？</span>",
+          title: this.$t("views.merchant.merchant.hint"),
+          message:
+            "<span class='activeInfo'>" +
+            this.$t("views.merchant.merchant.sure") +
+            "</span>",
         })
         .then(async () => {
           await UserBind({
@@ -199,8 +211,8 @@ export default {
           this.$toast.info({
             component: toastComponent,
             props: {
-              title: "已将对方拉入黑名单",
-              content: "将不在显示该商家订单！！！",
+              title: this.$t("views.merchant.merchant.toast_title"),
+              content: this.$t("views.merchant.merchant.toast_content"),
               color: "#fff",
             },
           });

@@ -1,37 +1,33 @@
 <template>
   <div class="sell-success-page">
     <div class="success-info">
-        <i class="iconfont icon-cg2"></i>
-        <i class="iconfont icon-guanbi" @click="closePage"></i>
-        <section>
-            <div>6266.57 USDC</div>
-            <div>已存入您的资金账户</div>
-        </section>
+      <i class="iconfont icon-cg2"></i>
+      <i class="iconfont icon-guanbi" @click="closePage"></i>
+      <section>
+        <div>6266.57 USDC</div>
+        <div>{{ $t("views.fllow.success.account") }}</div>
+      </section>
     </div>
     <footer class="success-btns">
-        <van-button>
-            查看资产
-        </van-button>
-        <van-button>
-            查看订单
-        </van-button>
+      <van-button> {{ $t("views.fllow.success.balance") }} </van-button>
+      <van-button> {{ $t("views.fllow.success.order") }} </van-button>
     </footer>
   </div>
 </template>
 
 <script>
 export default {
-    name:"success-page",
-    created(){
-        this.$toast.success("USDC 已经到账，请查收")
+  name: "success-page",
+  created() {
+    this.$toast.success(this.$t("views.fllow.success.toast"));
+  },
+  methods: {
+    closePage() {
+      this.$router.replace({
+        name: "CurrencyTrading",
+      });
     },
-    methods:{
-        closePage(){
-            this.$router.replace({
-                name:"CurrencyTrading"
-            })
-        }
-    }
+  },
 };
 </script>
 

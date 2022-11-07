@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <van-nav-bar
-      title="信用评分"
+      :title="$t('views.operation.credit.title')"
       fixed
       placeholder
       left-arrow
@@ -17,7 +17,7 @@
             :duration="duration"
           ></countTo>
         </p>
-        <p>信用评分低</p>
+        <p>{{ $t("views.operation.credit.low") }}</p>
       </div>
       <div class="svgbox">
         <svg class="svg" viewBox="0 0 300 300">
@@ -58,22 +58,22 @@
       title-inactive-color="#96C2FA"
       v-model="active"
     >
-      <van-tab title="加分记录">
+      <van-tab :title="$t('views.operation.credit.record')">
         <div class="center">
           <div class="box" v-for="(item, index) in 10" :key="index">
             <div class="box-left">
-              <p>完成强关系链身份认证</p>
+              <p>{{ $t("views.operation.credit.box_left") }}</p>
               <p>20220.05.21 02:45</p>
             </div>
             <p class="box-right color-green">+8</p>
           </div>
         </div>
       </van-tab>
-      <van-tab title="扣分记录">
+      <van-tab :title="$t('views.operation.credit.marks')">
         <div class="center">
           <div class="box" v-for="(item, index) in 10" :key="index">
             <div class="box-left">
-              <p>被推荐人陈粒非恶意交易失败</p>
+              <p>{{ $t("views.operation.credit.fiel") }}</p>
               <p>20220.05.21 02:45</p>
             </div>
             <p class="box-right color-orange">-1</p>
@@ -100,12 +100,12 @@ export default {
       startVal: 0,
       // 最终值
       endVal: 8,
-      active:0
+      active: 0,
     };
   },
   computed: {},
-  mounted(){
-    this.endVal=localStorage.getItem('myjifen')
+  mounted() {
+    this.endVal = localStorage.getItem("myjifen");
   },
   methods: {
     onClickLeft() {
@@ -156,7 +156,7 @@ export default {
       }
     }
     .svgbox {
-        position: absolute;
+      position: absolute;
 
       width: 540px;
       height: 540px;

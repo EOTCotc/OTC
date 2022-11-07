@@ -1,10 +1,12 @@
 <template>
   <van-cell center>
     <template #icon>
-      <span class="aut-img">西</span>
+      <span class="aut-img">{{ $t("views.merchant.important.xi") }}</span>
     </template>
     <template>
-      <div class="merchant-info1">西红柿首付</div>
+      <div class="merchant-info1">
+        {{ $t("views.merchant.important.payment") }}
+      </div>
     </template>
     <template #right-icon v-if="!(activeName === 'blacklist')">
       <van-button
@@ -16,7 +18,7 @@
         icon="plus"
         @click="Attention"
       >
-        关注TA
+        {{ $t("views.merchant.important.attention") }}
       </van-button>
       <van-button
         v-else
@@ -25,7 +27,7 @@
         size="small"
         @click="cancel_Attention"
       >
-        已关注
+        {{ $t("views.merchant.important.yi_attention") }}
       </van-button>
     </template>
 
@@ -37,7 +39,7 @@
         icon="delete"
         @click="cancel_Attention"
       >
-        移除
+        {{ $t("views.merchant.important.remove") }}
       </van-button>
     </template>
   </van-cell>
@@ -64,8 +66,11 @@ export default {
     cancel_Attention() {
       this.$dialog
         .confirm({
-          title: "移除黑名单",
-          message: "<span class='activeInfo'>确认将该商家移除黑名单？</span>",
+          title: this.$t("views.merchant.important.remove_title"),
+          message:
+            "<span class='activeInfo'>" +
+            this.$t("views.merchant.important.sure") +
+            "</span>",
         })
         .then(() => {
           // on confirm

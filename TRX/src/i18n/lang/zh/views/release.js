@@ -8,5 +8,5 @@ export default {
   return: "返回继续等待",
   speed: "我要加速",
   speed_in: "加速中...",
-  message: ["支付20 TRX至：", "支付成功后，将加速释放EOTC至您的钱包"],
+  message: ["支付", "至：", "支付成功后，将加速释放", "至您的钱包"],
 };

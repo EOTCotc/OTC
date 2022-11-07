@@ -6,10 +6,10 @@
     <header class="header">
       <div class="header-top-left">
         <van-tag mark type="primary" v-if="order_type(+order_item.id)">
-          <span>出售</span>
+          <span>{{ $t("views.gather.refunds.sell") }}</span>
         </van-tag>
         <van-tag mark type="warning" v-else>
-          <span>收购</span>
+          <span>{{ $t("views.gather.refunds.purchase") }}</span>
         </van-tag>
         &nbsp;&nbsp;
         <span class="header-top-left-test">USDT</span>
@@ -19,14 +19,16 @@
           color="#ffe1e1"
           @click.stop="Verify_Coin"
           text-color="#ad0000"
-          >校验
+          >{{ $t("views.gather.refunds.verify") }}
         </van-tag>
       </div>
       <p class="header-top" v-if="initTime() === 0">
         <span class="pending_coin" v-if="order_type(+order_item.id)">
-          去转币&nbsp;&nbsp;
+          {{ $t("views.gather.refunds.Velocity") }}&nbsp;&nbsp;
         </span>
-        <span class="pending_coin" v-else>去付款&nbsp;&nbsp;</span>
+        <span class="pending_coin" v-else
+          >{{ $t("views.gather.refunds.payment") }}&nbsp;&nbsp;</span
+        >
 
         <van-count-down
           v-if="order_type(+order_item.id)"
@@ -48,7 +50,7 @@
 
       <p class="header-top" @click="getUSDT">
         <van-button class="header-topRight" :disabled="isDisable"
-          >取出 USDT</van-button
+          >{{ $t("views.gather.refunds.take_out") }} USDT</van-button
         >
       </p>
     </header>
@@ -60,36 +62,47 @@
             <span
               :style="{ color: '#000' }"
               @click.stop.self="
-                handle_showPhone(order_item.id, '订单编号 已复制')
+                handle_showPhone(order_item.id, $t('views.gather.refunds.copy'))
               "
-              >订单编号:{{ order_item.id }}
+              >{{ $t("views.gather.refunds.number") }}:{{ order_item.id }}
             </span>
-            <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
-            <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} USDT</span>
+            <span :style="{ color: '#000' }"
+              >{{ $t("views.gather.refunds.price") }}:{{ order_item.cny }}</span
+            >
+            <span
+              >{{ $t("views.gather.refunds.count") }}:{{
+                Number(order_item.num).toFixed(2)
+              }}</span
+            >
+            <span
+              >{{ $t("views.gather.refunds.service_charge") }}:{{
+                order_item.amount2
+              }}
+              USDT</span
+            >
           </p>
           <p>
             <span> </span>
             <span></span>
             <span class="total_price">{{ order_item.amount1 }} CNY</span>
-            <span>总金额</span>
+            <span>{{ $t("views.gather.refunds.total") }}</span>
           </p>
         </li>
 
         <li class="showFullInfo" v-if="!isShowFullInfo">
           <span></span>
           <span class="showFullInfo-btn" @click.stop="showFullInfo">
-            展示完整信息
+            {{ $t("views.gather.refunds.show") }}
             <van-icon name="arrow-down" />
           </span>
         </li>
 
         <li v-if="isShowFullInfo" class="lxfs">
-          <span>商家姓名</span>
+          <span>{{ $t("views.gather.refunds.name") }}</span>
           <span>{{ order_item.mes }}</span>
         </li>
         <li v-if="isShowFullInfo" class="lxfs">
-          <span>联系方式</span>
+          <span>{{ $t("views.gather.refunds.way") }}</span>
           <span>
             <b v-if="!isShowPhone" class="mask">{{ order_item.wechat }}</b>
             <a v-else :href="'tel:' + order_item.wechat">{{
@@ -97,7 +110,10 @@
             }}</a>
             <van-icon
               @click.stop.self="
-                handle_showPhone(order_item.wechat, '电话号码 复制成功')
+                handle_showPhone(
+                  order_item.wechat,
+                  $t('views.gather.refunds.phone')
+                )
               "
               name="eye-o"
               class="eye-o"
@@ -109,7 +125,9 @@
           <template
             v-if="is_xj == -1 || (is_xj === 1 && xjstr === '可现金交易')"
           >
-            <span :style="{ margin: '10px 0' }">付款方式</span>
+            <span :style="{ margin: '10px 0' }">{{
+              $t("views.gather.refunds.pattern")
+            }}</span>
             <span
               v-if="pay_Info.includes('交易')"
               :style="{
@@ -124,7 +142,7 @@
                 alt="xj"
               />
               &nbsp;&nbsp;
-              <span>现金</span>
+              <span>{{ $t("views.gather.refunds.cash") }}</span>
             </span>
             <span
               :style="{ margin: '10px 0' }"
@@ -141,7 +159,9 @@
                 ]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">支付宝</span>
+              <span class="pay-txt">{{
+                $t("views.gather.refunds.alipay")
+              }}</span>
             </span>
             <span
               :style="{ margin: '10px 0' }"
@@ -151,7 +171,9 @@
                 :class="['iconfont', `icon-wx`, `pay-icon1wx2`, `pay-iconwx`]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">微信</span>
+              <span class="pay-txt">{{
+                $t("views.gather.refunds.wechat")
+              }}</span>
             </span>
             <span :style="{ margin: '10px 0' }" v-else>
               <i
@@ -168,7 +190,9 @@
           </template>
 
           <template v-if="is_xj === 0">
-            <span :style="{ margin: '10px 0' }">付款方式</span>
+            <span :style="{ margin: '10px 0' }">{{
+              $t("views.gather.refunds.pattern")
+            }}</span>
             <span
               :style="{ margin: '10px 0' }"
               v-if="pay_Info[2].trim() === '支付宝'"
@@ -184,7 +208,9 @@
                 ]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">支付宝</span>
+              <span class="pay-txt">{{
+                $t("views.gather.refunds.alipay")
+              }}</span>
             </span>
             <span
               :style="{ margin: '10px 0' }"
@@ -194,7 +220,9 @@
                 :class="['iconfont', `icon-wx`, `pay-icon1wx2`, `pay-iconwx`]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">微信</span>
+              <span class="pay-txt">{{
+                $t("views.gather.refunds.wechat")
+              }}</span>
             </span>
             <span :style="{ margin: '10px 0' }" v-else>
               <i
@@ -213,7 +241,7 @@
 
         <template v-if="is_xj === 0 || (is_xj === 1 && xjstr === '可现金交易')">
           <li v-if="isShowFullInfo && order_item.dsx === '2'">
-            <span>收款账号</span>
+            <span>{{ $t("views.gather.refunds.account") }}</span>
             <span
               :style="{ margin: '10px 0' }"
               v-if="pay_Info.includes('交易')"
@@ -295,13 +323,17 @@ export default {
         type: 1,
       });
       this.iscancelOrder = false;
-      this.$toast.success("订单取消成功！");
+      this.$toast.success(this.$t("views.gather.refunds.toast[0]"));
     },
     getUSDT() {
       this.$dialog
         .confirm({
-          title: "提取 USDT",
-          message: `<span class='activeInfo'>恶意操作将会被 【限制下单】<br />确定从该订单中撤回 ${this.order_item.num} USDT？</span> `,
+          title: this.$t("views.gather.refunds.dialog[0]"),
+          message: `<span class='activeInfo'${this.$t(
+            "views.gather.refunds.dialog[1]"
+          )}<br />${this.$t("views.gather.refunds.dialog[2]")} ${
+            this.order_item.num
+          } USDT？</span> `,
         })
         .then(async () => {
           // 确认取消订单
@@ -311,7 +343,7 @@ export default {
               {
                 component: loadingToast,
                 props: {
-                  title: "正在从合约中撤出 USDT。。。",
+                  title: this.$t("views.gather.refunds.toast[1]"),
                 },
               },
               {
@@ -334,7 +366,7 @@ export default {
               name: "orderGather-full",
             });
             this.$toast.clear();
-            this.$toast.info("USDT 已撤出,订单已取消！");
+            this.$toast.info(this.$t("views.gather.refunds.toast[3]"));
           } catch (err) {
             console.warn(err);
             this.$toast.error(err, {
@@ -348,7 +380,7 @@ export default {
       this.isDisable = false;
     },
     coutDown_finish(type) {
-      this.$toast.warning("订单已过期，系统将自动取消。");
+      this.$toast.warning(this.$t("views.gather.refunds.toast[2]"));
       //console.log(type);
       subbuysellorder({
         oid: this.order_item.id,
@@ -356,7 +388,9 @@ export default {
         selectpayk: "",
       }).then(() => {
         this.$toast.warning(
-          <p style="color:red;font-size:16px">已自动取消，到期订单</p>
+          <p style="color:red;font-size:16px">
+            {this.$t("views.gather.refunds.toast[5]")}
+          </p>
         );
         if (type === 0) {
           localStorage.setItem("xdnum", "0");
@@ -398,7 +432,7 @@ export default {
             } catch (err) {
               console.warn(err);
               this.$toast.warning(err.message);
-              this.$toast.warning("操作过于频繁，请稍候再试...");
+              this.$toast.warning(this.$t("views.gather.refunds.toast[4]"));
               return false;
             }
             console.log(data.data.cny);
@@ -464,7 +498,7 @@ export default {
             } catch (err) {
               console.warn(err);
               this.$toast.warning(err.message);
-              this.$toast.warning("操作过于频繁，请稍候再试...");
+              this.$toast.warning(this.$t("views.gather.refunds.toast[4]"));
             }
             let item = {
               sname: $order.sname, // 商家店名
@@ -516,7 +550,7 @@ export default {
         data = await Getsjmes($order.odid);
       } catch (err) {
         console.warn(err);
-        this.$toast.warning("操作过于频繁，请稍候再试...");
+        this.$toast.warning(this.$t("views.gather.refunds.toast[4]"));
         return false;
       }
       switch ($order.dsx) {
@@ -591,7 +625,7 @@ export default {
           type: 1,
           selectpayk: getItem("mysign"),
         });
-        this.$toast.warning("订单已过期，系统将自动取消。");
+        this.$toast.warning(this.$t("views.gather.refunds.toast[2]"));
         this.$emit("update_OrderList");
         removeItem(this.order_item.id);
         localStorage.setItem("csnum", "0");

@@ -13,13 +13,13 @@
         title-active-color="#fff"
         title-inactive-color="#8D94A2"
       >
-        <van-tab title="未完成">
+        <van-tab :title="$t('views.gather.full.unfinished')">
           <OrderUndone ref="Undone" :id="option1[value1].id" :key="force_Update_num"></OrderUndone>
         </van-tab>
-        <van-tab title="已完成">
+        <van-tab :title="$t('views.gather.full.finished')">
           <OrderCompleted ref="Completed" :id="option1[value1].id"></OrderCompleted>
         </van-tab>
-        <van-tab title="其他订单">
+        <van-tab :title="$t('views.gather.full.other)">
           <OrderCanceled ref="Canceled" :id="option1[value1].id" ></OrderCanceled>
         </van-tab>
         <van-tab disabled>

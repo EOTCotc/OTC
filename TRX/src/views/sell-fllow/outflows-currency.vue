@@ -10,7 +10,7 @@
     </div>
 
     <header class="header">
-      <h4 class="title">等待买家付款</h4>
+      <h4 class="title">{{ $t("views.sell_fllow.outflows.title") }}</h4>
       <div class="pay-timeDown">
         <van-count-down
           class="pay-time"
@@ -19,7 +19,7 @@
           format="mm:sss"
           @finish="cancel_order_timeDown"
         />
-        <div class="pay-text">买家正在向您转账，请注意查收</div>
+        <div class="pay-text">{{ $t("views.sell_fllow.outflows.pay_text") }}</div>
       </div>
     </header>
 
@@ -36,20 +36,20 @@
     <main class="main">
       <div class="top-text">
         <img class="icon-img" :src="require(`@/assets/currency-icons/${kind.toLowerCase()}.png`)" alt />
-        <span>出售 {{kind}}</span>
+        <span>{{ $t("views.sell_fllow.outflows.sell") }} {{kind}}</span>
       </div>
       <div class="top-main">
         <ul>
           <li @click="showPayInfo">
-            <span>交易主链</span>
+            <span>{{ $t("views.sell_fllow.outflows.backbone") }}</span>
             <span>
               {{ netType }}
               <van-icon name="arrow" />
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span>交易钱包</span>
-            <span @click="copyContent(myaddress, '钱包地址已复制')">
+            <span>{{ $t("views.sell_fllow.outflows.wallet") }}</span>
+            <span @click="copyContent(myaddress, $t('views.sell_fllow.outflows.copy'))">
               {{ myaddress | briefMyAddress }}
               <i
                 class="iconfont icon-copy"
@@ -58,7 +58,7 @@
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span>商家钱包</span>
+            <span>{{ $t("views.sell_fllow.outflows.merchant") }}</span>
             <span
               @click="
                 copyContent(cacheData.MerchanInfo.bank, '商家钱包地址 已复制')
@@ -72,8 +72,8 @@
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span>合约地址</span>
-            <span @click="copyContent(contractAddress, '合约地址 已复制')">
+            <span>{{ $t("views.sell_fllow.outflows.contract") }}</span>
+            <span @click="copyContent(contractAddress, $t('views.sell_fllow.outflows.copy_contract'))">
               {{ contractAddress | briefMyAddress }}
               <i
                 class="iconfont icon-copy"
@@ -82,21 +82,21 @@
             </span>
           </li>
           <li>
-            <span>单价</span>
+            <span>{{ $t("views.sell_fllow.outflows.price") }}</span>
             <span>￥{{ cacheData.item.cny }}</span>
           </li>
           <li>
-            <span>数量</span>
+            <span>{{ $t("views.sell_fllow.outflows.count") }}</span>
             <span>{{ cacheData.num }} {{kind}}</span>
           </li>
           <li>
-            <span>总金额</span>
+            <span>{{ $t("views.sell_fllow.outflows.total") }}</span>
             <span
               class="importan-tTsxt"
               @click="
                 copyContent(
                   ThousandSeparator(cacheData.totalMoney),
-                  '总金额 复制成功'
+                  $t('views.sell_fllow.outflows.total_copy')
                 )
               "
             >
@@ -110,19 +110,19 @@
 
           <!-- 只支持现金 -->
           <li v-if="cacheData.item.cash === '-1'">
-            <span>收款方式</span>
+            <span>{{ $t("views.sell_fllow.outflows.proceeds") }}</span>
             <span :style="{ display: 'flex', alignItems: 'center' }">
               <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
               &nbsp;&nbsp;
-              <span>现金交易</span>
+              <span>{{ $t("views.sell_fllow.outflows.transaction") }}</span>
             </span>
           </li>
 
           <!-- 可能接受 现金 -->
           <li class="payInfo" v-if="cacheData.item.cash === '0' || cacheData.item.cash === '1'">
-            <span>收款方式</span>
+            <span>{{ $t("views.sell_fllow.outflows.proceeds") }}</span>
             <span v-if="curpaymentterm[1] === 'default'" @click="selectPay_begin">
-              请选择收款方式
+              {{ $t("views.sell_fllow.outflows.select") }}
               <van-icon name="arrow" :style="{ margin: '2.5px 0 0 6px' }" />
             </span>
             <span v-else @click="changePayMode">
@@ -137,7 +137,7 @@
           </li>
           <template v-if="curpaymentterm[1] !== 'default'">
             <li v-if="curpaymentterm[1] !== 'xj'">
-              <span>收款账号</span>
+              <span>{{ $t("views.sell_fllow.outflows.shroff_account") }}</span>
               <span v-if="cacheData.curpaymentterm === 'yhk'">
                 {{ cacheData.sellerMthods.mybank.split("&")[1] }}
                 {{ cacheData.sellerMthods.mybank.split("&")[0] }}
@@ -151,32 +151,32 @@
 
           <li class="van-divider"></li>
           <li>
-            <span>卖家昵称</span>
+            <span>{{ $t("views.sell_fllow.outflows.name") }}</span>
             <span>
               {{ cacheData.item.sname }} &nbsp;
               <span
                 :style="{ color: 'blue' }"
                 @click="gotoRelation"
-              >(@联系卖家)</span>&nbsp;
+              >(@{{ $t("views.sell_fllow.outflows.contact_seller") }})</span>&nbsp;
               <img class="info-rz" src="@/assets/currency-icons/rz.png" alt />
             </span>
           </li>
           <li>
-            <span>订单编号</span>
-            <span @click="copyContent(cacheData.item.id, '出售订单编号 已复制')">
+            <span>{{ $t("views.sell_fllow.outflows.number") }}</span>
+            <span @click="copyContent(cacheData.item.id, $t('views.sell_fllow.outflows.sell_order'))">
               {{ cacheData.item.id }}
               ({{ cacheData.MerchanInfo.odid }})
               <i
                 class="iconfont icon-copy"
                 :style="{ color: '#999' }"
                 @click.stop="
-                  copyContent(cacheData.MerchanInfo.odid, '生成订单编号 已复制')
+                  copyContent(cacheData.MerchanInfo.odid, $t('views.sell_fllow.outflows.create_order'))
                 "
               ></i>
             </span>
           </li>
           <li>
-            <span>下单时间</span>
+            <span>{{ $t("views.sell_fllow.outflows.placeTime") }}</span>
             <span>{{ cacheData.nowTime | transformTime_Zh }}</span>
           </li>
         </ul>
@@ -197,7 +197,7 @@
         <div>
           <header class="header">
             <van-icon name="arrow-left" @click="goBack" />
-            <span class="header-text" @click="goBack">选择收款方式</span>
+            <span class="header-text" @click="goBack">$t("views.sell_fllow.outflows.way")</span>
           </header>
           <main class="main">
             <template v-if="cacheData.item.cash === '0' || cacheData.item.cash === '1'">
@@ -231,7 +231,7 @@
             <template v-if="cacheData.item.cash === '-1' || cacheData.item.cash === '1'">
               <van-cell @click="handlePayChange('xj')">
                 <template #title>
-                  <span class="custom-title">&nbsp;现金交易</span>
+                  <span class="custom-title">&nbsp;{{ $t("views.sell_fllow.outflows.transaction") }}</span>
                 </template>
                 <template #icon>
                   <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
@@ -244,7 +244,7 @@
             <div class="salePay-info">
               <span class="span1">
                 *
-                <i class="zy-info">请使用本人实名账户进行收款</i>,否则会导致订单失败且账号存在被冻结风险
+                <i class="zy-info">{{ $t("views.sell_fllow.outflows.hinf[0]") }}</i>{{ $t("views.sell_fllow.outflows.hinf[1]") }}
               </span>
             </div>
           </main>
@@ -254,20 +254,20 @@
     <!-- end 出售 详细信息  收款方式 提示弹窗  -->
 
     <article class="Riskwarning" v-if="cacheData.item.smes !== ''">
-      <div :style="{ color: 'rgb(252,184,66)' }">商家提示：</div>
+      <div :style="{ color: 'rgb(252,184,66)' }">{{ $t("views.sell_fllow.outflows.merchant") }}：</div>
       <div>{{ cacheData.item.smes }}</div>
     </article>
 
     <article class="Riskwarning" v-else>
-      <div :style="{ color: 'rgb(252,184,66)' }">商家提示：</div>
-      <div>商家付款需要一定时间，请耐心等待</div>
+      <div :style="{ color: 'rgb(252,184,66)' }">{{ $t("views.sell_fllow.outflows.merchant2") }}：</div>
+      <div>{{ $t("views.sell_fllow.outflows.chant_mass") }}</div>
     </article>
 
     <!-- start 出售 信息 loading 提示弹窗 -->
 
     <van-dialog v-model="orderSaleLoading" :showConfirmButton="false">
-      <van-loading size="36px" text-color="#000" vertical>转币中</van-loading>
-      <div class="ld-text">正在转币到合约，请稍等...</div>
+      <van-loading size="36px" text-color="#000" vertical>{{ $t("views.sell_fllow.outflows.transfer") }}</van-loading>
+      <div class="ld-text">{{ $t("views.sell_fllow.outflows.transfer_text") }}</div>
     </van-dialog>
 
     <!-- end 出售 信息 loading  提示弹窗  -->
@@ -280,11 +280,11 @@
     <footer class="footer">
       <div>
         <van-button @click="cancel_order" class="appeal" type="danger">
-          <span>取消订单</span>
+          <span> {{ $t("views.sell_fllow.outflows.cencel_order") }}</span>
         </van-button>
       </div>
       <div class="cancel">
-        <van-button @click="handleEmitIssueMoney">转币到合约</van-button>
+        <van-button @click="handleEmitIssueMoney">{{ $t("views.sell_fllow.outflows.contract") }}</van-button>
       </div>
     </footer>
 
@@ -384,21 +384,21 @@ export default {
     },
     getpayType(value) {
       switch (value) {
-        case 'yhk':
-          return '银行卡'
-        case 'zfb':
-          return '支付宝'
-        case 'wx':
-          return '微信支付'
+        case "yhk":
+          return this.$t("views.sell_fllow.outflows.bank_card");
+        case "zfb":
+          return this.$t("views.sell_fllow.outflows.Alipay");
+        case "wx":
+          return this.$t("views.sell_fllow.outflows.wechat_pay");
         default: {
-          this.$toast.error('未知收款方式')
+          this.$toast.error(this.$t("views.sell_fllow.outflows.unknown_way"));
         }
       }
     },
     handlePayChange(curType) {
       if (curType == 'xj') {
         this.cacheData.curpaymentterm = curType
-        this.curpaymentterm = ['现金交易', curType]
+        this.curpaymentterm = [this.$t("views.sell_fllow.outflows.transaction"), curType]
         this.showOrderSaleInfo = false
         return true
       }
@@ -424,7 +424,7 @@ export default {
       if (this.cacheData.item.cash === '-1') {
         this.playList = ['xj']
         this.cacheData.curpaymentterm = 'xj'
-        this.curpaymentterm = ['现金交易', 'xj']
+        this.curpaymentterm = [this.$t("views.sell_fllow.outflows.transaction"), 'xj']
         return false
       }
       const Icons = []
@@ -464,8 +464,8 @@ export default {
       this.$toast.clear()
       this.$toast.error(
         <div>
-          <p style="font-size:16px;margin:5px">您没有填写当前收款方式，</p>
-          <p style="font-size:16px;margin:5px">请重新选择</p>
+          <p style="font-size:16px;margin:5px">{this.$t("views.sell_fllow.outflows.toast[0]")}，</p>
+          <p style="font-size:16px;margin:5px">{this.$t("views.sell_fllow.outflows.toast[1]")}</p>
         </div>
       )
       return false
@@ -508,7 +508,7 @@ export default {
         const sj_ads = this.cacheData.MerchanInfo.bank // 卖家的收货地址
         const mail = this.cacheData.MerchanInfo.aipay
         // wx 微信号   支付宝 zfb 支付宝账号   银行卡  开户行  银行卡 -卡号
-        const selectpayk = this.getMoneyInfo(this.curpaymentterm[1]) || '网络&出现&问题'
+        const selectpayk = this.getMoneyInfo(this.curpaymentterm[1]) || this.$t("views.sell_fllow.outflows.network")
         const type = 1
 
         let coinList = JSON.parse(localStorage.getItem('coinList'))
@@ -539,10 +539,10 @@ export default {
             // type = 0 or 1 区分 收购 和 出售
             if (type == 0) {
               localStorage.setItem('xdnum', '0')
-              this.$toast.success('您的订单已完成付款，请等待卖家确认')
+              this.$toast.success(this.$t("views.sell_fllow.outflows.toast[3]"))
             } else {
               localStorage.setItem('csnum', '0')
-              this.$toast.success('已转币至合约，请等待买家付款', {
+              this.$toast.success(this.$t("views.sell_fllow.outflows.toast[4]"), {
                 timeout: 3000,
               })
               const mynum = parseFloat(localStorage.getItem('myamount')) - parseFloat(usdt)
@@ -576,7 +576,7 @@ export default {
         }
         this.orderSaleLoading = false
       } else {
-        this.$toast.error('请重新选择收款方式!!')
+        this.$toast.error(this.$t("views.sell_fllow.outflows.toast[5]"));
       }
     },
     // 我的收款方式
@@ -597,7 +597,7 @@ export default {
         }
         case 'xj': {
           let name = localStorage.getItem('uname')
-          return `${name} & 现金 & 现金交易`
+          return `${name} & ${this.$t("views.sell_fllow.outflows.transaction")}`
         }
       }
     },
@@ -605,9 +605,12 @@ export default {
       let oid //子订单id
       this.$dialog
         .confirm({
-          title: '取消订单',
+          title: this.$t("views.sell_fllow.outflows.dialog[0]"),
           message:
-            "<span class='activeInfo'>频繁取消订单会被 【限制下单】</span> <br />确定取消订单吗？",
+            "<span class='activeInfo'>" +
+            this.$t("views.sell_fllow.outflows.dialog[1]") +
+            "</span> <br />" +
+            this.$t("views.sell_fllow.outflows.dialog[2]"),
         })
         .then(async () => {
           // 确认取消订单
@@ -617,7 +620,7 @@ export default {
               {
                 component: loadingToast,
                 props: {
-                  title: '正在取消该订单。。。',
+                  title: this.$t("views.sell_fllow.outflows.toast[6]"),
                 },
               },
               {
@@ -635,12 +638,12 @@ export default {
             //console.log(data);
             this.$toast.clear()
             if (data.State === '1') {
-              this.$toast.error(oid + '  号订单重复取消')
+              this.$toast.error(oid + '  ' + this.$t("views.sell_fllow.outflows.toast[7]"))
               this.$router.replace({
                 name: 'outflows',
               })
             } else {
-              this.$toast.warning(oid + '  号订单已取消')
+              this.$toast.warning(oid + '  ' + this.$t("views.sell_fllow.outflows.toast[8]"))
               this.$router.replace({
                 name: 'outflows',
               })
@@ -668,7 +671,7 @@ export default {
         selectpayk: getItem('mysign'),
       })
         .then(() => {
-          this.$toast.warning(oid + '  号订单已自动取消')
+          this.$toast.warning(oid + '  ' + this.$t("views.sell_fllow.outflows.toast[9]"))
         })
         .catch((err) => {
           console.warn(err)
@@ -694,7 +697,7 @@ export default {
         let endMyAddress = value.substr(-10, 10)
         return startMyAddress + midMyAddress + endMyAddress
       }
-      return '地址出现错误'
+      return this.$t("views.sell_fllow.outflows.mistake");
     },
   },
 }
