@@ -2,7 +2,7 @@
   <div class="order-pay-container">
     <header class="header-top">
       <van-icon name="arrow-left" @click="$router.push({name:'orderGather-full'})" />
-      <span class="hd-txt" @click="$router.push({name:'orderGather-full'})"> 付款通知 </span>
+      <span class="hd-txt" @click="$router.push({name:'orderGather-full'})"> {{ $t("views.fllow.payment.hd_txt") }} </span>
       <van-icon @click="gotoRelation">
         <van-icon name="orders-o" :badge="cacheData.badge_info" />
       </van-icon>
@@ -14,17 +14,17 @@
 
     <header class="header">
       <h4 class="title" v-if="cacheData.ordercuePayType === 'wx'">
-        请使用微信支付
+        {{ $t("views.fllow.payment.wechat_pay") }}
       </h4>
       <h4 class="title" v-else-if="cacheData.ordercuePayType === 'xj'">
-        使用现金交易
+        {{ $t("views.fllow.payment.transaction") }}
       </h4>
       <h4 class="title" v-else-if="cacheData.ordercuePayType === 'yhk'">
-        请使用银行卡进行支付
+        {{ $t("views.fllow.payment.bank_card") }}
       </h4>
-      <h4 class="title" v-else>请使用支付宝支付</h4>
+      <h4 class="title" v-else>{{ $t("views.fllow.payment.Alipay") }}</h4>
       <div class="pay-timeDown">
-        <div class="pay-text">付款剩余时间</div>
+        <div class="pay-text">{{ $t("views.fllow.payment.residue") }}</div>
         <van-count-down
           class="pay-time"
           ref="countDown"
@@ -51,36 +51,30 @@
       active-color="#2483ff"
       direction="vertical"
     >
-      <van-step v-if="cacheData.ordercuePayType == 'xj'"
-        >您选择的是现金交易</van-step
+      <van-step v-if="cacheData.ordercuePayType == 'xj'">{{ $t("views.fllow.payment.select") }}</van-step>
+      <van-step v-else-if="cacheData.ordercuePayType == 'wx'">{{ $t("views.fllow.payment.open") }}</van-step
       >
-      <van-step v-else-if="cacheData.ordercuePayType == 'wx'">
-        请打开您的微信</van-step
-      >
-      <van-step v-else-if="cacheData.ordercuePayType == 'yhk'"
-        >请打开{{ payInfo[2] }}APP</van-step
-      >
-      <van-step v-else> 请打开您的支付宝</van-step>
+      <van-step v-else-if="cacheData.ordercuePayType == 'yhk'">{{ $t("views.fllow.payment.open_app") }}{{ payInfo[2] }}APP</van-step>
+      <van-step v-else> {{ $t("views.fllow.payment.open_alipay") }}</van-step>
 
       <van-step v-if="cacheData.ordercuePayType == 'xj'">
-        交易总额：<span class="importan-tTsxt"
-          >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span
-        >
+        {{ $t("views.fllow.payment.amount") }}：
+        <span class="importan-tTsxt">￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span>
       </van-step>
       <van-step v-else>
-        向商家转账：<span class="importan-tTsxt"
+        {{ $t("views.fllow.payment.towards") }}：<span class="importan-tTsxt"
           >￥{{ ThousandSeparator(cacheData.ordermoney) }}</span
         >
       </van-step>
 
       <van-step>
         <div class="serviceCharge">
-          交易手续费：{{ cacheData.servicefee }} {{kindType}}
+          {{ $t("views.fllow.payment.fee") }}：{{ cacheData.servicefee }} {{kindType}}
         </div>
 
         <section class="seller-info">
           <div class="seller-info-top">
-            <span class="pay-info1">姓名</span>
+            <span class="pay-info1"> {{ $t("views.fllow.payment.name") }}</span>
             <div class="info2">
               <span v-if="cacheData.ordercuePayType === 'xj'">
                 {{ getxj_name }}</span
@@ -105,22 +99,22 @@
           <div class="seller-info-top">
             <!-- 交易类型 -->
             <span class="pay-info1" v-if="cacheData.ordercuePayType === 'wx'"
-              >微信账号</span
+              >{{ $t("views.fllow.payment.account") }}</span
             >
             <span
               class="pay-info1"
               v-else-if="cacheData.ordercuePayType === 'xj'"
-              >交易方式</span
+              >{{ $t("views.fllow.payment.way") }}</span
             >
             <span
               class="pay-info1"
               v-else-if="cacheData.ordercuePayType === 'yhk'"
-              >开户行</span
+              >{{ $t("views.fllow.payment.deposit") }}</span
             >
-            <span class="pay-info1" v-else>支付宝账号</span>
+            <span class="pay-info1" v-else>{{ $t("views.fllow.payment.alipay_account") }}</span>
 
             <div class="info2" v-if="cacheData.ordercuePayType === 'xj'">
-              现金交易
+              {{ $t("views.fllow.payment.money") }}
             </div>
             <div class="info2" v-else>
               <div class="info2" v-if="cacheData.ordercuePayType === 'yhk'">
@@ -152,7 +146,7 @@
 
           <div class="seller-info-top">
             <span class="pay-info1" v-if="cacheData.ordercuePayType === 'yhk'">
-              账号
+              {{ $t("views.fllow.payment.ID") }}
             </span>
             <!-- <span class="pay-info1" v-else>二维码</span> -->
             <div class="ewm yhkNum" v-if="cacheData.ordercuePayType === 'yhk'">
@@ -169,20 +163,20 @@
 
         <article class="pay-info-tip">
           <div>
-            *<span :style="{ color: 'red' }"> 请使用本人实名账户进行付款</span
-            >，否则会导致订单失败<br />&nbsp;&nbsp;&nbsp;且账号存在被冻结风险
+            *<span :style="{ color: 'red' }"> {{ $t("views.fllow.payment.pay_info[0]") }}</span>
+            {{ $t("views.fllow.payment.pay_info[1]") }}
+            <br />
+            &nbsp;&nbsp;&nbsp;{{ $t("views.fllow.payment.pay_info[2]") }}
           </div>
-          <div>*<span> 转账过程中，请勿备注任何信息</span></div>
-          <div>*<span> 为确保及时到账，大额数量的转账请分批转账</span></div>
+          <div>*<span> {{ $t("views.fllow.payment.pay_info[3]") }}</span></div>
+          <div>*<span> {{ $t("views.fllow.payment.pay_info[4]") }}</span></div>
         </article>
       </van-step>
 
       <van-step>
-        转账完成后点击按钮
+        {{ $t("views.fllow.payment.pay_info[5]") }}
         <div class="commit-btn">
-          <van-button type="info" @click="handleEFT" :disabled="isEFT"
-            >我已转账，通知卖家</van-button
-          >
+          <van-button type="info" @click="handleEFT" :disabled="isEFT">{{ $t("views.fllow.payment.pay_info[6]") }}</van-button>
         </div>
       </van-step>
     </van-steps>
@@ -272,7 +266,7 @@ export default {
           {
             component: loadingToast,
             props: {
-              title: "正在取消该订单。。。",
+              title: this.$t("views.fllow.payment.toast[0]"),
             },
           },
           {
@@ -288,12 +282,12 @@ export default {
         });
         this.$toast.clear();
         if (data.State === "1") {
-          this.$toast.error(oid + "  号订单重复取消");
+          this.$toast.error(oid + this.$t("views.fllow.payment.toast[1]"));
           this.$router.replace({
             name: "CurrencyTrading",
           });
         } else {
-          this.$toast.warning(oid + "  号订单已取消");
+          this.$toast.warning(oid + this.$t("views.fllow.payment.toast[2]"));
           this.$router.replace({
             name: "CurrencyTrading",
           });
@@ -365,7 +359,10 @@ export default {
             {
               component: loadingToast,
               props: {
-                title: "等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面",
+                title:
+                  this.$t("views.fllow.payment.toast[3]") +
+                  "<br/>" +
+                  this.$t("views.fllow.payment.toast[4]"),
               },
             },
             {
@@ -425,17 +422,17 @@ export default {
           let name = localStorage.getItem("uname");
           return `${name} & ${
             this.cacheData.sellerMthods.myalipay
-          }${this.getname()} & 支付宝`;
+          }${this.getname()} & ${$t("views.fllow.payment.Alipay")}`;
         }
         case "wx": {
           let name = localStorage.getItem("uname");
           return `${name} & ${
             this.cacheData.sellerMthods.mybmywechatnk
-          }${this.getname()} & 微信`;
+          }${this.getname()} & ${$t("views.fllow.payment.wechat")}`;
         }
         case "xj": {
           let name = localStorage.getItem("uname");
-          return `${name} & 现金${this.getname()}  & 现金交易`;
+          return `${name} & ${$t("views.fllow.payment.cash")}${this.getname()}  & ${$t("views.fllow.payment.money")}`;
         }
       }
     },
@@ -449,10 +446,10 @@ export default {
         this.curTime = nowTime;
         this.$copyText(message).then(
           (e) => {
-            this.$toast.success("姓名 已复制");
+            this.$toast.success(this.$t("views.fllow.payment.toast[5]"));
           },
           (e) => {
-            this.$toast.error("请稍后重试");
+            this.$toast.error(this.$t("views.fllow.payment.toast[6]"));
           }
         );
       }
@@ -461,11 +458,11 @@ export default {
       let nowTime = Date.now();
       if (nowTime - this.curTime > 1500) {
         this.curTime = nowTime;
-        this.$toast.success("复制 账号成功");
+        this.$toast.success(this.$t("views.fllow.payment.toast[7]"));
       }
     },
     onCopyPayAccountError() {
-      this.$toast.error("复制失败，网络故障");
+      this.$toast.error(this.$t("views.fllow.payment.toast[8]"));
     },
   },
 };

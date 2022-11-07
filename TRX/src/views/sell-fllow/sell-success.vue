@@ -5,11 +5,11 @@
       <i class="iconfont icon-guanbi" @click="closePage"></i>
       <section>
         <div>￥{{ totalMoney }}</div>
-        <div>已成功出售 {{ num }} {{kind}}</div>
+        <div>{{ $t("views.sell_fllow.sell.win") }} {{ num }} {{kind}}</div>
       </section>
     </div>
     <footer class="success-btns">
-      <van-button @click="show_order_info"> 查看订单 </van-button>
+      <van-button @click="show_order_info"> {{ $t("views.sell_fllow.sell.show_order") }} </van-button>
     </footer>
   </div>
 </template>

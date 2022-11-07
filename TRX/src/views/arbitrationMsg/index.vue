@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <white title="仲裁案动态" />
+    <white :title="$t('views.arbitration.index.title')" />
     <div class="content">
       <ul v-if="list.length">
         <li
@@ -18,24 +18,34 @@
           <img :src="item.messageType == 0 ? shen_qing : tong_zhi" />
           <div class="details">
             <div>
-              <span>{{ item.messageType == 0 ? "申请" : "通知" }}</span>
+              <span>{{
+                  item.messageType == 0
+                    ? $t("views.arbitration.index.messageType[0]")
+                    : $t("views.arbitration.index.messageType[1]")
+                }}</span>
               <span>{{ item.msgTime }}</span>
             </div>
-            <p>{{ item.messageType === 4 ? '近期订单中存在纠纷，对方向你发起仲裁，请及时前往处理' : item.reason }}</p>
+            <p>
+              {{
+                item.messageType === 4
+                  ? $t("views.arbitration.index.reason")
+                  : item.reason
+              }}
+            </p>
           </div>
         </li>
       </ul>
       <van-empty
         v-else
         :image="require('../../assets/currency-icons/empty.png')"
-        description="暂无数据"
+        :description="$t('views.arbitration.index.description')"
       />
     </div>
   </div>
 </template>
 
 <script>
-import White from '@/components/Nav/white.vue';
+import White from "@/components/Nav/white.vue";
 import { getarbitratemessage } from "@/api/arbitrationMsg.js";
 import { transformDate } from "@/utils/utils";
 
@@ -60,34 +70,47 @@ export default {
       getarbitratemessage({ isArbitrate: 0 }).then((res) => {
         this.list = res.items.map((item) => {
           // transformDate()把中国时间转成格林威治时间
-          item.msgTime = this.diffDate(item)
-          return item
+          item.msgTime = this.diffDate(item);
+          return item;
         });
       });
     },
     // 计算时间差
     diffDate(data) {
-      const {createDate} = data
+      const { createDate } = data;
       // console.log(createDate)
       // 计算时间差(秒)
-      const diffSecond = this.$dayjs().utc().diff(this.$dayjs(1664674348458).utc(), 'second')
+      const diffSecond = this.$dayjs()
+        .utc()
+        .diff(this.$dayjs(1664674348458).utc(), "second");
       const minute = 60, // 秒
         hours = 3600, // 小时
-        day = 86400 // 1天
+        day = 86400; // 1天
 
       if (diffSecond < minute) {
-        return `${diffSecond}秒钟前`
+        return `${diffSecond}${this.$t(
+          "views.arbitration.index.before_second"
+        )}`;
       } else if (diffSecond < hours) {
-        return `${Math.floor(diffSecond / 60)}分钟前`
+        return `${Math.floor(diffSecond / 60)}${this.$t(
+          "views.arbitration.index.before_minute"
+        )}`;
       } else if (diffSecond / day < 3) {
-        return `${Math.floor(diffSecond / day)}天前`
+        return `${Math.floor(diffSecond / day)}${this.$t(
+          "views.arbitration.index.before_day"
+        )}`;
       } else {
-        return this.$dayjs(createDate).utc().format('YYYY-MM-DD HH:mm:ss')
+        return this.$dayjs(createDate).utc().format("YYYY-MM-DD HH:mm:ss");
       }
     },
     // 去消息详情
-    toArbitrationMsg(messageType, associatedId, arbitrateId, arbitrateMessageId) {
-      console.log({messageType, associatedId, arbitrateId})
+    toArbitrationMsg(
+      messageType,
+      associatedId,
+      arbitrateId,
+      arbitrateMessageId
+    ) {
+      console.log({ messageType, associatedId, arbitrateId });
       if (messageType === 4) {
         this.$router.push({
           name: "details",

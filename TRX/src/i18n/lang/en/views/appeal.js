@@ -9,7 +9,7 @@ export default {
   title: "Initiate a complaint",
   day: ["Unable to contact the merchant", "Can't pay", "other"],
   message: "Submitting...",
-  success: ["Submitted successfully", "Submit failed"],
+  success: ["In payment…", "Payment Failed！", "In arbitration submission…", "Submitted successfully", "Submit failed"],
 
   start: {
     content: ["arbitration", "appeal", "event"],

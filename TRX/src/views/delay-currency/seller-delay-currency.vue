@@ -3,14 +3,16 @@
     <!--  延迟放币 view -->
     <header class="header-top">
       <van-icon name="arrow-left" />
-      <span class="hd-txt" @click="$router.go(-1)"> 延时放币 </span>
+      <span class="hd-txt" @click="$router.go(-1)">
+        {{ $t("views.currency.hd_txt") }}
+      </span>
     </header>
 
     <div class="header-main">
-      <h4 class="title">等待卖家放币中</h4>
+      <h4 class="title">{{ $t("views.currency.header_text") }}</h4>
       <div class="pay-timeDown">
         <van-count-down class="pay-time" :time="time" />
-        <div class="pay-text">后将会放币,请注意查收</div>
+        <div class="pay-text">{{ $t("views.currency.pay_text") }}</div>
       </div>
     </div>
 
@@ -31,28 +33,28 @@
           :src="require('@/assets/currency-icons/usdt.svg')"
           alt=""
         />
-        <span>出售 USDT</span>
+        <span>{{ $t("views.currency.sell") }} USDT</span>
       </div>
       <div class="top-main">
         <ul>
           <li>
-            <span>单价</span>
+            <span>{{ $t("views.currency.price") }}</span>
             <span>6.35 CNY</span>
             <!-- <span>￥{{ item.cny }}</span> -->
           </li>
           <li>
-            <span>数量</span>
+            <span>{{ $t("views.currency.number") }}</span>
             <span>99999999 USDT</span>
           </li>
           <li>
-            <span>总金额</span>
+            <span>{{ $t("views.currency.total") }}</span>
             <span class="importan-tTsxt"
-              >￥{{ ThousandSeparator(totalMoney) }}.00
+            >￥{{ ThousandSeparator(totalMoney) }}.00
               <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              ></span>
           </li>
           <li>
-            <span>钱包地址</span>
+            <span>{{ $t("views.currency.site") }}</span>
             <span>{{ walletAddress | briefAddress }}</span>
           </li>
         </ul>
@@ -63,28 +65,30 @@
       <div class="top-main">
         <ul>
           <li>
-            <span>卖家信息</span>
+            <span>{{ $t("views.currency.Seller") }}</span>
             <span class="importan-tTsxt" :style="{ fontSize: '18px' }">
-              <van-icon name="chat-o" size="20px" />&nbsp;联系卖家
+              <van-icon name="chat-o" size="20px" />&nbsp;{{
+                $t("views.currency.relation")
+              }}
             </span>
           </li>
           <li>
-            <span>卖家昵称</span>
-            <span> 西红柿首付 </span>
+            <span>{{ $t("views.currency.nickname") }}</span>
+            <span> {{ $t("views.currency.payment") }} </span>
           </li>
           <li>
-            <span>订单编号</span>
+            <span>{{ $t("views.currency.order_number") }}</span>
             <span
-              >4879854645
+            >4879854645
               <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              ></span>
           </li>
           <li>
-            <span>钱包地址</span>
+            <span>{{ $t("views.currency.site") }}</span>
             <span>{{ walletAddress | briefAddress }}</span>
           </li>
           <li>
-            <span>下单时间</span>
+            <span>{{ $t("views.currency.date") }}</span>
             <span>{{ Date.now() | transformTime_Zh }}</span>
             <!-- 下单时间  测试阶段用 新时间戳代替 -->
             <!-- <span>{{ orderTime }}</span> -->
@@ -97,7 +101,8 @@
          买家没点付款前灰色，禁用状态不能点击-->
     <footer class="footer">
       <van-button round :disabled="isDisabled" class="appeal" type="default">
-        <span>发起仲裁</span>&nbsp;
+        <span>{{ $t("views.currency.launch") }}</span
+        >&nbsp;
         <van-count-down
           ref="countDown"
           v-if="isDisabled"
@@ -131,9 +136,9 @@ export default {
     paytype(value) {
       return paytype(value);
     },
-    clearDisabled(){
-        this.isDisabled = false
-    }
+    clearDisabled() {
+      this.isDisabled = false;
+    },
   },
   filters: {
     briefAddress(value) {

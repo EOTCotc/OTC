@@ -3,25 +3,27 @@
     <header class="header">
       <div class="header-top-left">
         <van-tag mark type="primary" v-if="order_type(+order_item.id)">
-          <span>出售</span>
+          <span>{{ $t("views.gather.order.sell") }}</span>
         </van-tag>
         <van-tag mark type="warning" v-else>
-          <span>收购</span>
-        </van-tag>&nbsp;&nbsp;
-        <span class="header-top-left-test">{{kind}}</span>
+          <span>{{ $t("views.gather.order.purchase") }}</span>
+        </van-tag>
+        &nbsp;&nbsp;
+        <span class="header-top-left-test">USDT</span>
         &nbsp;&nbsp;
         <van-tag
           v-if="order_type(+order_item.id)"
           color="#ffe1e1"
           text-color="#ad0000"
           @click.stop="Verify_Coin"
-        >校验</van-tag>
-        <van-tag v-else type="primary" @click="closeLock">解除锁定</van-tag>
+          >{{ $t("views.gather.order.verify") }}
+        </van-tag>
       </div>
       <p class="header-top">
         <span class="header-topRight">
           <!-- <i class="iconfont  icon-lianximaijia"></i> -->
-          <van-icon name="guide-o" :style="{ fontSize: '20px' }" />已取消
+          <van-icon name="guide-o" :style="{ fontSize: '20px' }" />
+          {{ $t("views.gather.order.canceled") }}
         </span>
       </p>
     </header>
@@ -32,35 +34,47 @@
             <span
               :style="{ color: '#000' }"
               @click.stop.self="
-                handle_showPhone(order_item.id, '订单编号 已复制')
+                handle_showPhone(order_item.id, $t('views.gather.order.copy'))
               "
-            >订单编号:{{ order_item.id }}</span>
-            <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
-            <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} {{kind}}</span>
+              >{{ $t("views.gather.order.number") }}:{{ order_item.id }}
+            </span>
+            <span :style="{ color: '#000' }"
+              >{{ $t("views.gather.order.price") }}:{{ order_item.cny }}</span
+            >
+            <span
+              >{{ $t("views.gather.order.count") }}:{{
+                Number(order_item.num).toFixed(2)
+              }}</span
+            >
+            <span
+              >{{ $t("views.gather.order.service_charge") }}:{{
+                order_item.amount2
+              }}
+              USDT</span
+            >
           </p>
           <p>
-            <span></span>
+            <span> </span>
             <span></span>
             <span class="total_price">{{ order_item.amount1 }} CNY</span>
-            <span>总金额</span>
+            <span>{{ $t("views.gather.order.total") }}</span>
           </p>
         </li>
 
         <li class="showFullInfo" v-if="!isShowFullInfo">
           <span></span>
           <span class="showFullInfo-btn" @click.stop="showFullInfo">
-            展示完整信息
+            {{ $t("views.gather.order.show") }}
             <van-icon name="arrow-down" />
           </span>
         </li>
 
         <li v-if="isShowFullInfo">
-          <span>商家姓名</span>
+          <span> {{ $t("views.gather.order.name") }}</span>
           <span>{{ order_item.mes }}</span>
         </li>
         <li v-if="isShowFullInfo">
-          <span>联系方式</span>
+          <span>{{ $t("views.gather.order.way") }}</span>
           <span>
             <b v-if="!isShowPhone" class="mask">{{ order_item.wechat }}</b>
             <a v-else :href="'tel:' + order_item.wechat">
@@ -70,7 +84,10 @@
             </a>
             <van-icon
               @click.stop.self="
-                handle_showPhone(order_item.wechat, '电话号码 复制成功')
+                handle_showPhone(
+                  order_item.wechat,
+                  $t('views.gather.order.phone')
+                )
               "
               name="eye-o"
               class="eye-o"
@@ -102,13 +119,22 @@
         <div>
           <header class="header">
             <van-icon name="arrow-left" />
-            <span class="header-text">选择收款方式</span>
+            <span class="header-text">{{
+              $t("views.gather.order.select")
+            }}</span>
           </header>
           <main class="main">
-            <template v-if="is_xj === -1 || (is_xj === 1 && xjstr==='可现金交易')">
+            <template
+              v-if="
+                is_xj === -1 ||
+                (is_xj === 1 && xjstr === $t('views.gather.order.may'))
+              "
+            >
               <van-cell center @click="handlePayChange('xj')">
                 <template #title>
-                  <span class="custom-title">&nbsp;现金交易</span>
+                  <span class="custom-title"
+                    >&nbsp;{{ $t("views.gather.order.deal") }}</span
+                  >
                 </template>
                 <template #icon>
                   <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
@@ -116,7 +142,12 @@
               </van-cell>
             </template>
 
-            <template v-if="is_xj === 0 || (is_xj ===1 && xjstr==='可现金交易')">
+            <template
+              v-if="
+                is_xj === 0 ||
+                (is_xj === 1 && xjstr === $t('views.gather.order.may'))
+              "
+            >
               <van-cell
                 center
                 v-for="(payType, i) in playList"
@@ -142,10 +173,10 @@
             </template>
 
             <div class="salePay-info">
-              <span class="span1">
-                *
-                <i class="zy-info">请使用本人实名账户进行收款</i>,否则会导致订单失败且账号存在被冻结风险
-              </span>
+              <span class="span1"
+                >*<i class="zy-info">{{ $t("views.gather.order.self") }}</i
+                >{{ $t("views.gather.order.generate") }}</span
+              >
             </div>
           </main>
         </div>

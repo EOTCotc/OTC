@@ -8,30 +8,51 @@
     <!-- 申请再仲裁 -->
     <div class="content">
       <div class="event">
-        <p class="event_title">{{ $route.query.id ? '仲裁' : '申诉' }}事件</p>
+        <p class="event_title">{{$route.query.id ? $t("views.appeal.start.content[0]") : $t("views.appeal.start.content[1]") }} {{ $t("views.appeal.start.content[2]") }}</p>
         <div>
-          <template v-if='!$route.query.id'>
-            <p :class="{'action': form.data.arbitrateInType === 0}" @click="handleTabClick(0)">账户被冻结</p>
-            <p :class="{'action': form.data.arbitrateInType === 1}" @click="handleTabClick(1)">卖家未确认收款</p>
+          <template v-if="!$route.query.id">
+            <p
+              :class="{ action: form.data.arbitrateInType === 0 }"
+              @click="handleTabClick(0)"
+            >
+              {{ $t("views.appeal.start.frozen") }}
+            </p>
+            <p
+              :class="{ action: form.data.arbitrateInType === 1 }"
+              @click="handleTabClick(1)"
+            >
+              {{ $t("views.appeal.start.not") }}
+            </p>
           </template>
-          <p v-else :class="{'action': form.data.arbitrateInType === 3}" @click="handleTabClick(3)">仲裁异议</p>
-          <p :class="{'action': form.data.arbitrateInType === 2}" @click="handleTabClick(2)">其他</p>
+          <p
+            v-else
+            :class="{ action: form.data.arbitrateInType === 3 }"
+            @click="handleTabClick(3)"
+          >
+            {{ $t("views.appeal.start.dissent") }}
+          </p>
+          <p
+            :class="{ action: form.data.arbitrateInType === 2 }"
+            @click="handleTabClick(2)"
+          >
+            {{ $t("views.appeal.start.other") }}
+          </p>
         </div>
       </div>
       <div class="text">
-        <p>文字信息举证</p>
+        <p>{{ $t("views.appeal.start.evidence") }}</p>
         <van-field
           v-model="form.data.memo"
           rows="2"
           :autosize="{ maxHeight: 150, minHeight: 150 }"
           type="textarea"
           maxlength="300"
-          placeholder="描述具体情况及提供可核实情况所需信息"
+          :placeholder="$t('views.appeal.start.placeholder')"
           show-word-limit
         />
       </div>
       <div class="upimg">
-        <p>图片信息举证 <span>(具有法律效力的相关举证)</span></p>
+        <p>{{ $t("views.appeal.start.upimg[0]") }}<span>{{ $t("views.appeal.start.upimg[1]") }}</span></p>
         <van-uploader
           v-model="fileList"
           multiple
@@ -41,7 +62,7 @@
       </div>
       <div class="add">
         <div class="addFlex">
-          <p>增加仲裁员 <span>(默认11人)</span></p>
+          <p>{{ $t("views.appeal.start.addFlex[0]") }}<span>{{ $t("views.appeal.start.addFlex[1]")}}11{{$t("views.appeal.start.addFlex[2]")}}</span></p>
           <van-switch v-model="checked" />
         </div>
         <div v-show="checked" class="people" @click="showPicker = true">
@@ -62,7 +83,7 @@
       </div>
       <div class="pay">
         <div>
-          <p>需支付</p>
+          <p>{{ $t("views.appeal.start.pay") }}</p>
           <p>{{ money }} EOTC</p>
         </div>
         <p class="explain">{{ explain }}</p>
@@ -74,7 +95,8 @@
           color="#1B2945"
           :disabled="!form.data.memo || !fileList.length"
           @click="show = true"
-          >提交</van-button>
+        >{{ $t("views.appeal.submit") }}</van-button
+        >
       </div>
       <van-popup
         v-model="show"
@@ -83,11 +105,11 @@
         @closed="readChecked = false"
       >
         <div class="pop">
-          <p class="popTitle">确认提交并支付</p>
+          <p class="popTitle">{{ $t("views.appeal.start.pop[0]") }}</p>
           <p class="hint">
-            每人仅可提交一次延期申请，请认真填写，是否确定提交该申请延期并支付？
+            {{ $t("views.appeal.start.pop[1]") }}
           </p>
-          <van-checkbox v-model="readChecked" shape="square">我已确认</van-checkbox>
+          <van-checkbox v-model="readChecked" shape="square">{{$t("views.appeal.start.pop[2]") }}</van-checkbox>
           <div class="buttons">
             <van-button
               color="#1B2945"
@@ -95,8 +117,10 @@
               block
               :disabled="!readChecked"
               @click="handleSubmit"
-              >确定提交并支付</van-button>
-            <p @click="hide">我再想想</p>
+            >
+              {{ $t("views.appeal.start.handle[0]") }}
+            </van-button>
+            <p @click="hide">{{ $t("views.appeal.start.handle[1]") }}</p>
           </div>
         </div>
       </van-popup>
@@ -106,7 +130,7 @@
 
 <script>
 import white from "@/components/Nav/white.vue";
-import {submit, upload} from "@/api/appeal"
+import {submit, upload, cost, deductCoins} from "@/api/appeal"
 import {
   $toast,
   $loading,
@@ -120,7 +144,7 @@ export default {
   components: { white },
   data() {
     return {
-      title: "发起申诉",
+      title: this.$t("appeal.title"),
       //图片上传
       fileList: [],
       //增加开关
@@ -147,24 +171,6 @@ export default {
   },
   created() {
     this.init()
-    // this.stat = 1;
-    // if (this.stat == 1) {
-    //   this.explain =
-    //     "说明: 申请再仲裁需支付500 EOTC，仲裁员默认11人，追加仲裁员一名需支付10 EOTC";
-    //   this.title = "申请再仲裁";
-    //   for (let i = 13; i <= 101; i += 2) {
-    //     this.columns.push(i);
-    //   }
-    // } else {
-    //   this.explain =
-    //     "说明: 发起仲裁后平台将委派11位仲裁员进行判决，需要支付100 EOTC，如取消仲裁或最终仲裁胜诉EOTC将返还至您的账户";
-    //   this.title = "发起仲裁";
-    // }
-  },
-  computed: {
-    money() {
-      return 500 + (this.form.data.num - 11) * 10;
-    },
   },
 
   methods: {
@@ -174,12 +180,12 @@ export default {
     },
     init() {
       const { id, defendant, plaintiff, orderId } = this.$route.query
-      // this.form.data.plaintiff = plaintiff
-      // this.form.data.defendant = defendant
-      // this.form.data.orderId = orderId
-      this.form.data.plaintiff = '3'
-      this.form.data.defendant = '5'
-      this.form.data.orderId = 'string'
+      this.form.data.plaintiff = plaintiff
+      this.form.data.defendant = defendant
+      this.form.data.orderId = orderId
+      // this.form.data.plaintiff = '3'
+      // this.form.data.defendant = '5'
+      // this.form.data.orderId = 'string'
       this.columns = []
       for (let i = 11; i < 103; i++) {
         if (i % 2 === 1) {
@@ -187,45 +193,87 @@ export default {
         }
       }
       if (id) {
-        this.title = '申请再仲裁'
+        this.title = this.$t("views.appeal.start.apply");
         this.form.data.arbitrateInfoId = id
         this.form.data.arbitrateInType = 3
       }
     },
-    handleTabClick(data) {
+    getColumns () {
+      this.columns = []
+      for (let i = this.form.data.num; i < 103; i++) {
+        if (i % 2 === 1) {
+          this.columns.push(i)
+        }
+      }
+    },
+    handleTabClick (data) {
       this.form.data.arbitrateInType = data
+      this.form.data.num = data > 1 ? 3 : 11
+      this.getColumns()
+      this.getMoney()
     },
     afterRead(file) {
       file.length ? file.forEach((item, index) => this.uploadImg(item, index)) : this.uploadImg(file, this.form.data.images.length)
     },
     // 上传图片
     uploadImg(file, index) {
-      const formData = new FormData()
-      formData.append('file', file.file)
-      file.status = 'uploading'
-      file.message = '上传中…'
-      upload(formData).then(res => {
-        file.status = 'success'
-        file.message = '上传成功'
-        this.$set(this.form.data.images, index, res.message)
+      const formData = new FormData();
+      formData.append("file", file.file);
+      file.status = "uploading";
+      file.message = this.$t("views.appeal.start.message[0]");
+      upload(formData).then((res) => {
+        file.status = "success";
+        file.message = this.$t("views.appeal.start.message[1]");
+        this.$set(this.form.data.images, index, res.message);
       }).catch(() => {
-        file.status = 'fail'
-        file.message = '上传失败'
-        $notify('fail', `第${index}张图片上传失败，请重新上传`)
-        this.fileList.splice(index, 1)
-      })
+        file.status = "fail";
+        file.message = this.$t("views.appeal.start.message[2]");
+        $notify("fail", `${this.$t("views.appeal.start.notify[0]")}${index}${this.$t("views.appeal.start.notify[1]")}`
+        );
+        this.fileList.splice(index, 1);
+      });
     },
     onConfirm(value) {
       this.form.data.num = value;
       this.showPicker = false;
+      this.getMoney()
+    },
+    // 获取仲裁费用
+    getMoney () {
+      cost({ num: this.form.data.num, type: 1 }).then(res => {
+        this.money = res.items
+      })
     },
     // 提交申诉信息
     handleSubmit() {
-      const loading = $loading('提交中…')
-      submit({ ...this.form.data, images: this.form.data.images.join(',') }).then(res => {
-        $toast('success', '提交成功', () => this.$router.replace({name: 'arbitration'}))
+      const loading = $loading(this.$t("appeal.message"));
+      // 获取签名
+      userSign().then(async res => {
+        const payLoading = $loading(this.$t("appeal.success[0]"));
+        deductCoins({
+          ads: localStorage.getItem('myaddress'),
+          sign: localStorage.getItem('mysign'),
+          amount: this.money,
+          type: this.type
+        }).then(res => {
+          const submitLoading = $loading(this.$t("appeal.success[2]"));
+          submit({
+            ...this.form.data,
+            images: this.form.data.images.join(',')
+          }).then(res => {
+            $toast('success', this.$t("appeal.success[3]"), () => this.$router.replace({ name: 'arbitration' }))
+          }).catch(err => {
+            $toast('fail', this.$t("appeal.success[4]"))
+          }).finally(() => {
+            submitLoading.clear()
+          })
+        }).catch(err => {
+          $toast('fail', this.$t("appeal.success[1]"))
+        }).finally(() => {
+          payLoading.clear()
+        })
       }).catch(err => {
-        $toast('fail', err.message)
+        $toast('fail', err)
       }).finally(() => {
         loading.clear()
       })
