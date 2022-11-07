@@ -243,6 +243,10 @@ export const userBaseMes = function () {
 
         localStorage.setItem('teamName', it.teamName) //社区名字
 
+        localStorage.setItem('eotc9', it.eotc9);//九期待释放
+
+        localStorage.setItem('giftUSDT', it.giftUSDT);//手续费分红
+
         localStorage.setItem('myStakingEotc', it.myStakingEotc)
 
         PubSub.publish('setUid', localStorage.getItem('uid'))

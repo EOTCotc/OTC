@@ -58,7 +58,7 @@ export default {
       information: [
         { title: `USDT${this.$t('components.firstPhase.firstPhase.text[8]')}`, number: "" },
         { title: `EOTC${this.$t('components.firstPhase.firstPhase.text[8]')}`, number: "" },
-        { title: `${this.$t('components.firstPhase.firstPhase.text[9]')}(EOTC)`, number: "" },
+        { title: `九期待释放(EOTC)`, number: "" },
       ],
       earnings: [
         { title: `${this.$t('components.firstPhase.firstPhase.text[10]')}(EOTC)`, number: "" },
@@ -143,7 +143,7 @@ export default {
             this.information[i].number = data.eotc_stake;
             break;
           case "2":
-            this.information[i].number = localStorage.getItem("myeotc");
+            this.information[i].number = localStorage.getItem("eotc9");
             break;
         }
       }

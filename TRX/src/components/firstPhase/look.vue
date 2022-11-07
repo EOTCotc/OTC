@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import white from "@/components/Nav/white.vue";
-import { Toast } from "vant";
-import { GetSymx } from "@/api/trxRequest";
+import white from '@/components/Nav/white.vue'
+import { Toast } from 'vant'
+import { GetSymx } from '@/api/trxRequest'
 export default {
   components: {
     white,
@@ -34,10 +34,10 @@ export default {
       list: [],
       loading: false,
       finished: false,
-    };
+    }
   },
   mounted() {
-    this.init();
+    this.init()
   },
   methods: {
     init() {
@@ -45,46 +45,61 @@ export default {
         duration: 0, // 持续展示 toast
         forbidClick: true,
         message: this.$t('components.firstPhase.look.loading.text'),
-      });
+      })
       GetSymx({})
         .then((res) => {
-          let data = res.data;
+          let data = res.data
           for (let i of data) {
             switch (i.Chu) {
-              case "1":
-                i.Chu = this.$t('components.firstPhase.look.list[0]');
-                break;
-              case "2":
-                i.Chu = this.$t('components.firstPhase.look.list[1]');
-                break;
-              case "3":
-                i.Chu = this.$t('components.firstPhase.look.list[2]');
-                break;
-              case "4":
-                i.Chu = this.$t('components.firstPhase.look.list[3]');
-                break;
-              case "5":
-                i.Chu = this.$t('components.firstPhase.look.list[4]');
-                break;
-              case "6":
-                i.Chu = this.$t('components.firstPhase.look.list[5]');
-                break;
-              case "9":
-                i.Chu = this.$t('components.firstPhase.look.list[6]');
-                break;
+              case '1':
+                i.Chu = this.$t('components.firstPhase.look.list[0]')
+                break
+              case '2':
+                i.Chu = this.$t('components.firstPhase.look.list[1]')
+                break
+              case '3':
+                i.Chu = this.$t('components.firstPhase.look.list[2]')
+                break
+              case '4':
+                i.Chu = this.$t('components.firstPhase.look.list[3]')
+                break
+              case '5':
+                i.Chu = this.$t('components.firstPhase.look.list[4]')
+                break
+              case '6':
+                i.Chu = this.$t('components.firstPhase.look.list[5]')
+                break
+              case '7':
+                i.Chu = 'OTC手续费分红'
+                break
+              case '8':
+                i.Chu = '分期释放'
+                break
+              case '9':
+                i.Chu = '额外奖励'
+                break
+              case '11':
+                i.Chu = 'LP收益'
+                break
+              case '12':
+                i.Chu = 'LP直推'
+                break
+              case '13':
+                i.Chu = 'LP间推'
+                break
             }
           }
-          this.list = data;
+          this.list = data
           Toast.success(this.$t('components.firstPhase.look.loading.success'))
           // console.log(data);
         })
         .catch((err) => {
           Toast.fail(this.$t('components.firstPhase.look.loading.fail'))
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

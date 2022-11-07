@@ -16,7 +16,10 @@
           <p>{{ USDT }}</p>
         </div>
         <div>
-          <p>EOTC</p>
+          <p class="boxName" @click="$router.push({name:'look'})">
+            <span>EOTC</span>
+            <van-icon name="arrow" size="0.45rem" />
+          </p>
           <p>{{ EOTC }}</p>
         </div>
         <div>
@@ -160,6 +163,11 @@ export default {
       font-weight: bolder;
       width: 100%;
       margin-bottom: 40px;
+    }
+    .boxName {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     div {
       width: 45%;
