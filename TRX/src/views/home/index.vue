@@ -24,14 +24,11 @@
 </template>
 <script>
 import Nav from "@/components/Nav";
+
 import transitionPage from '@/components/transitionPage'
 import { CoinList } from "@/api/trxRequest";
 import { getmessageopen } from '@/api/arbitrationMsg'
 import Notification from '@/components/notification'
-
-// import t from "@/i18n/lang/zh"
-//
-// console.log(JSON.stringify(t));
 
 export default {
   name: "home-index",
