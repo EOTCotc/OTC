@@ -1,0 +1,57 @@
+export default {
+  // indexpagina  seller_buyBillpagina
+  index: {
+    MerchanInfo: "appello",
+    state1: "Pagato",
+    Putthecoin1: "Valuta di promemoria",
+    Putthecoin2: "Monete rilasciate",
+    state2: "In attesa di Pagamento",
+    state3: "pagare",
+    text1: "Per il trasferimento, confermare il numero di conto di riscossione del venditore visualizzato nei dettagli dell'ordine，o quota del venditore",
+    text2: "La carta conto ricevente di。Le informazioni sull'account inviate da altri venditori nella chat privata non sono consentite trasferimento。",
+    online: "collegamento",
+    send: "inviare",
+    please: "Si prega di caricare una foto",
+    uploading: "caricamento",
+    ospf: "No.",
+    page: "Pagina",
+    empty: "Invia contenuto non può essere vuoto",
+    atleast: "Carica almeno un'immagine！",
+    loading: "Caricamento in corso",
+    fail: "Caricamento dell'immagine non riuscito，si prega di caricare più tardi！",
+    runningwater: "Si prega di contattare il venditore per passare la tua recensione！",
+    sendeamil: "L'e-mail è stata inviata al destinatario！",
+    putmoney: "Ciao capo，Ho pagato，Si prega di rilasciare le monete il prima possibile！！",
+    urge: "Per favore, non sollecitatevi a vicenda frequentemente！！！",
+    payVal: "sconosciuto&sconosciuto&sconosciuto&",
+    alreadypassed: "Ho superato la tua revisione del flusso，Puoi procedere al pagamento successivo",
+    err: "errore nel collegamento  error",
+    warn: "errore nel collegamento，Disconnetti。。",
+    first: "Aggiorna i dati per la prima volta",
+    contactway: "dettagli del contatto"
+
+  },
+  // seller-billpagina
+  seller_bill: {
+    state1: "La controparte è in attesa di pagare",
+    state2: "sollecito pagamento",
+    state3: "Il pagamento è stato sollecitato",
+    cancel: "Annulla Ordine",
+    state4: "L'altra parte ha pagato",
+    text: "Revisione del flusso",
+    passed: "Conto approvato",
+    tips: " Al fine di impedire la circolazione di denaro nero、conto bloccato，",
+    tips2: "Solo dopo aver superato la revisione del flusso sull'account dell'altra parte，Solo l'altra parte può vedere il tuo numero di conto di ricezione e pagamento per la rimessa。",
+    cancelorder: "annullamento dell'ordine。。。",
+    canorder: "Annulla Ordine",
+    message: "<span class='activeInfo'>L'annullamento doloso dell'ordine sarà 【transazioni ristrette】</span> <br />Sei sicuro di voler annullare l'ordine?？",
+    cancleerr: "Ordine annullato con successo",
+    payment: "Ciao capo，Si prega di completare il pagamento dell'ordine il prima possibile！",
+    title: "Se superare la revisione del flusso dell'altra parte",
+    text2: "sto pensando",
+    text3: "passaggio",
+    text4: "La revisione del flusso è stata superata",
+    text5: "In attesa che l'acquirente invii denaro",
+  }
+
+}

@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Rilascio ritardato delle monete",
+  header_text: "In attesa che il venditore rilasci la valuta",
+  pay_text: "le monete verranno rilasciate in seguito,Si prega di prestare attenzione al controllo",
+  sell: "vendere",
+  price: "prezzo unitario",
+  number: "quantità",
+  total: "forfettario",
+  site: "indirizzo del portafoglio",
+  Seller: "informazioni del venditore",
+  relation: "contatta il venditore",
+  nickname: "soprannome del venditore",
+  payment: "acconto pomodoro",
+  order_number: "numero d'ordine",
+  date: "tempo dell'ordine",
+  launch: "Avviare l'arbitrato",
+};

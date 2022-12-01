@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Trì hoãn phát hành tiền xu",
+  header_text: "Chờ người bán giải phóng tiền tệ",
+  pay_text: "tiền xu sẽ được phát hành sau,Hãy chú ý để kiểm tra",
+  sell: "bán",
+  price: "đơn giá",
+  number: "số lượng",
+  total: "một lần",
+  site: "địa chỉ ví",
+  Seller: "thông tin người bán",
+  relation: "liên hệ với người bán",
+  nickname: "biệt danh người bán",
+  payment: "trả trước cà chua",
+  order_number: "số thứ tự",
+  date: "thời gian phục vụ",
+  launch: "Bắt đầu phân xử",
+};
