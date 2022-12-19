@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "コインの遅延リリース",
+  header_text: "売り手が通貨を解放するのを待っています",
+  pay_text: "コインは後でリリースされます,注意して確認してください",
+  sell: "売る",
+  price: "単価",
+  number: "数量",
+  total: "一時金",
+  site: "ウォレットアドレス",
+  Seller: "売り手の情報",
+  relation: "販売者に連絡する",
+  nickname: "販売者のニックネーム",
+  payment: "トマト頭金",
+  order_number: "注文番号",
+  date: "注文時間",
+  launch: "仲裁を開始する",
+};

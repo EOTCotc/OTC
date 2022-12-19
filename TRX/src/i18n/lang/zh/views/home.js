@@ -5,11 +5,11 @@ export default {
     "暂时不支持切换 法币交易！！！",
   ],
   notification: {
-    title: '仲裁消息',
-    buttonText: '前往处理',
+    title: "仲裁消息",
+    buttonText: "前往处理",
     message: [
-      '最近有',
-      '条消息待处理'
+      "最近有",
+      "条消息待处理"
     ]
   },
   menu: [

@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "코인 출시 지연",
+  header_text: "판매자가 통화를 해제하기를 기다리는 중",
+  pay_text: "동전은 나중에 풀릴 것입니다,확인에주의하십시오",
+  sell: "팔다",
+  price: "단가",
+  number: "수량",
+  total: "일시불",
+  site: "지갑 주소",
+  Seller: "판매자 정보",
+  relation: "판매자에게 연락",
+  nickname: "판매자 닉네임",
+  payment: "토마토 계약금",
+  order_number: "주문 번호",
+  date: "주문시간",
+  launch: "중재 시작",
+};

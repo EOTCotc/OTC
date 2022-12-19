@@ -1,0 +1,20 @@
+export default {
+	selectNav_title: "مبلغ الصفقة",
+	selectNav_pla: "الرجاء إدخال المبلغ المستهدف",
+	selectNav_mes: "يرجى ملء مبلغ المعاملة",
+	selectNav_shuaixuan: "المزيد من المرشحات",
+	selectNav_pay_type: "طريقة الدفع او السداد",
+	selectNav_pay_fun: [
+		"صفقة كبيرة",
+		"تركيزي",
+		"تداول",
+		"إظهار قسائم المعاملات فقط",
+	],
+	selectNav_all: "الكل",
+	selectNav_bank: "بطاقة مصرفية",
+	selectNav_alipay: "Alipay",
+	selectNav_wechat: "WeChat",
+	selectNav_money: "السيولة النقدية",
+	selectNav_dazong: "صفقة كبيرة",
+	selectNav_warn: "الوظيفة ليست مفتوحة بعد ، يرجى الانتظار",
+};

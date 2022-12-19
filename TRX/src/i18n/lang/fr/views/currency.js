@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Libération retardée des pièces",
+  header_text: "Attendre que le vendeur libère la devise",
+  pay_text: "les pièces seront libérées plus tard,Vérifiez s'il vous plaît",
+  sell: "vendre",
+  price: "Prix ​​unitaire",
+  number: "quantité",
+  total: "montant forfaitaire",
+  site: "adresse de portefeuille",
+  Seller: "informations du vendeur",
+  relation: "contacter le vendeur",
+  nickname: "surnom du vendeur",
+  payment: "tomate la plus riche",
+  order_number: "numéro de commande",
+  date: "temps de commande",
+  launch: "Initier l'arbitrage",
+};

@@ -1,0 +1,57 @@
+export default {
+  // indexpage  seller_buyBillpage
+  index: {
+    MerchanInfo: "appel",
+    state1: "Payé",
+    Putthecoin1: "pièces de monnaie de pointe",
+    Putthecoin2: "Les pièces ont été libérées",
+    state2: "En attente de paiement",
+    state3: "payer",
+    text1: "Pour le virement, veuillez confirmer le numéro de compte de recouvrement du vendeur affiché dans les détails de la commande，ou part du vendeur",
+    text2: "reçoit la carte de compte。Les informations de compte envoyées par d'autres vendeurs en chat privé ne sont pas nécessaires transférer。",
+    online: "De liaison",
+    send: "envoyer",
+    please: "Veuillez télécharger une image",
+    uploading: "télécharger",
+    ospf: "Non.",
+    page: "Page",
+    empty: "Le contenu envoyé ne peut pas être vide",
+    atleast: "Veuillez télécharger au moins une image！",
+    loading: "Chargement",
+    fail: "Le téléchargement de l'image a échoué，veuillez télécharger plus tard！",
+    runningwater: "Veuillez contacter le vendeur pour passer votre avis！",
+    sendeamil: "L'e-mail a été envoyé à la boîte aux lettres du destinataire！",
+    putmoney: "Bonjour chef，j'ai payé，Veuillez libérer les pièces dès que possible！！",
+    urge: "S'il vous plaît, ne vous pressez pas fréquemment！！！",
+    payVal: "inconnue&inconnue&inconnue&",
+    alreadypassed: "J'ai passé votre examen de flux，Vous pouvez effectuer le prochain paiement",
+    err: "erreur de connexion  error",
+    warn: "erreur de connexion，Déconnecter。。",
+    first: "Actualiser les données pour la première fois",
+    contactway: "détails du contact"
+
+  },
+  // seller-billpage
+  seller_bill: {
+    state1: "contrepartie à payer",
+    state2: "paiement de rappel",
+    state3: "Le paiement a été demandé",
+    cancel: "annuler la commande",
+    state4: "L'autre partie a payé",
+    text: "Examen du flux",
+    passed: "Compte approuvé",
+    tips: " Empêcher la circulation de l'argent noir、compte bloqué，",
+    tips2: "Seulement après avoir réussi l'examen du flux sur le compte de l'autre partie，Seule l'autre partie peut voir votre numéro de compte de réception et de paiement pour le versement。",
+    cancelorder: "annulation de commande。。。",
+    canorder: "annuler la commande",
+    message: "<span class='activeInfo'>L'annulation malveillante de la commande sera 【transactions restreintes】</span> <br />Voulez-vous vraiment annuler la commande ?？",
+    cancleerr: "Commande annulée avec succès",
+    payment: "Bonjour chef，Veuillez compléter le paiement de la commande dès que possible！",
+    title: "S'il a réussi l'examen du flux de l'autre partie",
+    text2: "je pense",
+    text3: "passer",
+    text4: "L'examen du flux a réussi",
+    text5: "En attente de l'acheteur pour envoyer de l'argent",
+  }
+
+}

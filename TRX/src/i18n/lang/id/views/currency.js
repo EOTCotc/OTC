@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Rilis koin yang tertunda",
+  header_text: "Menunggu penjual untuk melepaskan mata uang",
+  pay_text: "koin akan dirilis nanti,Silahkan membayar perhatian untuk memeriksa",
+  sell: "menjual",
+  price: "patokan harga",
+  number: "kuantitas",
+  total: "jumlah bulat",
+  site: "alamat dompet",
+  Seller: "informasi penjual",
+  relation: "hubungi penjual",
+  nickname: "nama panggilan penjual",
+  payment: "tomat terkaya",
+  order_number: "jumlah order",
+  date: "waktu pemesanan",
+  launch: "Mulai arbitrase",
+};

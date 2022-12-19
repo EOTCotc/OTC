@@ -4,6 +4,19 @@ import Vuei18n from 'vue-i18n';
 import zh from "./lang/zh"
 import en from "./lang/en"
 import zhTw from './lang/zhTw'
+import de from "./lang/de";
+import es from "./lang/es";
+import fr from "./lang/fr";
+import id from "./lang/id";
+import it from "./lang/it";
+import ja from "./lang/ja";
+import ko from "./lang/ko";
+import nl from "./lang/nl";
+import pt from "./lang/pt";
+import ru from "./lang/ru";
+import th from "./lang/th";
+import vi from "./lang/vi";
+import ar from "./lang/ar";
 
 Vue.use(Vuei18n);
 
@@ -22,12 +35,26 @@ if (lang) {
 }
 
 const i18n = new Vuei18n({
-  locale: lang || browserLang, // 语言
-  messages: {  // 文案
-    zh, // 文案的中文版
-    en, // 文案的英文版
-    zhTw
-  }
-})
+	locale: lang || browserLang, // 语言
+	messages: {
+		// 文案
+		zh, // 文案的中文版
+		en, // 文案的英文版
+		zhTw,
+		de,
+		ar,
+		es,
+		fr,
+		id,
+		it,
+		ja,
+		ko,
+		nl,
+		pt,
+		ru,
+		th,
+		vi,
+	},
+});
 
 export default i18n;

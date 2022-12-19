@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # etoc
 etoc
 =======
@@ -26,4 +25,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
->>>>>>> 7c4c237 (demo init index first)
