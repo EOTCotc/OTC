@@ -154,7 +154,8 @@ export default {
       this.$refs.countDown.reset();
     },
     switched() {
-      this.$emit("switched");
+      window.location.href = 'https://did.eotc.im/';
+      // this.$emit("switched");
     },
     login() {
       reg(this, this.value1, this.wallet, this.email, this.verification, 1);

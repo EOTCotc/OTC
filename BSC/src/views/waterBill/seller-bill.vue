@@ -10,13 +10,6 @@
         对方待付款
         <van-tag type="warning" size="large" v-if="!isReminders" @click="urge_payMoney">催付款</van-tag>
         <van-tag type="primary" size="large" v-else>已催付款</van-tag>
-        <van-button
-          type="danger"
-          size="mini"
-          class="cancelBtn"
-          v-if="ischangecheck_rcoin"
-          @click="cancelOrder"
-        >取消订单</van-button>
       </div>
 
       <div class="top-mid-content" v-if="item.dsx === '1'">
@@ -26,6 +19,13 @@
       <div class="top-mid-content">
         <span class="price">￥{{ item.amount1 }}</span>
         <span class="mid-r-content">
+          <van-button
+            type="danger"
+            size="mini"
+            class="cancelBtn"
+            v-if="ischangecheck_rcoin"
+            @click="cancelOrder"
+          >取消订单</van-button>
           <van-button
             type="danger"
             v-if="ischangecheck_rcoin"
@@ -131,6 +131,8 @@ import loadingToast from '@/components/loading-toast'
 import { GetOidMsg, OrderAudit } from '@/api/payverification'
 import { Reminders, cancel_order, ChatUpdate } from '@/api/trxRequest'
 
+import { merchant_Service, Buy_cancel, Buy_verify } from '@/utils/web3'
+
 import { domain } from '@/utils/request'
 
 import { getItem } from '@/utils/storage'
@@ -139,7 +141,7 @@ import waterBillBuyer from '@/mixins/water-bill-buyer'
 //商家出售待处理聊天
 export default {
   name: 'sellwater-bill',
-  props: ['odid', 'item'],
+  props: ['odid', 'item','coinId'],
   mixins: [waterBillBuyer],
   components: {
     [ImagePreview.Component.name]: ImagePreview.Component,
@@ -174,6 +176,8 @@ export default {
       images: [],
       //避免重复连接
       lockReconnect: false,
+      //gas为0则商家交手续费，为1则用户交手续费
+      gas: '',
     }
   },
   created() {
@@ -183,6 +187,13 @@ export default {
     const tokenOBJ = getItem(this.odid)
     this.get_token(tokenOBJ, '1')
     this.changecheck_rcoin()
+  },
+  mounted() {
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == localStorage.getItem('userIconId')) this.gas = i.gas
+    }
+    console.log(this.gas)
   },
   methods: {
     afterRead(File) {
@@ -379,11 +390,34 @@ export default {
         .then(async () => {
           // on confirm
           try {
-            await OrderAudit({
-              oid: this.odid,
-              rcoin: 0,
-            })
-            this.item.rcoin = 0
+            let num
+            if (this.gas == 1) {
+              await OrderAudit({
+                oid: this.odid,
+                rcoin: 0,
+              })
+              this.item.rcoin = 0
+            } else {
+              console.log(this.item), 
+              console.log(this.coinId)
+              await merchant_Service(
+                this.item.num,
+                this.item.id,
+                this.item.smes.trim(),
+                this.item.odid,
+                this.coinId
+              )
+              while (true) {
+                num = await Buy_verify(this.item.id, this.coinId)
+                if (num != 0) break
+              }
+              await OrderAudit({
+                oid: this.odid,
+                rcoin: 1,
+              })
+              this.item.rcoin = 1
+            }
+
             this.$nextTick(this.changecheck_rcoin)
             this.$toast.success(
               <div>
@@ -466,7 +500,13 @@ export default {
           </div>
         )
         this.isReminders = true
-        this.megList.push(this.cinit_mes('seller', `<div style="padding:10px">老板您好，请尽快完成订单支付！</div>`, true))
+        this.megList.push(
+          this.cinit_mes(
+            'seller',
+            `<div style="padding:10px">老板您好，请尽快完成订单支付！</div>`,
+            true
+          )
+        )
         this.soket.send('老板您好，请尽快完成订单支付！')
       } catch (err) {
         this.isReminders = true
@@ -521,7 +561,7 @@ export default {
               )
             }
           }
-          
+
           this.againList = data
           Promise.resolve()
             .then(() => {
@@ -552,7 +592,7 @@ export default {
       if (this.item.rcoin === '-1') {
         this.ischangecheck_rcoin = true
         return true
-      } else if (+this.item.rcoin === 0 && +this.item.rcoin >= 0) {
+      } else if (this.item.rcoin >= 0 ) {
         this.ischangecheck_rcoin = false
         return false
       } else if (!this.item.rcoin) {
@@ -628,8 +668,10 @@ export default {
   }
 
   .cancelBtn {
-    position: absolute;
-    right: 36px;
+    // position: absolute;
+    // right: 36px;
+    // background: #f17806;
+    // border-color: #f17806;
   }
   .water-bill-content {
     padding: 25px;
@@ -642,10 +684,17 @@ export default {
     }
     .top-mid-content {
       display: flex;
-      padding: 15px 15px 0 0;
+      justify-content: space-between;
+      padding: 15px 0 0 0;
       align-items: center;
+      /deep/.van-button--danger {
+        background: #f17806;
+        border-color: #f17806;
+      }
       span {
-        flex: 1;
+        // flex: 1;
+        // background: #f17806;
+        // border-color: #f17806;
       }
       .mid-r-content {
         display: flex;

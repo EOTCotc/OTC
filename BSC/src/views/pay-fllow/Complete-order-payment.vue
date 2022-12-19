@@ -59,18 +59,18 @@
 
       <van-step v-if="cacheData.ordercuePayType == 'xj'">
         交易总额：<span class="importan-tTsxt"
-          >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span
+          >￥{{ ThousandSeparator(cacheData.ordermoney) }}</span
         >
       </van-step>
       <van-step v-else>
         向商家转账：<span class="importan-tTsxt"
-          >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span
+          >￥{{ ThousandSeparator(cacheData.ordermoney) }}</span
         >
       </van-step>
 
       <van-step>
         <div class="serviceCharge">
-          交易手续费：{{ cacheData.servicefee }} USDT
+          交易手续费：{{ cacheData.servicefee }} {{kindType}}
         </div>
 
         <section class="seller-info">
@@ -256,6 +256,7 @@ export default {
       info_tips: false,
       curTime: 0, //节流阀时间戳
       cacheData: {},
+      kindType:localStorage.getItem('userIconType')
     };
   },
   methods: {

@@ -360,7 +360,7 @@
 import { subbuysellorder } from "@/api/trxRequest";
 import { getItem, removeItem } from "@/utils/storage";
 import { myPayment, Getsjmes } from "@/api/payverification";
-
+import { Buy_cancel } from "@/utils/web3";
 import sell_Mixin from "@/mixins/sell_mixins";
 
 import { TemporaryCoinWithdrawal } from "./getCoin_users";
@@ -382,9 +382,14 @@ export default {
   },
   methods: {
     // 倒计时完成 订单自动取消
-    coutDown_finish(type) {
+    async coutDown_finish(type) {
       this.$toast.warning(this.$t("views.gather.undone.toast[0]"));
       //console.log(type);
+      if (this.order_item.rcoin == 1)
+        await Buy_cancel(
+          this.order_item.id,
+          localStorage.getItem("userIconId")
+        );
       subbuysellorder({
         oid: this.order_item.id,
         type,

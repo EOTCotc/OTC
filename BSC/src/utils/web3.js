@@ -1,10 +1,8 @@
 ﻿import {
-  contractAddress_usdt,
   contractAddress,
-  contractAbi,
-  contractAbi_usdt,
-  contractAddress_eotc,
+  Contract_Any,
   Contract_EOTC,
+  Contract_BNB,
   Contract_USDT,
   Contract_EOTC_token,
 } from './abi'
@@ -17,24 +15,40 @@ import loadingToast from '@/components/loading-toast'
 /**
  * ! Reconstruction_ 标记开头的方法进行了 promise化重构
  */
-import { Toast } from 'vant'
+import {
+  Toast,
+  Dialog
+} from 'vant'
 
-import { SetCoinAds, GetHx, EotcLoginmes, VerifyOrder } from '@/api/trxRequest'
+import {
+  SetCoinAds,
+  GetHx,
+  EotcLoginmes,
+  VerifyOrder
+} from '@/api/trxRequest'
 
-import { clearmymes } from '@/api/payverification'
+import {
+  userrisklevel
+} from '@/api/arbitrationMsg'
+
+import {
+  clearmymes
+} from '@/api/payverification'
 
 import $router from '@/router'
 import md5 from 'md5'
 
 window.signMes = 'EOTC请求您签名确认,签名不消耗GAS.'
 
-const regular = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU'
+const regular = 'TCvz9REhN7aaRkfZjU5evRQkAugyfQBFZN'
+const regular1 = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU'
+
+window.itself = 101
 
 var address = ''
 const bscMin = 0.01
 const distime = 2000
 const bscMes = '为使交易顺畅，请确保钱包中不少于0.01BNB'
-
 
 function eotcmes(message) {
   Vue.$toast.warning(message)
@@ -141,7 +155,7 @@ export const loadweb3 = async function loadweb3(func) {
         method: 'eth_requestAccounts',
       })
       address = accounts[0].toLocaleLowerCase()
-      myUsdtAmount()
+      // myUsdtAmount()
       console.log(address)
       localStorage.setItem('netType', 'bsc') //ethereum.chainId
       // localStorage.setItem('netType', 'asd')
@@ -157,18 +171,15 @@ export const loadweb3 = async function loadweb3(func) {
       if (address != localStorage.getItem('myaddress')) clearmymes()
     }
   } else {
-    Vue.$toast.warning(
-      {
-        component: loadingToast,
-        props: {
-          title: '请在支持 BSC 的Dapp 游览器中打开！',
-        },
+    Vue.$toast.warning({
+      component: loadingToast,
+      props: {
+        title: '请在支持 BSC 的Dapp 游览器中打开！',
       },
-      {
-        icon: false,
-        timeout: false,
-      }
-    )
+    }, {
+      icon: false,
+      timeout: false,
+    })
 
     // console.log(signature);
   }
@@ -190,8 +201,8 @@ export const userBaseMes = function () {
   }
 
   EotcLoginmes({
-    wallet: ads,
-  })
+      wallet: ads,
+    })
     .then((data) => {
       var it = eval(data.data)
       console.log('用户Uid', it)
@@ -233,7 +244,8 @@ export const userBaseMes = function () {
 
         localStorage.setItem('shnum', it.snum) //未审核的实名认证会员人数
         localStorage.setItem('bsnum', it.bnum) //用户待放币的订单数
-        localStorage.setItem('myjifen', it.jifen) //用户积分 至少10分才能 购买 or 出售
+
+        // localStorage.setItem('myjifen', it.jifen) //用户积分 至少10分才能 购买 or 出售
 
         localStorage.setItem('usdt_ye', it.usdt_ye) //USDT余额
         localStorage.setItem('eotc_stake', it.eotc_stake) //EOTC总量
@@ -267,9 +279,18 @@ export const userBaseMes = function () {
 
         localStorage.setItem('teamName', it.teamName) //社区名字
 
+        localStorage.setItem('eotc9', it.eotc9) //九期待释放
+        localStorage.setItem('eotcStaging', it.eotcStaging) //下期可释放
+
+        localStorage.setItem('giftUSDT', it.giftUSDT) //手续费分红
+
         localStorage.setItem('myStakingEotc', it.myStakingEotc)
 
         PubSub.publish('setUid', localStorage.getItem('uid'))
+
+        if (it.jifen < 1) {
+          setFenkong()
+        }
       } else {
         // sysMes("请先注册EOTC", function () { window.location.href = "login.html" });
         console.warn('请先注册EOTC')
@@ -287,6 +308,7 @@ export const userBaseMes = function () {
 
 //更换连接的钱包(先于loadweb3执行)
 ethereum.on('accountsChanged', handleAccountsChanged)
+
 function handleAccountsChanged(accounts) {
   //if (address != localStorage.getItem("myaddress")) {
   //    clearmymes();
@@ -296,11 +318,23 @@ function handleAccountsChanged(accounts) {
     eotcmes('未连接钱包')
   }
 }
+//设置风控等级
+function setFenkong() {
+  // userrisklevel({}).then((res) => {
+  //   Dialog.alert({
+  //     title: 'DID抽审',
+  //     message: `您的账号正被抽查DID身份认证的真实性，请耐心配合完成EOTC DAO的E3风控审查。E3风控通过后，账户所有功能恢复，\n请勿担心！`,
+  //     confirmButtonText: '去完成E3风控审核',
+  //   }).then(() => {
+  //     window.location.href = 'https://did.eotc.im/'
+  //   })
+  // })
+}
 
 //消息签名
 export const userSign = function userSign(mes, func) {
-  window.web3.eth.personal
-    .sign(window.web3.utils.utf8ToHex(mes), address)
+  new Web3(ethereum).eth.personal
+    .sign(new Web3(ethereum).utils.utf8ToHex(mes), address)
     .then((result) => {
       console.log('mes_sign：' + result)
       localStorage.setItem('myaddress', address)
@@ -318,8 +352,8 @@ export const runSign = function () {
   return new Promise((resolve, reject) => {
     const address = localStorage.getItem('myaddress')
     try {
-      window.web3.eth.personal
-        .sign(window.web3.utils.utf8ToHex(signMes), address)
+      new Web3(ethereum).eth.personal
+        .sign(new Web3(ethereum).utils.utf8ToHex(signMes), address)
         .then((result) => {
           let userSignMD5 = md5(result)
           if (userSignMD5 == localStorage.getItem('mysign')) {
@@ -337,38 +371,37 @@ export const runSign = function () {
   })
 }
 
-export const Reconstruction_usdtsend = function (val, message) {
+export const Reconstruction_usdtsend = function (val, abi, ads) {
   return new Promise(async (resolve, reject) => {
     const address = localStorage.getItem('myaddress')
     try {
-      var myContract = Contract_USDT(window.web3)
+      var myContract = Contract_Any(new Web3(ethereum), abi, ads)
       myContract.methods
-        .approve(contractAddress, EthValues(val))
-        .send({ from: address }, function (error, result) {
+        .approve(contractAddress, EthValues(val, ads))
+        .send({
+          from: address
+        }, function (error, result) {
           if (!error) {
             console.log(result)
-            Vue.$toast.warning(
-              {
-                component: loadingToast,
-                props: {
-                  title: '请先给智能合约授权,<br/>授权期间请不要刷新或切换页面',
-                },
+            Vue.$toast.warning({
+              component: loadingToast,
+              props: {
+                title: '请先给智能合约授权,<br/>授权期间请不要刷新或切换页面',
               },
-              {
-                icon: false,
-                timeout: false,
-              }
-            )
+            }, {
+              icon: false,
+              timeout: false,
+            })
 
             SetCoinAds({
-              num: val,
-            })
+                num: val,
+              })
               .then((data) => {
                 let it = eval(data.data)
                 if (it.State == '1') {
                   localStorage.setItem('usdtsq', val)
-                  console.log(`${message}授权成功`)
-                  resolve(`${message}授权成功`)
+                  console.log(`授权成功`)
+                  resolve(`授权成功`)
                   // 授权成功 关闭 警示弹窗
                   if (val < 0) {
                     reject('授权已取消')
@@ -386,6 +419,7 @@ export const Reconstruction_usdtsend = function (val, message) {
         })
     } catch (e) {
       // 授权s失败  关闭 警示弹窗
+      console.log(123)
       reject('交易失败：' + e)
       Vue.$toast.clear()
     }
@@ -400,11 +434,11 @@ export const SendUSDT = async function (val, ads, ctype) {
     var myContract
     let type, num
     if (ctype == 'usdt') {
-      myContract = Contract_USDT(window.web3)
+      myContract = Contract_USDT(new Web3(ethereum))
       type = 'ether'
       num = EthValues(val)
     } else if (ctype == 'eotc') {
-      myContract = Contract_EOTC_token(window.web3)
+      myContract = Contract_EOTC_token(new Web3(ethereum))
       type = 'mwei'
       num = EthValues(val, type)
     } else {
@@ -414,7 +448,9 @@ export const SendUSDT = async function (val, ads, ctype) {
     console.log(num)
     myContract.methods
       .transfer(ads, num)
-      .send({ from: address }, function (error, result) {
+      .send({
+        from: address
+      }, function (error, result) {
         if (!error) {
           console.log(result)
           setTimeout(() => {
@@ -431,12 +467,14 @@ export const SendUSDT = async function (val, ads, ctype) {
 
 //获取钱包 USDT 余额
 function myUsdtAmount() {
-  var myContract = Contract_USDT(window.web3)
+  var myContract = Contract_USDT(new Web3(ethereum))
   console.log(address)
 
   myContract.methods
     .balanceOf(address)
-    .call({ from: address }, function (error, result) {
+    .call({
+      from: address
+    }, function (error, result) {
       if (!error) {
         var mynum = TypeShow(result).toFixed(2)
         console.log('myamount', mynum)
@@ -448,52 +486,86 @@ function myUsdtAmount() {
     })
 }
 //网络判断
-function TypeShow(result) {
+function TypeShow(result, type) {
   //mwei 1000000 gwei:1000000000 ether 1000000000000000000
-  if (localStorage.getItem('netType') == 'asd') {
-    return parseFloat(window.web3.utils.fromWei(result, 'mwei'))
-  } else if (localStorage.getItem('netType') == 'bsc') {
-    return parseFloat(window.web3.utils.fromWei(result, 'ether'))
+  let coinList = JSON.parse(localStorage.getItem('coinList'))
+  for (let i of coinList) {
+    if (i.name == type || i.id == type || i.ads == type) var nowcoin = i
+  }
+  console.log(result)
+  // val = (val * 1).toFixed(6)
+  if (nowcoin.decimals == 6) {
+    return parseFloat(new Web3(ethereum).utils.fromWei(result.toString(), 'mwei'))
+  } else if (nowcoin.decimals == 18) {
+    return parseFloat(new Web3(ethereum).utils.fromWei(result.toString(), 'ether'))
+  } else if (nowcoin.decimals == 9) {
+    return parseFloat(new Web3(ethereum).utils.fromWei(result.toString(), 'gwei'))
   }
 }
 
 //用户向合约订单质押USDT，执行前需要向USDT合约申请approve授权
 
-export const Reconstruction_sellOrder_user = async function (oid, val, sj_ads) {
+export const Reconstruction_sellOrder_user = async function (oid, val, sj_ads, coinID) {
   return new Promise(async (resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_EOTC(window.web3)
-      myContract.methods
-        .transferIn1(EthValues(val), oid.toString(), sj_ads.trim())
-        .send({ from: address }, function (error, result) {
-          if (!error) {
-            console.log(result)
-            Vue.$toast.warning(
-              {
-                component: loadingToast,
-                props: {
-                  title:
-                    '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-                },
-              },
-              {
-                icon: false,
-                timeout: false,
-              }
-            )
-            getxh(11, oid, val, result)
-            //执行成功
-            myUsdtAmount()
-            console.log('区块链打包确认通过')
-            resolve('区块链打包确认通过')
-            Vue.$toast.clear()
-          } else {
-            console.log(error)
-            Vue.$toast.warning('交易失败,区块繁忙拥堵，请稍后重试')
-            reject(error)
-          }
-        })
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinID != window.itself) {
+        var myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferIn1(EthValues(val, coinID), oid.toString(), sj_ads.trim(), coinID)
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+
+              getxh(11, oid, val, result)
+              //执行成功
+              myUsdtAmount()
+              console.log('区块链打包确认通过')
+              resolve('区块链打包确认通过')
+              Vue.$toast.clear()
+            } else {
+              console.log(error)
+              Vue.$toast.warning('交易失败,区块繁忙拥堵，请稍后重试')
+              reject(error)
+            }
+          })
+      } else {
+        var myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferIn1(oid.toString(), sj_ads.trim())
+          .send({
+            from: address,
+            value: EthValues(val, coinID)
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+
+              getxh(11, oid, val, result)
+              //执行成功
+              // myUsdtAmount()
+              console.log('区块链打包确认通过')
+              resolve('区块链打包确认通过')
+              Vue.$toast.clear()
+            } else {
+              console.log(error)
+              Vue.$toast.warning('交易失败,区块繁忙拥堵，请稍后重试')
+              reject(error)
+            }
+          })
+      }
+
+
     } catch (e) {
       console.warn(e)
       Vue.$toast.clear()
@@ -503,81 +575,170 @@ export const Reconstruction_sellOrder_user = async function (oid, val, sj_ads) {
   })
 }
 
-//用户从合约订单转出USDT（放币）
-export const Reconstruction_outOrder_user = async function (oid, val) {
-  return new Promise(async (resolve, reject) => {
-    const address = localStorage.getItem('myaddress')
+export const Buy_user = function (val, oid, payaddress, wechat, coinID) {
+  return new Promise((resolve, reject) => {
     try {
-      var myContract = Contract_EOTC(window.web3)
-      myContract.methods
-        .transferOutfor1(oid.toString(), EthValues(val))
-        .send({ from: address }, function (error, result) {
-          if (!error) {
-            console.log(result)
-
-            Vue.$toast.warning(
-              {
-                component: loadingToast,
-                props: {
-                  title:
-                    '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-                },
-              },
-              {
-                icon: false,
-                timeout: false,
-              }
-            )
-
-            getxh(12, oid, val, result)
-            //执行成功
-            resolve()
-            Vue.$toast.clear()
-          } else {
-            console.log(error)
-            reject(error)
-          }
-        })
+      let myContract
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinID != window.itself) {
+        console.log(EthValues(val, coinID), oid, payaddress, wechat, coinID)
+        myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferIn0(
+            EthValues(val, coinID),
+            oid.toString(),
+            payaddress,
+            wechat,
+            coinID
+          )
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              getxh(8, oid, val, result)
+              resolve()
+              Vue.$toast.clear()
+            } else {
+              reject(error)
+            }
+          })
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferIn0(EthValues(val, coinID), oid.toString(), payaddress, wechat)
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              getxh(8, oid, val, result)
+              resolve()
+              Vue.$toast.clear()
+            } else {
+              reject(error)
+            }
+          })
+      }
     } catch (e) {
-      console.warn(e)
-      Vue.$toast.clear()
+      console.log(e)
       reject(e)
+      Vue.$toast.clear()
+    }
+  })
+}
+//商家交手续费
+export const merchant_Service = function async (
+  val,
+  oid,
+  payaddress,
+  wechat,
+  coinID
+) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let myContract
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinID != window.itself) {
+        console.log(
+          EthValues(val, coinID),
+          oid.toString(),
+          wechat,
+          coinID,
+          payaddress,
+          address
+        )
+        myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferIn00(
+            EthValues(val, coinID),
+            oid.toString(),
+            wechat.toString(),
+            coinID.toString(),
+            payaddress
+          )
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+              getxh(9, oid, val, result)
+              resolve()
+              Vue.$toast.clear()
+            } else {
+              console.log(error)
+              reject(error)
+            }
+          })
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferIn00(EthValues(val, coinID), oid.toString(), wechat, payaddress)
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              getxh(9, oid, val, result)
+              resolve()
+              Vue.$toast.clear()
+            } else {
+              reject(error)
+            }
+          })
+      }
+    } catch (e) {
+      console.log(e)
+      reject(e)
+      Vue.$toast.clear()
     }
   })
 }
 
-//商家向合约订单质押USDT，执行前需要向USDT合约申请approve授权
-export const sellOrders = async function (val, oid) {
+//用户校验是否提交了手续费
+export const Buy_verify = async function (oid, coinID) {
   return new Promise(async (resolve, reject) => {
-    const address = localStorage.getItem('myaddress')
     try {
-      var myContract = Contract_EOTC(window.web3)
+      let myContract
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块校验确认，<br/>区块校验期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinID != window.itself)
+        myContract = Contract_EOTC(new Web3(ethereum))
+      else myContract = Contract_BNB(new Web3(ethereum))
+
       myContract.methods
-        .transferIn(EthValues(val), oid.toString())
-        .send({ from: address }, function (error, result) {
+        .getInfo_Out(oid.toString())
+        .call({
+          from: address
+        }, function (error, result) {
           if (!error) {
             console.log(result)
-            Vue.$toast.warning(
-              {
-                component: loadingToast,
-                props: {
-                  title:
-                    '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-                },
-              },
-              {
-                icon: false,
-                timeout: false,
-              }
-            )
-
-            getxh(13, oid, val, result)
-            //执行成功
-            myUsdtAmount()
-            resolve('授权成功')
+            var mynum = TypeShow(result[1], coinID)
             Vue.$toast.clear()
+            resolve(mynum)
           } else {
             console.log(error)
+            Vue.$toast.clear()
             reject(error)
           }
         })
@@ -589,78 +750,301 @@ export const sellOrders = async function (val, oid) {
   })
 }
 
-export const outOrder = async function (odid, oid, val, ads) {
+//用户取消购买订单
+export const Buy_cancel = async function (oid, coinID) {
   return new Promise(async (resolve, reject) => {
+    let myContract
+    if (coinID != window.itself) myContract = Contract_EOTC(new Web3(ethereum))
+    else myContract = Contract_BNB(new Web3(ethereum))
+    myContract.methods
+      .transferIn01(oid.toString())
+      .send({
+        from: address
+      }, function (error, result) {
+        if (!error) {
+          console.log(result)
+          resolve()
+        } else {
+          console.log(error)
+          reject(error)
+          Vue.$toast.clear()
+        }
+      })
+  })
+}
+
+//用户从合约订单转出USDT（放币）
+export const Reconstruction_outOrder_user = async function (oid, val, coinName) {
+  return new Promise(async (resolve, reject) => {
+    const address = localStorage.getItem('myaddress')
     try {
-      const address = localStorage.getItem('myaddress')
-      var myContract = Contract_EOTC(window.web3)
-      myContract.methods
-        .transferOutfor(oid.toString(), EthValues(val), ads.trim())
-        .send(
-          { from: localStorage.getItem('myaddress') },
-          function (error, result) {
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinName != window.itself) {
+        var myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferOutfor1(oid.toString(), EthValues(val, coinName), coinName)
+          .send({
+            from: address
+          }, function (error, result) {
             if (!error) {
               console.log(result)
-              Vue.$toast.warning(
-                {
-                  component: loadingToast,
-                  props: {
-                    title:
-                      '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-                  },
-                },
-                {
-                  icon: false,
-                  timeout: false,
-                }
-              )
-              getxh(14, odid, val, result)
+              getxh(12, oid, val, result)
               //执行成功
               resolve()
+              Vue.$toast.clear()
             } else {
               console.log(error)
               reject(error)
             }
-          }
-        )
+          })
+      } else {
+        var myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferOutfor1(oid.toString(), EthValues(val, coinName))
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+              getxh(12, oid, val, result)
+              //执行成功
+              resolve()
+              Vue.$toast.clear()
+            } else {
+              console.log(error)
+              reject(error)
+            }
+          })
+      }
+
+
+    } catch (e) {
+      console.warn(e)
+      Vue.$toast.clear()
+      reject(e)
+    }
+  })
+}
+//获取币种的长度
+// export const coinLength = function (abi, ads) {
+//   return new Promise((resolve, reject) => {
+//     let myContract = Contract_Any(new Web3(ethereum), abi, ads)
+//     myContract.methods
+//       .decimals()
+//       .call({ from: address }, function (error, result) {
+//         if (!error) {
+//           resolve(result)
+//         } else {
+//           reject()
+//         }
+//       })
+//   })
+// }
+
+//商家向合约订单质押USDT，执行前需要向USDT合约申请approve授权
+export const sellOrders = async function (val, oid, coinID) {
+  return new Promise(async (resolve, reject) => {
+    const address = localStorage.getItem('myaddress')
+    try {
+      let myContract
+      if (coinID != window.itself) {
+        myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferIn(EthValues(val, coinID), oid.toString(), coinID)
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+              Vue.$toast.warning({
+                component: loadingToast,
+                props: {
+                  title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+                },
+              }, {
+                icon: false,
+                timeout: false,
+              })
+
+              getxh(13, oid, val, result)
+              //执行成功
+              // myUsdtAmount()
+              resolve('授权成功')
+              Vue.$toast.clear()
+            } else {
+              console.log(error)
+              reject(error)
+            }
+          })
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferIn(oid.toString())
+          .send({
+              from: address,
+              value: EthValues(val, coinID)
+            },
+            function (error, result) {
+              if (!error) {
+                console.log(result)
+                Vue.$toast.warning({
+                  component: loadingToast,
+                  props: {
+                    title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+                  },
+                }, {
+                  icon: false,
+                  timeout: false,
+                })
+                getxh(13, oid, val, result)
+                //执行成功
+                // myUsdtAmount()
+                resolve('授权成功')
+                Vue.$toast.clear()
+              } else {
+                console.log(error)
+                reject(error)
+              }
+            }
+          )
+      }
+    } catch (e) {
+      console.log(e)
+      reject(e)
+      Vue.$toast.clear()
+    }
+  })
+}
+
+export const outOrder = async function (odid, val, coinId) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const address = localStorage.getItem('myaddress')
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      let myContract
+      if (coinId != window.itself) {
+        myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferOutfor(odid.toString(), EthValues(val, coinId), coinId)
+          .send({
+              from: localStorage.getItem('myaddress')
+            },
+            function (error, result) {
+              if (!error) {
+                console.log(result)
+
+                getxh(14, odid, val, result)
+                //执行成功
+                resolve()
+              } else {
+                console.log(error)
+                reject(error)
+              }
+            }
+          )
+
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferOutfor(odid.toString(), EthValues(val, coinId))
+          .send({
+              from: localStorage.getItem('myaddress')
+            },
+            function (error, result) {
+              if (!error) {
+                console.log(result)
+
+                getxh(14, odid, val, result)
+                //执行成功
+                resolve()
+              } else {
+                console.log(error)
+                reject(error)
+              }
+            }
+          )
+      }
+
+
     } catch (err) {
       reject(err)
     }
   })
 }
 
-export const addSellOrder = async function (val, oid) {
+export const addSellOrder = async function (val, oid, coinID) {
   return new Promise(async (resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_EOTC(window.web3)
-      myContract.methods
-        .transferAdd(EthValues(val), oid.toString())
-        .send({ from: address }, function (error, result) {
-          if (!error) {
-            console.log(result)
-            Vue.$toast.warning(
-              {
-                component: loadingToast,
-                props: {
-                  title:
-                    '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-                },
-              },
-              {
-                icon: false,
-                timeout: false,
+      let myContract
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinID != window.itself) {
+        myContract = Contract_EOTC(new Web3(ethereum))
+        console.log(EthValues(val, coinID), oid, coinID)
+        myContract.methods
+          .transferAdd(EthValues(val, coinID), oid.toString(), coinID)
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+
+              getxh(15, oid, val, result)
+              //执行成功
+              // myUsdtAmount()
+              resolve()
+            } else {
+              console.log(error)
+              reject(error)
+            }
+          })
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferAdd(oid.toString())
+          .send({
+              from: address,
+              value: EthValues(val, coinID)
+            },
+            function (error, result) {
+              if (!error) {
+                console.log(result)
+
+                getxh(15, oid, val, result)
+                //执行成功
+                // myUsdtAmount()
+                resolve()
+              } else {
+                console.log(error)
+                reject(error)
               }
-            )
-            getxh(15, oid, val, result)
-            //执行成功
-            myUsdtAmount()
-            resolve()
-          } else {
-            console.log(error)
-            reject(error)
-          }
-        })
+            }
+          )
+      }
     } catch (err) {
       reject(err)
     }
@@ -668,25 +1052,46 @@ export const addSellOrder = async function (val, oid) {
 }
 
 //商家从合约订单撤出USDT
-export const cancelOrders = async function cancelOrders(oid, val, okFun) {
-  return new Promise((resolve, reject) => {
+export const cancelOrders = async function cancelOrders(oid, val, coinId) {
+  return new Promise(async (resolve, reject) => {
     try {
+      let myContract
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_EOTC(window.web3)
-      var valmes
-      myContract.methods
-        .transferOut(oid.toString(), EthValues(val))
-        .send({ from: address }, function (error, result) {
-          if (!error) {
-            console.log(result)
-            getxh(16, oid, val, result)
-            //执行成功
-            resolve()
-          } else {
-            console.log(error)
-            reject('交易失败，网络出了点小问题！')
-          }
-        })
+      if (coinId != window.itself) {
+        myContract = Contract_EOTC(new Web3(ethereum))
+        myContract.methods
+          .transferOut(oid.toString(), EthValues(val, coinId), coinId)
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+              getxh(16, oid, val, result)
+              //执行成功
+              resolve()
+            } else {
+              console.log(error)
+              reject('交易失败，网络出了点小问题！')
+            }
+          })
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+        myContract.methods
+          .transferOut(oid.toString(), EthValues(val, coinId))
+          .send({
+            from: address
+          }, function (error, result) {
+            if (!error) {
+              console.log(result)
+              getxh(16, oid, val, result)
+              //执行成功
+              resolve()
+            } else {
+              console.log(error)
+              reject('交易失败，网络出了点小问题！')
+            }
+          })
+      }
     } catch (err) {
       reject('交易失败，网络出了点小问题！')
     }
@@ -704,33 +1109,45 @@ function getxh(dtype, oid, val, hx) {
     console.log('GetHx', data.data)
   })
 }
+
 function EthValues(val, type) {
   //mwei 1000000 gwei:1000000000 ether 1000000000000000000
-  if (localStorage.getItem('netType') == 'asd' || type) {
-    return window.web3.utils.toWei(val.toString(), 'mwei')
-  } else if (localStorage.getItem('netType') == 'bsc') {
-    return window.web3.utils.toWei(val.toString(), 'ether')
+  let coinList = JSON.parse(localStorage.getItem('coinList'))
+  for (let i of coinList) {
+    if (i.name == type || i.id == type || i.ads == type) var nowcoin = i
+  }
+  val = (val * 1).toFixed(6)
+  if (nowcoin.decimals == 6) {
+    return new Web3(ethereum).utils.toWei(val.toString(), 'mwei')
+  } else if (nowcoin.decimals == 18) {
+    return new Web3(ethereum).utils.toWei(val.toString(), 'ether')
+  } else if (nowcoin.decimals == 9) {
+    return new Web3(ethereum).utils.toWei(val.toString(), 'gwei')
   }
 }
 
 export const dealTransForm = () => {
   return Promise.resolve(Reconstruction_getTrxBalance)
 }
-
-export const Reconstruction_getTrxBalance = async function () {
+//查询钱包bnb余额
+export const Reconstruction_getTrxBalance = async function (num) {
   return new Promise((resolve, reject) => {
     try {
-      console.log(111)
-      window.web3.eth
+      let sum = num ? num * 1 + bscMin : bscMin
+      new Web3(ethereum).eth
         .getBalance(localStorage.getItem('myaddress'))
         .then((result) => {
-          if (TypeShow(result) >= bscMin) resolve()
+          console.log(result)
+          console.log(TypeShow(result, 'BNB'))
+
+          if (TypeShow(result, 'BNB') >= sum) resolve()
           else {
-            Vue.$toast.warning(bscMes)
+            Vue.$toast.error(`为了使交易顺利，请确保钱包中不少于${sum} BNB`)
             reject(bscMes)
           }
         })
     } catch (err) {
+      console.log(err)
       Vue.$toast.error(err.message)
       reject(err)
     }
@@ -741,10 +1158,12 @@ export const GetmyUSDT = function (orderID, gusdt, type) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_EOTC(window.web3)
+      var myContract = Contract_EOTC(new Web3(ethereum))
       myContract.methods
         .getInfo_order(orderID.toString())
-        .call({ from: address }, function (error, result) {
+        .call({
+          from: address
+        }, function (error, result) {
           if (!error) {
             console.log(result)
             let usdt = TypeShow(result[1]).toFixed(6)
@@ -752,7 +1171,11 @@ export const GetmyUSDT = function (orderID, gusdt, type) {
             console.log(111)
             if (gusdt <= usdt) resolve()
             else {
-              VerifyOrder({ id: orderID, num: usdt, type: type }).then(
+              VerifyOrder({
+                id: orderID,
+                num: usdt,
+                type: type
+              }).then(
                 (res) => {
                   console.log(res)
                   if (type == 0) {
@@ -774,24 +1197,73 @@ export const GetmyUSDT = function (orderID, gusdt, type) {
     }
   })
 }
+//商家手动校验
+export const GetmyUSDT_agree = async function (orderID, type, coinID) {
+  return new Promise((resolve, reject) => {
+    console.log(orderID, type, coinID)
+    try {
+      const address = localStorage.getItem('myaddress')
+      let myContract
+      if (coinID != window.itself) {
+        myContract = Contract_EOTC(new Web3(ethereum))
+      } else {
+        myContract = Contract_BNB(new Web3(ethereum))
+      }
+      myContract.methods
+        .getInfo_order(orderID.toString())
+        .call({
+          from: address
+        }, function (error, result) {
+          if (!error) {
+            console.log(result)
+            let usdt = TypeShow(result[1]).toFixed(6)
+            console.log(usdt)
+            VerifyOrder({
+              id: orderID,
+              num: usdt,
+              type: type
+            }).then((res) => {
+              console.log(res)
+              if (type == 0) {
+                reject('该订单USDT数量已不足')
+              } else {
+                if (res.data.Code > 0) {
+                  reject(111)
+                }
+              }
+            })
+          } else {
+            Vue.$toast.warning('操作失败，请重试' + error)
+          }
+        })
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
 
-export const GetmyUSDT_User = function (orderID, gusdt, fuc) {
+export const GetmyUSDT_User = function (orderID, gusdt, coinId) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_EOTC(window.web3)
+      if (coinId != window.itself)
+        var myContract = Contract_EOTC(new Web3(ethereum))
+      else var myContract = Contract_BNB(new Web3(ethereum))
+
       myContract.methods
         .getInfo_orderOut(orderID.toString())
-        .call({ from: address }, function (error, result) {
+        .call({
+          from: address
+        }, function (error, result) {
           if (!error) {
             let zads = result[2]
             console.log(zads)
-            let usdt = TypeShow(result[1]).toFixed(6)
+            let usdt = TypeShow(result[1], coinId).toFixed(6)
             console.log(usdt)
             if (
               gusdt <= usdt &&
               zads.toLocaleLowerCase() ==
-                localStorage.getItem('myaddress').toLocaleLowerCase()
+              localStorage.getItem('myaddress').toLocaleLowerCase()
             )
               resolve()
             else reject('订单异常')
@@ -805,25 +1277,31 @@ export const GetmyUSDT_User = function (orderID, gusdt, fuc) {
   })
 }
 
-export const Reconstruction_verifyUSDT = function verifyUSDT(amount, fuc) {
+export const Reconstruction_verifyUSDT = function verifyUSDT(amount, abi, ads) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_USDT(window.web3)
+      var myContract = Contract_Any(new Web3(ethereum), abi, ads)
+      console.log(ads)
       myContract.methods
         .balanceOf(address)
-        .call({ from: address }, function (error, result) {
+        .call({
+          from: address
+        }, function (error, result) {
           if (!error) {
-            let mynum = TypeShow(result)
+            console.log(result)
+            console.log(TypeShow(result, ads))
+            // let mynum = TypeShow(result)
+            let mynum = TypeShow(result, ads)
             if (mynum >= amount) resolve()
-            else{
+            else {
               reject('钱包余额不足')
-              Vue.$toast.warning("钱包余额不足")
-            } 
+              Vue.$toast.warning('钱包余额不足')
+            }
             localStorage.setItem('myamount', mynum.toFixed(2))
           } else {
             reject('操作失败，请重试  ' + error)
-            Vue.$toast.warning("操作失败，请重试  " + error)
+            Vue.$toast.warning('操作失败，请重试  ' + error)
           }
         })
     } catch (err) {
@@ -836,10 +1314,12 @@ export const myApprove = async function myApprove(num, func) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_USDT(window.web3)
+      var myContract = Contract_USDT(new Web3(ethereum))
       myContract.methods
         .allowance(address, contractAddress)
-        .call({ from: address }, function (error, result) {
+        .call({
+          from: address
+        }, function (error, result) {
           if (!error) {
             let mnum = TypeShow(result)
             if (mnum >= parseFloat(num)) resolve()
@@ -854,30 +1334,38 @@ export const myApprove = async function myApprove(num, func) {
   })
 }
 
-export const Reconstruction_myApprove = async function (num) {
+export const Reconstruction_myApprove = async function (num, abi, ads) {
   return new Promise((resolve, reject) => {
     try {
       const address = localStorage.getItem('myaddress')
-      var myContract = Contract_USDT(window.web3)
+      // var myContract = Contract_USDT(window.web3)
+      var myContract = Contract_Any(new Web3(ethereum), abi, ads)
       myContract.methods
         .allowance(address, contractAddress)
-        .call({ from: address }, function (error, result) {
+        .call({
+          from: address
+        }, function (error, result) {
           if (!error) {
-            let mnum = TypeShow(result)
+            console.log(result)
+            let mnum = TypeShow(result, ads)
             if (mnum >= parseFloat(num)) resolve()
             else {
-              Reconstruction_usdtsend(1000000).then((res) => {
-                resolve('授权成功')
-              })
+              Reconstruction_usdtsend(1000000, abi, ads)
+                .then((res) => {
+                  resolve('授权成功')
+                })
+                .catch((err) => {
+                  reject(err)
+                })
             }
           } else {
-            console.warn(error)
+            console.log(error)
             reject('操作失败，请重试  ' + error)
           }
         })
     } catch (err) {
-      Vue.$toast.warning(err.message)
-      console.warn(err)
+      Vue.$toast.warning(err)
+      console.log(err)
       reject(err)
     }
   })
@@ -890,7 +1378,9 @@ export const Approve = async function (func) {
   console.log(myContract)
   myContract.methods
     .allowance(address, contractAddress)
-    .call({ from: address }, function (error, result) {
+    .call({
+      from: address
+    }, function (error, result) {
       if (!error) {
         console.log(result)
         console.log(TypeShow(result))
@@ -910,8 +1400,27 @@ export const TotalNumber = async function () {
   let mytron = await window.tronWeb.contract().at(regular)
 
   return new Promise((res, rej) => {
-    mytron.pledgeAmount(localStorage.getItem('myaddress')).call(
-      {
+    mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
+        from: window.tronWeb.defaultAddress.base58,
+      },
+      function (error, result) {
+        console.log(result)
+        if (!error) {
+          let mnum = parseInt(result[0]._hex, 16) / 1000000.0
+
+          res(mnum)
+        } else {
+          Vue.$toast.error(error)
+        }
+      }
+    )
+  })
+}
+export const TotalNumber1 = async function () {
+  let mytron = await window.tronWeb.contract().at(regular1)
+
+  return new Promise((res, rej) => {
+    mytron.pledgeAmount(localStorage.getItem('myaddress')).call({
         from: window.tronWeb.defaultAddress.base58,
       },
       function (error, result) {
@@ -932,8 +1441,7 @@ export const allOrder = async function () {
   let mytron = await window.tronWeb.contract().at(regular)
 
   return new Promise((res, rej) => {
-    mytron.allPledge(localStorage.getItem('myaddress')).call(
-      {
+    mytron.allPledge(localStorage.getItem('myaddress')).call({
         from: window.tronWeb.defaultAddress.base58,
       },
       function (error, result) {
@@ -948,7 +1456,26 @@ export const allOrder = async function () {
     )
   })
 }
+export const allOrder1 = async function () {
+  let mytron = await window.tronWeb.contract().at(regular1)
 
+  return new Promise((res, rej) => {
+    mytron.allPledge(localStorage.getItem('myaddress')).call({
+        from: window.tronWeb.defaultAddress.base58,
+      },
+      function (error, result) {
+        if (!error) {
+          console.log(result)
+          let data = modification(result)
+          res(data)
+        } else {
+          Vue.$toast.error(error)
+          rej(error)
+        }
+      }
+    )
+  })
+}
 //数据修改
 function modification(data) {
   let mnum = parseInt(data[0]._hex, 16)

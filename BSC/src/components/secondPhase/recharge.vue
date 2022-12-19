@@ -26,10 +26,11 @@
   </div>
 </template>
 <script>
-import { SendUSDT, Reconstruction_getTrxBalance, loadweb3 } from '@/utils/web3'
+import { SendUSDT, Reconstruction_getTrxBalance, loadweb3,userBaseMes} from '@/utils/web3'
 import { Recharge } from '@/api/trxRequest'
 import { Dialog } from 'vant'
 import white from '@/components/Nav/white.vue'
+
 export default {
   //充值
   components: {
@@ -52,7 +53,7 @@ export default {
   },
   created() {
      setTimeout(() => {
-      loadweb3()
+      loadweb3(userBaseMes)
     }, 1000)
     this.netType = localStorage.getItem('netType')
     let net = localStorage.getItem('netType')

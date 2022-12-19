@@ -23,7 +23,7 @@
         <div class="info2">
           <span>
             {{ cacheData.payItem.sname }}
-            <img class="info-rz" src="@/assets/currency-icons/rz.png" alt="" />
+            <img class="info-rz" src="@/assets/currency-icons/rz.png" alt />
           </span>
           <!-- pending 1 订单 -->
           <van-icon name="orders-o" badge="1" @click="gotoWaterBill" />
@@ -39,10 +39,10 @@
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
-          alt=""
+          :src="require(`@/assets/currency-icons/${type.toLowerCase()}.png`)"
+          alt
         />
-        <span>购买 USDT</span>
+        <span>购买 {{ type }}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -55,10 +55,10 @@
           </li>
           <li v-show="isShowPayInfo">
             <span>交易钱包</span>
-            <span @click="copyContent(myaddress, '钱包地址已复制')"
-              >{{ briefMyAddress(myaddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+            <span @click="copyContent(myaddress, '钱包地址已复制')">
+              {{ briefMyAddress(myaddress) }}
+              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
+            </span>
           </li>
           <li v-show="isShowPayInfo">
             <span>商家钱包</span>
@@ -68,15 +68,15 @@
               "
             >
               {{ briefMyAddress(cacheData.MerchanInfo.bank) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
+            </span>
           </li>
           <li v-show="isShowPayInfo">
             <span>合约地址</span>
-            <span @click="copyContent(contractAddress, '合约地址 已复制')"
-              >{{ briefMyAddress(contractAddress) }}
-              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
-            ></span>
+            <span @click="copyContent(contractAddress, '合约地址 已复制')">
+              {{ briefMyAddress(contractAddress) }}
+              <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
+            </span>
           </li>
           <li v-show="isShowPayInfo">
             <span :style="{ color: '#000' }">合约查询订单</span>
@@ -91,7 +91,7 @@
           </li>
           <li>
             <span>数量</span>
-            <span>{{ cacheData.ordernum }} USDT</span>
+            <span>{{ cacheData.ordernum }} {{ type }}</span>
           </li>
           <li
             @click.stop="
@@ -102,8 +102,8 @@
             "
           >
             <span>总金额</span>
-            <span class="importan-tTsxt"
-              >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00
+            <span class="importan-tTsxt">
+              ￥{{ ThousandSeparator(cacheData.ordermoney) }}
               <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
             </span>
           </li>
@@ -124,13 +124,13 @@
               {{ cacheData.sellerMthods.mybank.split("&")[1] }}
               {{ cacheData.sellerMthods.mybank.split("&")[0] }}
             </span>
-            <span v-if="cacheData.ordercuePayType === 'zfb'">
-              {{ cacheData.sellerMthods.myalipay }}
-            </span>
-            <span v-if="cacheData.ordercuePayType === 'wx'">
-              {{ cacheData.sellerMthods.mybmywechatnk }}
-            </span>
-            <span v-if="cacheData.ordercuePayType === 'xj'"> 现金交易 </span>
+            <span v-if="cacheData.ordercuePayType === 'zfb'">{{
+              cacheData.sellerMthods.myalipay
+            }}</span>
+            <span v-if="cacheData.ordercuePayType === 'wx'">{{
+              cacheData.sellerMthods.mybmywechatnk
+            }}</span>
+            <span v-if="cacheData.ordercuePayType === 'xj'">现金交易</span>
           </li>
           <li class="van-divider"></li>
           <li>
@@ -152,9 +152,7 @@
           </li>
           <li>
             <span>下单时间</span>
-            <span>
-              {{ cacheData.nowTime | transformTime_Zh }}
-            </span>
+            <span>{{ cacheData.nowTime | transformTime_Zh }}</span>
           </li>
         </ul>
       </div>
@@ -176,13 +174,21 @@
 import { toastComponent } from "@/utils/element-config";
 
 import payIcons from "@/components/ChooseWay/pay-Icons.vue";
-import { contractAddress } from "@/utils/abi";
+import { contractAddress, contractAddress_BNB } from "@/utils/abi";
 import { ImagePreview } from "vant";
 import loadingToast from "@/components/loading-toast";
-import { runSign } from "@/utils/web3";
+import {
+  runSign,
+  Buy_user,
+  Buy_cancel,
+  Buy_verify,
+  Reconstruction_myApprove,
+} from "@/utils/web3";
 import { subbuysellorder } from "@/api/trxRequest";
 
 import { paytype } from "@/utils/utils";
+
+import { OrderAudit } from "@/api/payverification";
 
 export default {
   name: "order-pay-fllow",
@@ -194,7 +200,7 @@ export default {
     "MerchanInfo",
     "sellerMthods",
     "nowTime",
-    'servicefee'
+    "servicefee",
   ],
   components: {
     payIcons,
@@ -202,7 +208,7 @@ export default {
   data() {
     return {
       isShowPayInfo: false,
-      time: 30 * 60 * 1000,
+      time: "",
       contractAddress: contractAddress,
       myaddress: localStorage.getItem("myaddress") || "暂时&未有地址",
       netType: localStorage.getItem("netType") || "trx",
@@ -211,6 +217,9 @@ export default {
         require("../../assets/img-preview/sele-1.png"),
         require("../../assets/img-preview/sele-2.png"),
       ], // 图片预览 列表
+
+      type: localStorage.getItem("userIconType"),
+      gas: "",
     };
   },
   activated() {
@@ -218,6 +227,16 @@ export default {
   },
   created() {
     this.initcacheData();
+  },
+  mounted() {
+    if (localStorage.getItem("userIconId") != window.itself)
+      this.contractAddress = contractAddress;
+    else this.contractAddress = contractAddress_BNB;
+
+    let coinList = JSON.parse(localStorage.getItem("coinList"));
+    for (let i of coinList) {
+      if (i.id == localStorage.getItem("userIconId")) this.gas = i.gas;
+    }
   },
   methods: {
     initcacheData() {
@@ -228,7 +247,7 @@ export default {
         this.cacheData.ordermoney = this.money;
         this.cacheData.MerchanInfo = this.MerchanInfo;
         this.cacheData.sellerMthods = this.sellerMthods;
-        this.cacheData.servicefee = this.servicefee
+        this.cacheData.servicefee = this.servicefee;
         this.cacheData.nowTime = this.nowTime || Date.now();
         //数据缓存
         this.$route.meta.cacheData = this.cacheData;
@@ -243,8 +262,8 @@ export default {
       );
       const rcoin = this.cacheData.payItem.rcoin;
       if (!rcoin || rcoin === "-1") {
-        this.$toast.info("等待商家通过对您的流水审查！",{
-          timeout:false
+        this.$toast.info("等待商家通过对您的流水审查！", {
+          timeout: false,
         });
       } else {
         this.$toast.success(
@@ -319,8 +338,12 @@ export default {
             timeout: false,
           }
         );
+        console.log(this.cacheData);
         oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid; //子订单id
+        console.log(oid);
         await runSign();
+        if (this.cacheData.payItem.rcoin == 1)
+          await Buy_cancel(oid, localStorage.getItem("userIconId"));
         const { data } = await subbuysellorder({
           oid,
           selectpayk: "",
@@ -342,13 +365,13 @@ export default {
       } catch (err) {
         console.warn(err);
         this.$toast.clear();
-        this.$toast.error(err,{
-          timeout:false
-        })
+        this.$toast.error(err, {
+          timeout: false,
+        });
       }
       this.cancelOrderModel_show = false;
     },
-    async autoCancel_order(){
+    async autoCancel_order() {
       let oid; //子订单id
       // 确认取消订单
       try {
@@ -389,14 +412,13 @@ export default {
         console.warn(err);
         this.$toast.clear();
       }
-
     },
     gotoWaterBill() {
-      const item  = {
+      const item = {
         ...this.cacheData.payItem,
-        dsx:'0',
-      }
-      
+        dsx: "0",
+      };
+
       this.$router.replace({
         name: "water-bill",
         params: {
@@ -407,19 +429,19 @@ export default {
           item,
           num: this.cacheData.ordernum,
           cuePayType: this.cacheData.ordercuePayType,
-          servicefee:this.cacheData.servicefee,
-          sellerMthods:this.cacheData.sellerMthods
+          servicefee: this.cacheData.servicefee,
+          sellerMthods: this.cacheData.sellerMthods,
         },
         query: {
           role: "buyer",
         },
       });
     },
-    payNextStep() {
+    async payNextStep() {
       //中间插入 流水审查页面
       // rcoin 隔多长时间放币， 必须大于 0
       const rcoin = this.cacheData.payItem.rcoin;
-      //console.log(this.cacheData.payItem);
+      console.log(this.cacheData);
       if (!rcoin || rcoin === "-1") {
         this.$toast.warning(
           <div>
@@ -432,21 +454,77 @@ export default {
         setTimeout(() => {
           this.gotoWaterBill();
         }, 1300);
-      } else {
-        console.log(this.cacheData.MerchanInfo)
-        this.$router.replace({
-          name: "CompleteOrderPayment",
-          params: {
-            item: this.cacheData.payItem,
-            num: this.cacheData.ordernum,
-            cuePayType: this.cacheData.ordercuePayType,
-            money: this.cacheData.ordermoney,
-            MerchanInfo: this.cacheData.MerchanInfo,
-            nowTime: this.time,
-            servicefee:this.cacheData.servicefee,
-            sellerMthods:this.cacheData.sellerMthods
-          },
-        });
+      } else if (rcoin === "1") {
+        let num = await Buy_verify(
+          this.cacheData.MerchanInfo.odid,
+          localStorage.getItem("userIconId")
+        );
+        console.log(num)
+        if (num == this.cacheData.ordernum)
+          this.$router.replace({
+            name: "CompleteOrderPayment",
+            params: {
+              item: this.cacheData.payItem,
+              num: this.cacheData.ordernum,
+              cuePayType: this.cacheData.ordercuePayType,
+              money: this.cacheData.ordermoney,
+              MerchanInfo: this.cacheData.MerchanInfo,
+              nowTime: this.time,
+              servicefee: this.cacheData.servicefee,
+              sellerMthods: this.cacheData.sellerMthods,
+            },
+          });
+        else this.$toast.warning("请重试！");
+      } else if (rcoin === "0") {
+        console.log(111);
+        let num;
+        //gas为0则商家交手续费，为1则用户交手续费
+        if (this.gas == 1) {
+          await Buy_user(
+            this.cacheData.ordernum,
+            this.cacheData.MerchanInfo.odid,
+            this.cacheData.MerchanInfo.bank,
+            this.cacheData.payItem.id,
+            localStorage.getItem("userIconId")
+          );
+          while (true) {
+            num = await Buy_verify(
+              this.cacheData.MerchanInfo.odid,
+              localStorage.getItem("userIconId")
+            );
+            if (num != 0) break;
+          }
+        } else {
+          console.log(222);
+
+          num = await Buy_verify(
+            this.cacheData.MerchanInfo.odid,
+            localStorage.getItem("userIconId")
+          );
+        }
+        OrderAudit({ rcoin: 1, oid: this.cacheData.MerchanInfo.odid }).then(
+          (res) => {
+            let state = res.data.State;
+            if (state * 1 > 0 && num == this.cacheData.ordernum) {
+              this.$router.replace({
+                name: "CompleteOrderPayment",
+                params: {
+                  item: this.cacheData.payItem,
+                  num: this.cacheData.ordernum,
+                  cuePayType: this.cacheData.ordercuePayType,
+                  money: this.cacheData.ordermoney,
+                  MerchanInfo: this.cacheData.MerchanInfo,
+                  nowTime: this.time,
+                  servicefee: this.cacheData.servicefee,
+                  sellerMthods: this.cacheData.sellerMthods,
+                },
+              });
+            } else {
+              this.$toast.warning("锁定订单失败！");
+              console.log(res);
+            }
+          }
+        );
       }
     },
     paytype(value) {

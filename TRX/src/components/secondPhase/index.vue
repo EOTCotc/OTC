@@ -69,6 +69,7 @@
 <script>
 //二期推广
 import { UserInfo } from '@/utils/web3'
+import { getinfo } from "@/api/arbitrationMsg";
 export default {
   data() {
     return {
@@ -82,7 +83,10 @@ export default {
     }
   },
   created() {
-    this.teamName=localStorage.getItem('teamName')
+    // this.teamName=localStorage.getItem('teamName')
+    getinfo({}).then(res=>{
+      this.teamName=res.items.comName
+    })
     // console.log(localStorage.getItem('teamName'))
     let data = UserInfo()
     this.USDT = data.usdt_ye

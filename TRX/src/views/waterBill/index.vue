@@ -6,7 +6,7 @@
         <van-icon name="arrow-left" />
         <span class="hd-txt">{{ item.sname }}</span>
       </div>
-      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">{{$t('waterBill.index.MerchanInfo')}}</p>
+      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">{{$t('views.waterBill.index.MerchanInfo')}}</p>
     </header>
     <section class="water-bill-content">
       <div class="top-content" v-if="+item.dsx >= 1">

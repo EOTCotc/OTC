@@ -9,15 +9,7 @@
           <div class="person_title">
             <p v-if="iskyc_text === $t('components.nav.right.status[3]')">{{ uname }}</p>
             <p v-else>{{ iskyc_text }}</p>
-            <van-button
-              v-if="iskyc == 2"
-              round
-              type="info"
-              size="mini"
-              plain
-              hairline
-              >{{ $t('components.nav.right.text[0]') }}:{{ item }}</van-button
-            >
+            <van-button v-if="iskyc == 2" round type="info" size="mini" plain hairline>{{ item }}</van-button>
           </div>
           <div class="person_asset">
             <p>
@@ -53,9 +45,13 @@
           <i class="iconfont icon-renzhengshenhe icon_left"></i>
         </template>
       </van-cell>-->
-      <van-cell :title="$t('components.nav.right.menu[1]')" is-link @click="auditing('secondPhase')">
+      <van-cell
+        :title="$t('components.nav.right.menu[1]')"
+        is-link
+        @click="auditing('secondPhase')"
+      >
         <template #icon>
-          <img src="@/static/icon/second.png" alt="" />
+          <img src="@/static/icon/second.png" alt />
         </template>
       </van-cell>
     </div>
@@ -90,9 +86,13 @@
       </van-collapse-item>
     </van-collapse>
     <div class="audit">
-      <van-cell :title="$t('components.nav.right.menu[2]')" is-link @click="auditing('transaction')">
+      <van-cell
+        :title="$t('components.nav.right.menu[2]')"
+        is-link
+        @click="auditing('transaction')"
+      >
         <template #icon>
-          <img src="@/static/icon/chart.png" alt="" />
+          <img src="@/static/icon/chart.png" alt />
         </template>
       </van-cell>
       <van-cell :title="$t('components.nav.right.menu[3]')" is-link @click="auditing(1)">
@@ -199,10 +199,24 @@ export default {
     this.moneylist[0].num = asd.myamount
 
     this.name = asd.uname
-    if (asd.item == this.$t('components.nav.right.status[4]')) {
-      this.item = 'A0'
+    let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+    if (asd.myjifen > 10 && sum > 100) {
+      this.item = '有效用户'
+
+      if (asd.ztvip == '2') {
+        this.item = '信用节点'
+      }
+      if (asd.ztvip == '3') {
+        this.item = '实时节点'
+      }
+      if (asd.ztvip == '4') {
+        this.item = '中级节点'
+      }
+      if (asd.ztvip == '5') {
+        this.item = '高级节点'
+      }
     } else {
-      this.item = asd.item
+      this.item = '游客'
     }
 
     this.myaddress =
@@ -256,10 +270,12 @@ export default {
               this.$toast.warning(
                 <div>
                   <p style="font-size:14px;margin:5px;color:red">
-                    ${this.$t('components.nav.right.loading.text[1]')}EOTC${this.$t('components.nav.right.loading.text[2]')}
+                    ${this.$t('components.nav.right.loading.text[1]')}EOTC$
+                    {this.$t('components.nav.right.loading.text[2]')}
                   </p>
                   <p style="font-size:14px;margin:5px 0;">
-                    EOTC${this.$t('components.nav.right.loading.text[3]')}5000${this.$t('components.nav.right.loading.text[4]')}
+                    EOTC${this.$t('components.nav.right.loading.text[3]')}5000$
+                    {this.$t('components.nav.right.loading.text[4]')}
                   </p>
                 </div>
               )
@@ -272,7 +288,8 @@ export default {
                     ${this.$t('components.nav.right.loading.text[5]')}
                   </p>
                   <p style="font-size:14px;margin:5px">
-                    ${this.$t('components.nav.right.loading.text[6]')}10${this.$t('components.nav.right.loading.text[7]')}
+                    ${this.$t('components.nav.right.loading.text[6]')}10$
+                    {this.$t('components.nav.right.loading.text[7]')}
                   </p>
                 </div>
               )

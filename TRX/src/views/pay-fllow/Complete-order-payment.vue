@@ -2,7 +2,10 @@
   <div class="order-pay-container">
     <header class="header-top">
       <van-icon name="arrow-left" @click="$router.push({name:'orderGather-full'})" />
-      <span class="hd-txt" @click="$router.push({name:'orderGather-full'})"> {{ $t("views.fllow.payment.hd_txt") }} </span>
+      <span
+        class="hd-txt"
+        @click="$router.push({name:'orderGather-full'})"
+      >{{ $t("views.fllow.payment.hd_txt") }}</span>
       <van-icon @click="gotoRelation">
         <van-icon name="orders-o" :badge="cacheData.badge_info" />
       </van-icon>
@@ -13,15 +16,18 @@
     </article>
 
     <header class="header">
-      <h4 class="title" v-if="cacheData.ordercuePayType === 'wx'">
-        {{ $t("views.fllow.payment.wechat_pay") }}
-      </h4>
-      <h4 class="title" v-else-if="cacheData.ordercuePayType === 'xj'">
-        {{ $t("views.fllow.payment.transaction") }}
-      </h4>
-      <h4 class="title" v-else-if="cacheData.ordercuePayType === 'yhk'">
-        {{ $t("views.fllow.payment.bank_card") }}
-      </h4>
+      <h4
+        class="title"
+        v-if="cacheData.ordercuePayType === 'wx'"
+      >{{ $t("views.fllow.payment.wechat_pay") }}</h4>
+      <h4
+        class="title"
+        v-else-if="cacheData.ordercuePayType === 'xj'"
+      >{{ $t("views.fllow.payment.transaction") }}</h4>
+      <h4
+        class="title"
+        v-else-if="cacheData.ordercuePayType === 'yhk'"
+      >{{ $t("views.fllow.payment.bank_card") }}</h4>
       <h4 class="title" v-else>{{ $t("views.fllow.payment.Alipay") }}</h4>
       <div class="pay-timeDown">
         <div class="pay-text">{{ $t("views.fllow.payment.residue") }}</div>
@@ -41,81 +47,76 @@
         margin: '0',
         padding: '0 16px',
       }"
-    >
-    </van-divider>
+    ></van-divider>
 
     <!-- 卖家信息 -->
-    <van-steps
-      class="setpinfo"
-      :active="active"
-      active-color="#2483ff"
-      direction="vertical"
-    >
+    <van-steps class="setpinfo" :active="active" active-color="#2483ff" direction="vertical">
       <van-step v-if="cacheData.ordercuePayType == 'xj'">{{ $t("views.fllow.payment.select") }}</van-step>
-      <van-step v-else-if="cacheData.ordercuePayType == 'wx'">{{ $t("views.fllow.payment.open") }}</van-step
-      >
-      <van-step v-else-if="cacheData.ordercuePayType == 'yhk'">{{ $t("views.fllow.payment.open_app") }}{{ payInfo[2] }}APP</van-step>
-      <van-step v-else> {{ $t("views.fllow.payment.open_alipay") }}</van-step>
+      <van-step v-else-if="cacheData.ordercuePayType == 'wx'">{{ $t("views.fllow.payment.open") }}</van-step>
+      <van-step
+        v-else-if="cacheData.ordercuePayType == 'yhk'"
+      >{{ $t("views.fllow.payment.open_app") }}{{ payInfo[2] }}APP</van-step>
+      <van-step v-else>{{ $t("views.fllow.payment.open_alipay") }}</van-step>
 
       <van-step v-if="cacheData.ordercuePayType == 'xj'">
         {{ $t("views.fllow.payment.amount") }}：
-        <span class="importan-tTsxt">￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span>
+        <span
+          class="importan-tTsxt"
+        >￥{{ ThousandSeparator(cacheData.ordermoney) }}.00</span>
       </van-step>
       <van-step v-else>
-        {{ $t("views.fllow.payment.towards") }}：<span class="importan-tTsxt"
-          >￥{{ ThousandSeparator(cacheData.ordermoney) }}</span
-        >
+        {{ $t("views.fllow.payment.towards") }}：
+        <span class="importan-tTsxt">￥{{ ThousandSeparator(cacheData.ordermoney) }}</span>
       </van-step>
 
       <van-step>
-        <div class="serviceCharge">
-          {{ $t("views.fllow.payment.fee") }}：{{ cacheData.servicefee }} {{kindType}}
-        </div>
+        <div
+          class="serviceCharge"
+        >{{ $t("views.fllow.payment.fee") }}：{{ cacheData.servicefee }} {{kindType}}</div>
 
         <section class="seller-info">
           <div class="seller-info-top">
-            <span class="pay-info1"> {{ $t("views.fllow.payment.name") }}</span>
+            <span class="pay-info1">{{ $t("views.fllow.payment.name") }}</span>
             <div class="info2">
-              <span v-if="cacheData.ordercuePayType === 'xj'">
-                {{ getxj_name }}</span
-              >
-              <span v-else-if="cacheData.ordercuePayType === 'wx'">{{
+              <span v-if="cacheData.ordercuePayType === 'xj'">{{ getxj_name }}</span>
+              <span v-else-if="cacheData.ordercuePayType === 'wx'">
+                {{
                 wechartInfo[0]
-              }}</span>
-              <span v-else-if="cacheData.ordercuePayType === 'yhk'">{{
+                }}
+              </span>
+              <span v-else-if="cacheData.ordercuePayType === 'yhk'">
+                {{
                 payInfo[0]
-              }}</span>
+                }}
+              </span>
               <span v-else>
                 <span>{{ zfbInfo[0] }}</span>
               </span>
               <van-icon>
-                <i
-                  class="iconfont icon-copy"
-                  @click="doClickName(zfbInfo[0])"
-                ></i>
+                <i class="iconfont icon-copy" @click="doClickName(zfbInfo[0])"></i>
               </van-icon>
             </div>
           </div>
           <div class="seller-info-top">
             <!-- 交易类型 -->
-            <span class="pay-info1" v-if="cacheData.ordercuePayType === 'wx'"
-              >{{ $t("views.fllow.payment.account") }}</span
-            >
+            <span
+              class="pay-info1"
+              v-if="cacheData.ordercuePayType === 'wx'"
+            >{{ $t("views.fllow.payment.account") }}</span>
             <span
               class="pay-info1"
               v-else-if="cacheData.ordercuePayType === 'xj'"
-              >{{ $t("views.fllow.payment.way") }}</span
-            >
+            >{{ $t("views.fllow.payment.way") }}</span>
             <span
               class="pay-info1"
               v-else-if="cacheData.ordercuePayType === 'yhk'"
-              >{{ $t("views.fllow.payment.deposit") }}</span
-            >
+            >{{ $t("views.fllow.payment.deposit") }}</span>
             <span class="pay-info1" v-else>{{ $t("views.fllow.payment.alipay_account") }}</span>
 
-            <div class="info2" v-if="cacheData.ordercuePayType === 'xj'">
-              {{ $t("views.fllow.payment.money") }}
-            </div>
+            <div
+              class="info2"
+              v-if="cacheData.ordercuePayType === 'xj'"
+            >{{ $t("views.fllow.payment.money") }}</div>
             <div class="info2" v-else>
               <div class="info2" v-if="cacheData.ordercuePayType === 'yhk'">
                 <span>{{ payInfo[2] }}</span>
@@ -130,7 +131,7 @@
                 </van-icon>
               </div>
               <div class="info2" v-else>
-                <span> {{ wechartInfo[1] }} </span>
+                <span>{{ wechartInfo[1] }}</span>
                 <van-icon>
                   <i
                     class="iconfont icon-copy"
@@ -145,38 +146,50 @@
           </div>
 
           <div class="seller-info-top">
-            <span class="pay-info1" v-if="cacheData.ordercuePayType === 'yhk'">
-              {{ $t("views.fllow.payment.ID") }}
-            </span>
+            <span
+              class="pay-info1"
+              v-if="cacheData.ordercuePayType === 'yhk'"
+            >{{ $t("views.fllow.payment.ID") }}</span>
             <!-- <span class="pay-info1" v-else>二维码</span> -->
             <div class="ewm yhkNum" v-if="cacheData.ordercuePayType === 'yhk'">
-              <span> {{ payInfo[1] }} </span>
+              <span>{{ payInfo[1] }}</span>
               <van-icon>
                 <i class="iconfont icon-copy"></i>
               </van-icon>
             </div>
             <!-- <div class="ewm " :class="{mask:true}"  v-else>
               <span> 查看二维码 </span>
-            </div> -->
+            </div>-->
           </div>
         </section>
 
         <article class="pay-info-tip">
           <div>
-            *<span :style="{ color: 'red' }"> {{ $t("views.fllow.payment.pay_info[0]") }}</span>
+            *
+            <span :style="{ color: 'red' }">{{ $t("views.fllow.payment.pay_info[0]") }}</span>
             {{ $t("views.fllow.payment.pay_info[1]") }}
             <br />
             &nbsp;&nbsp;&nbsp;{{ $t("views.fllow.payment.pay_info[2]") }}
           </div>
-          <div>*<span> {{ $t("views.fllow.payment.pay_info[3]") }}</span></div>
-          <div>*<span> {{ $t("views.fllow.payment.pay_info[4]") }}</span></div>
+          <div>
+            *
+            <span>{{ $t("views.fllow.payment.pay_info[3]") }}</span>
+          </div>
+          <div>
+            *
+            <span>{{ $t("views.fllow.payment.pay_info[4]") }}</span>
+          </div>
         </article>
       </van-step>
 
       <van-step>
         {{ $t("views.fllow.payment.pay_info[5]") }}
         <div class="commit-btn">
-          <van-button type="info" @click="handleEFT" :disabled="isEFT">{{ $t("views.fllow.payment.pay_info[6]") }}</van-button>
+          <van-button
+            type="info"
+            @click="handleEFT"
+            :disabled="isEFT"
+          >{{ $t("views.fllow.payment.pay_info[6]") }}</van-button>
         </div>
       </van-step>
     </van-steps>
@@ -205,122 +218,121 @@
 </template>
 
 <script>
-import payInfoTips from "./pay-info-tips.vue";
-import loadingToast from "@/components/loading-toast";
+import payInfoTips from './pay-info-tips.vue'
+import loadingToast from '@/components/loading-toast'
 
-import { subbuysellorder } from "@/api/trxRequest";
+import { subbuysellorder } from '@/api/trxRequest'
 
-import { paytype } from "@/utils/utils";
+import { paytype } from '@/utils/utils'
 
 export default {
-  name: "Complete-order-payment",
+  name: 'Complete-order-payment',
   components: {
     payInfoTips,
   },
   props: [
-    "item",
-    "cuePayType",
-    "num",
-    "money",
-    "MerchanInfo",
-    "nowTime",
-    "servicefee",
-    "sellerMthods",
+    'item',
+    'cuePayType',
+    'num',
+    'money',
+    'MerchanInfo',
+    'nowTime',
+    'servicefee',
+    'sellerMthods',
   ],
   activated() {
-    this.init_cacheData();
+    this.init_cacheData()
   },
   created() {
-    this.init_cacheData();
+    this.init_cacheData()
   },
   computed: {
     getxj_name() {
-      return this.cacheData?.MerchanInfo?.sname?.trim() ?? "";
+      return this.cacheData?.MerchanInfo?.sname?.trim() ?? ''
     },
     payInfo() {
-      return this.cacheData.MerchanInfo?.cur_payData?.split("&") ?? ""; //银行卡
+      return this.cacheData.MerchanInfo?.cur_payData?.split('&') ?? '' //银行卡
     },
     wechartInfo() {
-      return this.cacheData.MerchanInfo?.cur_payData?.split("&") ?? "";
+      return this.cacheData.MerchanInfo?.cur_payData?.split('&') ?? ''
     },
     zfbInfo() {
-      return this.cacheData.MerchanInfo?.cur_payData?.split("&") ?? "";
+      return this.cacheData.MerchanInfo?.cur_payData?.split('&') ?? ''
     },
   },
   data() {
     return {
       time: 30 * 60 * 1000,
       active: 3,
-      isEFT: false, 
+      isEFT: false,
       info_tips: false,
-      curTime: 0, 
+      curTime: 0,
       cacheData: {},
-      kindType:localStorage.getItem('userIconType')
-    };
+      kindType: localStorage.getItem('userIconType'),
+    }
   },
   methods: {
     async autoCancel_order() {
-      let oid;
+      let oid
       try {
         this.$toast.warning(
           {
             component: loadingToast,
             props: {
-              title: this.$t("views.fllow.payment.toast[0]"),
+              title: this.$t('views.fllow.payment.toast[0]'),
             },
           },
           {
             icon: false,
             timeout: false,
           }
-        );
-        oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid; //子订单id
+        )
+        oid = this.cacheData.MerchanInfo?.odid ?? this.cacheData.payItem.oid //子订单id
         const { data } = await subbuysellorder({
           oid,
-          selectpayk: "",
+          selectpayk: '',
           type: 0,
-        });
-        this.$toast.clear();
-        if (data.State === "1") {
-          this.$toast.error(oid + this.$t("views.fllow.payment.toast[1]"));
+        })
+        this.$toast.clear()
+        if (data.State === '1') {
+          this.$toast.error(oid + this.$t('views.fllow.payment.toast[1]'))
           this.$router.replace({
-            name: "CurrencyTrading",
-          });
+            name: 'CurrencyTrading',
+          })
         } else {
-          this.$toast.warning(oid + this.$t("views.fllow.payment.toast[2]"));
+          this.$toast.warning(oid + this.$t('views.fllow.payment.toast[2]'))
           this.$router.replace({
-            name: "CurrencyTrading",
-          });
-          localStorage.setItem("xdnum", "0");
+            name: 'CurrencyTrading',
+          })
+          localStorage.setItem('xdnum', '0')
         }
       } catch (err) {
-        this.$toast.clear();
-        console.warn(err);
+        this.$toast.clear()
+        console.warn(err)
       }
     },
     init_cacheData() {
       if (this.item) {
-        this.cacheData.payItem = this.item;
-        this.cacheData.ordercuePayType = this.cuePayType;
-        this.cacheData.ordernum = this.num;
-        this.cacheData.ordermoney = this.money;
-        this.cacheData.MerchanInfo = this.MerchanInfo;
-        this.cacheData.sellerMthods = this.sellerMthods;
-        this.cacheData.servicefee = this.servicefee;
-        this.cacheData.nowTime = this.nowTime || Date.now();
-        this.cacheData.badge_info =
-          localStorage.getItem("xdnum") !== "0" ? 1 : 0;
+        this.cacheData.payItem = this.item
+        this.cacheData.ordercuePayType = this.cuePayType
+        this.cacheData.ordernum = this.num
+        this.cacheData.ordermoney = this.money
+        this.cacheData.MerchanInfo = this.MerchanInfo
+        this.cacheData.sellerMthods = this.sellerMthods
+        this.cacheData.servicefee = this.servicefee
+        this.cacheData.nowTime = this.nowTime || Date.now()
+        this.cacheData.badge_info = localStorage.getItem('xdnum') !== '0' ? 1 : 0
         //数据缓存
-        this.$route.meta.cacheData = this.cacheData;
+        this.$route.meta.cacheData = this.cacheData
       } else {
         //console.log("页面回退数据缓存", this.$route.meta.cacheData);
-        this.cacheData = this.$route.meta.cacheData;
+        this.cacheData = this.$route.meta.cacheData
       }
     },
     gotoRelation() {
-      this.cacheData.badge_info = 0;
+      this.cacheData.badge_info = 0
       this.$router.push({
-        name: "water-bill",
+        name: 'water-bill',
         params: {
           odid: this.cacheData.MerchanInfo.odid,
           MerchanInfo: this.cacheData.MerchanInfo,
@@ -333,26 +345,25 @@ export default {
           sellerMthods: this.cacheData.sellerMthods,
         },
         query: {
-          role: "buyer",
+          role: 'buyer',
         },
-      });
+      })
     },
     initPopup() {
-      this.$refs["info-tips"].init();
+      this.$refs['info-tips'].init()
     },
     select_pay() {
-      this.showPayModel = true;
+      this.showPayModel = true
     },
     handleEFT() {
-      this.info_tips = true;
+      this.info_tips = true
     },
     getname() {
-      if (Date.now() - 1662354840000 > 0)
-        return localStorage.getItem("parentID");
-      return "";
+      if (Date.now() - 1662354840000 > 0) return localStorage.getItem('parentID')
+      return ''
     },
     async goAwaitSellerAffirm(isOk) {
-      this.info_tips = false;
+      this.info_tips = false
       if (isOk) {
         try {
           this.$toast.warning(
@@ -360,112 +371,109 @@ export default {
               component: loadingToast,
               props: {
                 title:
-                  this.$t("views.fllow.payment.toast[3]") +
-                  "<br/>" +
-                  this.$t("views.fllow.payment.toast[4]"),
+                  this.$t('views.fllow.payment.toast[3]') +
+                  '<br/>' +
+                  this.$t('views.fllow.payment.toast[4]'),
               },
             },
             {
               icon: false,
               timeout: false,
             }
-          );
-          this.isEFT = true;
+          )
+          this.isEFT = true
           await subbuysellorder({
             oid: this.cacheData.MerchanInfo.odid,
             cny: this.cacheData.ordermoney,
             type: 0,
             selectpayk: this.getMoneyInfo(this.cacheData.ordercuePayType),
             mail: this.cacheData.MerchanInfo.aipay,
-          });
-          
-            const item  = {
-              ...this.cacheData.payItem,
-              account:
-                this.cacheData.ordercuePayType === "yhk" ? this.payInfo : "",
-              account_wx:
-                this.cacheData.ordercuePayType === "wx"
-                  ? this.wechartInfo[1]
-                  : "",
-              account_zfb:
-                this.cacheData.ordercuePayType === "zfb" ? this.zfbInfo[1] : "",
-            };
-            this.$router.push({
-              name: "awaitSellerAffirm",
-              params: {
-                odid: this.cacheData.MerchanInfo.odid,
-                MerchanInfo: this.cacheData.MerchanInfo,
-                money: this.cacheData.ordermoney,
-                time: this.time,
-                item,
-                num: this.cacheData.ordernum,
-                cuePayType: this.cacheData.ordercuePayType,
-                servicefee: this.cacheData.servicefee,
-                sellerMthods: this.cacheData.sellerMthods,
-              },
-            });
+          })
+
+          const item = {
+            ...this.cacheData.payItem,
+            account: this.cacheData.ordercuePayType === 'yhk' ? this.payInfo : '',
+            account_wx: this.cacheData.ordercuePayType === 'wx' ? this.wechartInfo[1] : '',
+            account_zfb: this.cacheData.ordercuePayType === 'zfb' ? this.zfbInfo[1] : '',
+          }
+          this.$router.push({
+            name: 'awaitSellerAffirm',
+            params: {
+              odid: this.cacheData.MerchanInfo.odid,
+              MerchanInfo: this.cacheData.MerchanInfo,
+              money: this.cacheData.ordermoney,
+              time: this.time,
+              item,
+              num: this.cacheData.ordernum,
+              cuePayType: this.cacheData.ordercuePayType,
+              servicefee: this.cacheData.servicefee,
+              sellerMthods: this.cacheData.sellerMthods,
+            },
+          })
           // }
         } catch (err) {
-          console.warn(err);
+          console.warn(err)
         }
-        this.$toast.clear();
+        this.$toast.clear()
       }
     },
     getMoneyInfo(payMethos) {
       switch (payMethos) {
-        case "yhk": {
-          let name = localStorage.getItem("uname");
-          let methds = this.cacheData.sellerMthods.mybank?.split("&");
-          return `${name} & ${methds[0]}${this.getname()} &  ${methds[1]}`;
+        case 'yhk': {
+          let name = localStorage.getItem('uname')
+          let methds = this.cacheData.sellerMthods.mybank?.split('&')
+          return `${name} & ${methds[0]}${this.getname()} &  ${methds[1]}`
         }
-        case "zfb": {
-          let name = localStorage.getItem("uname");
-          return `${name} & ${
-            this.cacheData.sellerMthods.myalipay
-          }${this.getname()} & ${$t("views.fllow.payment.Alipay")}`;
+        case 'zfb': {
+          let name = localStorage.getItem('uname')
+          return `${name} & ${this.cacheData.sellerMthods.myalipay}${this.getname()} & ${this.$t(
+            'views.fllow.payment.Alipay'
+          )}`
         }
-        case "wx": {
-          let name = localStorage.getItem("uname");
+        case 'wx': {
+          let name = localStorage.getItem('uname')
           return `${name} & ${
             this.cacheData.sellerMthods.mybmywechatnk
-          }${this.getname()} & ${$t("views.fllow.payment.wechat")}`;
+          }${this.getname()} & ${this.$t('views.fllow.payment.wechat')}`
         }
-        case "xj": {
-          let name = localStorage.getItem("uname");
-          return `${name} & ${$t("views.fllow.payment.cash")}${this.getname()}  & ${$t("views.fllow.payment.money")}`;
+        case 'xj': {
+          let name = localStorage.getItem('uname')
+          return `${name} & ${this.$t('views.fllow.payment.cash')}${this.getname()}  & ${this.$t(
+            'views.fllow.payment.money'
+          )}`
         }
       }
     },
     paytype(value) {
-      return paytype(value);
+      return paytype(value)
     },
     copy() {},
     doClickName(message) {
-      let nowTime = Date.now();
+      let nowTime = Date.now()
       if (nowTime - this.curTime > 1500) {
-        this.curTime = nowTime;
+        this.curTime = nowTime
         this.$copyText(message).then(
           (e) => {
-            this.$toast.success(this.$t("views.fllow.payment.toast[5]"));
+            this.$toast.success(this.$t('views.fllow.payment.toast[5]'))
           },
           (e) => {
-            this.$toast.error(this.$t("views.fllow.payment.toast[6]"));
+            this.$toast.error(this.$t('views.fllow.payment.toast[6]'))
           }
-        );
+        )
       }
     },
     onCopyPayAccount() {
-      let nowTime = Date.now();
+      let nowTime = Date.now()
       if (nowTime - this.curTime > 1500) {
-        this.curTime = nowTime;
-        this.$toast.success(this.$t("views.fllow.payment.toast[7]"));
+        this.curTime = nowTime
+        this.$toast.success(this.$t('views.fllow.payment.toast[7]'))
       }
     },
     onCopyPayAccountError() {
-      this.$toast.error(this.$t("views.fllow.payment.toast[8]"));
+      this.$toast.error(this.$t('views.fllow.payment.toast[8]'))
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

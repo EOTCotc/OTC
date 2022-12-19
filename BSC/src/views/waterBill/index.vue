@@ -2,7 +2,7 @@
   <div class="water-bill">
     <!-- 流水审查页面 -->
     <header class="header" >
-      <div @click="$router.back(-1)">
+      <div @click="$router.push({name:'orderGather-full'})">
         <van-icon name="arrow-left" />
         <span class="hd-txt">{{ item.sname }}</span>
       </div>

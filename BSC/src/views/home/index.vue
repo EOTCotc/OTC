@@ -8,7 +8,7 @@
         </transition-page>
       </div>
     </div>
-    <notification
+    <!-- <notification
     ref="notification"
     title="仲裁消息"
     button-text="前往处理"
@@ -16,8 +16,7 @@
     :message="`最近有 ${msgNum} 条消息待处理`"
     :headerIcon="icon"
     @buttonClick="$router.push({name:'arbitrationMsg'})"
-    />
-
+    />-->
   </div>
 </template>
 
@@ -25,6 +24,7 @@
 import Nav from '@/components/Nav'
 
 import transitionPage from '@/components/transitionPage'
+import { CoinList } from '@/api/trxRequest'
 import { getmessageopen } from '@/api/arbitrationMsg'
 import Notification from '@/components/notification'
 
@@ -33,14 +33,15 @@ export default {
   components: {
     Nav,
     transitionPage,
-    Notification,
+    // Notification,
   },
 
   data() {
     return {}
   },
   created() {
-    this.getMsg()
+    // this.init()
+    // this.getMsg()
   },
   methods: {
     getMsg() {
@@ -51,6 +52,25 @@ export default {
         })
       })
     },
+    // init() {
+    //   CoinList({})
+    //     .then((res) => {
+    //       let data = res.data
+    //       for (let i of data) {
+    //         i.name = i.name.trim()
+    //         i.ads = i.ads.trim()
+    //         if (i.abi != '') i.abi=window.atob(i.abi)
+    //       }
+    //       console.log(data)
+    //       localStorage.setItem('coinList', JSON.stringify(data))
+    //     })
+    //     .catch((err) => {
+    //       if (err.response.status == 429) {
+    //         return
+    //       }
+    //       console.log(err)
+    //     })
+    // },
   },
 }
 </script>

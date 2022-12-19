@@ -11,8 +11,9 @@
       v-else
       v-for="(order_item, i) in orderData_List"
       :key="i"
-      @update_OrderList="getinit_Data"
+      @update_OrderList="getinit_Data(id)"
       :order_item="order_item"
+      :kind='kind'
     >
     </Order>
   </div>
@@ -32,22 +33,26 @@ export default {
     VueLoading,
   },
   name: "undone-order",
+  props:['id'],
   data() {
     return {
       dataLoading_before: true,
       orderData_List: [],
+      kind:''
     };
   },
   created() {
-    this.getinit_Data();
+    this.getinit_Data(this.id);
   },
   methods: {
-    async getinit_Data() {
+    async getinit_Data(coinID) {
+      this.kind=localStorage.getItem('userIconType')
       try {
         const { data } = await Eotcdis_Order({
           type: 1, //双位数商家， 单位数用户
           t1: -1,
           t2: 2,
+          coinID: coinID,
         });
         this.orderData_List = data;
         this.dataLoading_before = false;

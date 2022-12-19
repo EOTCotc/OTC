@@ -651,7 +651,7 @@ router.beforeEach((to, form, next) => {
     Vue.$toast.clear()
 
     if (
-      localStorage.getItem('myeotc') * 1 < 5000 &&
+      localStorage.getItem('otczy') * 1 < 5000 &&
       Number(localStorage.getItem('giftNFT')) == 0
     ) {
       console.log(123)

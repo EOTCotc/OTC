@@ -63,7 +63,9 @@ export default {
   },
   watch: {
     coinId: function (newVal, oldVal) {
-      this.getSellData(newVal)
+      setTimeout(() => {
+        this.getSellData(newVal)
+      }, 1100)
     },
     // coinType: function (newVal, oldVal) {
     //   console.log(newVal)

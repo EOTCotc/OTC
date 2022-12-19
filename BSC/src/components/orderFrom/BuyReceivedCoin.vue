@@ -28,7 +28,7 @@
           </div>
           <div>
             <p>交易数量</p>
-            <p>{{ item.num }} USDT</p>
+            <p>{{ item.num }} {{coinType}}</p>
           </div>
           <div>
             <p>交易单价</p>
@@ -104,15 +104,35 @@ export default {
       showLoading: true,
     };
   },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    active: {
+      type: [String, Number],
+    },
+    coinType: {
+      type: [String],
+    },
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '3') this.initLoadingData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '3') this.initLoadingData(this.coinId)
+    },
+  },
   created() {
-    this.initLoadingData();
+    this.initLoadingData(this.coinId);
   },
   methods: {
-    async initLoadingData() {
+    async initLoadingData(coinID) {
       try {
         const { data } = await Eotcdis_Order({
           t1: 1,
           t2: 4,
+          coinID: coinID,
         });
         this.dataList = data;
       } catch (err) {

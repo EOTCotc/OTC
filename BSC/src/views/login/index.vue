@@ -9,7 +9,8 @@
       <div class="login_content">
         <div class="out" @click="asd()">
           <div :class="actionShow ? 'action' : ''">登录</div>
-          <div :class="!actionShow ? 'action' : ''">注册</div>
+          <div :class="!actionShow ? 'action' : ''"></div>
+          <!-- <div :class="!actionShow ? 'action' : ''">注册</div> -->
         </div>
         <Login @switched="asd()" ref="log" v-show="actionShow"></Login>
         <signin @switched="asd()" ref="sig" v-show="!actionShow"></signin>
@@ -38,7 +39,7 @@ export default {
   },
   methods: {
     asd() {
-      this.actionShow = !this.actionShow;
+      // this.actionShow = !this.actionShow;
       //重置input输入
       if (this.actionShow) {
         this.$refs.log.email = "";

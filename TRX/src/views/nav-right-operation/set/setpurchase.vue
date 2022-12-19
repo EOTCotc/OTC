@@ -11,7 +11,7 @@
             @blur="onNumInput($event)"
             :placeholder="$t('views.operation.chase.placeholder[0]')"
           />
-          <p style="color: #237ff8" @click="kindShow = false">{{ kind }}</p>
+          <p style="color: #237ff8" >{{ coin.coinType }}</p>
         </div>
       </div>
       <div class="cell">
@@ -20,10 +20,10 @@
           <input
             type="number"
             v-model="price"
-            @blur="onPriceInput(5, 7.5, $event, kind)"
+            @blur="onPriceInput(coinType.floor,coinType.ceiling , $event,coin.coinType)"
             :placeholder="
               $t('views.operation.chase.placeholder[1]') +
-              kind +
+              coin.coinType +
               $t('views.operation.chase.placeholder[2]')
             "
           />
@@ -55,7 +55,7 @@
               @blur="onMinDigitalCash"
               :placeholder="$t('views.operation.chase.placeholder[3]')"
             />
-            <p>{{ kind }}</p>
+            <p>{{ coin.coinType }}</p>
             <span v-if="eror[1]" class="error-text">{{
                 $t("views.operation.chase.error_text")
               }}</span>
@@ -83,7 +83,7 @@
               @blur="onMaxDigitalCash"
               :placeholder="$t('views.operation.chase.placeholder[4]')"
             />
-            <p>{{ kind }}</p>
+            <p>{{ coin.coinType }}</p>
             <span v-if="eror[3]" class="error-text">{{
                 $t("views.operation.chase.error_text")
               }}</span>
@@ -168,7 +168,7 @@
           </div>
           <div>
             <p>{{ $t("views.operation.chase.number") }}</p>
-            <p>{{ number }} {{ kind }}</p>
+            <p>{{ number }} {{ coin.coinType }}</p>
           </div>
           <div>
             <p>{{ $t("views.operation.chase.cell_title") }}</p>
@@ -177,7 +177,7 @@
           <div>
             <p>{{ $t("views.operation.chase.cell_title") }}</p>
             <p>
-              {{ MinDigitalCash }} {{ kind }} ~ {{ MaxDigitalCash }} {{ kind }}
+              {{ MinDigitalCash }} {{ coin.coinType }} ~ {{ MaxDigitalCash }} {{ coin.coinType }}
             </p>
           </div>
         </div>
@@ -197,14 +197,14 @@
       </div>
     </van-popup>
 
-    <van-popup v-model="kindShow" round position="bottom">
+    <!-- <van-popup v-model="kindShow" round position="bottom">
       <van-picker
         show-toolbar
         :columns="columns"
         @cancel="showPicker = false"
         @confirm="onConfirm"
       />
-    </van-popup>
+    </van-popup> -->
   </div>
 </template>
 
@@ -225,16 +225,22 @@ export default {
       hasInput: true,
       title: this.$t("views.operation.chase.title"),
 
-      kindShow: false,
-      kind: "USDT",
-      columns: ["USDT", "USDC", "BTC", "ETH", "BNB"],
+      // kindShow: false,
+      // kind: "USDT",
+      // columns: ["USDT", "USDC", "BTC", "ETH", "BNB"],
+      coin: '',
+      address: '',
+      coinType: '',
     };
   },
+  created() {
+    this.coin = this.$route.params
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == this.coin.coinID) this.coinType = i
+    }
+  },
   methods: {
-    onConfirm(value) {
-      this.kind = value;
-      this.kindShow = false;
-    },
     //生成收购单
     async jump() {
       this.$toast.warning(
@@ -257,6 +263,7 @@ export default {
           amount1: this.MinLegalTender,
           amount2: this.MaxLegalTender,
           cash: this.cash,
+          coinID: this.coin.coinID,
         });
         this.$toast.clear();
         if (data.State === "1") {
@@ -272,6 +279,18 @@ export default {
           );
           this.isclose_on_click_overlay = true;
           return false;
+        }
+        if(data.State === '-1'){
+          this.$toast.error(
+            <div>
+              <p style="font-size:14px;margin:5px">请优先完成出售订单，再来挂收购单！</p>
+            </div>,
+            {
+              timeout: 3000,
+            }
+          )
+          this.isclose_on_click_overlay = true
+          return false
         }
         this.$router.replace({
           name: "order-Ticket",

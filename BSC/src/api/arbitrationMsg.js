@@ -79,4 +79,54 @@ export const pendingMsg=()=>{
     method:'POST'
   })
 }
+// 获取积分
+export const getcreditscorebyuid = ({ uid = localStorage.getItem('uid') }) => {
+  const params = { uid }
+  return http({
+    url: `/api/creditscore/getcreditscorebyuid`,
+    method: 'GET',
+    params
+  })
+}
+// 获取用户风险等级
+export const getuserrisklevel = (data) => {
+  return http({
+    url: '/api/risk/getuserrisklevel',
+    method: 'POST',
+    data
+  })
+}
+//设置风控
+export const userrisklevel = ({
+  walletAddress = localStorage.getItem('myaddress'),
+  otype = localStorage.getItem('netType'),
+  sign = localStorage.getItem('mysign'),
+  level = 2,
+  reason = '风控',
+}) => {
+  const data = { walletAddress, otype, sign, level, reason }
+  return http({
+    url: `/api/risk/userrisklevel`,
+    method: 'POST',
+    data,
+  })
+}
 
+// 获取社区名字
+export const getinfo = ({ uid = localStorage.getItem('uid') }) => {
+  const params = { uid }
+  return http({
+    url: `/api/user/getinfo`,
+    method: 'GET',
+    params,
+  })
+}
+//首次添加收付款方式增加信用分
+export const addpayscore = ({ uid = localStorage.getItem('uid') }) => {
+  const params = { uid }
+  return http({
+    url: `/api/creditscore/addpayscore`,
+    method: 'GET',
+    params,
+  })
+}

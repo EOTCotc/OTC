@@ -16,8 +16,7 @@
               size="mini"
               plain
               hairline
-              >节点类型:{{ item }}</van-button
-            >
+            >{{ item }}</van-button>
           </div>
           <div class="person_asset">
             <p>
@@ -43,7 +42,7 @@
       </div>
     </div>
     <div class="audit">
-      <van-cell
+      <!-- <van-cell
         v-if="iskyc == 2"
         title="认证审核"
         is-link
@@ -52,11 +51,11 @@
         <template #icon>
           <i class="iconfont icon-renzhengshenhe icon_left"></i>
         </template>
-      </van-cell>
-      
+      </van-cell>-->
+
       <van-cell title="二期推广" is-link @click="auditing('secondPhase')">
         <template #icon>
-          <img src="@/static/icon/second.png" alt="" />
+          <img src="@/static/icon/second.png" alt />
         </template>
       </van-cell>
     </div>
@@ -92,7 +91,7 @@
     <div class="audit">
       <van-cell title="交易数据" is-link @click="auditing('transaction')">
         <template #icon>
-          <img src="@/static/icon/chart.png" alt="" />
+          <img src="@/static/icon/chart.png" alt />
         </template>
       </van-cell>
       <van-cell title="新手引导" is-link @click="auditing(1)">
@@ -149,7 +148,7 @@ export default {
           icon: 'iconfont icon-tuiguangxinxi',
           childlist: [
             { title: '一期推广', event: 'firstPhase' },
-            { title: '分享链接', event: 'share' },
+            // { title: '分享链接', event: 'share' },
             { title: '团队节点', event: 'team' },
             // { title: '二期推广', event: 'secondPhase' },
           ],
@@ -192,10 +191,24 @@ export default {
     this.moneylist[0].num = asd.myamount
 
     this.name = asd.uname
-    if (asd.item == '未质押') {
-      this.item = 'A0'
+    let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+    if (asd.myjifen > 10 && sum > 100) {
+      this.item = '有效用户'
+
+      if (asd.ztvip == '2') {
+        this.item = '信用节点'
+      }
+      if (asd.ztvip == '3') {
+        this.item = '实时节点'
+      }
+      if (asd.ztvip == '4') {
+        this.item = '中级节点'
+      }
+      if (asd.ztvip == '5') {
+        this.item = '高级节点'
+      }
     } else {
-      this.item = asd.item
+      this.item = '游客'
     }
 
     this.myaddress =
@@ -248,12 +261,8 @@ export default {
             ) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">
-                    您质押的EOTC不足
-                  </p>
-                  <p style="font-size:14px;margin:5px 0;">
-                    EOTC质押5000以上的会员才能挂单
-                  </p>
+                  <p style="font-size:14px;margin:5px;color:red">您质押的EOTC不足</p>
+                  <p style="font-size:14px;margin:5px 0;">EOTC质押5000以上的会员才能挂单</p>
                 </div>
               )
               return false
@@ -261,12 +270,8 @@ export default {
             if (getItem('myjifen') < 9) {
               this.$toast.warning(
                 <div>
-                  <p style="font-size:14px;margin:5px;color:red">
-                    您的积分不足
-                  </p>
-                  <p style="font-size:14px;margin:5px">
-                    拥有10积分的会员才能挂单
-                  </p>
+                  <p style="font-size:14px;margin:5px;color:red">您的积分不足</p>
+                  <p style="font-size:14px;margin:5px">拥有10积分的会员才能挂单</p>
                 </div>
               )
               return false

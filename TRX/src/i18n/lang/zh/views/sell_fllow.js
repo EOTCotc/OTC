@@ -9,7 +9,7 @@ export default {
     merchant: "商家钱包",
     copy_merchant: "商家钱包地址 已复制",
     copy_contract: "合约地址 已复制",
-    contract: "合约地址",
+    contract: "转币到合约",
     price: "单价",
     count: "数量",
     total_copy: "总金额 已复制",

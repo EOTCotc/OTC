@@ -87,13 +87,18 @@ export default {
               case '13':
                 i.Chu = 'LP间推'
                 break
+              case "14":
+                i.Chu = "LP奖励";
+                break;
             }
           }
+          Toast.clear()
           this.list = data
           Toast.success(this.$t('components.firstPhase.look.loading.success'))
           // console.log(data);
         })
         .catch((err) => {
+          Toast.clear()
           Toast.fail(this.$t('components.firstPhase.look.loading.fail'))
           console.log(err)
         })

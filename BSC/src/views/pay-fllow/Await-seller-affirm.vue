@@ -12,7 +12,7 @@
             :time="time"
             format="HH:mm:sss"
           />
-          <span>内收到USDT</span>
+          <span>内收到{{ userIconType }}</span>
         </div>
       </div>
     </header>
@@ -31,10 +31,12 @@
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
+          :src="
+            require(`@/assets/currency-icons/${userIconType.toLowerCase()}.png`)
+          "
           alt=""
         />
-        <span>购买 USDT</span>
+        <span>购买{{ userIconType }} </span>
       </div>
       <div class="top-main">
         <ul>
@@ -44,43 +46,53 @@
           </li>
           <li>
             <span>单价</span>
-            <span>￥{{item.cny}}</span>
+            <span>￥{{ item.cny }}</span>
           </li>
           <li>
             <span>数量</span>
-            <span>{{ num }} USDT</span>
+            <span>{{ num }} {{ userIconType }}</span>
           </li>
           <li>
             <span>总金额</span>
-            <span class="importan-tTsxt"
-              >￥{{ ThousandSeparator(money) }}</span
-            >
+            <span class="importan-tTsxt">￥{{ ThousandSeparator(money) }}</span>
           </li>
           <li>
             <span>手续费</span>
-            <span>{{ servicefee }} USDT</span>
+            <span>{{ servicefee }} {{ userIconType }}</span>
           </li>
-          <li :style="{display:'flex',alignItems:'center'}">
+          <li :style="{ display: 'flex', alignItems: 'center' }">
             <span>我的付款方式</span>
-            <span v-if="cuePayType === 'wx'" :style="{display:'flex',alignItems:'center'}">
+            <span
+              v-if="cuePayType === 'wx'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
               <i
                 :class="['iconfont', `icon-wx`, `pay-iconwx`, `pay-icon3`]"
               ></i>
               &nbsp;&nbsp;微信支付
             </span>
-            <span v-if="cuePayType === 'zfb'" :style="{display:'flex',alignItems:'center'}">
+            <span
+              v-if="cuePayType === 'zfb'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
               <i
                 :class="['iconfont', `icon-zfb`, `pay-iconzfb1`, `pay-iconzfb`]"
               ></i>
               &nbsp;&nbsp;支付宝
             </span>
-            <span v-if="cuePayType === 'yhk'" :style="{display:'flex',alignItems:'center'}">
+            <span
+              v-if="cuePayType === 'yhk'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
               <i
                 :class="['iconfont', `icon-yhk`, `pay-icon1`, `pay-iconyhk`]"
               ></i>
               &nbsp;&nbsp;银行卡
             </span>
-            <span v-if="cuePayType === 'xj'" :style="{display:'flex',alignItems:'center'}">
+            <span
+              v-if="cuePayType === 'xj'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
               <img
                 class="xj_moeny"
                 :style="{ marginTop: '5px' }"
@@ -90,17 +102,25 @@
               &nbsp;&nbsp;现金交易
             </span>
           </li>
-          <li v-if="cuePayType !== 'xj'"> 
+          <li v-if="cuePayType !== 'xj'">
             <span>商家收款账号</span>
-             <span v-if="cuePayType === 'wx'" :style="{display:'flex',alignItems:'center'}">
-              &nbsp;&nbsp;{{item.account_wx}}
+            <span
+              v-if="cuePayType === 'wx'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
+              &nbsp;&nbsp;{{ item.account_wx }}
             </span>
-            <span v-if="cuePayType === 'zfb'" :style="{display:'flex',alignItems:'center'}">
-             
-              &nbsp;&nbsp;{{item.account_zfb}}
+            <span
+              v-if="cuePayType === 'zfb'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
+              &nbsp;&nbsp;{{ item.account_zfb }}
             </span>
-            <span v-if="cuePayType === 'yhk'" :style="{display:'flex',alignItems:'center'}">
-              {{item.account[2]}}&nbsp;&nbsp;{{item.account[1]}}
+            <span
+              v-if="cuePayType === 'yhk'"
+              :style="{ display: 'flex', alignItems: 'center' }"
+            >
+              {{ item.account[2] }}&nbsp;&nbsp;{{ item.account[1] }}
             </span>
           </li>
           <li>
@@ -113,20 +133,17 @@
           <li>
             <span>商家钱包地址</span>
             <span>
-              {{briefMyAddress(MerchanInfo.bank)}}
+              {{ briefMyAddress(MerchanInfo.bank) }}
             </span>
           </li>
-          
         </ul>
       </div>
     </main>
 
     <!-- 底部取消订单 or 下一波 button -->
     <footer class="footer">
-      <div class='cancel'>
-          <van-button @click='to_orderList'>
-              查看订单
-          </van-button>
+      <div class="cancel">
+        <van-button @click="to_orderList"> 查看订单 </van-button>
       </div>
       <div class="next">
         <van-button
@@ -167,19 +184,20 @@ export default {
       time: 24 * 60 * 60 * 1000,
       appealTime: 300 * 1000,
       isDisabled: true,
+      userIconType: localStorage.getItem("userIconType"),
     };
   },
   methods: {
-    to_orderList(){
-        this.$router.replace({
-            name:'orderGather-full',
-            params:{
-              done:false,
-            }
-        })
+    to_orderList() {
+      this.$router.replace({
+        name: "orderGather-full",
+        params: {
+          done: false,
+        },
+      });
     },
     payNextStep() {
-      this.$toast.warning("申诉功能暂未开放，请耐心等待")
+      this.$toast.warning("申诉功能暂未开放，请耐心等待");
     },
     finishReset() {
       this.isDisabled = false;

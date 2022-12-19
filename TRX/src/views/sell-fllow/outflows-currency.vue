@@ -519,7 +519,7 @@ export default {
         try {
           if (coinID != window.itself) {
             await Reconstruction_getTrxBalance()
-            await Reconstruction_myApprove(usdt, this.address)
+            await Reconstruction_myApprove(usdt, this.address,coinID)
             await Reconstruction_verifyUSDT(parseFloat(usdt), this.address)
           } else {
             await Reconstruction_getTrxBalance(usdt)

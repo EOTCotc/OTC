@@ -492,7 +492,8 @@ export default {
             this.cacheData.MerchanInfo.odid,
             this.cacheData.MerchanInfo.bank,
             this.cacheData.payItem.id,
-            localStorage.getItem('userIconId')
+            localStorage.getItem('userIconId'),
+            localStorage.getItem('userIconType')
           )
           while (true) {
             num = await Buy_verify(

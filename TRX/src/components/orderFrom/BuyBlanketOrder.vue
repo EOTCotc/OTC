@@ -76,7 +76,7 @@
               <input
                 type="number"
                 v-model="price"
-                @blur="onPriceInput(5, 7.5, $event)"
+                @blur="onPriceInput(Nowcoin.floor, Nowcoin.ceiling, $event)"
               />
               <p>CNY</p>
             </div>
@@ -224,9 +224,18 @@ export default {
       isChange_orderInfo: false, //是否有修改过
       eror: [false, false, false, false], // 对应错误信息展示
       vali_value: true, //所有值是否有效
+
+      Nowcoin:''
+
     };
   },
   created() {
+
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.name == this.coinType) this.Nowcoin = i
+    }
+
     this.price = this.orderItem.cny;
     this.number = this.orderItem.num;
     this.MaxLegalTender = this.orderItem.amount2;
@@ -368,13 +377,13 @@ export default {
       if (min <= Number(e.target.value) && Number(e.target.value) <= max) {
         this.price = e.target.value;
       } else if (Number(e.target.value) <= min) {
-        e.target.value = 5;
-        this.price = 5;
-        this.$toast.warning(this.$t("components.orderFrom.order_warn2"));
+        e.target.value = min;
+        this.price = min;
+        this.$toast.warning(`该货币价格不能低于 ${min} CNY`);
       } else if (Number(e.target.value) >= max) {
-        this.price = 7.5;
-        e.target.value = 7.5;
-        this.$toast.warning(this.$t("components.orderFrom.order_warn3"));
+        this.price = max;
+        e.target.value = max;
+        this.$toast.warning(`该货币价格不能高于 ${max} CNY`);
       }
       this.is_validVal();
     },

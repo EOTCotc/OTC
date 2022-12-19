@@ -149,12 +149,14 @@ import { myPayment } from "@/api/payverification";
 
 import { SetPayType } from "@/api/payverification";
 
+import { addpayscore } from '@/api/arbitrationMsg'
 export default {
   name: "set-receivingList",
   components: {
     CurCurrencyType,
   },
   created() {
+    addpayscore({})
     this.getCurPayList(this.sellerMthods);
   },
   data() {
