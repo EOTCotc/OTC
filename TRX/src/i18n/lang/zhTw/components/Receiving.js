@@ -1,5 +1,5 @@
 export default {
-  name: '姓名',
+  name: '姓 名',
   name_pla: '請輸入真實姓名',
   kaihu: '開戶銀行',
   kaihui_pla: '請輸入開戶銀行',

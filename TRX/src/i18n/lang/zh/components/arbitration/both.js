@@ -1,5 +1,5 @@
 export default {
-  plaintiff: "原告",
-  defendant: "被告",
-  unit: "票",
+  plaintiff: '原告',
+  defendant: '被告',
+  unit: '票',
 }
