@@ -1,0 +1,15 @@
+export default {
+	tags1: "Volumen de transacciones",
+	tags2: "volumen total de transacciones",
+	tags3: "Diez mil",
+	tags4: "Número total de transacciones",
+	tags5: "gente",
+	tags6: "Gráfico de datos comerciales",
+	tags7: "Compra y venta de USDT",
+	tags8: "Volumen de comercio",
+	tags9: "número de personas",
+	title1: "datos de la transacción",
+	data1: ["Comprar(USDT)", "vender(USDT)"],
+	data2: "Comprar(USDT)",
+	data3: "vender(USDT)",
+};

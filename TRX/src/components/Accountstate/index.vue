@@ -6,12 +6,16 @@
         v-model="fileList"
         :after-read="afterRead"
         :preview-image="false"
-      > -->
-      <van-cell :title="$t('components.accountstate.account.content.avatar.label')" :value="$t('components.accountstate.account.content.avatar.value')" is-link>
+      >-->
+      <van-cell
+        :title="$t('components.accountstate.account.content.avatar.label')"
+        :value="$t('components.accountstate.account.content.avatar.value')"
+        is-link
+      >
         <template #default>
           <div class="img_flex">
             <div class="img_bg">
-              <img :src="url" alt="" />
+              <img :src="url" alt />
             </div>
           </div>
         </template>
@@ -25,27 +29,32 @@
         </template>
       </van-cell>
       <van-cell :title="$t('components.accountstate.account.content.node.label')" :value="item" />
-      <van-cell :title="$t('components.accountstate.account.content.telegram.label')" is-link @click="show = true" />
+      <van-cell
+        :title="$t('components.accountstate.account.content.telegram.label')"
+        is-link
+        @click="show = true"
+      />
       <van-cell :title="$t('components.accountstate.account.content.walletAddress.label')">
         <template #default>
           <div class="van-ellipsis">{{ briefMyAddress(address) }}</div>
         </template>
         <template #right-icon>
-          <i
-            class="iconfont icon-fuzhi icon"
-            @click="handleCopy(sureaddress)"
-          ></i>
+          <i class="iconfont icon-fuzhi icon" @click="handleCopy(sureaddress)"></i>
         </template>
       </van-cell>
-      <van-cell title="" is-link :value="$t('components.accountstate.account.content.signOut.button')" @click="outshow = true" />
+      <van-cell
+        title
+        is-link
+        :value="$t('components.accountstate.account.content.signOut.button')"
+        @click="outshow = true"
+      />
       <van-dialog
         v-model="outshow"
         show-cancel-button
         :title="$t('components.accountstate.account.content.signOut.title')"
         :message="$t('components.accountstate.account.content.signOut.message')"
         @confirm="logout"
-      >
-      </van-dialog>
+      ></van-dialog>
 
       <van-dialog
         v-model="show"
@@ -71,11 +80,11 @@
 </template>
 
 <script>
-import { Toast, Dialog } from "vant";
-import { UserInfo } from "@/utils/web3";
-import { SetTelegram } from "@/api/trxRequest";
+import { Toast, Dialog } from 'vant'
+import { UserInfo } from '@/utils/web3'
+import { SetTelegram } from '@/api/trxRequest'
 
-import { clearmymes } from "@/api/payverification";
+import { clearmymes } from '@/api/payverification'
 
 export default {
   //账号信息
@@ -86,98 +95,109 @@ export default {
     return {
       fileList: [],
 
-      email: "",
-      address: "",
-      sureaddress: "",
-      uid: "",
+      email: '',
+      address: '',
+      sureaddress: '',
+      uid: '',
 
-      url: require("@/static/image/head.png"),
+      url: require('@/static/image/head.png'),
 
-      item: "",
+      item: '',
 
       outshow: false,
       show: false,
 
-      value: "",
-    };
+      value: '',
+    }
   },
   mounted() {
-    this.userData();
+    this.userData()
   },
   methods: {
     logout() {
-      clearmymes();
+      clearmymes()
       this.$router.push({
-        name: "login",
-      });
+        name: 'login',
+      })
     },
     handleCopy(val) {
       this.$copyText(val)
         .then(() => {
-          Toast(this.$t('global.copy.success'));
+          Toast(this.$t('global.copy.success'))
         })
         .catch(() => {
-          Toast(this.$t('components.accountstate.account.content.signOut.title'));
-        });
+          Toast(this.$t('components.accountstate.account.content.signOut.title'))
+        })
     },
     afterRead(Fail) {
-      this.url = Fail.content;
+      this.url = Fail.content
     },
     userData() {
-      let asd = UserInfo();
-      if (asd.item == this.$t('components.accountstate.account.userData')) {
-        this.item = "A0";
+      let asd = UserInfo()
+      let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+      if (asd.myjifen > 10 && sum > 100) {
+        this.item = '有效用户'
+
+        if (asd.ztvip == '2') {
+          this.item = '信用节点'
+        }
+        if (asd.ztvip == '3') {
+          this.item = '实时节点'
+        }
+        if (asd.ztvip == '4') {
+          this.item = '中级节点'
+        }
+        if (asd.ztvip == '5') {
+          this.item = '高级节点'
+        }
       } else {
-        this.item = asd.item;
+        this.item = '游客'
       }
-      this.email = asd.email;
-      this.uid = asd.uid;
-      this.sureaddress = asd.myaddress;
+      this.email = asd.email
+      this.uid = asd.uid
+      this.sureaddress = asd.myaddress
       this.address =
         asd.myaddress.substring(0, 10) +
-        "..." +
-        asd.myaddress.substring(
-          asd.myaddress.length - 10,
-          asd.myaddress.length
-        );
-      this.init();
+        '...' +
+        asd.myaddress.substring(asd.myaddress.length - 10, asd.myaddress.length)
+      this.init()
     },
     init() {
       SetTelegram({}).then((res) => {
-        if (res.data.State != "") {
-          this.value = res.data.State;
+        if (res.data.State != '') {
+          this.value = res.data.State
         }
-      });
+      })
     },
     //确定设置电报群
     setSure() {
-      let show = /^\d{16,50}$/.test(this.value);
+      let show = /^\d{16,50}$/.test(this.value)
       if (show) {
         SetTelegram({ telegram: this.value }).then((res) => {
-          let data = res.data;
-          if (data.State == "1") {
-            this.$toast.success(this.$t('components.accountstate.account.setTelegram.success'));
+          let data = res.data
+          if (data.State == '1') {
+            this.$toast.success(this.$t('components.accountstate.account.setTelegram.success'))
           }
-        });
+        })
       } else {
-        this.$toast.warning(this.$t('components.accountstate.account.setTelegram.fail'));
-        this.value = "";
+        this.$toast.warning(this.$t('components.accountstate.account.setTelegram.fail'))
+        this.value = ''
       }
       // console.log(show)
     },
 
     beforeClose(action, done) {
-      if (action === "confirm") {
-        if (this.value == "") {
-          done(false);
-          return;
+      if (action === 'confirm') {
+        if (this.value == '') {
+          done(false)
+          return
         }
       }
-      done();
+      done()
       // }
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

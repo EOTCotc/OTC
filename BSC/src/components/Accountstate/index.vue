@@ -125,10 +125,24 @@ export default {
     },
     userData() {
       let asd = UserInfo();
-      if (asd.item == "未质押") {
-        this.item = "A0";
+      let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
+      if (asd.myjifen > 10 && sum > 100) {
+        this.item = '有效用户'
+
+        if (asd.ztvip == '2') {
+          this.item = '信用节点'
+        }
+        if (asd.ztvip == '3') {
+          this.item = '实时节点'
+        }
+        if (asd.ztvip == '4') {
+          this.item = '中级节点'
+        }
+        if (asd.ztvip == '5') {
+          this.item = '高级节点'
+        }
       } else {
-        this.item = asd.item;
+        this.item = '游客'
       }
       this.email = asd.email;
       this.uid = asd.uid;

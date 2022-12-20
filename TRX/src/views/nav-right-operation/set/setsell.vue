@@ -3,27 +3,36 @@
     <Navwhite :title="title"></Navwhite>
     <div class="content">
       <div class="cell">
-        <p class="cell_title">数量</p>
+        <p class="cell_title">{{ $t("views.operation.sell.number") }}</p>
         <div class="inputs">
-          <input type="number" v-model="number" @blur="onNumInput($event)" placeholder="最大出售数量" />
-          <p>{{coin.coinType}}</p>
+          <input
+            type="number"
+            v-model="number"
+            @blur="onNumInput($event)"
+            :placeholder="$t('views.operation.sell.placeholder[0]')"
+          />
+          <p style="color: #237ff8">{{ coin.coinType }}</p>
         </div>
       </div>
       <div class="cell">
-        <p class="cell_title">单价</p>
+        <p class="cell_title">{{ $t("views.operation.sell.price") }}</p>
         <div class="inputs">
           <input
             type="number"
             v-model="price"
-            @blur="onPriceInput(coinType.floor,coinType.ceiling, $event,coin.coinType)"
-            :placeholder="'出售'+coin.coinType +'的单价(CNY)'"
+            @blur="onPriceInput(Nowcoin.floor,Nowcoin.ceiling, $event,coin.coinType)"
+            :placeholder="
+              $t('views.operation.sell.placeholder[1]') +
+              coin.coinType +
+              $t('views.operation.sell.placeholder[2]')
+            "
           />
           <p>CNY</p>
         </div>
       </div>
 
       <div class="cell">
-        <p class="cell_title">限售</p>
+        <p class="cell_title">{{ $t("views.operation.sell.sales") }}</p>
         <div class="cell_flex">
           <div class="inputs cell_Width">
             <input
@@ -31,10 +40,14 @@
               :disabled="hasInput"
               v-model="MinLegalTender"
               @blur="onMinLegalTender"
-              placeholder="最低出售总额"
+              :placeholder="$t('views.operation.sell.placeholder[3]')"
             />
             <p>CNY</p>
-            <span v-if="eror[0]" class="error-text">输入金额不正确</span>
+            <span v-if="eror[0]" class="error-text">
+              {{
+              $t("views.operation.sell.error_text")
+              }}
+            </span>
           </div>
           <div class="inputs cell_Width">
             <input
@@ -42,10 +55,14 @@
               :disabled="hasInput"
               v-model="MinDigitalCash"
               @blur="onMinDigitalCash"
-              placeholder="最低出售总额"
+              :placeholder="$t('views.operation.sell.placeholder[3]')"
             />
-            <p>{{coin.coinType}}</p>
-            <span v-if="eror[1]" class="error-text">输入金额不正确</span>
+            <p>{{ coin.coinType }}</p>
+            <span v-if="eror[1]" class="error-text">
+              {{
+              $t("views.operation.sell.error_text")
+              }}
+            </span>
           </div>
         </div>
         <div class="cell_flex">
@@ -55,10 +72,14 @@
               :disabled="hasInput"
               v-model="MaxLegalTender"
               @blur="onMaxLegalTender"
-              placeholder="最高出售总额"
+              :placeholder="$t('views.operation.sell.placeholder[4]')"
             />
             <p>CNY</p>
-            <span v-if="eror[2]" class="error-text">输入金额不正确</span>
+            <span v-if="eror[2]" class="error-text">
+              {{
+              $t("views.operation.sell.error_text")
+              }}
+            </span>
           </div>
           <div class="inputs cell_Width">
             <input
@@ -66,10 +87,14 @@
               :disabled="hasInput"
               v-model="MaxDigitalCash"
               @blur="onMaxDigitalCash"
-              placeholder="最高出售总额"
+              :placeholder="$t('views.operation.sell.placeholder[4]')"
             />
-            <p>{{coin.coinType}}</p>
-            <span v-if="eror[3]" class="error-text">输入金额不正确</span>
+            <p>{{ coin.coinType }}</p>
+            <span v-if="eror[3]" class="error-text">
+              {{
+              $t("views.operation.sell.error_text")
+              }}
+            </span>
           </div>
         </div>
       </div>
@@ -77,14 +102,18 @@
 
     <footer class="footer">
       <h6>
-        <span>使用现金交易</span>
+        <span>{{ $t("views.operation.sell.deal") }}</span>
       </h6>
       <van-cell center :border="false">
         <template #icon>
           <img class="pay-img" :src="require('@/assets/currency-icons/unmoney.png')" alt="aug-icon" />
         </template>
         <template #title>
-          <span class="custom-title">可接受现金</span>
+          <span class="custom-title">
+            {{
+            $t("views.operation.sell.adopt")
+            }}
+          </span>
         </template>
         <template #right-icon>
           <van-switch v-model="receiving_checked" @change="check_change('isMoney')" size="18px" />
@@ -99,7 +128,11 @@
           />
         </template>
         <template #title>
-          <span class="custom-title">只接受现金</span>
+          <span class="custom-title">
+            {{
+            $t("views.operation.sell.adopt")
+            }}
+          </span>
         </template>
         <template #right-icon>
           <van-switch v-model="isMoney" @change="check_change('receiving_checked')" size="18px" />
@@ -108,7 +141,13 @@
     </footer>
 
     <div class="button">
-      <van-button color="#FC7542" block round @click="popswitch" :disabled="vali_value">生成出售订单</van-button>
+      <van-button
+        color="#FC7542"
+        block
+        round
+        @click="popswitch"
+        :disabled="vali_value"
+      >{{ $t("views.operation.sell.create") }}</van-button>
     </div>
 
     <van-popup
@@ -120,28 +159,32 @@
       position="bottom"
     >
       <div class="popup-content">
-        <p class="pop-title">确认出售订单</p>
-        <p class="pop-message">请确认当前订单信息</p>
+        <p class="pop-title">{{ $t("views.operation.sell.sure") }}</p>
+        <p class="pop-message">{{ $t("views.operation.sell.current") }}</p>
         <div class="pop-data">
           <div>
-            <p>单价</p>
+            <p>{{ $t("views.operation.sell.price") }}</p>
             <p>{{ price }} CNY</p>
           </div>
           <div>
-            <p>数量</p>
-            <p>{{ number }} {{coin.coinType}}</p>
+            <p>{{ $t("views.operation.sell.number") }}</p>
+            <p>{{ number }} {{ coin.coinType }}</p>
           </div>
           <div>
-            <p>限额</p>
+            <p>{{ $t("views.operation.sell.quota") }}</p>
             <p>{{ MinLegalTender }} CNY ~ {{ MaxLegalTender }} CNY</p>
           </div>
           <div>
-            <p>限额</p>
-            <p>{{ MinDigitalCash }} {{coin.coinType}} ~ {{ MaxDigitalCash }} {{coin.coinType}}</p>
+            <p>{{ $t("views.operation.sell.quota") }}</p>
+            <p>{{ MinDigitalCash }} {{ coin.coinType }} ~ {{ MaxDigitalCash }} {{ coin.coinType }}</p>
           </div>
         </div>
 
-        <van-checkbox shape="square" v-model="checked">我已认真核对</van-checkbox>
+        <van-checkbox shape="square" v-model="checked">
+          {{
+          $t("views.operation.sell.check")
+          }}
+        </van-checkbox>
         <van-button
           class="pop-button"
           @click="sellItem()"
@@ -149,24 +192,28 @@
           color="#1B2945"
           block
           :disabled="!checked"
-        >确认生成</van-button>
+        >{{ $t("views.operation.sell.affirm") }}</van-button>
       </div>
     </van-popup>
 
     <van-popup v-model="contractShow" :style="{ height: '30%' }" round closeable position="bottom">
       <div class="heyue">
-        <p class="heyue_title">合约转币</p>
+        <p class="heyue_title">{{ $t("views.operation.sell.repaste") }}</p>
         <div class="heyue-text">
           <div>
-            <p>合约地址</p>
+            <p>{{ $t("views.operation.sell.site") }}</p>
             <p>{{ briefMyAddress(contractAddress) }}</p>
           </div>
           <div>
-            <p>数量</p>
-            <p>{{ number }} {{coin.coinType}}</p>
+            <p>{{ $t("views.operation.sell.number") }}</p>
+            <p>{{ number }} {{ coin.coinType }}</p>
           </div>
         </div>
-        <van-button block color="#1B2945" round @click="transfer">向合约转币</van-button>
+        <van-button block color="#1B2945" round @click="transfer">
+          {{
+          $t("views.operation.sell.towards")
+          }}
+        </van-button>
       </div>
     </van-popup>
     <!-- <van-popup v-model="kindShow" round position="bottom">
@@ -185,10 +232,9 @@
 import Navwhite from '@/components/Nav/white.vue'
 import PopLoad from '@/components/pop-load/index.vue'
 import currency_mixin from '@/mixins/currency_mixins'
-import { contractAddress } from '@/utils/abi'
+import { contractAddress, contractAddress_TRX } from '@/utils/web3'
 import { CheckSellOrder } from '@/api/payverification'
 import { addOrder } from '@/api/trxRequest'
-// import { getcoinID } from '@/utils/utils'
 
 import {
   Reconstruction_getTrxBalance,
@@ -207,24 +253,27 @@ export default {
   data() {
     return {
       hasInput: true,
-      title: '出售',
+      title: this.$t('views.operation.sell.sell'),
       //合约转币
       contractShow: false,
       loadshow: false,
-      contractAddress: contractAddress,
+      contractAddress: '',
 
+      // kindShow: false,
+      // kind: "USDT",
+      // columns: ["USDT", "USDC", "BTC", "ETH", "BNB"],
       coin: '',
-      address: '',
-      coinType: '',
+      Nowcoin: '',
     }
   },
   created() {
     this.coin = this.$route.params
     let coinList = JSON.parse(localStorage.getItem('coinList'))
     for (let i of coinList) {
-      if (i.id == this.coin.coinID) this.coinType = i
+      if (i.id == this.coin.coinID) this.Nowcoin = i
     }
-    console.log(this.coin)
+    if (this.coin.coinID == window.itself) this.contractAddress = contractAddress_TRX
+    else this.contractAddress = contractAddress
   },
   methods: {
     sellItem() {
@@ -240,16 +289,12 @@ export default {
       const amount1 = this.MinLegalTender
       const amount2 = this.MaxLegalTender
       this.isclose_on_click_overlay = false
-      let coinList = JSON.parse(localStorage.getItem('coinList'))
-      for (let i of coinList) {
-        if (i.id == this.coin.coinID) this.address = i.ads
-      }
 
       try {
         if (this.coin.coinID != window.itself) {
           await Reconstruction_getTrxBalance() // 支付 trx
-          await Reconstruction_myApprove(usdtNum, this.address) // 授权
-          await Reconstruction_verifyUSDT(parseFloat(usdtNum), this.address) // 验证延保余额
+          await Reconstruction_myApprove(usdtNum, this.Nowcoin.ads,this.coin.coinID) // 授权
+          await Reconstruction_verifyUSDT(parseFloat(usdtNum), this.Nowcoin.ads) // 验证延保余额
         } else {
           await Reconstruction_getTrxBalance(usdtNum)
         }
@@ -260,7 +305,7 @@ export default {
         if (it.odid != '' && it.odid != '0') {
           //区块打包确认
           // let coinID = getcoinID()
-          await sellOrders(usdtNum.toString(), it.id, this.coin.coinID, this.address)
+          await sellOrders(usdtNum.toString(), it.id, this.coin.coinID, this.Nowcoin.name)
           const { data } = await addOrder({
             cny,
             num: usdtNum,

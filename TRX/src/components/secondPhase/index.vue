@@ -16,7 +16,10 @@
           <p>{{ USDT }}</p>
         </div>
         <div>
-          <p>EOTC</p>
+          <p class="boxName" @click="$router.push({name:'look'})">
+            <span>EOTC</span>
+            <van-icon name="arrow" size="0.45rem" />
+          </p>
           <p>{{ EOTC }}</p>
         </div>
         <div>
@@ -66,6 +69,7 @@
 <script>
 //二期推广
 import { UserInfo } from '@/utils/web3'
+import { getinfo } from "@/api/arbitrationMsg";
 export default {
   data() {
     return {
@@ -79,7 +83,10 @@ export default {
     }
   },
   created() {
-    this.teamName=localStorage.getItem('teamName')
+    // this.teamName=localStorage.getItem('teamName')
+    getinfo({}).then(res=>{
+      this.teamName=res.items.comName
+    })
     // console.log(localStorage.getItem('teamName'))
     let data = UserInfo()
     this.USDT = data.usdt_ye
@@ -160,6 +167,11 @@ export default {
       font-weight: bolder;
       width: 100%;
       margin-bottom: 40px;
+    }
+    .boxName {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     div {
       width: 45%;

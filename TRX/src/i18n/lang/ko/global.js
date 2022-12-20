@@ -1,0 +1,16 @@
+export default {
+	tip: ["아직 열리지 않은，기다리세요！", "너무 자주 데이터 요청"],
+	empty: "데이터 없음",
+	noMore: "더 이상은 없어...",
+	reset: "초기화",
+	confirm: "확인하다",
+	cancel: "취소",
+	confirm2: "확신하는",
+	complete: "마치다",
+	submit: "제출하다",
+	load: "로드 중",
+	loading: "로드 중...",
+	name: "이름",
+	alipay: "Alipay",
+	wechat: "위챗",
+};

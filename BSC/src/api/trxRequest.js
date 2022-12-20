@@ -11,27 +11,23 @@ import { getItem } from "@/utils/storage";
 
 // 购买 出售 主页默认加载数据
 export const EotcBuyOrder = (
-  { pay = "0", amount = "0", dtype = "0", otype = getItem("netType") } = {
-    pay: "0",
-    amount: "0",
-    dtype: "0",
-    otype: getItem("netType"),
-  }
+  { pay = '0', amount = '0', dtype = '0', otype = getItem('netType'),coinID } 
 ) => {
   const config = {
-    method: "POST",
-    url: postAPIURL("EotcBuyOrder"),
+    method: 'POST',
+    url: postAPIURL('EotcBuyOrder'),
     data: utils.initFormData({
       pay,
       amount,
       dtype,
       otype,
+      coinID
     }),
     __try_count: 3, //重试次数
-  };
+  }
 
-  return axiosAutoTry(config);
-};
+  return axiosAutoTry(config)
+}
 
 // 购买 出售 数据 筛选！！
 
@@ -382,6 +378,7 @@ export const addOrder = ({
   cash = 0,
   did = 0,
   type = 1,
+  coinID
 }) => {
   const params = {
     cny,
@@ -395,6 +392,7 @@ export const addOrder = ({
     type, // 1收购  0出售
     did, // 固定值 意义暂定
     cash, // 1可接受现金  -1 只接受现金
+    coinID
   };
 
   return request({
@@ -411,7 +409,7 @@ export const addOrder = ({
  * @param {*ads} ads
  */
 
-export const Order_sj = ({ type = 11 } = { type: 11 }) => {
+export const Order_sj = ({ type = 11,coinID } = { type: 11 }) => {
   const params = {
     method: "POST",
     url: postAPIURL("Order_sj"),
@@ -419,6 +417,7 @@ export const Order_sj = ({ type = 11 } = { type: 11 }) => {
       uid: getItem("uid"),
       ads: getItem("myaddress"),
       type, // 收购
+      coinID
     },
     // delayTimes: 2,
     __try_count: 10, // 重试次数
@@ -445,6 +444,7 @@ export const Eotcdis_Order = ({
   ads = getItem("myaddress"),
   t1 = 0,
   t2 = 2,
+  coinID
 }) => {
   // 返回数据值参考
   //     "dsx": "1",
@@ -462,6 +462,7 @@ export const Eotcdis_Order = ({
       ads,
       t1,
       t2,
+      coinID
     }),
     // delayTimes: 2,
     __try_count: 3, // 重试次数
@@ -672,5 +673,18 @@ export const TradingVolume = () => {
   return request({
     method: 'GET',
     url: `/api/OTC/TradingVolume`,
+  })
+}
+//查询多币种
+export const CoinList = ({
+  net = 'bsc'
+}) => {
+  const params = {
+    net
+  }
+  return request({
+    method: 'POST',
+    url: '/api/OTC/CoinList', 
+    params,
   })
 }

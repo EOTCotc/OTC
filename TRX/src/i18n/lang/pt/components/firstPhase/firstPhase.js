@@ -1,0 +1,20 @@
+export default {
+	text: [
+		"A fase I pode ser retirada",
+		"Saldo",
+		"Libertar",
+		"Dados totais",
+		"Fase I",
+		"Ganhos e recompensas",
+		"Ver detalhes do benefício",
+		"Transferência para penhor de segunda fase",
+		"Total",
+		"Compromisso",
+		"Air Drop",
+		"Rendimentos de empréstimos",
+		"Prémio Paralelo",
+		"Partilhar recompensas",
+		"Recompensas auxiliares",
+		"Subvenção para nós",
+	],
+};

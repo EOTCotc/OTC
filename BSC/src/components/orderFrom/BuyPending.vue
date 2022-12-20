@@ -32,7 +32,7 @@
         </div>
         <div>
           <p>交易数量</p>
-          <p>{{ item.num }} USDT</p>
+          <p>{{ item.num }} {{coinType}}</p>
         </div>
         <div>
           <p>交易单价</p>
@@ -222,6 +222,17 @@ export default {
   components: {
     VueLoading,
   },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    active: {
+      type: [String,Number],
+    },
+    coinType: {
+      type: [String],
+    },
+  },
   data() {
     return {
       show: false,
@@ -235,8 +246,16 @@ export default {
       isclose_on_click_overlay: true,
     };
   },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '1') this.initData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '1')this.initData(this.coinId)
+    },
+  },
   created() {
-    this.initData();
+    this.initData(this.coinId);
   },
   filters: {
     filterContent(value) {
@@ -275,7 +294,7 @@ export default {
           mail: this.activeItem.aipay,
           busPay: this.getPayInfo(this.activeItem)[2].trim(),
         });
-        this.initData(); //更新数据
+        this.initData(this.coinId); //更新数据
       } catch (err) {
         console.warn(err);
       }
@@ -305,7 +324,7 @@ export default {
         }
       );
       try {
-        await GetmyUSDT_User(item.id, item.num);
+        await GetmyUSDT_User(item.id, item.num,this.coinId);
         this.isContractCheckList[index] = true;
         this.$toast.clear();
         this.$toast.success("合约校验通过,可以给对方进行汇款！");
@@ -330,10 +349,11 @@ export default {
         this.isContractCheckLoading = false;
       }
     },
-    initData() {
+    initData(coinID) {
       const uid = localStorage.getItem("uid");
       Eotcdis_Order({
         uid,
+        coinID: coinID
       }).then((data) => {
         this.dataList = data.data;
         this.isContractCheckList = [];

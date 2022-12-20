@@ -12,7 +12,7 @@
           <span>收购</span>
         </van-tag>
         &nbsp;&nbsp;
-        <span class="header-top-left-test">USDT</span>
+        <span class="header-top-left-test">{{ kind }}</span>
         &nbsp;&nbsp;
         <van-tag
           v-if="order_type(+order_item.id) && initTime() === 0"
@@ -79,7 +79,7 @@
             </span>
             <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
             <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} USDT</span>
+            <span>手续费:{{ order_item.amount2 }} {{ kind }}</span>
           </p>
           <p>
             <span> </span>
@@ -344,6 +344,7 @@ import { getItem, removeItem } from "@/utils/storage";
 import { myPayment, Getsjmes } from "@/api/payverification";
 
 import sell_Mixin from "@/mixins/sell_mixins";
+import { Buy_cancel } from "@/utils/web3";
 
 import { TemporaryCoinWithdrawal } from "./getCoin_users";
 
@@ -354,6 +355,9 @@ export default {
       require: true,
       type: [Object],
     },
+    kind: {
+      type: [String],
+    },
   },
   mixins: [sell_Mixin],
   created() {
@@ -361,8 +365,13 @@ export default {
   },
   methods: {
     // 倒计时完成 订单自动取消
-    coutDown_finish(type) {
+    async coutDown_finish(type) {
       this.$toast.warning("订单已过期，系统将自动取消。");
+      if (this.order_item.rcoin == 1)
+        await Buy_cancel(
+          this.order_item.id,
+          localStorage.getItem("userIconId")
+        );
       //console.log(type);
       subbuysellorder({
         oid: this.order_item.id,

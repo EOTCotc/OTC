@@ -18,8 +18,8 @@
           </div>
 
           <div class="right">
-          <p class="number">{{ eotc }} EOTC</p>
-          <p class="deli">质押明细</p>
+            <p class="number">{{ eotc }} EOTC</p>
+            <p class="deli">质押明细</p>
           </div>
         </div>
 
@@ -53,8 +53,8 @@
           <p>{{presenter}}</p>
         </div>
         <div>
-          <p>手续费分红(EOTC)</p>
-          <p>0</p>
+          <p>手续费分红(USDT)</p>
+          <p>{{giftUSDT}}</p>
         </div>
         <div>
           <p>NFT权益卡</p>
@@ -144,38 +144,41 @@ export default {
       eotc: '',
       usdt: 0,
       //质押收益
-      earnings:0,
+      earnings: 0,
       title: '交易质押',
       //节点类型
       jdtype: '',
       percentage: 0,
+
+      //手续费分红
+      giftUSDT:''
     }
   },
   mounted() {
     // this.earnings=localStorage.getItem('nodeRate')
 
-this.allearning()
+    this.allearning()
 
     this.presenter = localStorage.getItem('giftEotc')
     this.eotc = Number(localStorage.getItem('otczy'))
+    this.giftUSDT = Number(localStorage.getItem('giftUSDT'))
     this.usdt = localStorage.getItem('freeNum') * 1
-    
 
     let data = UserInfo()
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
 
-    if (data.myjifen > 10&&sum>100) {
+    if (data.myjifen > 10 && sum > 100) {
       this.jdtype = '有效用户'
-      if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
+      if (data.ztvip == '2') {
         this.jdtype = '信用节点'
       }
-      if (sum > 10000 && data.ztman >= 7 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
+      if (data.ztvip == '3') {
         this.jdtype = '实时节点'
       }
-      if (sum > 50000 && data.ztman >= 13 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
+      if (data.ztvip == '4') {
         this.jdtype = '中级节点'
       }
-      if (sum > 100000 && data.ztman >= 19 && data.stakeMan >= 3000 && data.ztvip[1] * 1 >= 5) {
+      if (data.ztvip == '5') {
         this.jdtype = '高级节点'
       }
     } else {
@@ -213,7 +216,7 @@ this.allearning()
       const giftEotc = localStorage.getItem('giftEotc') * 1
       const myStakingEotc = localStorage.getItem('myStakingEotc') * 1
 
-      const max = myEoct + otczy + giftEotc+myStakingEotc
+      const max = myEoct + otczy + giftEotc + myStakingEotc
       if (max == 0) {
         return
       }
@@ -235,14 +238,14 @@ this.allearning()
       }
       this.percentage = ((this.usdt / num) * 100).toFixed(2)
     },
-    record(){
-      this.$router.push({name:'PledgeRecord'})
+    record() {
+      this.$router.push({ name: 'PledgeRecord' })
     },
-    allearning(){
+    allearning() {
       MyStakeList({}).then((res) => {
-        let zongnum=0
+        let zongnum = 0
         let data = res.data
-        for (let i of data){
+        for (let i of data) {
           i.uid = i.uid * 1
           if (i.uid == 6) {
             i.reward = (i.znum * 1 * 0.48 * i.uid) / 12
@@ -253,11 +256,11 @@ this.allearning()
           } else if (i.uid == 36) {
             i.reward = (i.znum * 1 * 1.2 * i.uid) / 12
           }
-          zongnum=zongnum + i.reward*1
+          zongnum = zongnum + i.reward * 1
         }
-        this.earnings=zongnum
+        this.earnings = zongnum
       })
-    }
+    },
   },
 }
 </script>
@@ -341,13 +344,13 @@ this.allearning()
             font-size: 28px;
           }
         }
-         .right{
-          .deli{
+        .right {
+          .deli {
             display: flex;
             align-items: center;
             font-size: 24px;
             color: #237ff8;
-            &::after{
+            &::after {
               width: 11px;
               height: 11px;
               content: '';
@@ -383,9 +386,8 @@ this.allearning()
       .total_flex:last-child {
         padding-top: 40px;
       }
-      
     }
-    .service{
+    .service {
       font-size: 28px;
       background: #fff;
       border-radius: 20px;
@@ -396,11 +398,11 @@ this.allearning()
         height: 40px;
         margin-right: 12px;
       }
-      div{
+      div {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        div{
+        div {
           display: flex;
         }
       }

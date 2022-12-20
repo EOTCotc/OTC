@@ -1,0 +1,16 @@
+export default {
+	tip: ["لم تفتح بعد ، من فضلك انتظر!", "كثرة طلب البيانات"],
+	empty: "لايوجد بيانات",
+	noMore: "لا أكثر...",
+	reset: "إعادة تعيين",
+	confirm: "تؤكد",
+	cancel: "يلغي",
+	confirm2: "بالتأكيد",
+	complete: "إنهاء",
+	submit: "إرسال",
+	load: "جار التحميل",
+	loading: "جار التحميل...",
+	name: "اسم",
+	alipay: "Alipay",
+	wechat: "WeChat",
+};

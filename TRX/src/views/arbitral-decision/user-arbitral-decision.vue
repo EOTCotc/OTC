@@ -3,27 +3,29 @@
     <!-- 买家用户 发起仲裁页面 -->
     <header class="header">
       <van-icon name="arrow-left" />
-      <span class="hd-txt" @click="$router.go(-1)"> 发起仲裁 </span>
+      <span class="hd-txt" @click="$router.go(-1)">
+        {{ $t("views.arbitral.hd_txt") }}
+      </span>
     </header>
     <main class="arbitral-main-container">
       <section class="arbitral-type">
-        <div class="arbitral-evens">仲裁事件</div>
+        <div class="arbitral-evens">{{ $t("views.arbitral.evens") }}</div>
         <div>
           <van-button
             :class="{ 'active-btn-type': isActive }"
             @click="changeArbitral"
-            >未收到币</van-button
+          >{{ $t("views.arbitral.not_received") }}</van-button
           >
           <van-button
             :class="{ 'active-btn-type': !isActive }"
             @click="changeDecision"
-            >其他</van-button
+          >{{ $t("views.arbitral.other") }}</van-button
           >
         </div>
       </section>
 
       <section class="arbitral-evidence">
-        <div class="evidence">仲裁举证</div>
+        <div class="evidence">{{ $t("views.arbitral.evidence") }}</div>
 
         <!-- 点击其他可以输入内容 -->
         <p v-if="!isActive" class="textAre">
@@ -42,7 +44,7 @@
             v-model="fileList"
             :after-read="afterRead"
             :max-count="2"
-            upload-text="点击上传凭证"
+            :upload-text="$t('views.arbitral.upload_text')"
             preview-size="150px"
             capture="camera"
             :multiple="true"
@@ -52,17 +54,17 @@
       </section>
 
       <article class="arbitral-info">
-        买家申请已打款仲裁，需要提供具有法律效力的打款举
-        证，银行转账可以保存电子回单，微信搜索账单，找到
-        转账记录，申请转账电子凭证。支付宝搜索账单找到转 账记录，申请电子回单。
+        {{ $t("views.arbitral.arbitral_info") }}
       </article>
 
       <p :style="{ color: 'rgb(252, 184, 66)' }">
-        特别提示: 伪造变造打款凭证是严重违法行为
+        {{ $t("views.arbitral.tips") }}
       </p>
     </main>
     <footer class="footer">
-      <van-button round :disabled="!alreadyEvidenced"> 提交 </van-button>
+      <van-button round :disabled="!alreadyEvidenced">
+        {{ $t("views.arbitral.submit") }}
+      </van-button>
     </footer>
   </div>
 </template>
@@ -87,11 +89,11 @@ export default {
     },
     afterRead(file) {
       file.status = "uploading";
-      file.message = "上传中...";
+      file.message = this.$t("views.arbitral.message[0]");
 
       setTimeout(() => {
         file.status = "success";
-        file.message = "上传成功";
+        file.message = this.$t("views.arbitral.message[1]");
         this.alreadyEvidenced = true;
       }, 1000);
     },

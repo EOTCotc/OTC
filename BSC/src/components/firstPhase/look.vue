@@ -22,6 +22,7 @@
 
 <script>
 import white from "@/components/Nav/white.vue";
+import { Toast } from 'vant'
 import { GetSymx } from "@/api/trxRequest";
 export default {
   components: {
@@ -45,34 +46,56 @@ export default {
           let data = res.data;
           for (let i of data) {
             switch (i.Chu) {
-              case "1":
-                i.Chu = "质押收益";
-                break;
-              case "2":
-                i.Chu = "分享奖励";
-                break;
-              case "3":
-                i.Chu = "辅助奖励";
-                break;
-              case "4":
-                i.Chu = "节点补助";
-                break;
-              case "5":
-                i.Chu = "平级奖";
-                break;
-              case "6":
-                i.Chu = "社区奖励";
-                break;
-              case "9":
-                i.Chu = "额外奖励";
+              case '1':
+                i.Chu = '质押收益'
+                break
+              case '2':
+                i.Chu = '分享奖励'
+                break
+              case '3':
+                i.Chu = '辅助奖励'
+                break
+              case '4':
+                i.Chu = '节点补助'
+                break
+              case '5':
+                i.Chu = '平级奖'
+                break
+              case '6':
+                i.Chu = '社区奖励'
+                break
+              case '7':
+                i.Chu = 'OTC手续费分红'
+                break
+              case '8':
+                i.Chu = '分期释放'
+                break
+              case '9':
+                i.Chu = '额外奖励'
+                break
+              case '11':
+                i.Chu = 'LP收益'
+                break
+              case '12':
+                i.Chu = 'LP直推'
+                break
+              case '13':
+                i.Chu = 'LP间推'
+                break
+              case "14":
+                i.Chu = "LP奖励";
                 break;
             }
           }
-          this.list = data;
+          Toast.clear()
+          this.list = data
+          Toast.success('加载成功')
           // console.log(data);
         })
         .catch((err) => {
-          console.log(err);
+          Toast.clear()
+          Toast.fail('加载失败')
+          console.log(err)
         });
     },
   },

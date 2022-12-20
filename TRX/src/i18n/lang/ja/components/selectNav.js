@@ -1,0 +1,20 @@
+export default {
+	selectNav_title: "取引金額",
+	selectNav_pla: "目標金額を入力してください",
+	selectNav_mes: "取引金額を入力してください",
+	selectNav_shuaixuan: "より多くのフィルター",
+	selectNav_pay_type: "支払方法",
+	selectNav_pay_fun: [
+		"大したこと",
+		"私の焦点",
+		"取引した",
+		"トレードチケットのみ表示",
+	],
+	selectNav_all: "全部",
+	selectNav_bank: "バンクカード",
+	selectNav_alipay: "Alipay",
+	selectNav_wechat: "微信",
+	selectNav_money: "現金",
+	selectNav_dazong: "大したこと",
+	selectNav_warn: "この機能はまだ利用できません，お待ちください",
+};

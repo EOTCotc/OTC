@@ -1,0 +1,16 @@
+export default {
+	tip: ["chưa mở，Vui lòng chờ！", "Yêu cầu dữ liệu quá thường xuyên"],
+	empty: "Không có dữ liệu",
+	noMore: "không còn nữa...",
+	reset: "cài lại",
+	confirm: "xác nhận",
+	cancel: "Hủy bỏ",
+	confirm2: "Chắc chắn rồi",
+	complete: "Kết thúc",
+	submit: "Gửi đi",
+	load: "Đang tải",
+	loading: "Đang tải...",
+	name: "Tên",
+	alipay: "alipay",
+	wechat: "Wechat",
+};

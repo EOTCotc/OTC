@@ -28,7 +28,7 @@
           </div>
           <div>
             <p>{{ $t("components.orderFrom.jiaoyinum") }}</p>
-            <p>{{ item.num }} USDT</p>
+            <p>{{ item.num }} {{coinType}}</p>
           </div>
           <div>
             <p>{{ $t("components.orderFrom.price") }}</p>
@@ -126,6 +126,9 @@ export default {
     },
     active: {
       type: [String,Number],
+    },
+    coinType: {
+      type: [String],
     },
   },
   watch: {

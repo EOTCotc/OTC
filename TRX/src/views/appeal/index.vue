@@ -1,36 +1,45 @@
 <template>
   <div>
-    <van-nav-bar :title="title" left-text="返回" left-arrow @click-left="$router.go(-2)" />
+    <van-nav-bar
+      :title="title"
+      :left-text="$t('views.appeal.left_text')"
+      left-arrow
+      @click-left="$router.go(-2)"
+    />
     <!-- <div class="reminder">
       特别提示:
       伪造变造打款凭证是严重违法行为，如提交相关查询密码请注意保证个人资产安全
     </div>-->
     <div class="content">
       <div class="event">
-        <p class="event_title">申诉事件</p>
+        <p class="event_title">{{ $t("views.appeal.event_title") }}</p>
         <div>
           <p
             v-for="(item, index) in days"
             :key="index"
             :class="item.show ? 'action' : ''"
-            @click="oneClick(item,index)"
-          >{{ item.day }}</p>
+            @click="oneClick(item, index)"
+          >
+            {{ item.day }}
+          </p>
         </div>
       </div>
       <div class="text">
-        <p>文字信息举证</p>
+        <p>{{ $t("views.appeal.text") }}</p>
         <van-field
           v-model="message"
           rows="2"
           :autosize="{ maxHeight: 150, minHeight: 150 }"
           type="textarea"
           maxlength="120"
-          placeholder="描述具体情况及提供可核实情况所需信息"
+          :placeholder="$t('views.appeal.van_field')"
           show-word-limit
         />
       </div>
       <div class="hint">
-        <p>投诉提交后，客服会调取该订单的聊天记录。若有其他截图证据，请一并发送到聊天中！</p>
+        <p>
+          {{ $t("views.appeal.lint") }}
+        </p>
       </div>
 
       <div class="footer">
@@ -40,78 +49,83 @@
           block
           :disabled="message != '' || fileList.length > 0 ? false : true"
           @click="sumbit()"
-        >提交</van-button>
+          >{{ $t("views.appeal.submit") }}</van-button
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Toast } from 'vant'
-import {Petition} from '@/api/trxRequest'
+import { Toast } from "vant";
+import { Petition } from "@/api/trxRequest";
 export default {
   //发起申诉
   data() {
     return {
-      title: '发起申诉',
+      title: this.$t("views.appeal.title"),
       //文字信息
-      message: '',
+      message: "",
       days: [
-        { day: '联系不上商家', show: true },
-        { day: '付不了款', show: false },
-        { day: '其他', show: false },
+        { day: this.$t("views.appeal.day[0]"), show: true },
+        { day: this.$t("views.appeal.day[1]"), show: false },
+        { day: this.$t("views.appeal.day[2]"), show: false },
       ],
       //图片上传
       fileList: [],
       columns: [],
       show: false,
-      type:0,
+      type: 0,
 
       stat: 0,
-      explain: '',
-      info: '',
-    }
+      explain: "",
+      info: "",
+    };
   },
   mounted() {
-    this.stat = 1
-    this.info = this.$route.params.MerchanInfo
-    console.log(this.info)
+    this.stat = 1;
+    this.info = this.$route.params.MerchanInfo;
+    console.log(this.info);
   },
   computed: {},
 
   methods: {
-    oneClick(data,index) {
-      console.log(index)
+    oneClick(data, index) {
+      console.log(index);
       // if (data.show) {
       //   return
       // }
       for (let i of this.days) {
-        i.show = false
+        i.show = false;
       }
-      data.show = true
-      this.type=index
+      data.show = true;
+      this.type = index;
     },
     sumbit() {
       Toast.loading({
-        message: '提交中...',
+        message: this.$t("views.appeal.message"),
         forbidClick: true,
-        duration:0
-      })
-      Petition({oid:this.info.odid,type:this.type,msg:this.message}).then(res=>{
-        Toast.clear()
-        let data=res.data.Code
-        if(data>0){
-          this.$toast.success('提交成功')
+        duration: 0,
+      });
+      Petition({
+        oid: this.info.odid,
+        type: this.type,
+        msg: this.message,
+      }).then((res) => {
+        Toast.clear();
+        let data = res.data.Code;
+        if (data > 0) {
+          this.$toast.success(this.$t("views.appeal.success[0]"));
           setTimeout(() => {
-            this.$router.push({name:'index'})
+            this.$router.push({ name: "index" });
           }, 5000);
-        }else{
-          this.$toast.success('提交失败')
+        } else {
+          this.$toast.success(this.$t("views.appeal.success[1]"));
         }
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

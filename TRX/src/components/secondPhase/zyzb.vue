@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { TotalNumber, allOrder } from "@/utils/web3";
+import {  allOrder, allOrder1 } from '@/utils/web3'
 import white from "@/components/Nav/white.vue";
 //流动性挖矿收益
 export default {
@@ -119,52 +119,25 @@ export default {
       window.location.href = "https://fi.eotc.im/";
     },
     init() {
-      TotalNumber().then((res) => {
-        this.sum = res;
-        console.log(res);
-      });
       allOrder().then((res) => {
-        let list = [];
+        console.log(res)
         for (let i of res) {
           if (i.isStop == 0) {
-            this.interest += i.reward;
-          }
-          if (i.amount >= 1000) {
-            if (i.cycle == 6) {
-              this.calculate(i.amount, 1);
-            } else if (i.cycle == 12) {
-              this.calculate(i.amount, 2);
-            } else if (i.cycle == 24) {
-              this.calculate(i.amount, 3);
-            }
-            list.push(i);
+            this.sum+=i.amount
+            this.interest += i.reward
           }
         }
-        this.interest = this.interest.toFixed(2);
-      });
-    },
-    calculate(num, type) {
-      let list;
-      if (type == 1) {
-        list = [1, 3, 4, 6, 10, 500];
-      } else if (type == 2) {
-        list = [2, 5, 7, 10, 13, 400];
-      } else if (type == 3) {
-        list = [3, 6, 9, 12, 14, 300];
-      }
-      // if (num >= 1000 && num <= 1999) {
-      //   this.boxnum += list[0]
-      // } else if (num >= 2000 && num <= 2999) {
-      //   this.boxnum += list[1]
-      // } else if (num >= 3000 && num <= 3999) {
-      //   this.boxnum += list[2]
-      // } else if (num >= 4000 && num <= 4999) {
-      //   this.boxnum += list[3]
-      // } else if (num >= 5000) {
-      //   this.boxnum += list[4]
-      //   let five = Math.floor((num - 5000) / list[5])
-      //   this.boxnum += five
-      // }
+        allOrder1().then((res) => {
+          for (let i of res) {
+            if (i.isStop == 0) {
+              this.sum+=i.amount
+              this.interest += i.reward
+            }
+          }
+          this.sum=this.sum.toFixed(2)
+          this.interest = this.interest.toFixed(2)
+        })
+      })
     },
   },
 };

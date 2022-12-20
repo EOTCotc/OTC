@@ -48,6 +48,8 @@ export default {
       })
       RechargeList({})
         .then((res) => {
+          Toast.clear()
+
           let data = res.data
           console.log(data)
           for (let i of data) {

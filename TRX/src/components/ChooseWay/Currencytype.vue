@@ -156,6 +156,10 @@ import { payInfoUser } from '@/api/payverification'
 import { getItem, getItemSession, setItemSession } from '@/utils/storage'
 import { loadweb3, userBaseMes } from '@/utils/web3'
 
+import { getcreditscorebyuid, getuserrisklevel } from '@/api/arbitrationMsg'
+
+import { Dialog } from 'vant'
+
 import { SetPayType } from '@/api/payverification'
 
 export default {
@@ -201,27 +205,7 @@ export default {
   //交易类型列表
   props: ['method', 'typeList'],
   created() {
-    this.$emit('set-cur-state')
-    //出售订单出错，关闭出售订单窗口
-    this.$bus.$on('close-OrderSaleInfo', () => {
-      this.isShowTradingPopup = false
-    })
-    this.$bus.$on('asd', () => {
-      console.log('asd')
-    })
-    this.coinList = JSON.parse(localStorage.getItem('coinList'))
-
-    this.$bus.$on('update-orderlist', () => {
-      this.onLoad()
-    })
-    loadweb3(userBaseMes)
-    setTimeout(() => {
-      if (this.listLoading) {
-        loadweb3(userBaseMes)
-      }
-    }, 20000)
-
-    window.addEventListener('hashchange', this.hashChangeGoback)
+    this.init()
   },
   mounted() {
     // 当前的语言
@@ -252,6 +236,29 @@ export default {
     }
   },
   methods: {
+    async init() {
+      await this.GetCoinlist()
+
+      this.$emit('set-cur-state')
+      //出售订单出错，关闭出售订单窗口
+      this.$bus.$on('close-OrderSaleInfo', () => {
+        this.isShowTradingPopup = false
+      })
+      this.$bus.$on('asd', () => {
+        console.log('asd')
+      })
+      loadweb3(userBaseMes)
+      this.$bus.$on('update-orderlist', () => {
+        this.onLoad()
+      })
+      setTimeout(() => {
+        if (this.listLoading) {
+          loadweb3(userBaseMes)
+        }
+      }, 20000)
+
+      window.addEventListener('hashchange', this.hashChangeGoback)
+    },
     async onLoad(params) {
       // 异步更新数据
       this.$toast(this.$t('components.chooseWay.currencyType.loading.text'), {
@@ -282,6 +289,11 @@ export default {
             }
           }
           this.count = count
+        })
+
+        getcreditscorebyuid({}).then((res) => {
+          localStorage.setItem('myjifen', res)
+          this.fenkong()
         })
 
         const { data } = await EotcBuyOrder({
@@ -320,6 +332,45 @@ export default {
         this.finished = true
         this.$toast.clear()
       }
+    },
+    //获取币种信息列表
+    GetCoinlist() {
+      return new Promise((resolve, reject) => {
+        CoinList({})
+          .then((res) => {
+            let data = res.data
+            console.log(data)
+
+            for (let i of data) {
+              i.name = i.name.trim()
+              i.ads = i.ads.trim()
+            }
+            this.coinList = data
+            localStorage.setItem('coinList', JSON.stringify(data))
+            resolve()
+          })
+          .catch((err) => {
+            console.log(err)
+            if (err.response.status == 429) {
+              this.coinList = JSON.parse(localStorage.getItem('coinList'))
+              resolve()
+            } else reject()
+          })
+      })
+    },
+    fenkong() {
+      getuserrisklevel().then((result) => {
+        console.log(result)
+        if (result.items == 2) {
+          Dialog.alert({
+            title: 'DID抽审',
+            message: `您的账号正被抽查DID身份认证的真实性，请耐心配合完成EOTC DAO的E3风控审查。E3风控通过后，账户所有功能恢复，\n请勿担心！`,
+            confirmButtonText: '去完成E3风控审核',
+          }).then(() => {
+            window.location.href = 'https://did.eotc.im/'
+          })
+        }
+      })
     },
     /**
      * 1. 我的黑名单： xid为 黑名单的用户uid

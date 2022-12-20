@@ -10,9 +10,7 @@
             :key="index"
             :class="item.show ? 'action' : ''"
             @click="switchTo(index)"
-          >
-            {{ item.title }}
-          </p>
+          >{{ item.title }}</p>
         </div>
       </div>
       <div class="center">
@@ -31,22 +29,17 @@
         <van-field
           v-model="num"
           type="number"
+          @blur="blur(num)"
           :border="false"
           :label="$t('components.secondPhase.withdraw_num')"
           :placeholder="$t('components.secondPhase.withdraw_pla')"
         >
           <template #extra>
-            <div class="all" @click="all()">
-              {{ $t("components.secondPhase.withdraw_all") }}
-            </div>
+            <div class="all" @click="all()">{{ $t("components.secondPhase.withdraw_all") }}</div>
           </template>
         </van-field>
-        <p v-if="netType == 'bsc'">
-          {{ $t("components.secondPhase.withdraw_fee") }}{{ random }}BSC
-        </p>
-        <p v-else>
-          {{ $t("components.secondPhase.withdraw_fee") }}{{ random }}TRX
-        </p>
+        <p v-if="netType == 'bsc'">{{ $t("components.secondPhase.withdraw_fee") }}{{ random }}BSC</p>
+        <p v-else>{{ $t("components.secondPhase.withdraw_fee") }}{{ random }}TRX</p>
       </div>
       <div class="footer">
         <van-button type="info" block round :disabled="num!=''?false:true" @click="recharge(num)">提交</van-button>
@@ -58,10 +51,11 @@
 </template>
 
 <script>
-import white from "@/components/Nav/white.vue";
-import { getTrxBalance, oneSfeotc } from "@/utils/web3";
-import { WithdrawCoins } from "@/api/trxRequest";
-import { Toast } from "vant";
+import white from '@/components/Nav/white.vue'
+import { getTrxBalance, oneSfeotc } from '@/utils/web3'
+import { WithdrawCoins } from '@/api/trxRequest'
+import { userrisklevel } from '@/api/arbitrationMsg'
+import { Toast, Dialog } from 'vant'
 export default {
   //提现
   components: {
@@ -69,107 +63,132 @@ export default {
   },
   data() {
     return {
-      title: "提现",
+      title: '提现',
       category: [
-        { title: "EOTC", show: true },
-        { title: "USDT", show: false },
-        { title: "LP", show: false },
-        { title: "NFT", show: false },
+        { title: 'EOTC', show: true },
+        { title: 'USDT', show: false },
+        { title: 'LP', show: false },
+        { title: 'NFT', show: false },
       ],
       action: 0,
-      netType: "",
-      address: "",
-      address2: "",
-      num: "",
+      netType: '',
+      address: '',
+      address2: '',
+      num: '',
 
-      EOTCnum: "",
-      USDTnum: "",
+      EOTCnum: '',
+      USDTnum: '',
 
       random: 0,
       // net: '',
-    };
+    }
   },
   created() {
-    this.EOTCnum = this.$route.params.EOTC;
-    this.USDTnum = this.$route.params.USDT;
+    this.EOTCnum = localStorage.getItem('eotc_stake') * 1
+    this.USDTnum = this.$route.params.USDT
 
-    this.netType = localStorage.getItem("netType");
-    this.address = localStorage.getItem("myaddress");
+    this.netType = localStorage.getItem('netType')
+    this.address = localStorage.getItem('myaddress')
     this.address2 =
       this.address.substring(0, 10) +
-      "..." +
-      this.address.substring(this.address.length - 10, this.address.length);
+      '...' +
+      this.address.substring(this.address.length - 10, this.address.length)
 
-    if (this.netType == "bsc") {
-      this.random = this.getRandom(33, 66) / 10000;
+    if (this.netType == 'bsc') {
+      this.random = this.getRandom(33, 66) / 10000
     } else {
-      this.random = this.getRandom(15, 30);
+      this.random = this.getRandom(15, 30)
     }
   },
   methods: {
     switchTo(index) {
-      this.action = index;
-      this.num = "";
+      this.action = index
+      this.num = ''
       for (let i of this.category) {
-        i.show = false;
+        i.show = false
       }
-      this.category[index].show = true;
+      this.category[index].show = true
     },
     recharge(num) {
       let coin = this.category[this.action].title.toLowerCase()
       console.log(coin)
-      if (this.action !=0 ) {
-        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn"))
+      if (this.action != 0) {
+        this.$toast.warning(this.$t('components.secondPhase.withdraw_warn'))
         return
       }
       if (num < 100) {
         this.$toast.warning(
-          `${this.$t("components.secondPhase.withdraw_min")}${
-            this.category[this.action].title
-          }！`
-        );
-        return;
+          `${this.$t('components.secondPhase.withdraw_min')}${this.category[this.action].title}！`
+        )
+        return
       } else if (this.action == 0 && num > this.EOTCnum * 1) {
-        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn2"));
-        return;
+        this.$toast.warning(this.$t('components.secondPhase.withdraw_warn2'))
+        return
       } else if (this.action == 1 && num > this.USDTnum * 1) {
-        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn3"));
-        return;
+        this.$toast.warning(this.$t('components.secondPhase.withdraw_warn3'))
+        return
       }
-      let that = this;
+
+      // if (num <= 200) {
+      //   Dialog.alert({
+      //     title: 'DID抽审',
+      //     message: `您的账号正被抽查DID身份认证的真实性，请耐心配合完成EOTC DAO的E3风控审查。E3风控通过后，账户所有功能恢复，\n请勿担心！`,
+      //     confirmButtonText: '去完成E3风控审核',
+      //   }).then(() => {
+      //     window.location.href = 'https://did.eotc.im/'
+      //   })
+      //   userrisklevel({})
+      //   return
+      // }
+
+      let that = this
       Toast.loading({
-        message: this.$t("components.secondPhase.withdraw_load"),
+        message: this.$t('components.secondPhase.withdraw_load'),
         forbidClick: true,
         duration: 0,
-      });
+      })
       getTrxBalance(function () {
         oneSfeotc(that.random).then((success) => {
-          WithdrawCoins({ num: that.num, coin: coin, hx: success.txid }).then(
-            (res) => {
-              Toast.clear();
-              that.$toast.success(
-                this.$t("components.secondPhase.withdraw_suc")
-              );
-              if (coin == "eotc") {
-                that.EOTCnum = that.EOTCnum * 1 - that.num * 1;
-                let eotc =
-                  that.EOTCnum * 1 + localStorage.getItem("myeotc") * 1;
-                localStorage.setItem("eotc_stake", eotc);
-              } else {
-                that.USDTnum = that.USDTnum * 1 - that.num * 1;
-                localStorage.setItem("usdt_ye", that.USDTnum);
-                console.log(res);
-              }
+          WithdrawCoins({ num: that.num, coin: coin, hx: success.txid }).then((res) => {
+            Toast.clear()
+            if (res.data.Code == 0) {
+              let data = [
+                that.num,
+                coin,
+                success.txid,
+                localStorage.getItem('myaddress'),
+                localStorage.getItem('mysign'),
+              ]
+              Dialog.alert({
+                title: '错误信息',
+                message: data,
+                showConfirmButton: false,
+              })
+
+              that.$toast.warning('错误信息，请截图发送给管理员！', {
+                timeout: 30000,
+              })
+              return
             }
-          );
-        });
-      });
+            that.$toast.success('提现成功，您提现的金额将在审核后到账！')
+            if (coin == 'eotc') {
+              that.EOTCnum = that.EOTCnum * 1 - that.num * 1
+              let eotc = that.EOTCnum * 1 + localStorage.getItem('myeotc') * 1
+              localStorage.setItem('eotc_stake', eotc)
+            } else {
+              that.USDTnum = that.USDTnum * 1 - that.num * 1
+              localStorage.setItem('usdt_ye', that.USDTnum)
+              console.log(res)
+            }
+          })
+        })
+      })
     },
     look() {
-      this.$router.push({ name: "WithdrawRecord" });
+      this.$router.push({ name: 'WithdrawRecord' })
     },
     getRandom(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+      return Math.floor(Math.random() * (max - min + 1)) + min
     },
     all() {
       if (this.action == 0) {
@@ -180,12 +199,16 @@ export default {
       //   this.num = this.USDTnum
       // }
       else {
-        this.$toast.warning(this.$t("components.secondPhase.withdraw_warn"));
+        this.$toast.warning(this.$t('components.secondPhase.withdraw_warn'))
       }
-      console.log(this.num);
+      console.log(this.num)
+    },
+    blur(num) {
+      if (num < 0) this.num = 0
+      else if (num > this.EOTCnum) this.num = this.EOTCnum
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

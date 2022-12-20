@@ -1,0 +1,57 @@
+export default {
+  // indexbladzijde  seller_buyBillbladzijde
+  index: {
+    MerchanInfo: "hoger beroep",
+    state1: "Betaald",
+    Putthecoin1: "Herinneringsvaluta",
+    Putthecoin2: "Munten vrijgegeven",
+    state2: "In afwachting van betaling",
+    state3: "betalen",
+    text1: "Bevestig voor overschrijving het rekeningnummer van de verkoper dat wordt weergegeven in de bestelgegevens，of verkopersaandeel",
+    text2: "De ontvangende rekeningkaart van。De accountgegevens die door andere verkopers in privéchat worden verzonden, zijn niet toegestaan overdracht。",
+    online: "Verbinden",
+    send: "versturen",
+    please: "Upload een foto",
+    uploading: "uploaden",
+    ospf: "Nee.",
+    page: "Bladzijde",
+    empty: "Inhoud verzenden mag niet leeg zijn",
+    atleast: "Upload minimaal één afbeelding！",
+    loading: "Bezig met laden",
+    fail: "Het uploaden van afbeeldingen is mislukt，gelieve later te uploaden！",
+    runningwater: "Neem contact op met de verkoper om uw beoordeling door te geven！",
+    sendeamil: "E-mail is verzonden naar de ontvanger！",
+    putmoney: "Hallo baas，ik heb betaald，Geef de munten zo snel mogelijk vrij！！",
+    urge: "Dring elkaar alsjeblieft niet vaak aan！！！",
+    payVal: "onbekend&onbekend&onbekend&",
+    alreadypassed: "Ik heb uw stroombeoordeling doorstaan，U kunt doorgaan naar de volgende betaling",
+    err: "fout bij het aansluiten  error",
+    warn: "fout bij het aansluiten，verbinding verbreken。。",
+    first: "Gegevens voor de eerste keer vernieuwen",
+    contactway: "contact details"
+
+  },
+  // seller-billbladzijde
+  seller_bill: {
+    state1: "De tegenpartij wacht met betalen",
+    state2: "aanmaning betaling",
+    state3: "Er is aangedrongen op betaling",
+    cancel: "annuleer bestelling",
+    state4: "De andere partij heeft betaald",
+    text: "Stroomoverzicht",
+    passed: "Rekening goedgekeurd",
+    tips: " Om de circulatie van zwart geld te voorkomen、account geblokkeerd，",
+    tips2: "Pas nadat u de stroomcontrole op het account van de andere partij hebt doorstaan，Alleen de wederpartij kan uw ontvangst- en betaalrekeningnummer zien voor afschrijvingen。",
+    cancelorder: "bestelling annuleren。。。",
+    canorder: "annuleer bestelling",
+    message: "<span class='activeInfo'>Kwaadwillige annulering van de bestelling zal zijn 【beperkte transacties】</span> <br />Weet je zeker dat je de bestelling wilt annuleren?？",
+    cancleerr: "Bestelling succesvol geannuleerd",
+    payment: "Hallo baas，Voltooi de betaling van de bestelling zo snel mogelijk！",
+    title: "Of de stroombeoordeling van de andere partij moet worden doorstaan",
+    text2: "ik ben aan het denken",
+    text3: "slagen voor",
+    text4: "Stroomcontrole is geslaagd",
+    text5: "Wachten op koper om geld te sturen",
+  }
+
+}

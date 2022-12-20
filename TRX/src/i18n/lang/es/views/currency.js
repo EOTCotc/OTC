@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Liberación retrasada de monedas",
+  header_text: "Esperando a que el vendedor suelte las monedas",
+  pay_text: "Las monedas se lanzarán más tarde.,por favor, compruebe",
+  sell: "vender",
+  price: "precio unitario",
+  number: "cantidad",
+  total: "Suma global",
+  site: "dirección de la billetera",
+  Seller: "información del vendedor",
+  relation: "contactar al vendedor",
+  nickname: "apodo del vendedor",
+  payment: "El hombre más rico en tomates.",
+  order_number: "Número de orden",
+  date: "tiempo de la orden",
+  launch: "iniciar el arbitraje",
+};

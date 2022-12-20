@@ -6,7 +6,7 @@
       <span class="hd-txt">{{ item.mes }}</span>
     </header>
     <section class="water-bill-content">
-      <div class="top-content">待付款</div>
+      <div class="top-content">{{$t('views.waterBill.index.state2')}}</div>
       <div class="top-mid-content">
         <span class="price">￥{{ item.amount1 }}</span>
         <span class="mid-r-content"></span>
@@ -70,19 +70,23 @@
         size="small"
         native-type="submit"
         type="primary"
-      >{{ isSend ? "连线中" : "发送" }}</van-button>
+      >
+        {{ isSend ? $t('views.waterBill.index.online') : $t('views.waterBill.index.send') }}
+      </van-button>
     </van-form>
 
     <van-popup class="popup" v-model="imageShow" round position="bottom">
       <div class="popBox">
-        <p>请上传图片</p>
+        <p>{{$t('views.waterBill.index.please')}}</p>
         <van-uploader :after-read="afterRead" v-model="fileList" multiple :max-count="9" />
         <!-- <img src="" width="100px" alt=""> -->
-        <van-button @click="updata()" size="small" type="primary">上传</van-button>
+        <van-button @click="updata()" size="small" type="primary">
+          {{$t('views.waterBill.index.uploading')}}
+        </van-button>
       </div>
     </van-popup>
     <van-image-preview v-model="show" :images="images">
-      <template v-slot:index>第{{ index }}页</template>
+      <template v-slot:index>{{$t('views.waterBill.index.ospf')}}{{ index }}{{$t('views.waterBill.index.page')}}</template>
     </van-image-preview>
   </div>
 </template>
@@ -120,7 +124,7 @@ export default {
         {
           required: true,
           validator: this.validator,
-          message: '发送内容不能为空',
+          message: this.$t('views.waterBill.index.empty'),
         },
       ],
       megList: [],
@@ -169,13 +173,13 @@ export default {
     //图片上传
     async updata() {
       if (this.fileList.length <= 0) {
-        this.$toast.warning('请至少上传一张图片！')
+        this.$toast.warning(this.$t('views.waterBill.index.atleast'))
         return
       }
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: '加载中',
+        message: this.$t('views.waterBill.index.loading'),
       })
 
       let urlTop = 'https://api.eotcyu.club/img/'
@@ -205,7 +209,7 @@ export default {
             this.soket.send(urlTop + url)
           })
           .catch((err) => {
-            this.$toast.warning('图片上传失败，请稍后上传！')
+            this.$toast.warning(this.$t('views.waterBill.index.fail'))
             console.log(err)
           })
       }
@@ -254,12 +258,12 @@ export default {
           }
         }
         this.soket.onerror = function (error) {
-          console.warn('连接错误 error')
+          console.warn(this.$t('views.waterBill.index.err'))
           this.reconnect(url)
           //console.log(error.data);
         }
         this.soket.onclose = () => {
-          console.warn('连接错误，断开连接。。')
+          console.warn(this.$t('views.waterBill.index.warn'))
           this.reconnect(url)
         }
       }
@@ -302,7 +306,7 @@ export default {
         this.cinit_mes(
           'buyer',
           ` <div style="padding:10px">
-            联系方式
+            ${this.$t('views.waterBill.index.contactway')}
              <a href="tel:${this.item.amount2}">${this.item.amount2}</a>\n
               <a href="mailto:${this.item.aipay}">${this.item.aipay}</a>
           </div>
@@ -380,7 +384,7 @@ export default {
             .then(() => {
               console.log('newDataList', newDataList)
               this.megList = []
-              return '首次刷新数据'
+              return $t('views.waterBill.index.first')
             })
             .then(() => {
               for (let i of newDataList) {

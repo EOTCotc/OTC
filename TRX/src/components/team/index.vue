@@ -50,7 +50,7 @@
             <p>{{ $t("components.team.tags8") }}: {{ item.ztrs }}</p>
           </div>
           <div>
-            <p>{{ $t("components.team.tags9") }}: {{ item.item }}</p>
+            <p>LP质押: {{ item.staking }}</p>
             <p>{{ $t("components.team.tags10") }}: {{ item.vip }}</p>
           </div>
           <p class="time">
@@ -174,24 +174,27 @@ export default {
             this.performance += Number(i.usdt);
           }
         }
-
+        switch (i.vip) {
+            case "0":
+              i.vip = "无";
+              break;
+            case "2":
+              i.vip = "信用节点";
+              break;
+            case "3":
+              i.vip = "实时节点";
+              break;
+            case "4":
+              i.vip = "中级节点";
+              break;
+            case "5":
+              i.vip = "高级节点";
+              break;
+          }
         this.list = data;
       });
     },
-    asd() {
-      let a = [
-        { b: 1, c: "az" },
-        { b: 1, c: "sfsd" },
-        { b: 2, c: "shgfhfg" },
-        { b: 3, c: "yrt" },
-        { b: 1, c: "xvcxv" },
-        { b: 2, c: "456" },
-        { b: 2, c: "shgfhfg" },
-        { b: 3, c: "yrt" },
-        { b: 1, c: "xvcxv" },
-        { b: 2, c: "456" },
-      ];
-    },
+
   },
 };
 </script>

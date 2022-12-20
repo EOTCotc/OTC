@@ -10,9 +10,7 @@
             :key="index"
             :class="item.show ? 'action' : ''"
             @click="switchTo(index)"
-          >
-            {{ item.title }}
-          </p>
+          >{{ item.title }}</p>
         </div>
       </div>
       <div>
@@ -44,18 +42,22 @@
           round
           :disabled="num != '' ? false : true"
           @click="recharge()"
-          >{{ $t("components.secondPhase.recharge_wancheng") }}</van-button
-        >
-        <p @click="look()">
-          {{ $t("components.secondPhase.recharge_recode") }}
-        </p>
+        >{{ $t("components.secondPhase.recharge_wancheng") }}</van-button>
+        <p @click="look()">{{ $t("components.secondPhase.recharge_recode") }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { SendUSDT, getTrxBalance, loadweb3, myUsdtAmount, myEOTCAmount,userBaseMes } from '@/utils/web3'
+import {
+  SendUSDT,
+  getTrxBalance,
+  loadweb3,
+  myUsdtAmount,
+  myEOTCAmount,
+  userBaseMes,
+} from '@/utils/web3'
 import { Recharge } from '@/api/trxRequest'
 import { Dialog } from 'vant'
 import white from '@/components/Nav/white.vue'
@@ -66,18 +68,18 @@ export default {
   },
   data() {
     return {
-      title: this.$t("components.secondPhase.chongzhi"),
+      title: this.$t('components.secondPhase.chongzhi'),
       category: [
-        { title: "EOTC", show: true },
-        { title: "USDT", show: false },
-        { title: "LP", show: false },
-        { title: "NFT", show: false },
+        { title: 'EOTC', show: true },
+        { title: 'USDT', show: false },
+        { title: 'LP', show: false },
+        { title: 'NFT', show: false },
       ],
-      netType: "",
-      address: "",
-      address2: "",
-      num: "",
-    };
+      netType: '',
+      address: '',
+      address2: '',
+      num: '',
+    }
   },
   created() {
     setTimeout(() => {
@@ -88,81 +90,80 @@ export default {
     if (net == 'bsc') {
       this.address = '0xdCAaB3E9Ade1000fd23Fa0EAcd2D7E1359300D8B'
     } else {
-      this.address = "TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq";
+      this.address = 'TA6jfgkurdTrwqic3G56GpG2Keh5EWx2kq'
     }
     this.address2 =
       this.address.substring(0, 10) +
-      "..." +
-      this.address.substring(this.address.length - 10, this.address.length);
+      '...' +
+      this.address.substring(this.address.length - 10, this.address.length)
   },
   methods: {
     switchTo(index) {
       for (let i of this.category) {
-        i.show = false;
+        i.show = false
       }
-      this.category[index].show = true;
+      this.category[index].show = true
     },
     async recharge() {
-      let money, num;
+      let money, num
       for (let i of this.category) {
         if (i.show) {
-          if (i.title == "EOTC" || i.title == "USDT") {
-            money = i.title;
+          if (i.title == 'EOTC' || i.title == 'USDT') {
+            money = i.title
           } else {
-            this.$toast.warning(
-              `${i.title}${this.$t("components.secondPhase.recharge_data1")}`
-            );
-            return;
+            this.$toast.warning(`${i.title}${this.$t('components.secondPhase.recharge_data1')}`)
+            return
           }
         }
       }
-      if (money == "USDT") {
-        await myUsdtAmount();
-        num = Number(localStorage.getItem("myamount"));
-      } else if (money == "EOTC") {
-        await myEOTCAmount();
-        num = Number(localStorage.getItem("eotcAmount"));
+      if (money == 'USDT') {
+        await myUsdtAmount()
+        num = Number(localStorage.getItem('myamount'))
+      } else if (money == 'EOTC') {
+        await myEOTCAmount()
+        num = Number(localStorage.getItem('eotcAmount'))
       }
-      let that = this;
+
+      let that = this
       if (num >= that.num) {
         getTrxBalance(function () {
           SendUSDT(that.num, that.address, money).then((res) => {
-            let net;
-            console.log(money);
-            if (money == "EOTC") {
-              net = money.toLowerCase();
-            } else if (money == "USDT") {
-              net = localStorage.getItem("netType");
+            let net
+            console.log(money)
+            if (money == 'EOTC') {
+              net = money.toLowerCase()
+            } else if (money == 'USDT') {
+              net = localStorage.getItem('netType')
             }
-            console.log(net);
+            console.log(net)
             Recharge({ hx: res, usdt: that.num, net: net }).then((res) => {
-              console.log(res);
+              console.log(res)
               if (res.data.State > 0) {
                 Dialog.alert({
-                  message: `${this.$t(
-                    "components.secondPhase.recharge_data2"
-                  )}\n${this.$t("components.secondPhase.recharge_data3")}`,
+                  message: `${this.$t('components.secondPhase.recharge_data2')}\n${this.$t(
+                    'components.secondPhase.recharge_data3'
+                  )}`,
                 }).then(() => {
                   // on close
-                });
+                })
               }
-            });
-          });
-        });
+            })
+          })
+        })
       } else {
         this.$toast.warning(
-          `${this.$t("components.secondPhase.recharge_your")}${money}${this.$t(
-            "components.secondPhase.recharge_data4"
+          `${this.$t('components.secondPhase.recharge_your')}${money}${this.$t(
+            'components.secondPhase.recharge_data4'
           )}`
-        );
+        )
       }
     },
 
     look() {
-      this.$router.push({ name: "rechargeRecord" });
+      this.$router.push({ name: 'rechargeRecord' })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

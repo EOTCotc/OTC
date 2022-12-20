@@ -76,7 +76,7 @@ export default {
     }
   },
   created() {
-    let num = Approve()
+    let num = Approve('USDT')
     if (num * 1 > 0) {
       this.impower = false
     } else {
@@ -117,11 +117,11 @@ export default {
     },
 
     async close() {
-      await usdtsend(0, this.$t('components.chain.detail.cancel'))
+      await usdtsend(0, this.$t('components.chain.detail.cancel'),'USDT')
       this.impower = true
     },
     async sure() {
-      await usdtsend(1000000, this.$t('components.chain.tip[0]'))
+      await usdtsend(1000000, this.$t('components.chain.tip[0]'),'USDT')
       this.impower = false
     },
     handleCopy(val) {

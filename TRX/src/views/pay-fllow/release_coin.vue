@@ -2,7 +2,7 @@
   <div class="order-pay-container">
     <div class="header-div">
       <van-icon :style="{ flex: '1' }" name="arrow-left" @click="$router.go(-1)" />
-      <span class="span">释放 {{this.cacheData.item.coinType}}</span>
+      <span class="span">{{ $t("views.fllow.coin.release") }} {{this.cacheData.item.coinType}}</span>
       <span class="hd-txt">
         <van-icon @click="gotoRelation">
           <van-icon name="orders-o" :badge="badge" />
@@ -11,9 +11,9 @@
     </div>
 
     <header class="header">
-      <h4 class="title">用户已付款</h4>
+      <h4 class="title">{{ $t("views.fllow.coin.title") }}</h4>
       <div class="pay-timeDown">
-        <div class="pay-text">用户已标记为转账成功，请确认收款</div>
+        <div class="pay-text">{{ $t("views.fllow.coin.pay_text") }}</div>
       </div>
     </header>
 
@@ -34,12 +34,12 @@
           :src="require(`@/assets/currency-icons/${this.cacheData.item.coinType.toLowerCase()}.png`)"
           alt
         />
-        <span>出售 {{this.cacheData.item.coinType}}</span>
+        <span>{{ $t("views.fllow.coin.sell") }} {{this.cacheData.item.coinType}}</span>
       </div>
       <div class="top-main">
         <ul>
-          <li @click="copyContent(myaddress, '钱包地址 已复制')">
-            <span>商家钱包</span>
+          <li @click="copyContent(myaddress, $t('views.fllow.coin.copy'))">
+            <span>{{ $t("views.fllow.coin.merchant") }}</span>
             <span>
               {{ briefMyAddress(myaddress) }}
               <i
@@ -53,7 +53,7 @@
               copyContent(cacheData.item.smes.trim(), '商家钱包地址 已复制')
             "
           >
-            <span>交易钱包</span>
+            <span>{{ $t("views.fllow.coin.wallet") }}</span>
             <span>
               {{ briefMyAddress(cacheData.item.smes.trim()) }}
               <i
@@ -63,22 +63,22 @@
             </span>
           </li>
           <li>
-            <span>单价</span>
+            <span>{{ $t("views.fllow.coin.price") }}</span>
             <span>￥{{ cacheData.item.cny }}</span>
           </li>
           <li>
-            <span>数量</span>
+            <span>{{ $t("views.fllow.coin.count") }}</span>
             <span>{{ cacheData.item.num }} {{cacheData.item.coinType}}</span>
           </li>
 
           <li>
-            <span>总金额</span>
+            <span>{{ $t("views.fllow.coin.total") }}</span>
             <span
               class="importan-tTsxt"
               @click="
                 copyContent(
                   ThousandSeparator(cacheData.item.amount1),
-                  '总金额 复制成功'
+                  $t('views.fllow.coin.total_copy')
                 )
               "
             >
@@ -91,27 +91,27 @@
           </li>
 
           <li class="payInfo">
-            <span>收款方式</span>
+            <span>{{ $t("views.fllow.coin.proceeds") }}</span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'yhk'">
               <i class="iconfont icon-yhk pay-icon1 pay-iconyhk"></i>
               &nbsp;&nbsp;{{ cuePayType[2] }}
             </span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'wx'">
               <i class="iconfont icon-wx pay-icon2 pay-iconwx"></i>
-              &nbsp;&nbsp;微信
+              &nbsp;&nbsp;{{ $t("views.fllow.coin.wechat") }}
             </span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'zfb'">
               <i class="iconfont icon-zfb pay-icon2 pay-iconzfb"></i>
-              &nbsp;&nbsp;支付宝
+              &nbsp;&nbsp;{{ $t("views.fllow.coin.Alipay") }}
             </span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'xj'">
               <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
-              &nbsp;&nbsp;现金交易
+              &nbsp;&nbsp;{{ $t("views.fllow.coin.transaction") }}
             </span>
           </li>
 
           <li v-if="cuePayType[0] !== 'xj'">
-            <span>收款账号</span>
+            <span>{{ $t("views.fllow.coin.shroff_account") }}</span>
             <span v-if="cuePayType[0] === 'yhk'">
               {{ cuePayType[2] }}&nbsp;
               {{ cuePayType[1] }}
@@ -121,7 +121,7 @@
           </li>
           <li class="van-divider"></li>
           <li>
-            <span>用户姓名</span>
+            <span>{{ $t("views.fllow.coin.name") }}</span>
             <span>
               {{ cacheData.item.mes }}
               <img
@@ -132,27 +132,27 @@
             </span>
           </li>
           <li class="payInfo">
-            <span>用户付款方式</span>
+            <span>{{ $t("views.fllow.coin.user") }}</span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'yhk'">
               <i class="iconfont icon-yhk pay-icon1 pay-iconyhk"></i>
               &nbsp;&nbsp;{{ cueCollectmoney[2] }}
             </span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'wx'">
               <i class="iconfont icon-wx pay-icon2 pay-iconwx"></i>
-              &nbsp;&nbsp;微信
+              &nbsp;&nbsp;{{ $t("views.fllow.coin.wechat") }}
             </span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'zfb'">
               <i class="iconfont icon-zfb pay-icon2 pay-iconzfb"></i>
-              &nbsp;&nbsp;支付宝
+              &nbsp;&nbsp;{{ $t("views.fllow.coin.Alipay") }}
             </span>
             <span :style="{ display: 'flex', position: 'relative' }" v-if="cuePayType[0] === 'xj'">
               <img class="xj_moeny" src="@/assets/currency-icons/moeny-c.png" alt="xj" />
-              &nbsp;&nbsp;现金交易
+              &nbsp;&nbsp;{{ $t("views.fllow.coin.transaction") }}
             </span>
           </li>
 
           <li v-if="cuePayType[0] !== 'xj'">
-            <span>付款账号</span>
+            <span>{{ $t("views.fllow.coin.payer") }}</span>
             <span v-if="cuePayType[0] === 'yhk'">
               {{ cueCollectmoney[2] }}&nbsp;
               {{ cueCollectmoney[1] }}
@@ -161,7 +161,7 @@
             <span v-if="cuePayType[0] === 'zfb'">{{ cueCollectmoney[1] }}</span>
           </li>
           <li>
-            <span>订单编号</span>
+            <span>{{ $t("views.fllow.coin.number") }}</span>
             <span @click="copyContent(cacheData.item.id, '订单编号 已复制')">
               {{ cacheData.item.id }}
               （{{ cacheData.item.odid }}）
@@ -172,20 +172,20 @@
             </span>
           </li>
           <li>
-            <span>下单时间</span>
+            <span>{{ $t("views.fllow.coin.placeTime") }}</span>
             <span>{{ cacheData.item.eotc | transformTime_Zh }}</span>
           </li>
         </ul>
       </div>
     </main>
 
-    <article class="Riskwarning">收到买家转账时备注或您收到非实名汇款，请联系卖家退回。</article>
+    <article class="Riskwarning">{{ $t("views.fllow.coin.Riskwarning") }}</article>
 
     <!-- 底部 该收款按钮，默认禁用状态，买家点击已付款后，会变色，可以点击确认，
     买家没点付款前灰色，禁用状态不能点击-->
     <footer class="footer">
       <div class="cancel">
-        <van-button @click="verify" block>我已收到付款</van-button>
+        <van-button @click="verify" block>{{ $t("views.fllow.coin.verify") }}</van-button>
       </div>
     </footer>
 
@@ -195,8 +195,8 @@
       :showCancelButton="false"
       :showConfirmButton="false"
     >
-      <van-loading size="36px" text-color="#000" vertical>放币中</van-loading>
-      <div class="ld-text">正在放币给对方，请稍等...</div>
+      <van-loading size="36px" text-color="#000" vertical>{{ $t("views.fllow.coin.centre") }}</van-loading>
+      <div class="ld-text">{{ $t("views.fllow.coin.ld_text") }}</div>
     </van-dialog>
 
     <van-dialog v-model="warning_Tips">
@@ -206,7 +206,7 @@
 
       <template>
         <div class="warning_Tips-text">
-          <p>点击确认收到付款后，合约将会放币给对方</p>
+          <p>{{ $t("views.fllow.coin.warning_tips") }}</p>
         </div>
       </template>
     </van-dialog>
@@ -280,7 +280,11 @@ export default {
       // this.$toast.info(access_payMethod[0]);
       const access_CollectMethod = CollectMethod
         ? CollectMethod.split('&')
-        : ['未知', '未知', '未知']
+        : [
+          this.$t("views.fllow.coin.unknown"),
+          this.$t("views.fllow.coin.unknown"),
+          this.$t("views.fllow.coin.unknown"),
+        ]
       // this.$toast.info(access_CollectMethod[0]);
 
       if (access_payMethod[2]?.includes('微信')) {
@@ -290,8 +294,8 @@ export default {
         this.cuePayType = ['zfb', access_payMethod[1]?.trim()]
         this.cueCollectmoney = ['zfb', access_CollectMethod[1]?.trim()]
       } else if (access_payMethod[2]?.includes('现金')) {
-        this.cuePayType = ['xj', '现金交易']
-        this.cueCollectmoney = ['xj', '现金交易']
+        this.cuePayType = ['xj', this.$t("views.fllow.coin.transaction")]
+        this.cueCollectmoney = ['xj', this.$t("views.fllow.coin.transaction")]
       } else {
         this.cuePayType = ['yhk', access_payMethod[1]?.trim(), access_payMethod[2]?.trim()]
         this.cueCollectmoney = [
@@ -334,7 +338,7 @@ export default {
           {
             component: loadingToast,
             props: {
-              title: `我已收到买家付款：<br/><span style="color:red">￥ ${this.cacheData.item.amount1}</span> CNY`,
+              title: `${this.$t("views.fllow.coin.toast[1]")}：<br/><span style="color:red">￥ ${this.cacheData.item.amount1}</span> CNY`,
             },
           },
           {
@@ -395,7 +399,7 @@ export default {
     get_other_name() {
       const item = this.cacheData.item
       if (item.aipay.includes('现金')) {
-        return '现金交易'
+        return this.$t("views.fllow.coin.transaction")
       } else if (item.aipay.split('&')[0]) {
         return item.aipay.split('&')[0]
       } else if (item.bank.split('&')[0]) {

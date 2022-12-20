@@ -29,7 +29,7 @@ export default {
     }, 
     data() {
         return {
-            title: '仲裁考试'
+          title: this.$t("views.rightItem.exam.title"),
         };
     },
     methods: {

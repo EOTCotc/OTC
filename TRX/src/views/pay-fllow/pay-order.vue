@@ -1,9 +1,9 @@
 <template>
   <div class="order-pay-container">
     <header class="header">
-      <h4 class="title">订单已经生成</h4>
+      <h4 class="title">{{ $t("views.fllow.order.title") }}</h4>
       <div class="pay-timeDown">
-        <div class="pay-text">付款剩余时间</div>
+        <div class="pay-text">{{ $t("views.fllow.order.residue") }}</div>
         <van-count-down
           class="pay-time"
           ref="countDown"
@@ -19,7 +19,7 @@
 
     <section class="seller-info">
       <div class="seller-info-top">
-        <span class="pay-info1">卖家提示</span>
+        <span class="pay-info1">{{ $t("views.fllow.order.hint") }}</span>
         <div class="info2">
           <span>
             {{ cacheData.payItem.sname }}
@@ -46,20 +46,20 @@
           :src="require(`@/assets/currency-icons/${type.toLowerCase()}.png`)"
           alt
         />
-        <span>购买 {{type}}</span>
+        <span>{{ $t("views.fllow.order.buy") }} {{type}}</span>
       </div>
       <div class="top-main">
         <ul>
           <li @click="showPayInfo">
-            <span>交易主链</span>
+            <span>{{ $t("views.fllow.order.backbone") }}</span>
             <span>
               {{ netType }}
               <van-icon name="arrow" />
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span>交易钱包</span>
-            <span @click="copyContent(myaddress, '钱包地址已复制')">
+            <span>{{ $t("views.fllow.order.wallet") }}</span>
+            <span @click="copyContent(myaddress, $t('views.fllow.order.copy'))">
               {{ briefMyAddress(myaddress) }}
               <i
                 class="iconfont icon-copy"
@@ -68,10 +68,10 @@
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span>商家钱包</span>
+            <span>{{ $t("views.fllow.order.merchant") }}</span>
             <span
               @click="
-                copyContent(cacheData.MerchanInfo.bank, '商家钱包地址 已复制')
+                copyContent(cacheData.MerchanInfo.bank, $t('views.fllow.order.copy_merchant'))
               "
             >
               {{ briefMyAddress(cacheData.MerchanInfo.bank) }}
@@ -82,8 +82,8 @@
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span>合约地址</span>
-            <span @click="copyContent(contractAddress, '合约地址 已复制')">
+            <span>{{ $t("views.fllow.order.contract") }}</span>
+            <span @click="copyContent(contractAddress, $t('views.fllow.order.copy_contract'))">
               {{ briefMyAddress(contractAddress) }}
               <i
                 class="iconfont icon-copy"
@@ -92,26 +92,26 @@
             </span>
           </li>
           <li v-show="isShowPayInfo">
-            <span :style="{ color: '#000' }">合约查询订单</span>
-            <span @click="show_imgPreview" :style="{ color: 'red' }">指导查看步骤</span>
+            <span :style="{ color: '#000' }">{{ $t("views.fllow.order.look_order") }}</span>
+            <span @click="show_imgPreview" :style="{ color: 'red' }">{{ $t("views.fllow.order.step") }}</span>
           </li>
           <li>
-            <span>单价</span>
+            <span>{{ $t("views.fllow.order.price") }}</span>
             <span>￥{{ cacheData.payItem.cny }}</span>
           </li>
           <li>
-            <span>数量</span>
+            <span>{{ $t("views.fllow.order.count") }}</span>
             <span>{{ cacheData.ordernum }} {{type}}</span>
           </li>
           <li
             @click.stop="
               copyContent(
                 ThousandSeparator(cacheData.ordermoney),
-                '总金额 已复制'
+                $t('views.fllow.order.total_copy')
               )
             "
           >
-            <span>总金额</span>
+            <span>{{ $t("views.fllow.order.total") }}</span>
             <span class="importan-tTsxt">
               ￥{{ ThousandSeparator(cacheData.ordermoney) }}
               <i
@@ -121,7 +121,7 @@
             </span>
           </li>
           <li>
-            <span>卖家收款方式</span>
+            <span>{{ $t("views.fllow.order.way") }}</span>
             <span :style="{ display: 'flex', position: 'relative' }">
               <payIcons
                 :items="cacheData.payItem"
@@ -132,7 +132,7 @@
             </span>
           </li>
           <li>
-            <span>我的付款账号</span>
+            <span>{{ $t("views.fllow.order.account") }}</span>
             <span v-if="cacheData.ordercuePayType === 'yhk'">
               {{ cacheData.sellerMthods.mybank.split("&")[1] }}
               {{ cacheData.sellerMthods.mybank.split("&")[0] }}
@@ -141,12 +141,12 @@
             <span
               v-if="cacheData.ordercuePayType === 'wx'"
             >{{ cacheData.sellerMthods.mybmywechatnk }}</span>
-            <span v-if="cacheData.ordercuePayType === 'xj'">现金交易</span>
+            <span v-if="cacheData.ordercuePayType === 'xj'">{{ $t("views.fllow.order.transaction") }}</span>
           </li>
           <li class="van-divider"></li>
           <li>
-            <span>订单编号</span>
-            <span @click="copyContent(cacheData.payItem.id, '大订单编号 已复制')">
+            <span>{{ $t("views.fllow.order.number") }}</span>
+            <span @click="copyContent(cacheData.payItem.id, $t('views.fllow.order.number_copy'))">
               {{ cacheData.payItem.id }}
               (
               {{ cacheData.MerchanInfo.odid }} )
@@ -154,13 +154,13 @@
                 class="iconfont icon-copy"
                 :style="{ color: '#999' }"
                 @click.stop="
-                  copyContent(cacheData.MerchanInfo.odid, '生成订单编号 已复制')
+                  copyContent(cacheData.MerchanInfo.odid, $t('views.fllow.order.create_copy'))
                 "
               ></i>
             </span>
           </li>
           <li>
-            <span>下单时间</span>
+            <span>{{ $t("views.fllow.order.placeTime") }}</span>
             <span>{{ cacheData.nowTime | transformTime_Zh }}</span>
           </li>
         </ul>
@@ -171,10 +171,10 @@
 
     <footer class="footer">
       <div class="cancel">
-        <van-button type="default" @click="cancel_order">取消订单</van-button>
+        <van-button type="default" @click="cancel_order">{{ $t("views.fllow.order.cencel") }}</van-button>
       </div>
       <div class="next">
-        <van-button type="info" @click="payNextStep">下一步</van-button>
+        <van-button type="info" @click="payNextStep">{{ $t("views.fllow.order.next") }}</van-button>
       </div>
     </footer>
   </div>
@@ -262,14 +262,14 @@ export default {
       )
       const rcoin = this.cacheData.payItem.rcoin
       if (!rcoin || rcoin === '-1') {
-        this.$toast.info('等待商家通过对您的流水审查！', {
+        this.$toast.info(this.$t("views.fllow.order.toast[0]"), {
           timeout: false,
         })
       } else {
         this.$toast.success(
           <div>
-            <p style="font-size:14px;margin:5px">商家已通过您的流水审查</p>
-            <p style="font-size:15px;margin:5px">可进行下一步汇款!</p>
+            <p style="font-size:14px;margin:5px">{this.$t("views.fllow.order.toast[1]")}</p>
+            <p style="font-size:15px;margin:5px">{this.$t("views.fllow.order.toast[2]")}!</p>
           </div>
         )
       }
@@ -288,8 +288,8 @@ export default {
             {
               component: toastComponent,
               props: {
-                title: '网页连接已复制',
-                content: '请在游览器中打开，按步骤查询！',
+                title: this.$t("views.fllow.order.toast[3]"),
+                content: this.$t("views.fllow.order.toast[4]"),
               },
             },
             {
@@ -298,7 +298,7 @@ export default {
           )
         },
         (e) => {
-          this.$toast.error('复制失败，请稍后重试')
+          this.$toast.error(this.$t("views.fllow.order.toast[5]"));
         }
       )
     },
@@ -308,9 +308,12 @@ export default {
     cancel_order() {
       this.$dialog
         .confirm({
-          title: '取消订单',
+          title: this.$t("views.fllow.order.dialog[0]"),
           message:
-            "<span class='activeInfo'>频繁取消订单会被 【限制下单】</span> <br />确定取消订单吗？",
+            "<span class='activeInfo'>" +
+            this.$t("views.fllow.order.dialog[1]") +
+            "</span> <br />" +
+            this.$t("views.fllow.order.dialog[2]"),
         })
         .then(() => {
           if (!this.random()) {
@@ -331,7 +334,7 @@ export default {
           {
             component: loadingToast,
             props: {
-              title: '正在取消该订单。。。',
+              title: this.$t("views.fllow.order.toast[6]"),
             },
           },
           {
@@ -350,12 +353,12 @@ export default {
         })
         this.$toast.clear()
         if (data.State === '1') {
-          this.$toast.error(oid + '  号订单重复取消')
+          this.$toast.error(oid + '  ' + this.$t("views.fllow.order.toast[7]"))
           this.$router.replace({
             name: 'CurrencyTrading',
           })
         } else {
-          this.$toast.warning(oid + '  号订单已取消')
+          this.$toast.warning(oid + '  ' + this.$t("views.fllow.order.toast[8]"))
           this.$router.replace({
             name: 'CurrencyTrading',
           })
@@ -385,7 +388,7 @@ export default {
           {
             component: loadingToast,
             props: {
-              title: '正在取消该订单。。。',
+              title: this.$t("views.fllow.order.toast[6]"),
             },
           },
           {
@@ -403,12 +406,12 @@ export default {
         this.$toast.clear()
         //console.log(data);
         if (data.State === '1') {
-          this.$toast.error(oid + '  号订单重复取消')
+          this.$toast.error(oid + '  ' + this.$t("views.fllow.order.toast[7]"))
           this.$router.replace({
             name: 'CurrencyTrading',
           })
         } else {
-          this.$toast.warning(oid + '  号订单已取消')
+          this.$toast.warning(oid + '  ' + this.$t("views.fllow.order.toast[8]"))
           this.$router.replace({
             name: 'CurrencyTrading',
           })
@@ -452,8 +455,8 @@ export default {
       if (!rcoin || rcoin === '-1') {
         this.$toast.warning(
           <div>
-            <p style="font-size:14px;margin:5px">商家需要对您的账户进行流水审查</p>
-            <p style="font-size:15px;margin:5px">审查结果通过后可进行下一步!</p>
+            <p style="font-size:14px;margin:5px">{this.$t("views.fllow.order.toast[9]")}</p>
+            <p style="font-size:15px;margin:5px">{this.$t("views.fllow.order.toast[10]")}</p>
           </div>
         )
         setTimeout(() => {
@@ -489,7 +492,8 @@ export default {
             this.cacheData.MerchanInfo.odid,
             this.cacheData.MerchanInfo.bank,
             this.cacheData.payItem.id,
-            localStorage.getItem('userIconId')
+            localStorage.getItem('userIconId'),
+            localStorage.getItem('userIconType')
           )
           while (true) {
             num = await Buy_verify(

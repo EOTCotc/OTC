@@ -1,0 +1,20 @@
+export default {
+	selectNav_title: "Monto de la transacción",
+	selectNav_pla: "Introduce un importe objetivo",
+	selectNav_mes: "Por favor complete el monto de la transacción",
+	selectNav_shuaixuan: "más filtros",
+	selectNav_pay_type: "método de pago",
+	selectNav_pay_fun: [
+		"Vaya cosa",
+    "mi enfoque",
+		"negociado",
+		"Mostrar solo entradas comerciales",
+	],
+	selectNav_all: "todos",
+	selectNav_bank: "tarjeta bancaria",
+	selectNav_alipay: "Alipay",
+	selectNav_wechat: "WeChat",
+	selectNav_money: "dinero",
+	selectNav_dazong: "Vaya cosa",
+	selectNav_warn: "La función aún no está abierta, por favor espere",
+};

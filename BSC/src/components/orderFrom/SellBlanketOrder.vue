@@ -32,7 +32,7 @@
         </div>
         <div>
           <p>数量</p>
-          <p>{{ orderItem.num }} USDT</p>
+          <p>{{ orderItem.num }} {{kind}}</p>
         </div>
         <div>
           <p>限额</p>
@@ -72,7 +72,11 @@
           <div class="cell">
             <p class="cell_title">单价</p>
             <div class="inputs">
-              <input type="number" v-model="price" @blur="onPriceInput(5, 7.5, $event)" />
+              <input
+                type="number"
+                v-model="price"
+                @blur="onPriceInput(Nowcoin.floor, Nowcoin.ceiling, $event)"
+              />
               <p>CNY</p>
             </div>
           </div>
@@ -80,7 +84,7 @@
             <p class="cell_title">数量</p>
             <div class="inputs">
               <input readonly type="number" v-model="number" @blur="onNumInput($event)" />
-              <p>USDT</p>
+              <p>{{kind}}</p>
             </div>
           </div>
           <div class="cell">
@@ -93,7 +97,7 @@
               </div>
               <div class="inputs cell_Width">
                 <input type="number" v-model="MinDigitalCash" @blur="onMinDigitalCash" />
-                <p>USDT</p>
+                <p>{{kind}}</p>
                 <span v-if="eror[1]" class="error-text">输入金额不正确</span>
               </div>
             </div>
@@ -105,7 +109,7 @@
               </div>
               <div class="inputs cell_Width">
                 <input type="number" v-model="MaxDigitalCash" @blur="onMaxDigitalCash" />
-                <p>USDT</p>
+                <p>{{kind}}</p>
                 <span v-if="eror[3]" class="error-text">输入金额不正确</span>
               </div>
             </div>
@@ -194,7 +198,7 @@ import { Dialog, Toast } from 'vant'
 
 import { UPdateOrder_sj } from '@/api/trxRequest'
 
-import { GetmyUSDT } from '@/utils/web3'
+import { GetmyUSDT_agree } from '@/utils/web3'
 
 import PubSub from 'pubsub-js'
 
@@ -214,6 +218,9 @@ export default {
   props: {
     orderItem: {
       type: [Object],
+    },
+    coinId: {
+      type: [String, Number],
     },
   },
   data() {
@@ -247,10 +254,20 @@ export default {
       isChange_orderInfo: false,
       eror: [false, false, false, false], // 对应错误信息展示
       vali_value: true, //所有值是否有效
+
+      address: '',
+      kind: '',
     }
   },
   created() {
-    console.log(this.orderItem)
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.id == this.coinId) {
+        this.Nowcoin = i
+        this.kind = i.name
+        break
+      }
+    }
     this.price = this.orderItem.cny
     this.number = this.orderItem.num
     this.MaxLegalTender = this.orderItem.amount2
@@ -268,11 +285,15 @@ export default {
       // }
       this.isContractCheckLoading = true
 
-      console.log(usdtNum)
       try {
-        await Reconstruction_getTrxBalance()
-        await Reconstruction_myApprove(usdtNum)
-        await addSellOrder(usdtNum.toString(), this.orderItem.id)
+        if (this.coinId != window.itself) {
+          await Reconstruction_getTrxBalance()
+          await Reconstruction_myApprove(usdtNum, JSON.parse(this.Nowcoin.abi), this.Nowcoin.ads)
+        } else {
+          await Reconstruction_getTrxBalance(usdtNum)
+        }
+
+        await addSellOrder(usdtNum.toString(), this.orderItem.id, this.coinId)
         //console.log(this.orderItem.id);
         await UPdateOrder_sj({
           amount1: this.MinLegalTender,
@@ -284,13 +305,13 @@ export default {
         })
         this.$toast.clear()
         this.$toast.success('订单数量追加成功')
-        const mynum = parseFloat(localStorage.getItem('myamount')) - parseFloat(usdtNum)
-        localStorage.setItem('myamount', mynum)
+        // const mynum = parseFloat(localStorage.getItem('myamount')) - parseFloat(usdtNum)
+        // localStorage.setItem('myamount', mynum)
         PubSub.publish('update-selltotal-orderData')
       } catch (err) {
         console.warn('err', err)
         this.$toast.clear()
-        this.$toast.warning(+err, {
+        this.$toast.warning(err, {
           timeout: false,
         })
       }
@@ -346,7 +367,7 @@ export default {
           const usdt = this.close_Num
           // console.log(usdt)
 
-          await cancelOrders(this.orderItem.id, usdt)
+          await cancelOrders(this.orderItem.id, usdt, this.coinId)
           // console.log(this.price,this.number,this.MinLegalTender,this.MaxLegalTender,this.orderItem.id)
           await UPdateOrder_sj({
             cny: this.price,
@@ -431,13 +452,13 @@ export default {
       if (min <= Number(e.target.value) && Number(e.target.value) <= max) {
         this.price = e.target.value
       } else if (Number(e.target.value) <= min) {
-        e.target.value = 5
-        this.price = 5
-        this.$toast.warning('该货币价格不能低于 5 CNY')
+        e.target.value = min
+        this.price = min
+        this.$toast.warning(`该货币价格不能低于 ${min} CNY`)
       } else if (Number(e.target.value) >= max) {
-        this.price = 7.5
-        e.target.value = 7.5
-        this.$toast.warning('该货币价格不能高于 7.5 CNY')
+        this.price = max
+        e.target.value = max
+        this.$toast.warning(`该货币价格不能高于${max} CNY`)
       }
       this.is_validVal()
     },
@@ -568,7 +589,7 @@ export default {
         message: '校验中...',
         forbidClick: true,
       })
-      GetmyUSDT(this.orderItem.id, this.orderItem.num, 1)
+      GetmyUSDT_agree(this.orderItem.id, 1, this.coinId)
         .catch((err) => {
           console.log(222)
           this.$emit('repetition', err)

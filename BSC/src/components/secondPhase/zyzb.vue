@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { TotalNumber, allOrder } from '@/utils/web3'
+import { allOrder, allOrder1 } from '@/utils/web3'
 import white from '@/components/Nav/white.vue'
 //流动性挖矿收益
 export default {
@@ -106,28 +106,35 @@ export default {
       window.location.href = 'https://fi.eotc.im/'
     },
     init() {
-      TotalNumber().then((res) => {
-        this.sum = res
-        console.log(res)
-      })
       allOrder().then((res) => {
-        let list = []
+        console.log(res)
+        // let list = []
         for (let i of res) {
           if (i.isStop == 0) {
+            this.sum += i.amount
             this.interest += i.reward
           }
-          if (i.amount >= 1000) {
-            if (i.cycle == 6) {
-              this.calculate(i.amount, 1)
-            } else if (i.cycle == 12) {
-              this.calculate(i.amount, 2)
-            } else if (i.cycle == 24) {
-              this.calculate(i.amount, 3)
-            }
-            list.push(i)
-          }
+          // if (i.amount >= 1000) {
+          //   if (i.cycle == 6) {
+          //     this.calculate(i.amount, 1)
+          //   } else if (i.cycle == 12) {
+          //     this.calculate(i.amount, 2)
+          //   } else if (i.cycle == 24) {
+          //     this.calculate(i.amount, 3)
+          //   }
+          //   list.push(i)
+          // }
         }
-        this.interest = this.interest.toFixed(2)
+        allOrder1().then((res) => {
+          for (let i of res) {
+            if (i.isStop == 0) {
+              this.sum += i.amount
+              this.interest += i.reward
+            }
+          }
+          this.sum = this.sum.toFixed(2)
+          this.interest = this.interest.toFixed(2)
+        })
       })
     },
     calculate(num, type) {

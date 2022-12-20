@@ -1,0 +1,57 @@
+export default {
+  // indextrang  seller_buyBilltrang
+  index: {
+    MerchanInfo: "bắt mắt",
+    state1: "Trả",
+    Putthecoin1: "tiền tệ nhắc nhở",
+    Putthecoin2: "Tiền xu được phát hành",
+    state2: "Trong khi chờ thanh toán",
+    state3: "trả",
+    text1: "Để chuyển khoản, vui lòng xác nhận số tài khoản bộ sưu tập của người bán được hiển thị trong chi tiết đơn hàng，hoặc người bán chia sẻ",
+    text2: "Thẻ tài khoản nhận của。Thông tin tài khoản được gửi bởi những người bán khác trong cuộc trò chuyện riêng tư không được phép chuyển khoản。",
+    online: "Đang kết nối",
+    send: "gửi",
+    please: "Vui lòng tải lên một hình ảnh",
+    uploading: "tải lên",
+    ospf: "Không.",
+    page: "Trang",
+    empty: "Nội dung gửi không được để trống",
+    atleast: "Vui lòng tải lên ít nhất một hình ảnh！",
+    loading: "Đang tải",
+    fail: "Tải lên hình ảnh không thành công，vui lòng tải lên sau！",
+    runningwater: "Vui lòng liên hệ với người bán để vượt qua đánh giá của bạn！",
+    sendeamil: "Email đã được gửi đến người nhận！",
+    putmoney: "chào sếp，tôi đã trả tiền，Vui lòng phát hành tiền càng sớm càng tốt！！",
+    urge: "Xin đừng thúc giục nhau thường xuyên！！！",
+    payVal: "không xác định&không xác định&không xác định&",
+    alreadypassed: "Tôi đã vượt qua bài đánh giá lưu lượng của bạn，Bạn có thể tiến hành thanh toán tiếp theo",
+    err: "lỗi kết nối  error",
+    warn: "lỗi kết nối，Ngắt kết nối。。",
+    first: "Làm mới dữ liệu lần đầu",
+    contactway: "chi tiết liên lạc"
+
+  },
+  // seller-billtrang
+  seller_bill: {
+    state1: "Đối tác đang chờ thanh toán",
+    state2: "thanh toán nhắc nhở",
+    state3: "Thanh toán đã được thúc giục",
+    cancel: "hủy đơn hàng",
+    state4: "Bên kia đã thanh toán",
+    text: "Đánh giá luồng",
+    passed: "Tài khoản đã được phê duyệt",
+    tips: " Để ngăn chặn việc lưu thông tiền đen、tài khoản bị chặn，",
+    tips2: "Chỉ sau khi bạn vượt qua đánh giá quy trình trên tài khoản của bên kia，Chỉ bên kia mới có thể thấy số tài khoản nhận và thanh toán của bạn để chuyển tiền。",
+    cancelorder: "hủy đơn đặt hàng。。。",
+    canorder: "hủy đơn hàng",
+    message: "<span class='activeInfo'>Việc hủy bỏ đơn đặt hàng một cách ác ý sẽ được 【giao dịch bị hạn chế】</span> <br />Bạn có chắc chắn muốn hủy đơn đặt hàng?？",
+    cancleerr: "Đã hủy đơn hàng thành công",
+    payment: "chào sếp，Vui lòng hoàn thành thanh toán đơn hàng càng sớm càng tốt！",
+    title: "Có vượt qua đánh giá luồng của bên kia hay không",
+    text2: "tôi đang nghĩ",
+    text3: "đi qua",
+    text4: "Quá trình xem xét luồng đã được thông qua",
+    text5: "Chờ người mua gửi tiền",
+  }
+
+}

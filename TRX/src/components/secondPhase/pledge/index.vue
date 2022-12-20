@@ -65,7 +65,7 @@
         </div>
         <div>
           <p>{{ $t("components.secondPhase.pledge_shou") }}(USDT)</p>
-          <p>0</p>
+          <p>{{giftUSDT}}</p>
         </div>
         <div>
           <p>{{ $t("components.secondPhase.pledge_nft") }}</p>
@@ -177,6 +177,9 @@ export default {
       //节点类型
       jdtype: "",
       percentage: 0,
+
+      //手续费分红
+      giftUSDT:''
     };
   },
   mounted() {
@@ -186,6 +189,7 @@ export default {
 
     this.presenter = localStorage.getItem("giftEotc");
     this.eotc = Number(localStorage.getItem("otczy"));
+    this.giftUSDT = Number(localStorage.getItem('giftUSDT'))
     this.usdt = localStorage.getItem("freeNum") * 1;
 
     let data = UserInfo();

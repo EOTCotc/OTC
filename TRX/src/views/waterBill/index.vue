@@ -6,27 +6,27 @@
         <van-icon name="arrow-left" />
         <span class="hd-txt">{{ item.sname }}</span>
       </div>
-      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">申诉</p>
+      <p @click="$router.push({name:'appeal',params:{MerchanInfo:MerchanInfo}})">{{$t('views.waterBill.index.MerchanInfo')}}</p>
     </header>
     <section class="water-bill-content">
       <div class="top-content" v-if="+item.dsx >= 1">
-        已付款
-        <van-tag type="warning" size="large" v-if="!isReminders" @click="urge_payCoin">催放币</van-tag>
-        <van-tag type="primary" size="large" v-else>已催放币</van-tag>
+        {{$t('views.waterBill.index.state1')}}
+        <van-tag type="warning" size="large" v-if="!isReminders" @click="urge_payCoin">{{$t('views.waterBill.index.Putthecoin1')}}</van-tag>
+        <van-tag type="primary" size="large" v-else>{{$t('views.waterBill.index.Putthecoin2')}}</van-tag>
       </div>
-      <div class="top-content" v-else>待付款</div>
+      <div class="top-content" v-else>{{$t('views.waterBill.index.state2')}}</div>
       <div class="top-mid-content">
         <span class="price">￥{{ ThousandSeparator(money) }}</span>
         <span class="mid-r-content" v-if="+item.dsx < 1">
           <van-count-down class="pay-time" ref="countDown" :time="time" format="mm:sss " />
-          <van-button v-if="!ischangecheck_rcoin" @click="gotoPayMoeny" size="mini">去付款</van-button>
+          <van-button v-if="!ischangecheck_rcoin" @click="gotoPayMoeny" size="mini">{{$t('views.waterBill.index.state3')}}</van-button>
           <van-button
             v-else
             @click="throttle(lxmaijia, 1500)"
             type="info"
             size="mini"
             :style="{background:'#1989fa',color:'#fff'}"
-          >去付款</van-button>
+          >{{$t('views.waterBill.index.state3')}}</van-button>
         </span>
       </div>
     </section>
@@ -35,8 +35,8 @@
         <van-icon name="warn-o" />
       </span>
       <span>
-        转账请认准订单详情中展示的卖家收款账号，或卖家分享
-        的收款账号卡片。其余卖家私聊发送的账号信息一律不要 转账。
+        {{$t('views.waterBill.index.text1')}}
+        {{$t('views.waterBill.index.text2')}}
       </span>
     </section>
 
@@ -105,19 +105,21 @@
         size="small"
         native-type="submit"
         type="primary"
-      >{{ isSend ? "连线中" : "发送" }}</van-button>
+      >
+        {{ isSend ? $t('views.waterBill.index.online') : $t('views.waterBill.index.send') }}
+      </van-button>
     </van-form>
 
     <van-popup class="popup" v-model="imageShow" round position="bottom">
       <div class="popBox">
-        <p>请上传图片</p>
+        <p>{{$t('views.waterBill.index.please') }}</p>
         <van-uploader :after-read="afterRead" v-model="fileList" multiple :max-count="9" />
         <!-- <img src="" width="100px" alt=""> -->
-        <van-button @click="updata()" size="small" type="primary">上传</van-button>
+        <van-button @click="updata()" size="small" type="primary">{{$t('views.waterBill.index.uploading') }}</van-button>
       </div>
     </van-popup>
     <van-image-preview v-model="show" :images="images">
-      <template v-slot:index>第{{ index }}页</template>
+      <template v-slot:index>{{$t('views.waterBill.index.ospf') }}{{ index }}{{$t('views.waterBill.index.page') }}</template>
     </van-image-preview>
   </div>
 </template>
@@ -162,7 +164,7 @@ export default {
         {
           required: true,
           validator: this.validator,
-          message: '发送内容不能为空',
+          message: this.$t('views.waterBill.index.empty'),
         },
       ],
       megList: [],
@@ -217,13 +219,13 @@ export default {
     //图片上传
     async updata() {
       if (this.fileList.length <= 0) {
-        this.$toast.warning('请至少上传一张图片！')
+        this.$toast.warning(this.$t('views.waterBill.index.atleast'))
         return
       }
       Toast.loading({
         duration: 0, // 持续展示 toast
         forbidClick: true,
-        message: '加载中',
+        message: this.$t('views.waterBill.index.loading'),
       })
 
       let urlTop = 'https://api.eotcyu.club/img/'
@@ -253,7 +255,7 @@ export default {
             this.soket.send(urlTop + url)
           })
           .catch((err) => {
-            this.$toast.warning('图片上传失败，请稍后上传！')
+            this.$toast.warning(this.$t('views.waterBill.index.fail'))
             console.log(err)
           })
       }
@@ -275,7 +277,7 @@ export default {
       // this.$refs["footer"].$el.style.marginBottom = "0";
     },
     lxmaijia() {
-      this.$toast.warning('请联系卖家通过您的流水审查！')
+      this.$toast.warning(this.$t('views.waterBill.index.runningwater'))
     },
     async urge_payCoin() {
       try {
@@ -286,19 +288,19 @@ export default {
         })
         this.$toast.success(
           <div>
-            <p style="font-size:13px;margin:5px">已发送邮件至对方邮箱！</p>
+            <p style="font-size:13px;margin:5px">${this.$t('views.waterBill.index.sendeamil')}</p>
           </div>
         )
         this.megList.push(
           this.cinit_mes(
             'buyer',
-            '<div style="padding:10px">老板您好，我已付款，请尽快放币！！</div> ',
+            `<div style="padding:10px">${this.$t('views.waterBill.index.putmoney')}</div> `,
             true
           )
         )
-        this.soket.send('老板您好，我已付款，请尽快放币！！')
+        this.soket.send(this.$t('views.waterBill.index.putmoney'))
       } catch (err) {
-        this.$toast.error('请不要频繁催促对方！！！')
+        this.$toast.error(this.$t('views.waterBill.index.urge'))
       }
       this.isReminders = true
     },
@@ -314,7 +316,7 @@ export default {
       } else if (pay === 'zfb') {
         payVal = this.item.aipay
       } else {
-        payVal = '未知&未知&未知&'
+        payVal = this.$t('views.waterBill.index.payVal')
       }
 
       if (!this.MerchanInfo?.cur_payData) {
@@ -386,12 +388,12 @@ export default {
           }
         }
         this.soket.onerror = function (error) {
-          console.warn('连接错误 error')
+          console.warn(this.$t('views.waterBill.index.err'))
           this.reconnect(url)
           //console.log(error.data);
         }
         this.soket.onclose = () => {
-          console.warn('连接错误，断开连接。。')
+          console.warn(this.$t('views.waterBill.index.warn'))
           this.reconnect(url)
         }
       }
@@ -433,7 +435,7 @@ export default {
         this.cinit_mes(
           'seller',
           `<div style="padding:10px">
-          联系方式
+          ${$t('views.waterBill.index.contactway')}
           <a href="tel:${this.MerchanInfo.wechat}">${this.MerchanInfo.wechat}</a>\n
               <a href="mailto:${this.MerchanInfo.aipay}">${this.MerchanInfo.aipay}<a></div>
              `,
@@ -507,7 +509,7 @@ export default {
           Promise.resolve()
             .then(() => {
               this.megList = []
-              return '首次刷新数据'
+              return this.$t('views.waterBill.index.first')
             })
             .then(() => {
               for (let i of newDataList) {

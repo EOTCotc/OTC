@@ -6,10 +6,10 @@
     <header class="header">
       <div class="header-top-left">
         <van-tag mark type="primary" v-if="order_type(+order_item.id)">
-          <span>出售</span>
+          <span>{{ $t("views.gather.undone.sell") }}</span>
         </van-tag>
         <van-tag mark type="warning" v-else>
-          <span>收购</span>
+          <span>{{ $t("views.gather.undone.purchase") }}</span>
         </van-tag>
         &nbsp;&nbsp;
         <span class="header-top-left-test">{{kind}}</span>
@@ -19,14 +19,16 @@
           color="#ffe1e1"
           @click.stop="Verify_Coin"
           text-color="#ad0000"
-          >校验
+          >{{ $t("views.gather.undone.verify") }}
         </van-tag>
       </div>
       <p class="header-top" v-if="initTime() === 0">
         <span class="pending_coin" v-if="order_type(+order_item.id)">
-          去转币&nbsp;&nbsp;
+          {{ $t("views.gather.undone.Velocity") }}&nbsp;&nbsp;
         </span>
-        <span class="pending_coin" v-else>去付款&nbsp;&nbsp;</span>
+        <span class="pending_coin" v-else>
+          {{ $t("views.gather.undone.payment") }}&nbsp;&nbsp;</span
+        >
 
         <van-count-down
           v-if="order_type(+order_item.id)"
@@ -49,20 +51,24 @@
         class="header-top"
         v-else-if="order_type(+order_item.id) && initTime() === 2"
       >
-        <span class="header-topRight">待放币</span>
+        <span class="header-topRight">
+          {{ $t("views.gather.undone.Stay") }}</span
+        >
       </p>
       <p
         class="header-top"
         v-else-if="order_type(+order_item.id) && initTime() === 1"
       >
-        <span class="header-topRight">等待商家付款</span>
+        <span class="header-topRight">
+          {{ $t("views.gather.undone.wait") }}</span
+        >
       </p>
 
       <p
         class="header-top"
         v-else-if="!order_type(+order_item.id) && initTime() === 1"
       >
-        <span class="header-topRight">待收币</span>
+        <span class="header-topRight">{{ $t("views.gather.undone.put") }}</span>
       </p>
     </header>
 
@@ -73,36 +79,36 @@
             <span
               :style="{ color: '#000' }"
               @click.stop.self="
-                handle_showPhone(order_item.id, '订单编号 已复制')
+                handle_showPhone(order_item.id, $t('views.gather.undone.copy'))
               "
-              >订单编号:{{ order_item.id }}
+              >{{ $t("views.gather.undone.number") }}:{{ order_item.id }}
             </span>
-            <span :style="{ color: '#000' }">价格:{{ order_item.cny }}</span>
-            <span>数量:{{ Number(order_item.num).toFixed(2) }}</span>
-            <span>手续费:{{ order_item.amount2 }} {{kind}}</span>
+            <span :style="{ color: '#000' }">{{ $t("views.gather.undone.price") }}:{{ order_item.cny }}</span>
+            <span>{{ $t("views.gather.undone.count") }}:{{ Number(order_item.num).toFixed(2) }}</span>
+            <span>{{ $t("views.gather.undone.service_charge") }}:{{order_item.amount2 }}:{{ order_item.amount2 }} {{kind}}</span>
           </p>
           <p>
             <span> </span>
             <span></span>
             <span class="total_price">{{ order_item.amount1 }} CNY</span>
-            <span>总金额</span>
+            <span>{{ $t("views.gather.undone.total") }}</span>
           </p>
         </li>
 
         <li class="showFullInfo" v-if="!isShowFullInfo">
           <span></span>
           <span class="showFullInfo-btn" @click.stop="showFullInfo">
-            展示完整信息
+            {{ $t("views.gather.undone.show") }}
             <van-icon name="arrow-down" />
           </span>
         </li>
 
         <li v-if="isShowFullInfo">
-          <span>商家姓名</span>
+          <span> {{ $t("views.gather.undone.name") }}</span>
           <span>{{ order_item.mes }}</span>
         </li>
         <li v-if="isShowFullInfo">
-          <span>联系方式</span>
+          <span> {{ $t("views.gather.undone.way") }}</span>
           <span>
             <b v-if="!isShowPhone" class="mask">{{ order_item.wechat }}</b>
             <a v-else :href="'tel:' + order_item.wechat">{{
@@ -110,7 +116,7 @@
             }}</a>
             <van-icon
               @click.stop.self="
-                handle_showPhone(order_item.wechat, '电话号码 复制成功')
+                handle_showPhone(order_item.wechat, $t('views.gather.undone.phone'))
               "
               name="eye-o"
               class="eye-o"
@@ -137,7 +143,7 @@
                 alt="xj"
               />
               &nbsp;&nbsp;
-              <span>现金</span>
+              <span>{{ $t("views.gather.undone.cash") }}</span>
             </span>
             <span
               :style="{ margin: '10px 0' }"
@@ -154,7 +160,9 @@
                 ]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">支付宝</span>
+              <span class="pay-txt">{{
+                $t("views.gather.undone.alipay")
+              }}</span>
             </span>
             <span
               :style="{ margin: '10px 0' }"
@@ -164,7 +172,9 @@
                 :class="['iconfont', `icon-wx`, `pay-icon1wx2`, `pay-iconwx`]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">微信</span>
+              <span class="pay-txt">{{
+                $t("views.gather.undone.wechat")
+              }}</span>
             </span>
             <span :style="{ margin: '10px 0' }" v-else>
               <i
@@ -197,7 +207,9 @@
                 ]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">支付宝</span>
+              <span class="pay-txt">{{
+                $t("views.gather.undone.alipay")
+              }}</span>
             </span>
             <span
               :style="{ margin: '10px 0' }"
@@ -207,7 +219,9 @@
                 :class="['iconfont', `icon-wx`, `pay-icon1wx2`, `pay-iconwx`]"
               ></i
               >&nbsp;&nbsp;
-              <span class="pay-txt">微信</span>
+              <span class="pay-txt">{{
+                $t("views.gather.undone.wechat")
+              }}</span>
             </span>
             <span :style="{ margin: '10px 0' }" v-else>
               <i
@@ -226,7 +240,7 @@
 
         <template v-if="is_xj === 0 || (is_xj === 1 && xjstr === '可现金交易')">
           <li v-if="isShowFullInfo && order_item.dsx === '2'">
-            <span>收款账号</span>
+            <span>{{ $t("views.gather.undone.account") }}</span>
             <span
               :style="{ margin: '10px 0' }"
               v-if="pay_Info.includes('交易')"
@@ -277,7 +291,9 @@
         <div>
           <header class="header">
             <van-icon name="arrow-left" />
-            <span class="header-text">选择收款方式</span>
+            <span class="header-text">{{
+              $t("views.gather.undone.select")
+            }}</span>
           </header>
           <main class="main">
             <template
@@ -285,7 +301,9 @@
             >
               <van-cell center @click="handlePayChange('xj')">
                 <template #title>
-                  <span class="custom-title">&nbsp;现金交易</span>
+                  <span class="custom-title"
+                    >&nbsp;{{ $t("views.gather.undone.cash_deal") }}</span
+                  >
                 </template>
                 <template #icon>
                   <img
@@ -326,8 +344,8 @@
 
             <div class="salePay-info">
               <span class="span1"
-                >*<i class="zy-info">请使用本人实名账户进行收款</i
-                >,否则会导致订单失败且账号存在被冻结风险</span
+                >*<i class="zy-info">{{ $t("views.gather.undone.self") }}</i
+                >{{ $t("views.gather.undone.generate") }}</span
               >
             </div>
           </main>
@@ -342,7 +360,7 @@
 import { subbuysellorder } from "@/api/trxRequest";
 import { getItem, removeItem } from "@/utils/storage";
 import { myPayment, Getsjmes } from "@/api/payverification";
-
+import { Buy_cancel } from "@/utils/web3";
 import sell_Mixin from "@/mixins/sell_mixins";
 
 import { TemporaryCoinWithdrawal } from "./getCoin_users";
@@ -364,16 +382,23 @@ export default {
   },
   methods: {
     // 倒计时完成 订单自动取消
-    coutDown_finish(type) {
-      this.$toast.warning("订单已过期，系统将自动取消。");
+    async coutDown_finish(type) {
+      this.$toast.warning(this.$t("views.gather.undone.toast[0]"));
       //console.log(type);
+      if (this.order_item.rcoin == 1)
+        await Buy_cancel(
+          this.order_item.id,
+          localStorage.getItem("userIconId")
+        );
       subbuysellorder({
         oid: this.order_item.id,
         type,
         selectpayk: "",
       }).then(() => {
         this.$toast.warning(
-          <p style="color:red;font-size:16px">已自动取消，到期订单</p>
+          <p style="color:red;font-size:16px">
+            {this.$t("views.gather.undone.toast[2]")}
+          </p>
         );
         if (type === 0) {
           localStorage.setItem("xdnum", "0");
@@ -418,7 +443,7 @@ export default {
             } catch (err) {
               console.warn(err);
               this.$toast.warning(err.message);
-              this.$toast.warning("操作过于频繁，请稍候再试...");
+              this.$toast.warning(this.$t("views.gather.undone.toast[1]"));
               return false;
             }
             console.log(data.data.cny);
@@ -528,7 +553,7 @@ export default {
             } catch (err) {
               console.warn(err);
               this.$toast.warning(err.message);
-              this.$toast.warning("操作过于频繁，请稍候再试...");
+              this.$toast.warning(this.$t("views.gather.undone.toast[1]"));
             }
             let item = {
               sname: $order.sname, // 商家店名
@@ -580,7 +605,7 @@ export default {
         data = await Getsjmes($order.odid);
       } catch (err) {
         console.warn(err);
-        this.$toast.warning("操作过于频繁，请稍候再试...");
+        this.$toast.warning(this.$t("views.gather.undone.toast[1]"));
         return false;
       }
       switch ($order.dsx) {
@@ -655,7 +680,7 @@ export default {
           type: 1,
           selectpayk: getItem("mysign"),
         });
-        this.$toast.warning("订单已过期，系统将自动取消。");
+        this.$toast.warning(this.$t("views.gather.undone.toast[0]"));
         this.$emit("update_OrderList");
         removeItem(this.order_item.id);
         localStorage.setItem("csnum", "0");

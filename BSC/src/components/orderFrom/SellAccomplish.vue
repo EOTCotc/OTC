@@ -28,7 +28,7 @@
         </div>
         <div>
           <p>交易数量</p>
-          <p>{{ item.num | viod_value }} USDT</p>
+          <p>{{ item.num | viod_value }} {{coinType}}</p>
         </div>
         <div>
           <p>交易单价</p>
@@ -95,6 +95,25 @@ export default {
   components: {
     VueLoading,
   },
+  props: {
+    coinId: {
+      type: [String, Number],
+    },
+    coinType: {
+      type: [String],
+    },
+    active: {
+      type: [String, Number],
+    },
+  },
+  watch: {
+    coinId: function (newVal, oldVal) {
+      if (this.active == '2') this.initLoadingData(newVal)
+    },
+    active: function (newVal, oldVal) {
+      if (newVal == '2') this.initLoadingData(this.coinId)
+    },
+  },
   data() {
     return {
       dataList: [],
@@ -102,15 +121,16 @@ export default {
     };
   },
   created() {
-    this.initLoadingData();
+    this.initLoadingData(this.coinId);
   },
   methods: {
-    async initLoadingData() {
+    async initLoadingData(coinID) {
       try {
         const { data } = await Eotcdis_Order({
           type: 10,
           t1: 1,
           t2: 3,
+          coinID: coinID,
         });
         this.dataList = data;
       } catch (err) {

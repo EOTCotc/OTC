@@ -11,9 +11,7 @@
           :to="{
             name: 'CurrencyTrading',
           }"
-        >
-          购买
-        </van-button>
+        >购买</van-button>
         <van-button
           @click="sell"
           :class="{ 'active-btn': curState }"
@@ -23,9 +21,7 @@
           :to="{
             name: 'outflows',
           }"
-        >
-          出售
-        </van-button>
+        >出售</van-button>
 
         <!-- 选择当前交易货币类型 -->
         <van-button @click="handleClick" class="cny-text" size="small">
@@ -59,7 +55,7 @@
               class="payType-icon"
             />
           </template>
-        </van-popover> -->
+        </van-popover>-->
 
         <!-- 选择当前交易货币类型弹窗 -->
         <van-popup
@@ -89,11 +85,7 @@
               <div class="defaultCurrency">默认货币</div>
               <div @click="changeCurID('CNY')">
                 <span class="span1">CNY</span>
-                <van-icon
-                  name="success"
-                  class="van-icon1"
-                  v-if="CurrencyId == 'CNY'"
-                />
+                <van-icon name="success" class="van-icon1" v-if="CurrencyId == 'CNY'" />
               </div>
             </div>
 
@@ -107,16 +99,9 @@
                 @click="changeCurID(imgnAme)"
               >
                 <!-- 注意 图片路径  -->
-                <img
-                  :src="require('@/assets/countrie-imgs/' + imgnAme + '.png')"
-                  alt="资源未找到"
-                />
+                <img :src="require('@/assets/countrie-imgs/' + imgnAme + '.png')" alt="资源未找到" />
                 <span class="span1">{{ imgnAme }}</span>
-                <van-icon
-                  name="success"
-                  class="van-icon2"
-                  v-if="CurrencyId == imgnAme"
-                />
+                <van-icon name="success" class="van-icon2" v-if="CurrencyId == imgnAme" />
               </div>
             </div>
           </div>
@@ -125,11 +110,7 @@
     </main>
     <!-- :key="randomKey" -->
 
-    <router-view
-      @set-cur-state="setCurState"
-      :typeList="typeList"
-      ref="dataList"
-    ></router-view>
+    <router-view @set-cur-state="setCurState" :typeList="typeList" ref="dataList"></router-view>
 
     <!-- 右侧图标小工具 -->
     <div class="right">
@@ -154,8 +135,7 @@
               :icon="active.icon"
               @click="utils_toView(active)"
               :to="handle_toView(active)"
-            >
-            </van-grid-item>
+            ></van-grid-item>
           </van-grid>
 
           <template #reference>
@@ -168,182 +148,185 @@
 </template>
 
 <script>
-import CurCurrencyType from "@/components/select-Currency-species";
+import CurCurrencyType from '@/components/select-Currency-species'
 
-import PubSub from "pubsub-js";
+import PubSub from 'pubsub-js'
 
-import { UpdateOrder } from "@/api/trxRequest";
-import { getItem } from "@/utils/storage";
+import { UpdateOrder } from '@/api/trxRequest'
+import { getItem } from '@/utils/storage'
 
 export default {
-  name: "ChooseWay",
+  name: 'ChooseWay',
   components: {
     CurCurrencyType,
   },
-  inject: ["reload"],
+  inject: ['reload'],
   data() {
     return {
       token: null,
       typeList: [],
       curState: true, // 买币 和 卖币切换
       showCurrencyType: false, // 选择货币类型 弹窗
-      moneyTtype: "", //交易货币类型
+      moneyTtype: '', //交易货币类型
       showcurChainType: false,
       shortcut: false,
       undone_order: undefined,
       shortcutActions: [
         {
-          text: "订单",
-          icon: require("@/assets/tools-svg/order_2.svg"),
+          text: '订单',
+          icon: require('@/assets/tools-svg/order_2.svg'),
           badge: this.undone_order,
-          view_name: "orderGather-full",
+          view_name: 'orderGather-full',
         },
         {
-          text: "委托单",
-          icon: require("@/assets/tools-svg/wtd.svg"),
-          view_name: "order-Ticket",
+          text: '委托单',
+          icon: require('@/assets/tools-svg/wtd.svg'),
+          view_name: 'order-Ticket',
         },
         {
-          text: "收付款设置",
-          icon: require("@/assets/tools-svg/sfk.svg"),
-          view_name: "receivingList",
+          text: '收付款设置',
+          icon: require('@/assets/tools-svg/sfk.svg'),
+          view_name: 'receivingList',
         },
         {
-          text: "新手引导",
-          icon: require("@/assets/tools-svg/xsyz.svg"),
+          text: '新手引导',
+          icon: require('@/assets/tools-svg/xsyz.svg'),
           isLink: true,
-          view_name: "https://eotc.im/html/guide/guide.html",
+          view_name: 'https://eotc.im/html/guide/guide.html',
         },
         {
-          text: "关注",
-          icon: require("@/assets/tools-svg/gz.svg"),
-          view_name: "important-userList",
+          text: '关注',
+          icon: require('@/assets/tools-svg/gz.svg'),
+          view_name: 'important-userList',
           query: {
-            source: "concern",
+            source: 'concern',
           },
         },
         {
-          text: "黑名单",
-          icon: require("@/assets/tools-svg/hmd.svg"),
-          view_name: "important-userList",
+          text: '黑名单',
+          icon: require('@/assets/tools-svg/hmd.svg'),
+          view_name: 'important-userList',
           query: {
-            source: "blacklist",
+            source: 'blacklist',
           },
         },
         {
-          text: "系统语言",
-          icon: require("@/assets/tools-svg/yy.svg"),
+          text: '系统语言',
+          icon: require('@/assets/tools-svg/yy.svg'),
         },
         {
-          text: "常见问题",
-          icon: require("@/assets/tools-svg/cjwt.svg"),
+          text: '常见问题',
+          icon: require('@/assets/tools-svg/cjwt.svg'),
           isLink: true,
-          view_name: "https://eotc.im/html/question/question.html",
+          view_name: 'https://eotc.im/html/question/question.html',
         },
         {
-          text: "在线客服",
-          icon: require("@/assets/tools-svg/kf.svg"),
+          text: '在线客服',
+          icon: require('@/assets/tools-svg/kf.svg'),
         },
       ],
       showPopover: false, // 支链弹窗
-      curChain: localStorage.getItem("netType")?.toUpperCase() ?? "", // 当前支公链
+      curChain: localStorage.getItem('netType')?.toUpperCase() ?? '', // 当前支公链
       actions: [
         // 当前支链集合
-        { text: "TRX" },
-        { text: "BSC" },
-        { text: "HECO" },
-        { text: "ETH" },
+        { text: 'TRX' },
+        { text: 'BSC' },
+        { text: 'HECO' },
+        { text: 'ETH' },
       ],
       searchStatus: false, // 搜索状态
-      CurrencyId: "CNY", //当前支付类型 货币
-      countrieImgs: ["AUD", "CAD", "EUR", "INR", "JPY", "KRW", "THB", "USD"],
+      CurrencyId: 'CNY', //当前支付类型 货币
+      countrieImgs: ['AUD', 'CAD', 'EUR', 'INR', 'JPY', 'KRW', 'THB', 'USD'],
       seachcountrie: [], // 搜索
       CurrencyRules: [
         {
           validator: this.validator,
         },
       ],
-    };
+    }
   },
   destroyed() {
-    PubSub.unsubscribe(this.token);
+    PubSub.unsubscribe(this.token)
   },
   created() {
-    this.token = PubSub.subscribe("setUid", () => {
-      this.get_Order_num();
-    });
+    this.token = PubSub.subscribe('setUid', () => {
+      this.get_Order_num()
+    })
   },
   methods: {
     setCurState() {
-      if (this.$route.name === "outflows-center") {
-        this.curState = false;
+      if (this.$route.name === 'outflows-center') {
+        this.curState = false
       } else {
-        this.curState = true;
+        this.curState = true
       }
     },
     utils_toView(view) {
-      if (view.view_name === "order-Ticket") UpdateOrder(getItem("uid"));
-      if (view.isLink) window.location.href = view.view_name; // https://eotc.im/html/guide/guide.html
+      console.log(123)
+      if (view.view_name === 'order-Ticket') UpdateOrder(getItem('uid'))
+      if (view.isLink) window.location.href = view.view_name // https://eotc.im/html/guide/guide.html
 
       if (!view.view_name) {
-        this.$toast.clear();
-        this.$toast.warning("此功能暂未开放，请等待！");
+        this.$toast.clear()
+        this.$toast.warning('此功能暂未开放，请等待！')
       }
     },
     get_Order_num() {
-      const xdnum = localStorage.getItem("xdnum") === "0" ? 0 : 1;
-      const csnum = localStorage.getItem("csnum") === "0" ? 0 : 1;
-      const bsnum = localStorage.getItem("bsnum");
-      const netType = localStorage.getItem("netType");
-      this.curChain = netType?.toUpperCase();
-      if (this.curChain === "BSC") {
-        this.typeList = ["USDT", "USDC", "BTC", "ETH", "BNB"];
-      } else {
-        this.typeList = ["USDT", "USDC", "BTC", "ETH", "TRX"];
-      }
+      const xdnum = localStorage.getItem('xdnum') === '0' ? 0 : 1
+      const csnum = localStorage.getItem('csnum') === '0' ? 0 : 1
+      const bsnum = localStorage.getItem('bsnum')
+      const netType = localStorage.getItem('netType')
+      this.curChain = netType?.toUpperCase()
+      // if (this.curChain === 'BSC') {
+        let coinList = JSON.parse(localStorage.getItem('coinList'))
+        this.typeList = []
+        for (let i of coinList) {
+          this.typeList.push(i.name)
+        }
+      // } else {
+      //   this.typeList = ['USDT', 'USDC', 'BTC', 'ETH', 'TRX']
+      // }
       if (this.curState) {
-        this.$refs["dataList"]?.onLoad();
+        this.$refs['dataList']?.onLoad()
       } else {
-        this.$refs["dataList"]?.onLoad(
+        this.$refs['dataList']?.onLoad(
           {
             dtype: 1,
           },
           1
-        );
+        )
       }
       this.shortcutActions[0].badge =
-        xdnum + csnum + Number(bsnum) === 0
-          ? undefined
-          : xdnum + csnum + Number(bsnum);
+        xdnum + csnum + Number(bsnum) === 0 ? undefined : xdnum + csnum + Number(bsnum)
     },
     handle_toView(view) {
       return {
         name: view.view_name,
         query: view.query,
-      };
+      }
     },
     trading() {
       // 购买状态
-      this.curState = true;
+      this.curState = true
     },
     sell() {
       // 出售状态
-      this.curState = false;
+      this.curState = false
     },
     handleClick() {
-      this.showCurrencyType = true;
+      this.showCurrencyType = true
     },
     changeCurID(payType) {
-      this.$toast.clear();
+      this.$toast.clear()
       if (payType) {
-        this.$toast.warning("暂时不支持切换 法币交易！！！");
-        return false;
+        this.$toast.warning('暂时不支持切换 法币交易！！！')
+        return false
       }
-      this.CurrencyId = payType;
-      this.showCurrencyType = false;
+      this.CurrencyId = payType
+      this.showCurrencyType = false
     },
     onSearch(e) {
-      console.log(e);
+      console.log(e)
     },
     onSelect(action) {
       // if(action.text==='TRX'){
@@ -361,23 +344,23 @@ export default {
       // this.showcurChainType = false;
     },
     validator(val) {
-      if ((val ?? "") === "") {
-        this.searchStatus = false; //搜索状态下 会产生 temp 列表 给用户展示
-        return false;
+      if ((val ?? '') === '') {
+        this.searchStatus = false //搜索状态下 会产生 temp 列表 给用户展示
+        return false
       }
-      this.searchStatus = true; //搜索状态下 会产生 temp 列表 给用户展示
+      this.searchStatus = true //搜索状态下 会产生 temp 列表 给用户展示
       this.seachcountrie = this.countrieImgs.filter((type) => {
-        return type.toLowerCase().includes(val.toLowerCase());
-      });
-      return /\w+/gi.test(val) || "";
+        return type.toLowerCase().includes(val.toLowerCase())
+      })
+      return /\w+/gi.test(val) || ''
     },
   },
   computed: {
     randomKey() {
-      return Math.random(1, 100);
+      return Math.random(1, 100)
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -567,9 +550,7 @@ export default {
   font-size: 0.6rem !important;
 }
 
-.van-grid-item__content--horizontal
-  .van-grid-item__icon
-  + .van-grid-item__text {
+.van-grid-item__content--horizontal .van-grid-item__icon + .van-grid-item__text {
   margin-top: 6px;
 }
 .van-grid-item__content {

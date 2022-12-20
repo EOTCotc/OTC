@@ -77,3 +77,11 @@ export function getArbitrateType(type) {
   const arr = ['账户被冻结', '卖家未确认收款', '其他', '仲裁异议']
   return arr[type]
 }
+
+export function getcoinID() {
+  let coinList = JSON.parse(localStorage.getItem('coinList'))
+  let active = localStorage.getItem('coinActive')
+
+  console.log(coinList[active])
+  return coinList[active]
+}

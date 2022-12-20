@@ -16,7 +16,10 @@
           <p>{{ USDT }}</p>
         </div>
         <div>
-          <p>EOTC</p>
+          <p class="boxName" @click="$router.push({name:'look'})">
+            <span>EOTC</span>
+            <van-icon name="arrow" size="0.45rem" />
+          </p>
           <p>{{ EOTC }}</p>
         </div>
         <div>
@@ -65,6 +68,7 @@
 <script>
 //二期推广
 import { UserInfo } from '@/utils/web3'
+import { getinfo } from "@/api/arbitrationMsg";
 export default {
   data() {
     return {
@@ -74,28 +78,31 @@ export default {
       card: 0,
       //节点类型
       jdtype: '',
-      teamName:''
+      teamName: '',
     }
   },
   created() {
-    this.teamName=localStorage.getItem('teamName')
+    getinfo({}).then(res=>{
+      this.teamName=res.items.comName
+    })
     let data = UserInfo()
     this.USDT = data.usdt_ye
-    this.EOTC = (data.eotc_stake * 1 - localStorage.getItem('myeotc') * 1).toFixed(2)
+    this.EOTC = (data.eotc_stake * 1).toFixed(2)
     let sum = Number(localStorage.getItem('otczy')) + Number(localStorage.getItem('giftEotc'))
 
     if (data.myjifen > 10 && sum > 100) {
       this.jdtype = '有效用户'
-      if (sum > 5000 && data.ztman >= 5 && data.stakeMan >= 90) {
+
+      if (data.ztvip == '2') {
         this.jdtype = '信用节点'
       }
-      if (sum > 10000 && data.ztman >= 7 && data.stakeMan >= 300 && data.ztvip[1] * 1 >= 3) {
+      if (data.ztvip == '3') {
         this.jdtype = '实时节点'
       }
-      if (sum > 50000 && data.ztman >= 13 && data.stakeMan >= 900 && data.ztvip[1] * 1 >= 4) {
+      if (data.ztvip == '4') {
         this.jdtype = '中级节点'
       }
-      if (sum > 100000 && data.ztman >= 19 && data.stakeMan >= 3000 && data.ztvip[1] * 1 >= 5) {
+      if (data.ztvip == '5') {
         this.jdtype = '高级节点'
       }
     } else {
@@ -131,9 +138,9 @@ export default {
   font-size: 32px;
   display: flex;
   justify-content: space-between;
-  div{
+  div {
     display: flex;
-    img{
+    img {
       width: 40px;
       margin-right: 5px;
     }
@@ -153,11 +160,16 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    .boxTitle{
+    .boxTitle {
       font-size: 32px;
       font-weight: bolder;
       width: 100%;
       margin-bottom: 40px;
+    }
+    .boxName {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     div {
       width: 45%;

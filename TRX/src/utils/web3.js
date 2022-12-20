@@ -1,15 +1,17 @@
 // 主网链
+// const regular1 = 'TQQfPrKFrq6ebXBG6HWcfmvbfafgyaU1pU'
 // const regular = 'TCvz9REhN7aaRkfZjU5evRQkAugyfQBFZN';
 // let contractAddress = "TBpcQXdZEX8vYqf2M2CQrHsGt9KZpAEVqu";
 // let contractAddress_usdt = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
 // let contractAddress_eotc = "TWP9nhCPWPa6Wr1wSgNY228jGgZ3vzjw4u";
 // 测试网
 const regular = 'TCZcvTpH8F1wk9m3U9fvYcA8SsE492Ai77'
-let contractAddress = 'TCUZWkGovzMQKFnMRC5187ed6tsaJW4TqT'
+const regular1 = 'TTbFoLwzsKopvv1xYZKpRMWi5TF1Phrfc4'
+export const contractAddress = 'TCUZWkGovzMQKFnMRC5187ed6tsaJW4TqT'
 
 let contractAddress_usdt = 'TJ2ijtG2xfaEhrLrU81h742bPfcHL4CL1w'
 
-let contractAddress_TRX = 'TEyUez2WYBpCWFATJ1QPZSUqEPd68yqD6z'
+export const contractAddress_TRX = 'TEyUez2WYBpCWFATJ1QPZSUqEPd68yqD6z'
 
 let contractAddress_eotc = 'TEt19qEdJM2sPBxLB5XmJGWijT6UvFbs1K'
 
@@ -22,11 +24,25 @@ import loadingToast from '@/components/loading-toast'
  * ! Reconstruction_ 标记开头的方法进行了 promise化重构
  */
 
-import { Toast } from 'vant'
+import {
+  Toast,
+  Dialog
+} from 'vant'
 // api  url
-import { SetCoinAds, GetHx, EotcLoginmes, VerifyOrder } from '@/api/trxRequest'
+import {
+  SetCoinAds,
+  GetHx,
+  EotcLoginmes,
+  VerifyOrder
+} from '@/api/trxRequest'
 
-import { clearmymes } from '@/api/payverification'
+import {
+  userrisklevel
+} from '@/api/arbitrationMsg'
+
+import {
+  clearmymes
+} from '@/api/payverification'
 
 import $router from '@/router'
 
@@ -61,7 +77,6 @@ function distsmes1(message) {
   Vue.$toast.warning(message)
   console.log(message)
 }
-
 
 export const UserInfo = function () {
   //注册邮箱   邮箱和uid 一一对应 是唯一的
@@ -167,8 +182,8 @@ export const userBaseMes = function () {
   // });
 
   EotcLoginmes({
-    wallet: ads,
-  })
+      wallet: ads,
+    })
     .then((data) => {
       var it = eval(data.data)
       console.log('用户Uid', it)
@@ -206,7 +221,7 @@ export const userBaseMes = function () {
 
         localStorage.setItem('shnum', it.snum) //未审核的实名认证会员人数
         localStorage.setItem('bsnum', it.bnum) //用户待放币的订单数
-        localStorage.setItem('myjifen', it.jifen) //用户积分 至少10分才能 购买 or 出售
+        // localStorage.setItem('myjifen', it.jifen) //用户积分 至少10分才能 购买 or 出售
 
         localStorage.setItem('allMan', it.allMan) //团队人数
         localStorage.setItem('stakeMan', it.stakeMan) //有效节点
@@ -243,9 +258,17 @@ export const userBaseMes = function () {
 
         localStorage.setItem('teamName', it.teamName) //社区名字
 
+        localStorage.setItem('eotc9', it.eotc9) //九期待释放
+        localStorage.setItem('eotcStaging', it.eotcStaging) //下期可释放
+
+        localStorage.setItem('giftUSDT', it.giftUSDT) //手续费分红
+
         localStorage.setItem('myStakingEotc', it.myStakingEotc)
 
         PubSub.publish('setUid', localStorage.getItem('uid'))
+        if (it.jifen < 1) {
+          setFenkong()
+        }
         console.log('登录')
       } else {
         console.warn('请先注册EOTC')
@@ -260,19 +283,27 @@ export const userBaseMes = function () {
       })
     })
 }
+//设置风控等级
+function setFenkong() {
+  // userrisklevel({}).then((res) => {
+  //   Dialog.alert({
+  //     title: 'DID抽审',
+  //     message: `您的账号正被抽查DID身份认证的真实性，请耐心配合完成EOTC DAO的E3风控审查。E3风控通过后，账户所有功能恢复，\n请勿担心！`,
+  //     confirmButtonText: '去完成E3风控审核',
+  //   }).then(() => {
+  //     window.location.href = 'https://did.eotc.im/'
+  //   })
+  // })
+}
 
 //转账
 export const SendUSDT = async function (val, ads, ctype) {
   //val 数量 abs 钱包地址 contractAddress 币种合约
-
   return new Promise(async (resolve, reject) => {
     // try {
-    let mytron
-    console.log(111)
-    if (ctype == 'USDT')
-      mytron = await window.tronWeb.contract().at(contractAddress_usdt)
-    else mytron = await window.tronWeb.contract().at(contractAddress_eotc)
-    let res = await mytron.transfer(ads, TronValues(val)).send({
+    let mytron = await window.tronWeb.contract().at(coin.ads)
+    // else mytron = await window.tronWeb.contract().at(contractAddress_eotc)
+    let res = await mytron.transfer(ads, TronValues(val, ctype)).send({
       feeLimit: 100000000,
       callValue: 0,
       shouldPollResponse: false,
@@ -309,8 +340,8 @@ export const loadweb3 = async function (func) {
           //   .at(contractAddress_usdt);
           // console.log(mytron_usdt);
           mytron = await window.tronWeb.contract().at(contractAddress)
-          myUsdtAmount();
-          myEOTCAmount();
+          myUsdtAmount()
+          myEOTCAmount()
           // ethereum.chainId   xxx->测试链  netType 网络类型
           // localStorage.setItem("netType", "xxx");
           localStorage.setItem('netType', 'trx')
@@ -412,17 +443,18 @@ export const runSign = function () {
 }
 
 //usdt合约授权,val适当大一些，就不用多次授权了
-export const usdtsend = async function (val, mes) {
+export const usdtsend = async function (val, mes, ctype) {
   let valmes
   try {
-    if (mytron_usdt == null)
-      mytron_usdt = await window.tronWeb.contract().at(contractAddress_usdt)
+    let mytron_usdt = await window.tronWeb.contract().at(contractAddress_usdt)
     valmes = distsmes1(mes + '授权期间请不要刷新或切换页面！')
-    let res = await mytron_usdt.approve(contractAddress, TronValues(val)).send({
-      feeLimit: 100000000,
-      callValue: 0,
-      shouldPollResponse: false,
-    })
+    let res = await mytron_usdt
+      .approve(contractAddress, TronValues(val, ctype))
+      .send({
+        feeLimit: 100000000,
+        callValue: 0,
+        shouldPollResponse: false,
+      })
     console.log(res)
     SetCoinAds({
       num: val,
@@ -444,11 +476,11 @@ export const usdtsend = async function (val, mes) {
   }
 }
 
-export const Approve = async function (func) {
+export const Approve = async function (ctype) {
   let ads = window.tronWeb.defaultAddress.base58
-  if (mytron_usdt == null)
-    mytron_usdt = await window.tronWeb.contract().at(contractAddress_usdt)
-  const value = await mytron_usdt.allowance(ads, contractAddress).call()
+  let mytron_usdt = await window.tronWeb.contract().at(coin.ads)
+  const value = await mytron_usdt.allowance(ads, ctype).call()
+  console.log(value)
   let owancevalue
   try {
     owancevalue = value.remaining._hex
@@ -461,14 +493,14 @@ export const Approve = async function (func) {
 
 //获取钱包余额
 export const myUsdtAmount = async function myUsdtAmount(Conaddress) {
-  console.log(Conaddress)
+  // console.log(Conaddress)
   return new Promise(async (resolve, reject) => {
     try {
       // if (mytron_usdt == null)
       const result = await window.tronWeb.trx.getBalance(
         window.tronWeb.defaultAddress.base58
       )
-      let mynum=(parseInt(result)/1000000).toFixed(2)
+      let mynum = (parseInt(result) / 1000000).toFixed(2)
       console.log(mynum)
       localStorage.setItem('myamount', mynum)
       resolve(mynum)
@@ -502,8 +534,7 @@ export const myEOTCAmount = async function myEOTCAmount() {
     try {
       let mytron_eotc = await window.tronWeb.contract().at(contractAddress_eotc)
       let ads = window.tronWeb.defaultAddress.base58
-      mytron_eotc.balanceOf(ads).call(
-        {
+      mytron_eotc.balanceOf(ads).call({
           from: ads,
         },
         function (error, result) {
@@ -525,43 +556,50 @@ export const myEOTCAmount = async function myEOTCAmount() {
 }
 
 //用户向合约订单质押USDT，执行前需要向USDT合约申请approve授权
-export const sellOrder_user = async function (
-  oid,
-  val,
-  sj_ads,
-  errorFun,
-  okFun
-) {
-  let valmes
-  try {
-    if (mytron == null)
-      mytron = await window.tronWeb.contract().at(contractAddress)
-    valmes = distsmes1('等待区块打包确认，打包期间请不要关闭或刷新该页面')
-    let res = await mytron
-      .transferIn1(TronValues(val), oid.toString(), sj_ads.trim())
-      .send({
-        feeLimit: 100000000,
-        callValue: 0,
-        shouldPollResponse: false,
-      })
-    console.log(res)
-    // myUsdtAmount()
-    getxh(1, oid, val, res)
-    if (okFun != null) okFun()
-    setTimeout(function () {
-      valmes.style.display = 'none'
-    }, 1500)
-  } catch (e) {
-    console.log(e)
-    if (typeof e.message != 'undefined') {
-      warnmes('交易失败：' + e.message, null)
-    }
-    if (errorFun != null) errorFun()
-    valmes.style.display = 'none'
-  }
-}
+// export const sellOrder_user = async function (
+//   oid,
+//   val,
+//   sj_ads,
+//   errorFun,
+//   okFun
+// ) {
+//   let valmes
+//   try {
+//     if (mytron == null)
+//       mytron = await window.tronWeb.contract().at(contractAddress)
+//     valmes = distsmes1('等待区块打包确认，打包期间请不要关闭或刷新该页面')
+//     let res = await mytron
+//       .transferIn1(TronValues(val), oid.toString(), sj_ads.trim())
+//       .send({
+//         feeLimit: 100000000,
+//         callValue: 0,
+//         shouldPollResponse: false,
+//       })
+//     console.log(res)
+//     // myUsdtAmount()
+//     getxh(1, oid, val, res)
+//     if (okFun != null) okFun()
+//     setTimeout(function () {
+//       valmes.style.display = 'none'
+//     }, 1500)
+//   } catch (e) {
+//     console.log(e)
+//     if (typeof e.message != 'undefined') {
+//       warnmes('交易失败：' + e.message, null)
+//     }
+//     if (errorFun != null) errorFun()
+//     valmes.style.display = 'none'
+//   }
+// }
 
-export const Buy_user = async function (val, oid, address, wechat, coinID) {
+export const Buy_user = async function (
+  val,
+  oid,
+  address,
+  wechat,
+  coinID,
+  type
+) {
   return new Promise(async (resolve, reject) => {
     try {
       let mytron, res
@@ -570,23 +608,25 @@ export const Buy_user = async function (val, oid, address, wechat, coinID) {
       } else {
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
       }
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       console.log(val)
-      console.log(TronValues(val), oid.toString(), address, wechat, coinID)
       if (coinID != window.itself) {
         res = await mytron
-          .transferIn0(TronValues(val), oid.toString(), address, wechat, coinID)
+          .transferIn0(
+            TronValues(val, type),
+            oid.toString(),
+            address,
+            wechat,
+            coinID
+          )
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -594,7 +634,7 @@ export const Buy_user = async function (val, oid, address, wechat, coinID) {
           })
       } else {
         res = await mytron
-          .transferIn0(TronValues(val), oid.toString(), address, wechat)
+          .transferIn0(TronValues(val, coinID), oid.toString(), address, wechat)
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -630,24 +670,20 @@ export const merchant_Service = async function (
       } else {
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
       }
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       console.log(val)
-      console.log(TronValues(val), oid.toString(), address, wechat, coinID)
       if (coinID != window.itself) {
         res = await mytron
           .transferIn00(
-            TronValues(val),
+            TronValues(val, coinID),
             oid.toString(),
             wechat,
             coinID,
@@ -660,7 +696,12 @@ export const merchant_Service = async function (
           })
       } else {
         res = await mytron
-          .transferIn00(TronValues(val), oid.toString(), wechat, address)
+          .transferIn00(
+            TronValues(val, coinID),
+            oid.toString(),
+            wechat,
+            address
+          )
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -685,21 +726,29 @@ export const Buy_verify = async function (oid, coinID) {
   console.log(coinID)
   return new Promise(async (resolve, reject) => {
     try {
-      let mytron, res
+      let mytron
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块校验确认，<br/>校验期间请不要关闭或刷新该页面',
+        },
+      }, {
+        icon: false,
+        timeout: false,
+      })
       if (coinID != window.itself)
         mytron = await window.tronWeb.contract().at(contractAddress)
       else mytron = await window.tronWeb.contract().at(contractAddress_TRX)
       let ads = window.tronWeb.defaultAddress.base58
       // setTimeout(() => {
-      mytron.getInfo_Out(oid.toString()).call(
-        {
+      mytron.getInfo_Out(oid.toString()).call({
           from: ads,
         },
         function (error, result) {
           if (!error) {
             console.log(result)
             var mynum = parseInt(result[1]._hex, 16) / 1000000.0
-            console.log(mynum)
+            Vue.$toast.clear()
             // if (mynum == 0) {
             //   console.log('error', mynum)
             // Buy_verify(oid, coinID)
@@ -707,6 +756,7 @@ export const Buy_verify = async function (oid, coinID) {
             resolve(mynum)
             // }
           } else {
+            Vue.$toast.clear()
             console.log(error)
             reject(error)
           }
@@ -714,7 +764,6 @@ export const Buy_verify = async function (oid, coinID) {
       )
       // }, 3000)
     } catch (e) {
-      console.log(e)
       reject(e)
       Vue.$toast.clear()
     }
@@ -744,35 +793,34 @@ export const Buy_cancel = async function (oid, coinID) {
 }
 
 //用户从合约订单转出USDT（放币）
-export const outOrder_user = async function (oid, val, okFun) {
-  let valmes
-  try {
-    if (mytron == null)
-      mytron = await window.tronWeb.contract().at(contractAddress)
-    valmes = distsmes1('等待区块打包确认，打包期间请不要关闭或刷新该页面')
-    let res = await mytron
-      .transferOutfor1(oid.toString(), TronValues(val))
-      .send({
-        feeLimit: 100000000,
-        callValue: 0,
-        shouldPollResponse: false,
-      })
-    console.log(res)
-    getxh(2, oid, val, res)
-    if (okFun != null) okFun()
-    setTimeout(function () {
-      valmes.style.display = 'none'
-    }, 1500)
-  } catch (e) {
-    console.log(e)
-    warnmes('交易失败：' + e.message, null)
-    valmes.style.display = 'none'
-  }
-}
+// export const outOrder_user = async function (oid, val, okFun) {
+//   let valmes
+//   try {
+//     if (mytron == null)
+//       mytron = await window.tronWeb.contract().at(contractAddress)
+//     valmes = distsmes1('等待区块打包确认，打包期间请不要关闭或刷新该页面')
+//     let res = await mytron
+//       .transferOutfor1(oid.toString(), TronValues(val))
+//       .send({
+//         feeLimit: 100000000,
+//         callValue: 0,
+//         shouldPollResponse: false,
+//       })
+//     console.log(res)
+//     getxh(2, oid, val, res)
+//     if (okFun != null) okFun()
+//     setTimeout(function () {
+//       valmes.style.display = 'none'
+//     }, 1500)
+//   } catch (e) {
+//     console.log(e)
+//     warnmes('交易失败：' + e.message, null)
+//     valmes.style.display = 'none'
+//   }
+// }
 
 //商家向合约订单质押USDT，执行前需要向USDT合约申请approve授权
-export const sellOrders = async function (val, oid, coinID, Conaddress) {
-  console.log(Conaddress)
+export const sellOrders = async function (val, oid, coinID, type) {
   return new Promise(async (resolve, reject) => {
     try {
       // if (mytron == null)
@@ -782,22 +830,19 @@ export const sellOrders = async function (val, oid, coinID, Conaddress) {
       } else {
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
       }
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       let res
       if (coinID != window.itself) {
         res = await mytron
-          .transferIn(TronValues(val), oid.toString(), coinID)
+          .transferIn(TronValues(val, coinID), oid.toString(), coinID)
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -806,7 +851,7 @@ export const sellOrders = async function (val, oid, coinID, Conaddress) {
       } else {
         res = await mytron.transferIn(oid.toString()).send({
           feeLimit: 100000000,
-          callValue: TronValues(val),
+          callValue: TronValues(val, coinID),
           shouldPollResponse: false,
         })
       }
@@ -830,25 +875,22 @@ export const outOrder = async function (odid, val, coinId) {
   return new Promise(async (resolve, reject) => {
     try {
       // if (mytron == null)
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       let mytron, res
 
       if (coinId != window.itself) {
         mytron = await window.tronWeb.contract().at(contractAddress)
 
         res = await mytron
-          .transferOutfor(odid.toString(), TronValues(val), coinId)
+          .transferOutfor(odid.toString(), TronValues(val, coinId), coinId)
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -857,7 +899,7 @@ export const outOrder = async function (odid, val, coinId) {
       } else {
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
         res = await mytron
-          .transferOutfor(odid.toString(), TronValues(val))
+          .transferOutfor(odid.toString(), TronValues(val, coinId))
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -888,23 +930,19 @@ export const addSellOrder = async function (val, oid, coinID) {
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
         console.log(contractAddress_TRX)
       }
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       let res
       if (coinID != window.itself) {
-        0
         res = await mytron
-          .transferAdd(TronValues(val), oid.toString(), coinID)
+          .transferAdd(TronValues(val, coinID), oid.toString(), coinID)
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -913,7 +951,7 @@ export const addSellOrder = async function (val, oid, coinID) {
       } else {
         res = await mytron.transferAdd(oid.toString()).send({
           feeLimit: 100000000,
-          callValue: TronValues(val),
+          callValue: TronValues(val, coinID),
           shouldPollResponse: false,
         })
       }
@@ -942,7 +980,7 @@ export const cancelOrders = async function (oid, val, coinId) {
       if (coinId != window.itself) {
         mytron = await window.tronWeb.contract().at(contractAddress)
         res = await mytron
-          .transferOut(oid.toString(), TronValues(val), coinId)
+          .transferOut(oid.toString(), TronValues(val, coinId), coinId)
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -950,11 +988,13 @@ export const cancelOrders = async function (oid, val, coinId) {
           })
       } else {
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
-        res = await mytron.transferOut(oid.toString(), TronValues(val)).send({
-          feeLimit: 100000000,
-          callValue: 0,
-          shouldPollResponse: false,
-        })
+        res = await mytron
+          .transferOut(oid.toString(), TronValues(val, coinId))
+          .send({
+            feeLimit: 100000000,
+            callValue: 0,
+            shouldPollResponse: false,
+          })
       }
       // mytron = await window.tronWeb.contract().at(contractAddress)
       // res = await mytron.transferOut(oid.toString(), TronValues(val)).send({
@@ -987,8 +1027,12 @@ export const getxh = function (dtype, oid, val, hx) {
   })
 }
 
-export const TronValues = function (val) {
-  let vl = parseFloat(val).toFixed(6) * Math.pow(10, 6)
+export const TronValues = function (val, data) {
+  let coinList = JSON.parse(localStorage.getItem('coinList'))
+  for (let i of coinList) {
+    if (i.name == data || i.id == data) var nowcoin = i
+  }
+  let vl = parseFloat(val).toFixed(6) * Math.pow(10, nowcoin.decimals)
   vl = parseInt(vl)
   return vl.toString()
 }
@@ -1022,8 +1066,7 @@ export const GetmyUSDT = async function (orderID, gusdt, type, coinID) {
         mytron = await window.tronWeb.contract().at(contractAddress)
       else mytron = await window.tronWeb.contract().at(contractAddress_TRX)
 
-      mytron.getInfo_order(orderID.toString()).call(
-        {
+      mytron.getInfo_order(orderID.toString()).call({
           from: window.tronWeb.defaultAddress.base58,
         },
         function (error, result) {
@@ -1038,7 +1081,11 @@ export const GetmyUSDT = async function (orderID, gusdt, type, coinID) {
             console.log('gsdt', gusdt)
             if (gusdt <= usdt) resolve()
             else {
-              VerifyOrder({ id: orderID, num: usdt, type: type }).then(
+              VerifyOrder({
+                id: orderID,
+                num: usdt,
+                type: type
+              }).then(
                 (res) => {
                   console.log(res)
                   if (type == 0) {
@@ -1051,6 +1098,45 @@ export const GetmyUSDT = async function (orderID, gusdt, type, coinID) {
                 }
               )
             }
+          } else {
+            Vue.$toast.warning('操作失败，请重试' + error)
+          }
+        }
+      )
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+//商家手动校验
+export const GetmyUSDT_agree = async function (orderID, type, coinID) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (coinID != window.itself)
+        mytron = await window.tronWeb.contract().at(contractAddress)
+      else mytron = await window.tronWeb.contract().at(contractAddress_TRX)
+
+      mytron.getInfo_order(orderID.toString()).call({
+          from: window.tronWeb.defaultAddress.base58,
+        },
+        function (error, result) {
+          if (!error) {
+            let usdt = (parseInt(result[1]._hex, 16) / 1000000.0).toFixed(6)
+            VerifyOrder({
+              id: orderID,
+              num: usdt,
+              type: type
+            }).then((res) => {
+              console.log(res)
+              if (type == 0) {
+                reject('该订单USDT数量已不足')
+              } else {
+                if (res.data.Code > 0) {
+                  reject(111)
+                }
+              }
+            })
           } else {
             Vue.$toast.warning('操作失败，请重试' + error)
           }
@@ -1082,8 +1168,7 @@ export const GetmyUSDT_User = function (
       if (coinId != window.itself)
         mytron = await window.tronWeb.contract().at(contractAddress)
       else mytron = await window.tronWeb.contract().at(contractAddress_TRX)
-      mytron.getInfo_orderOut(orderID.toString()).call(
-        {
+      mytron.getInfo_orderOut(orderID.toString()).call({
           from: window.tronWeb.defaultAddress.base58,
         },
         function (error, result) {
@@ -1159,8 +1244,7 @@ export const verifyUSDT = async function (amount, fuc) {
   if (mytron_usdt == null)
     mytron_usdt = await window.tronWeb.contract().at(contractAddress_usdt)
   let ads = window.tronWeb.defaultAddress.base58
-  mytron_usdt.balanceOf(ads).call(
-    {
+  mytron_usdt.balanceOf(ads).call({
       from: ads,
     },
     function (error, result) {
@@ -1265,7 +1349,11 @@ export const Reconstruction_getTrxBalance = async function (num) {
  * @returns
  */
 
-export const Reconstruction_myApprove = async function (num, Conaddress) {
+export const Reconstruction_myApprove = async function (
+  num,
+  Conaddress,
+  coinID
+) {
   return new Promise(async (resolve, reject) => {
     try {
       let owancevalue
@@ -1302,7 +1390,7 @@ export const Reconstruction_myApprove = async function (num, Conaddress) {
  *
  * */
 
-export const Reconstruction_usdtsend = function (val, Conaddress) {
+export const Reconstruction_usdtsend = function (val, Conaddress, coinID) {
   // let valmes;
   return new Promise(async (resolve, reject) => {
     try {
@@ -1311,20 +1399,17 @@ export const Reconstruction_usdtsend = function (val, Conaddress) {
       console.log('val', val)
 
       // distsmes1 是一个黄色的警示弹窗。
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '请先给智能合约授权,<br/>授权期间请不要刷新或切换页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '请先给智能合约授权,<br/>授权期间请不要刷新或切换页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       let res = await mytron_usdt
-        .approve(contractAddress, TronValues(val))
+        .approve(contractAddress, TronValues(val, coinID))
         .send({
           feeLimit: 100000000,
           callValue: 0,
@@ -1332,8 +1417,8 @@ export const Reconstruction_usdtsend = function (val, Conaddress) {
         })
       console.log(res)
       SetCoinAds({
-        num: val,
-      })
+          num: val,
+        })
         .then((data) => {
           let it = eval(data.data)
           if (it.State == '1') {
@@ -1383,8 +1468,7 @@ export const Reconstruction_verifyUSDT = async function (
   let ads = window.tronWeb.defaultAddress.base58
 
   return new Promise((resolve, reject) => {
-    mytron_usdt.balanceOf(ads).call(
-      {
+    mytron_usdt.balanceOf(ads).call({
         from: ads,
       },
       function (error, result) {
@@ -1434,21 +1518,23 @@ export const Reconstruction_sellOrder_user = async function (
         mytron = await window.tronWeb.contract().at(contractAddress_TRX)
       }
 
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
+      }, {
+        icon: false,
+        timeout: false,
+      })
       if (coinID != itself) {
         res = await mytron
-          .transferIn1(TronValues(val), oid.toString(), sj_ads.trim(), coinID)
+          .transferIn1(
+            TronValues(val, coinID),
+            oid.toString(),
+            sj_ads.trim(),
+            coinID
+          )
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -1457,7 +1543,7 @@ export const Reconstruction_sellOrder_user = async function (
       } else {
         res = await mytron.transferIn1(oid.toString(), sj_ads.trim()).send({
           feeLimit: 100000000,
-          callValue: TronValues(val),
+          callValue: TronValues(val, coinID),
           shouldPollResponse: false,
         })
       }
@@ -1501,25 +1587,22 @@ export const Reconstruction_outOrder_user = async function (
   return new Promise(async (resolve, reject) => {
     try {
       // if (mytron == null)
-      console.log(oid.toString(), TronValues(val), coinName)
       let mytron, res
-      if (coinName) mytron = await window.tronWeb.contract().at(contractAddress)
+      if (coinName != window.itself)
+        mytron = await window.tronWeb.contract().at(contractAddress)
       else mytron = await window.tronWeb.contract().at(contractAddress_TRX)
-      Vue.$toast.warning(
-        {
-          component: loadingToast,
-          props: {
-            title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
-          },
+      Vue.$toast.warning({
+        component: loadingToast,
+        props: {
+          title: '等待区块打包确认，<br/>打包期间请不要关闭或刷新该页面',
         },
-        {
-          icon: false,
-          timeout: false,
-        }
-      )
-      if (coinName) {
+      }, {
+        icon: false,
+        timeout: false,
+      })
+      if (coinName != window.itself) {
         res = await mytron
-          .transferOutfor1(oid.toString(), TronValues(val), coinName)
+          .transferOutfor1(oid.toString(), TronValues(val, coinName), coinName)
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -1527,7 +1610,7 @@ export const Reconstruction_outOrder_user = async function (
           })
       } else {
         res = await mytron
-          .transferOutfor1(oid.toString(), TronValues(val))
+          .transferOutfor1(oid.toString(), TronValues(val, coinName))
           .send({
             feeLimit: 100000000,
             callValue: 0,
@@ -1569,7 +1652,9 @@ export const tcoinFee = function tcoinFee(val) {
   console.log(val)
   return new Promise(async (resolve, reject) => {
     try {
-      const { data } = await window.tronWeb.trx.sendTransaction(
+      const {
+        data
+      } = await window.tronWeb.trx.sendTransaction(
         'TPHpCqg26MqvMMhWA8dFqY83ZHrVWrKuMZ',
         val
       )
@@ -1582,7 +1667,7 @@ export const tcoinFee = function tcoinFee(val) {
 
 //单笔手续费转账
 export const oneSfeotc = async function (val) {
-  val = TronValues(val)
+  val = TronValues(val, 'EOTC')
   return new Promise(async (resolve, reject) => {
     try {
       let result = await window.tronWeb.trx.sendTransaction(
@@ -1598,39 +1683,36 @@ export const oneSfeotc = async function (val) {
   })
 }
 
-//获取链上质押总量
-export const TotalNumber = async function () {
-  let mytron = await window.tronWeb.contract().at(regular)
-
-  return new Promise((res, rej) => {
-    mytron.pledgeAmount(localStorage.getItem('myaddress')).call(
-      {
-        from: window.tronWeb.defaultAddress.base58,
-      },
-      function (error, result) {
-        console.log(result)
-        if (!error) {
-          let mnum = parseInt(result[0]._hex, 16) / 1000000.0
-
-          res(mnum)
-        } else {
-          Vue.$toast.error(error)
-        }
-      }
-    )
-  })
-}
 //获取总订单表
 export const allOrder = async function () {
   let mytron = await window.tronWeb.contract().at(regular)
 
   return new Promise((res, rej) => {
-    mytron.allPledge(localStorage.getItem('myaddress')).call(
-      {
+    mytron.allPledge(localStorage.getItem('myaddress')).call({
         from: window.tronWeb.defaultAddress.base58,
       },
       function (error, result) {
         if (!error) {
+          let data = modification(result)
+          res(data)
+        } else {
+          Vue.$toast.error(error)
+          rej(error)
+        }
+      }
+    )
+  })
+}
+export const allOrder1 = async function () {
+  let mytron = await window.tronWeb.contract().at(regular1)
+
+  return new Promise((res, rej) => {
+    mytron.allPledge(localStorage.getItem('myaddress')).call({
+        from: window.tronWeb.defaultAddress.base58,
+      },
+      function (error, result) {
+        if (!error) {
+          console.log(result)
           let data = modification(result)
           res(data)
         } else {

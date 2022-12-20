@@ -1,210 +1,259 @@
 <template>
-  <div class='container'>
-    <white :title='title' />
-    <div class='top-line'></div>
+  <div class="container">
+    <white :title="title" />
+    <div class="top-line"></div>
     <!-- 内容 -->
-    <div class='content'>
-      <div class='title'>
-        <span>仲裁案</span>
-        <span v-show='false'>-100EOTC</span>
+    <div class="content">
+      <div class="title">
+        <span>{{ $t("views.arbitration.arbitrationMsg.title") }}</span>
+        <span v-show="false">-100EOTC</span>
       </div>
-      <div class='user-box'>
-        <div class='user-top'>
+      <div class="user-box">
+        <div class="user-top">
           <!-- 原告 -->
-          <div class='user-left'>
-            <div class='left-tag-box'>
+          <div class="user-left">
+            <div class="left-tag-box">
               <img
-                class='victory-via'
-                src='@/assets/imgs/huangguan.png'
-                v-show='closureObj.status == 2'
+                class="victory-via"
+                src="@/assets/imgs/huangguan.png"
+                v-show="closureObj.status == 2"
               />
-              <div class='left-user-tag'>原告</div>
+              <div class="left-user-tag">
+                {{ $t("views.arbitration.arbitrationMsg.plaintiff") }}
+              </div>
             </div>
-            <div class='left-via-name'>
+            <div class="left-via-name">
               <!-- 申请延期 -->
-              <span v-if='messageType == 0 && isArbitrate == 0'>
+              <span v-if="messageType == 0 && isArbitrate == 0">
                 {{ postponeObj.plaintiff }}
               </span>
               <!-- 追加举证 -->
-              <span v-else-if='messageType == 1'>
+              <span v-else-if="messageType == 1">
                 {{ addObj.plaintiff }}
               </span>
               <!-- 发起重新举证 -->
-              <span v-else-if='messageType == 0 && isArbitrate == 1'>
+              <span v-else-if="messageType == 0 && isArbitrate == 1">
                 {{ anewObj.plaintiff }}
               </span>
               <!-- 取消仲裁 -->
-              <span v-else-if='messageType == 2'>
+              <span v-else-if="messageType == 2">
                 {{ cancelObj.plaintiff }}
               </span>
               <!-- 结案通知 -->
-              <span v-else-if='messageType == 3'>
+              <span v-else-if="messageType == 3">
                 {{ closureObj.plaintiff }}
               </span>
-              <span class='seller'>(卖家)</span>
+              <span class="seller">{{
+                  $t("views.arbitration.arbitrationMsg.seller")
+                }}</span>
             </div>
-            <div class='left-ticket' v-if='messageType == 3'>
-              {{ closureObj.plaintiffNum }}票
+            <div class="left-ticket" v-if="messageType == 3">
+              {{ closureObj.plaintiffNum
+              }}{{ $t("views.arbitration.arbitrationMsg.ticket") }}
             </div>
           </div>
           <!-- 被告 -->
-          <div class='user-right'>
-            <div class='right-tag-box'>
+          <div class="user-right">
+            <div class="right-tag-box">
               <img
-                class='victory-via'
-                src='@/assets/imgs/huangguan.png'
-                v-show='closureObj.status == 3'
+                class="victory-via"
+                src="@/assets/imgs/huangguan.png"
+                v-show="closureObj.status == 3"
               />
-              <div class='right-user-tag'>被告</div>
+              <div class="right-user-tag">
+                {{ $t("views.arbitration.arbitrationMsg.defendant") }}
+              </div>
             </div>
-            <div class='right-via-name'>
-              <span class='purchaser'>(买家)</span>
+            <div class="right-via-name">
+              <span class="purchaser">{{
+                  $t("views.arbitration.arbitrationMsg.Buyer")
+                }}</span>
               <!-- 申请延期 -->
-              <span v-if='messageType == 0 && isArbitrate == 0'>
+              <span v-if="messageType == 0 && isArbitrate == 0">
                 {{ postponeObj.defendant }}
               </span>
               <!-- 追加举证 -->
-              <span v-else-if='messageType == 1'>
+              <span v-else-if="messageType == 1">
                 {{ addObj.defendant }}
               </span>
               <!-- 发起重新举证 -->
-              <span v-else-if='messageType == 0 && isArbitrate == 1'>
+              <span v-else-if="messageType == 0 && isArbitrate == 1">
                 {{ anewObj.defendant }}
               </span>
               <!-- 取消仲裁 -->
-              <span v-else-if='messageType == 2'>
+              <span v-else-if="messageType == 2">
                 {{ cancelObj.defendant }}
               </span>
               <!-- 结案通知 -->
-              <span v-else-if='messageType == 3'>
+              <span v-else-if="messageType == 3">
                 {{ closureObj.defendant }}
               </span>
             </div>
-            <div class='right-ticket' v-if='messageType == 3'>
-              {{ closureObj.defendantNum }}票
+            <div class="right-ticket" v-if="messageType == 3">
+              {{ closureObj.defendantNum
+              }}{{ $t("views.arbitration.arbitrationMsg.ticket") }}
             </div>
           </div>
         </div>
         <!-- 其他消息 -->
-        <div v-if='messageType != 3'>
-          <div class='user-content'>
-            <span v-if='arbitrateInType == 0'>账户被冻结</span>
-            <span v-else-if='arbitrateInType == 1'> 卖家未确认收款 </span>
-            <span v-else-if='arbitrateInType == 2'>其他</span>
+        <div v-if="messageType != 3">
+          <div class="user-content">
+            <span v-if="arbitrateInType == 0">{{
+                $t("views.arbitration.arbitrationMsg.user_content[0]")
+              }}</span>
+            <span v-else-if="arbitrateInType == 1">{{
+                $t("views.arbitration.arbitrationMsg.user_content[1]")
+              }}</span>
+            <span v-else-if="arbitrateInType == 2">{{
+                $t("views.arbitration.arbitrationMsg.user_content[2]")
+              }}</span>
           </div>
-          <div class='user-detail' @click='$router.push({name: messageType == 2 ? "finishDetails" : "details", query: {id: arbitrateInfoId}})'>
+          <div
+            class="user-detail"
+            @click="
+              $router.push({
+                name: messageType == 2 ? 'finishDetails' : 'details',
+                query: { id: arbitrateInfoId },
+              })
+            "
+          >
             <span>
-              <van-icon name='orders-o' />
-              仲裁详情
+              <van-icon name="orders-o" />
+              {{ $t("views.arbitration.arbitrationMsg.orders") }}
             </span>
-            <van-icon name='arrow' size='14' color='#999' />
+            <van-icon name="arrow" size="14" color="#999" />
           </div>
         </div>
         <!-- 结案通知 -->
-        <div class='final-notice' v-if='messageType == 3'>
-          <div class='process_wrap'>
+        <div class="final-notice" v-if="messageType == 3">
+          <div class="process_wrap">
             <van-progress
-              stroke-width='12'
-              :percentage='plaintiffNum / headcount * 100 || 0'
-              :show-pivot='false'
-              color='#4EA0F5'
-              track-color='#EC6F66'
+              stroke-width="12"
+              :percentage="(plaintiffNum / headcount) * 100 || 0"
+              :show-pivot="false"
+              color="#4EA0F5"
+              track-color="#EC6F66"
             />
           </div>
-          <div class='notice-title'>仲裁结果</div>
-          <div class='notice-bot'>
+          <div class="notice-title">
+            {{ $t("views.arbitration.arbitrationMsg.notice_title") }}
+          </div>
+          <div class="notice-bot">
             <p>
-              本次参与仲裁事件的仲裁员共计{{
-                headcount
-              }}人，通过双方提交举证，{{
-                closureObj.defendantNum
-              }}位仲裁员判定被告dsads
+              {{ $t("views.arbitration.arbitrationMsg.notice_bot[0]")
+              }}{{ headcount }}
+              {{ $t("views.arbitration.arbitrationMsg.notice_bot[1]")
+              }}{{ closureObj.defendantNum }}
+              {{ $t("views.arbitration.arbitrationMsg.notice_bot[2]") }}
             </p>
-            <div class='notice-bot-r' @click='$router.push({name: "finishDetails", query: {id: arbitrateInfoId}})'>
-              <van-icon name='orders-o' />
-              <span>详情</span>
+            <div
+              class="notice-bot-r"
+              @click="
+                $router.push({
+                  name: 'finishDetails',
+                  query: { id: arbitrateInfoId },
+                })
+              "
+            >
+              <van-icon name="orders-o" />
+              <span>{{ $t("views.arbitration.arbitrationMsg.detail") }}</span>
             </div>
           </div>
         </div>
       </div>
       <!-- 延期内容 -->
-      <div class='postpone' v-if='messageType == 0 && isArbitrate == 0'>
-        <div class='postpone-every'>
-          <div>申请人</div>
-          <p>原告:{{ postponeObj.plaintiff }}</p>
+      <div class="postpone" v-if="messageType == 0 && isArbitrate == 0">
+        <div class="postpone-every">
+          <div>{{ $t("views.arbitration.arbitrationMsg.applicant") }}</div>
+          <p>
+            {{ $t("views.arbitration.arbitrationMsg.plaintiff") }}:{{
+              postponeObj.plaintiff
+            }}
+          </p>
         </div>
-        <div class='postpone-every'>
-          <div>申请原因</div>
+        <div class="postpone-every">
+          <div>{{ $t("views.arbitration.arbitrationMsg.reason") }}</div>
           <p>{{ postponeObj.reason }}</p>
         </div>
-        <div class='postpone-every'>
-          <div>申请延期说明</div>
+        <div class="postpone-every">
+          <div>{{ $t("views.arbitration.arbitrationMsg.explain") }}</div>
           <p>{{ postponeObj.explain }}</p>
         </div>
-        <div class='postpone-every'>
-          <div>申请延期时间</div>
-          <p>{{ postponeObj.days }}天</p>
+        <div class="postpone-every">
+          <div>{{ $t("views.arbitration.arbitrationMsg.time") }}</div>
+          <p>
+            {{ postponeObj.days
+            }}{{ $t("views.arbitration.arbitrationMsg.day") }}
+          </p>
         </div>
       </div>
       <!-- 取消原因 -->
-      <div class='cancel' v-if='messageType == 2'>
-        <div>取消原因</div>
+      <div class="cancel" v-if="messageType == 2">
+        <div>{{ $t("views.arbitration.arbitrationMsg.cancel") }}</div>
         <p>{{ cancelObj.reason }}</p>
       </div>
       <!-- 追加举证 -->
-      <div class='add-to' v-if='messageType == 1'>
+      <div class="add-to" v-if="messageType == 1">
         <div
-          class='add-to-plaintiff'
-          v-show='addObj.adduceUserId == addObj.plaintiffId'
+          class="add-to-plaintiff"
+          v-show="addObj.adduceUserId == addObj.plaintiffId"
         >
-          原告举证
+          {{ $t("views.arbitration.arbitrationMsg.plain_evidence") }}
         </div>
         <div
-          class='add-to-appellee'
-          v-show='addObj.adduceUserId == addObj.defendantId'
+          class="add-to-appellee"
+          v-show="addObj.adduceUserId == addObj.defendantId"
         >
-          被告举证
+          {{ $t("views.arbitration.arbitrationMsg.defend_evidence") }}
         </div>
-        <div class='add-to-content'>
-          <div>追加举证</div>
+        <div class="add-to-content">
+          <div>
+            {{ $t("views.arbitration.arbitrationMsg.Adduce_evidence") }}
+          </div>
           <img
-            v-for='(item, index) in addObj.images'
-            :key='index'
-            :src='spliceSrc(item)'
+            v-for="(item, index) in addObj.images"
+            :key="index"
+            :src="spliceSrc(item)"
           />
           <p>{{ addObj.memo }}</p>
         </div>
       </div>
       <!-- 发起重新举证 -->
-      <div class='postpone' v-if='messageType == 0 && isArbitrate == 1'>
-        <div class='postpone-every'>
-          <div>发起人</div>
-          <p>{{ anewObj.name }} 编号: {{ anewObj.number }}</p>
+      <div class="postpone" v-if="messageType == 0 && isArbitrate == 1">
+        <div class="postpone-every">
+          <div>
+            {{ $t("views.arbitration.arbitrationMsg.Sponsor") }}
+          </div>
+          <p>
+            {{ anewObj.name }}
+            {{ $t("views.arbitration.arbitrationMsg.number") }}:
+            {{ anewObj.number }}
+          </p>
         </div>
-        <div class='postpone-every'>
-          <div>申请原因</div>
+        <div class="postpone-every">
+          <div>{{ $t("views.arbitration.arbitrationMsg.reason") }}</div>
           <p>{{ anewObj.reason }}</p>
         </div>
-        <div class='postpone-every'>
-          <div>申请延期说明</div>
+        <div class="postpone-every">
+          <div>{{ $t("views.arbitration.arbitrationMsg.explain") }}</div>
           <p>{{ anewObj.explain }}</p>
         </div>
       </div>
       <!-- 结案通知 -->
-      <div class='close' v-if='messageType == 3'>
-        <div>说明</div>
+      <div class="close" v-if="messageType == 3">
+        <div>{{ $t("views.arbitration.arbitrationMsg.plain") }}</div>
         <p>
-          该仲裁案已结案，如有异议可在结案后七日内进入详情申请再仲裁，注意逾期将无法队此案进行再仲裁
+          {{ $t("views.arbitration.arbitrationMsg.Closure") }}
         </p>
-        <div class='btn'>
+        <div class="btn">
           <van-button
-            v-if='show'
+            v-if="show"
             block
             round
-            color='#1b2945'
-            :to='{name: "appeal", query: { id: arbitrateInfoId } }'
+            color="#1b2945"
+            :to="{ name: 'appeal', query: { id: arbitrateInfoId } }"
           >
-            申请再次仲裁
+            {{ $t("views.arbitration.arbitrationMsg.again") }}
           </van-button>
         </div>
       </div>
@@ -212,29 +261,29 @@
   </div>
 </template>
 <script>
-import White from '@/components/Nav/white.vue';
+import White from "@/components/Nav/white.vue";
 import {
   getarbitratedelay,
   getadducelist,
   getcancelarbitrate,
   getclosure,
-  setmessageisopen
-} from '@/api/arbitrationMsg';
-import {spliceSrc} from '@/utils/utils'
+  setmessageisopen,
+} from "@/api/arbitrationMsg";
+import { spliceSrc } from "@/utils/utils";
 
 export default {
-  name: 'arbitrationMsg',
+  name: "arbitrationMsg",
   data() {
     return {
-      title: '',
+      title: "",
       show: false, // 是否显示在仲裁
       messageType: 0, //消息类型0 申请延期 1 追加举证 2 仲裁取消 3 结案通知
       isArbitrate: 0, //是否为仲裁员0是，1是
       paramsRoute: {}, //路由传的值
       // 有多种情况，所以需要单独拎出来
-      arbitrateInType: '', //其他消息
+      arbitrateInType: "", //其他消息
       // 有多种情况，所以需要单独拎出来
-      arbitrateInfoId: '', //去往仲裁详情页传的值，arbitrateInfoId
+      arbitrateInfoId: "", //去往仲裁详情页传的值，arbitrateInfoId
       // 请求到的数据
       postponeObj: {}, //延期申请数据
       addObj: {}, //追加举证数据
@@ -244,31 +293,31 @@ export default {
       headcount: 0, //仲裁员总人数
       plaintiffNum: 0, // 投原告人数的票数
       defendantNum: 0, // 被告票数
-      isBtn: true //结案通知的申请再次仲裁是否禁用
+      isBtn: true, //结案通知的申请再次仲裁是否禁用
     };
   },
   components: {
-    White
+    White,
   },
   mounted() {
     this.isArbitrate = this.$route.query.arbitrateId;
     this.messageType = this.$route.query.messageType;
     this.paramsRoute = this.$route.query;
-    this.setmessageisopen(this.$route.query.arbitrateMessageId)
+    this.setmessageisopen(this.$route.query.arbitrateMessageId);
     if (this.messageType == 0 && this.isArbitrate == 0) {
-      this.title = '申请延期'
+      this.title = this.$t("views.arbitration.arbitrationMsg.messageType[0]");
       this.getarbitratedelay(); // 获取申请延期消息
     } else if (this.messageType == 1) {
-      this.title = '追加举证'
+      this.title = this.$t("views.arbitration.arbitrationMsg.messageType[1]");
       this.getadducelist(); // 追加举证
     } else if (this.messageType == 0 && this.isArbitrate == 1) {
-      this.title = '发起重新举证'
+      this.title = this.$t("views.arbitration.arbitrationMsg.messageType[2]");
       this.anewPostpone(); // 发起重新举证
     } else if (this.messageType == 2) {
-      this.title = '取消仲裁'
+      this.title = this.$t("views.arbitration.arbitrationMsg.messageType[3]");
       this.getcancelarbitrate(); // 取消仲裁
     } else if (this.messageType == 3) {
-      this.title = '结案通知'
+      this.title = this.$t("views.arbitration.arbitrationMsg.messageType[4]");
       this.getclosure(); // 结案通知
     }
   },
@@ -278,10 +327,13 @@ export default {
     getarbitratedelay() {
       getarbitratedelay({
         id: this.paramsRoute.associatedId,
-        isArbitrate: this.paramsRoute.arbitrateId
+        isArbitrate: this.paramsRoute.arbitrateId,
       }).then((res) => {
         let data = res.items;
-        console.log(data, '申请延期');
+        console.log(
+          data,
+          this.$t("views.arbitration.arbitrationMsg.messageType[0]")
+        );
         this.postponeObj = data;
         this.arbitrateInType = data.arbitrateInType;
         this.arbitrateInfoId = data.arbitrateInfoId;
@@ -290,10 +342,13 @@ export default {
     // 取消仲裁
     getcancelarbitrate() {
       getcancelarbitrate({
-        id: this.paramsRoute.associatedId
+        id: this.paramsRoute.associatedId,
       }).then((res) => {
         let data = res.items;
-        console.log(data, '取消仲裁');
+        console.log(
+          data,
+          this.$t("views.arbitration.arbitrationMsg.messageType[3]")
+        );
         this.cancelObj = data;
         this.arbitrateInType = data.arbitrateInType;
         this.arbitrateInfoId = data.arbitrateInfoId;
@@ -302,11 +357,14 @@ export default {
     // 追加举证
     getadducelist() {
       getadducelist({
-        id: this.paramsRoute.associatedId
+        id: this.paramsRoute.associatedId,
       }).then((res) => {
         let data = res.items;
-        data.images = data.images.split(',');
-        console.log(data, '追加举证');
+        data.images = data.images.split(",");
+        console.log(
+          data,
+          this.$t("views.arbitration.arbitrationMsg.messageType[1]")
+        );
         this.addObj = data;
         this.arbitrateInType = data.arbitrateInType;
         this.arbitrateInfoId = data.arbitrateInfoId;
@@ -316,10 +374,13 @@ export default {
     anewPostpone() {
       getarbitratedelay({
         id: this.paramsRoute.associatedId,
-        isArbitrate: this.paramsRoute.arbitrateId
+        isArbitrate: this.paramsRoute.arbitrateId,
       }).then((res) => {
         let data = res.items;
-        console.log(data, '发起重新举证');
+        console.log(
+          data,
+          this.$t("views.arbitration.arbitrationMsg.messageType[2]")
+        );
         this.anewObj = data;
         this.arbitrateInType = data.arbitrateInType;
         this.arbitrateInfoId = data.arbitrateInfoId;
@@ -328,7 +389,7 @@ export default {
     // 结案通知
     getclosure() {
       getclosure({
-        id: this.paramsRoute.associatedId
+        id: this.paramsRoute.associatedId,
       }).then((res) => {
         let data = res.items;
         this.closureObj = data;
@@ -337,7 +398,8 @@ export default {
         this.headcount = data.plaintiffNum + data.defendantNum;
         this.plaintiffNum = data.plaintiffNum;
         this.defendantNum = data.defendantNum;
-        this.show = this.$dayjs().utc().diff(this.$dayjs.utc(data.voteDate), 'day') < 7
+        this.show =
+          this.$dayjs().utc().diff(this.$dayjs.utc(data.voteDate), "day") < 7;
         // 再次申请仲裁按钮，先注释
         // let nowTimestamp = new Date().getTime();
         // let voteDateTimestamp =
@@ -347,13 +409,12 @@ export default {
     },
     // 设置消息为已读 小红点的显示隐藏
     setmessageisopen(associatedId) {
-      console.log(associatedId)
+      console.log(associatedId);
       setmessageisopen({
-        id: associatedId
-      }).then(res => {
-      })
-    }
-  }
+        id: associatedId,
+      }).then((res) => {});
+    },
+  },
 };
 </script>
 <style lang='less' scoped>

@@ -3,27 +3,36 @@
     <Navwhite :title="title"></Navwhite>
     <div class="content">
       <div class="cell">
-        <p class="cell_title">数量</p>
+        <p class="cell_title">{{ $t("views.operation.chase.number") }}</p>
         <div class="inputs">
-          <input type="number" v-model="number" @blur="onNumInput($event)" placeholder="最大收购数量" />
-          <p style="color:#237FF8">{{coin.coinType}}</p>
+          <input
+            type="number"
+            v-model="number"
+            @blur="onNumInput($event)"
+            :placeholder="$t('views.operation.chase.placeholder[0]')"
+          />
+          <p style="color: #237ff8" >{{ coin.coinType }}</p>
         </div>
       </div>
       <div class="cell">
-        <p class="cell_title">单价</p>
+        <p class="cell_title">{{ $t("views.operation.chase.price") }}</p>
         <div class="inputs">
           <input
             type="number"
             v-model="price"
             @blur="onPriceInput(coinType.floor,coinType.ceiling , $event,coin.coinType)"
-            :placeholder="'收购'+coin.coinType+'的单价(CNY)'"
+            :placeholder="
+              $t('views.operation.chase.placeholder[1]') +
+              coin.coinType +
+              $t('views.operation.chase.placeholder[2]')
+            "
           />
           <p>CNY</p>
         </div>
       </div>
 
       <div class="cell">
-        <p class="cell_title">限购</p>
+        <p class="cell_title">{{ $t("views.operation.chase.cell_title") }}</p>
         <div class="cell_flex">
           <div class="inputs cell_Width">
             <input
@@ -31,10 +40,12 @@
               :disabled="hasInput"
               v-model="MinLegalTender"
               @blur="onMinLegalTender"
-              placeholder="最低收购总额"
+              :placeholder="$t('views.operation.chase.placeholder[3]')"
             />
             <p>CNY</p>
-            <span v-if="eror[0]" class="error-text">输入金额不正确</span>
+            <span v-if="eror[0]" class="error-text">{{
+                $t("views.operation.chase.error_text")
+              }}</span>
           </div>
           <div class="inputs cell_Width">
             <input
@@ -42,10 +53,12 @@
               :disabled="hasInput"
               v-model="MinDigitalCash"
               @blur="onMinDigitalCash"
-              placeholder="最低收购总额"
+              :placeholder="$t('views.operation.chase.placeholder[3]')"
             />
-            <p>{{coin.coinType}}</p>
-            <span v-if="eror[1]" class="error-text">输入金额不正确</span>
+            <p>{{ coin.coinType }}</p>
+            <span v-if="eror[1]" class="error-text">{{
+                $t("views.operation.chase.error_text")
+              }}</span>
           </div>
         </div>
         <div class="cell_flex">
@@ -55,10 +68,12 @@
               :disabled="hasInput"
               v-model="MaxLegalTender"
               @blur="onMaxLegalTender"
-              placeholder="最高收购总额"
+              :placeholder="$t('views.operation.chase.placeholder[4]')"
             />
             <p>CNY</p>
-            <span v-if="eror[2]" class="error-text">输入金额不正确</span>
+            <span v-if="eror[2]" class="error-text">{{
+                $t("views.operation.chase.error_text")
+              }}</span>
           </div>
           <div class="inputs cell_Width">
             <input
@@ -66,26 +81,38 @@
               :disabled="hasInput"
               v-model="MaxDigitalCash"
               @blur="onMaxDigitalCash"
-              placeholder="最高收购总额"
+              :placeholder="$t('views.operation.chase.placeholder[4]')"
             />
-            <p>{{coin.coinType}}</p>
-            <span v-if="eror[3]" class="error-text">输入金额不正确</span>
+            <p>{{ coin.coinType }}</p>
+            <span v-if="eror[3]" class="error-text">{{
+                $t("views.operation.chase.error_text")
+              }}</span>
           </div>
         </div>
       </div>
     </div>
 
     <footer class="footer">
-      <h6>使用现金交易：</h6>
+      <h6>{{ $t("views.operation.chase.deal") }}</h6>
       <van-cell center :border="false">
         <template #icon>
-          <img class="pay-img" :src="require('@/assets/currency-icons/unmoney.png')" alt="aug-icon" />
+          <img
+            class="pay-img"
+            :src="require('@/assets/currency-icons/unmoney.png')"
+            alt="aug-icon"
+          />
         </template>
         <template #title>
-          <span class="custom-title">可接受现金</span>
+          <span class="custom-title">{{
+              $t("views.operation.chase.adopt")
+            }}</span>
         </template>
         <template #right-icon>
-          <van-switch v-model="receiving_checked" @change="check_change('isMoney')" size="18px" />
+          <van-switch
+            v-model="receiving_checked"
+            @change="check_change('isMoney')"
+            size="18px"
+          />
         </template>
       </van-cell>
       <van-cell center :border="false">
@@ -97,16 +124,29 @@
           />
         </template>
         <template #title>
-          <span class="custom-title">只接受现金</span>
+          <span class="custom-title">{{
+              $t("views.operation.chase.adopt")
+            }}</span>
         </template>
         <template #right-icon>
-          <van-switch v-model="isMoney" @change="check_change('receiving_checked')" size="18px" />
+          <van-switch
+            v-model="isMoney"
+            @change="check_change('receiving_checked')"
+            size="18px"
+          />
         </template>
       </van-cell>
     </footer>
 
     <div class="button">
-      <van-button type="primary" block round @click="popswitch" :disabled="vali_value">生成收购订单</van-button>
+      <van-button
+        type="primary"
+        block
+        round
+        @click="popswitch"
+        :disabled="vali_value"
+      >{{ $t("views.operation.chase.create") }}</van-button
+      >
     </div>
 
     <van-popup
@@ -119,28 +159,32 @@
       position="bottom"
     >
       <div class="popup-content">
-        <p class="pop-title">确定收购订单</p>
-        <p class="pop-message">请确认当前订单信息</p>
+        <p class="pop-title">{{ $t("views.operation.chase.sure") }}</p>
+        <p class="pop-message">{{ $t("views.operation.chase.current") }}</p>
         <div class="pop-data">
           <div>
-            <p>单价</p>
+            <p>{{ $t("views.operation.chase.price") }}</p>
             <p>{{ price }} CNY</p>
           </div>
           <div>
-            <p>数量</p>
-            <p>{{ number }} {{coin.coinType}}</p>
+            <p>{{ $t("views.operation.chase.number") }}</p>
+            <p>{{ number }} {{ coin.coinType }}</p>
           </div>
           <div>
-            <p>限额</p>
+            <p>{{ $t("views.operation.chase.cell_title") }}</p>
             <p>{{ MinLegalTender }} CNY ~ {{ MaxLegalTender }} CNY</p>
           </div>
           <div>
-            <p>限额</p>
-            <p>{{ MinDigitalCash }} {{coin.coinType}} ~ {{ MaxDigitalCash }} {{coin.coinType}}</p>
+            <p>{{ $t("views.operation.chase.cell_title") }}</p>
+            <p>
+              {{ MinDigitalCash }} {{ coin.coinType }} ~ {{ MaxDigitalCash }} {{ coin.coinType }}
+            </p>
           </div>
         </div>
 
-        <van-checkbox shape="square" v-model="checked">我已认真核对</van-checkbox>
+        <van-checkbox shape="square" v-model="checked">{{
+            $t("views.operation.chase.check")
+          }}</van-checkbox>
         <van-button
           class="pop-button"
           @click="jump()"
@@ -148,7 +192,8 @@
           color="#1B2945"
           block
           :disabled="!checked"
-        >确认生成</van-button>
+        >{{ $t("views.operation.chase.affirm") }}</van-button
+        >
       </div>
     </van-popup>
 
@@ -159,19 +204,18 @@
         @cancel="showPicker = false"
         @confirm="onConfirm"
       />
-    </van-popup>-->
+    </van-popup> -->
   </div>
 </template>
 
 <script>
-import Navwhite from '@/components/Nav/white.vue'
-import currency_mixin from '@/mixins/currency_mixins'
-import loadingToast from '@/components/loading-toast'
-import { addOrder } from '@/api/trxRequest'
-// import { getcoinID } from '@/utils/utils'
+import Navwhite from "@/components/Nav/white.vue";
+import currency_mixin from "@/mixins/currency_mixins";
+import loadingToast from "@/components/loading-toast";
+import { addOrder } from "@/api/trxRequest";
 
 export default {
-  name: 'setpur-chase', //挂收购单
+  name: "setpur-chase", //挂收购单
   components: {
     Navwhite,
   },
@@ -179,16 +223,15 @@ export default {
   data() {
     return {
       hasInput: true,
-      title: '收购',
+      title: this.$t("views.operation.chase.title"),
 
       // kindShow: false,
-      // kind: 'USDT',
-      // columns: ['USDT', 'USDC', 'BTC', 'ETH', 'BNB'],
-
+      // kind: "USDT",
+      // columns: ["USDT", "USDC", "BTC", "ETH", "BNB"],
       coin: '',
       address: '',
       coinType: '',
-    }
+    };
   },
   created() {
     this.coin = this.$route.params
@@ -196,30 +239,24 @@ export default {
     for (let i of coinList) {
       if (i.id == this.coin.coinID) this.coinType = i
     }
-    console.log(this.coinType)
   },
   methods: {
-    // onConfirm(value) {
-    //   this.kind = value
-    //   this.kindShow = false
-    // },
     //生成收购单
     async jump() {
       this.$toast.warning(
         {
           component: loadingToast,
           props: {
-            title: '收购单生成中,请耐心等待。。。',
+            title: this.$t("views.operation.chase.create_title"),
           },
         },
         {
           icon: false,
           timeout: false,
         }
-      )
-      this.isclose_on_click_overlay = false
+      );
+      this.isclose_on_click_overlay = false;
       try {
-        // let coinID = getcoinID().id
         const { data } = await addOrder({
           cny: this.price,
           num: this.number,
@@ -227,12 +264,26 @@ export default {
           amount2: this.MaxLegalTender,
           cash: this.cash,
           coinID: this.coin.coinID,
-        })
-        this.$toast.clear()
-        if (data.State === '1') {
+        });
+        this.$toast.clear();
+        if (data.State === "1") {
           this.$toast.error(
             <div>
-              <p style="font-size:14px;margin:5px">挂单数量超过最大数额！</p>
+              <p style="font-size:14px;margin:5px">
+                {this.$t("views.operation.chase.exceed")}
+              </p>
+            </div>,
+            {
+              timeout: 3000,
+            }
+          );
+          this.isclose_on_click_overlay = true;
+          return false;
+        }
+        if(data.State === '-1'){
+          this.$toast.error(
+            <div>
+              <p style="font-size:14px;margin:5px">请优先完成出售订单，再来挂收购单！</p>
             </div>,
             {
               timeout: 3000,
@@ -242,19 +293,19 @@ export default {
           return false
         }
         this.$router.replace({
-          name: 'order-Ticket',
+          name: "order-Ticket",
           params: {
-            method: 'buy',
+            method: "buy",
           },
-        })
+        });
       } catch (err) {
-        console.warn(err)
-        this.$toast.error('网络有点小错误，请稍后重试。')
+        console.warn(err);
+        this.$toast.error(this.$t("views.operation.chase.toast"));
       }
-      this.isclose_on_click_overlay = true
+      this.isclose_on_click_overlay = true;
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

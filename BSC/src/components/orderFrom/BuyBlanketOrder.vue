@@ -14,7 +14,7 @@
         </div>
         <div>
           <p>数量</p>
-          <p>{{ orderItem.num }} USDT</p>
+          <p>{{ orderItem.num }} {{coinType}}</p>
         </div>
         <div>
           <p>限额</p>
@@ -30,26 +30,15 @@
       </div>
 
       <div v-if="orderItem.dsx == '200'">
-        <van-button block round class="cancel_button" :disabled="true">
-          已取消
-        </van-button>
+        <van-button block round class="cancel_button" :disabled="true">已取消</van-button>
       </div>
 
       <div class="button" v-else>
         <!-- <van-button  type="danger"  round @click="handlecancel_order">
           取消订单
-        </van-button> -->
-        <van-button
-          v-if="orderItem.dsx == '1'"
-          round
-          type="warning"
-          block
-          @click="soldout"
-          >暂时下架</van-button
-        >
-        <van-button v-else round type="info" @click="putaway"
-          >继续上架</van-button
-        >
+        </van-button>-->
+        <van-button v-if="orderItem.dsx == '1'" round type="warning" block @click="soldout">暂时下架</van-button>
+        <van-button v-else round type="info" @click="putaway">继续上架</van-button>
       </div>
     </div>
 
@@ -72,7 +61,7 @@
               <input
                 type="number"
                 v-model="price"
-                @blur="onPriceInput(5, 7.5, $event)"
+                @blur="onPriceInput(Nowcoin.floor, Nowcoin.ceiling, $event)"
               />
               <p>CNY</p>
             </div>
@@ -80,62 +69,40 @@
           <div class="cell">
             <p class="cell_title">数量</p>
             <div class="inputs">
-              <input
-                type="number"
-                v-model="number"
-                @blur="onNumInput($event)"
-              />
-              <p>USDT</p>
+              <input type="number" v-model="number" @blur="onNumInput($event)" />
+              <p>{{coinType}}</p>
             </div>
           </div>
           <div class="cell">
             <p class="cell_title">限购</p>
             <div class="cell_flex">
               <div class="inputs cell_Width">
-                <input
-                  type="number"
-                  v-model="MinLegalTender"
-                  @blur="onMinLegalTender"
-                />
+                <input type="number" v-model="MinLegalTender" @blur="onMinLegalTender" />
                 <p>CNY</p>
                 <span v-if="eror[0]" class="error-text">输入金额不正确</span>
               </div>
               <div class="inputs cell_Width">
-                <input
-                  type="number"
-                  v-model="MinDigitalCash"
-                  @blur="onMinDigitalCash"
-                />
-                <p>USDT</p>
+                <input type="number" v-model="MinDigitalCash" @blur="onMinDigitalCash" />
+                <p>{{coinType}}</p>
                 <span v-if="eror[1]" class="error-text">输入金额不正确</span>
               </div>
             </div>
             <div class="cell_flex">
               <div class="inputs cell_Width">
-                <input
-                  type="number"
-                  v-model="MaxLegalTender"
-                  @blur="onMaxLegalTender"
-                />
+                <input type="number" v-model="MaxLegalTender" @blur="onMaxLegalTender" />
                 <p>CNY</p>
                 <span v-if="eror[2]" class="error-text">输入金额不正确</span>
               </div>
               <div class="inputs cell_Width">
-                <input
-                  type="number"
-                  v-model="MaxDigitalCash"
-                  @blur="onMaxDigitalCash"
-                />
-                <p>USDT</p>
+                <input type="number" v-model="MaxDigitalCash" @blur="onMaxDigitalCash" />
+                <p>{{coinType}}</p>
                 <span v-if="eror[3]" class="error-text">输入金额不正确</span>
               </div>
             </div>
           </div>
         </div>
         <div class="buttons">
-          <van-button color="#1B2945" block round @click="updata(1)"
-            >更新订单</van-button
-          >
+          <van-button color="#1B2945" block round @click="updata(1)">更新订单</van-button>
           <p @click="cancel">取消订单</p>
         </div>
       </div>
@@ -154,25 +121,22 @@
     >
       <template #default>
         <div class="text_color">是否取消该收购订单？</div>
-        <p :style="{ color: 'red', textAlign: 'center', margin: '0 0 15px 0' }">
-          取消后，订单不能恢复！
-        </p>
+        <p :style="{ color: 'red', textAlign: 'center', margin: '0 0 15px 0' }">取消后，订单不能恢复！</p>
       </template>
     </van-dialog>
   </div>
 </template>
 
 <script>
-import { Dialog } from "vant";
+import { Dialog } from 'vant'
 
+import { UPdateOrder_sj } from '@/api/trxRequest'
 
-import { UPdateOrder_sj } from "@/api/trxRequest";
-
-import PubSub from "pubsub-js";
+import PubSub from 'pubsub-js'
 
 export default {
   //收购 总订单
-  name: "my-buyBlanketOrder",
+  name: 'my-buyBlanketOrder',
   components: {
     [Dialog.Component.name]: Dialog.Component,
   },
@@ -180,6 +144,9 @@ export default {
     orderItem: {
       type: [Object],
       require: true,
+    },
+    coinType: {
+      type: [String],
     },
   },
   data() {
@@ -192,48 +159,51 @@ export default {
       //订单按钮状态
       orderShow: true,
       //单价
-      price: "",
+      price: '',
       //数量
-      number: "",
+      number: '',
       //最大法币
-      MaxLegalTender: "",
+      MaxLegalTender: '',
       //最小法币
-      MinLegalTender: "",
+      MinLegalTender: '',
       //最大数字货币
-      MaxDigitalCash: "",
+      MaxDigitalCash: '',
       //最小数字货币
-      MinDigitalCash: "",
+      MinDigitalCash: '',
       isChange_orderInfo: false, //是否有修改过
       eror: [false, false, false, false], // 对应错误信息展示
       vali_value: true, //所有值是否有效
-    };
+
+      Nowcoin: '',
+    }
   },
   created() {
-    this.price = this.orderItem.cny;
-    this.number = this.orderItem.num;
-    this.MaxLegalTender = this.orderItem.amount2;
-    this.MinLegalTender = this.orderItem.amount1;
-    this.MaxDigitalCash = (this.orderItem.amount2 / this.orderItem.cny).toFixed(
-      6
-    );
-    this.MinDigitalCash = (this.orderItem.amount1 / this.orderItem.cny).toFixed(
-      6
-    );
+    let coinList = JSON.parse(localStorage.getItem('coinList'))
+    for (let i of coinList) {
+      if (i.name == this.coinType) this.Nowcoin = i
+    }
+
+    this.price = this.orderItem.cny
+    this.number = this.orderItem.num
+    this.MaxLegalTender = this.orderItem.amount2
+    this.MinLegalTender = this.orderItem.amount1
+    this.MaxDigitalCash = (this.orderItem.amount2 / this.orderItem.cny).toFixed(6)
+    this.MinDigitalCash = (this.orderItem.amount1 / this.orderItem.cny).toFixed(6)
   },
   methods: {
     amend() {
       //订单是否处于取消状态
-      if (this.orderItem.dsx === "200") {
-        return false;
+      if (this.orderItem.dsx === '200') {
+        return false
       }
-      this.show = true;
+      this.show = true
     },
     async updata(type) {
       if (!this.isChange_orderInfo) {
-        this.show = false;
-        return false;
+        this.show = false
+        return false
       }
-      this.isclose_on_click_overlay = false;
+      this.isclose_on_click_overlay = false
       if (!this.vali_value) {
         try {
           await UPdateOrder_sj({
@@ -243,25 +213,25 @@ export default {
             amount2: this.MaxLegalTender,
             did: this.orderItem.id,
             type,
-          });
-          this.$toast.success("订单修改成功");
-          PubSub.publish("update_order");
+          })
+          this.$toast.success('订单修改成功')
+          PubSub.publish('update_order')
         } catch (err) {
           this.$toast.error(err, {
             timeout: false,
-          });
+          })
         } finally {
-          this.show = false;
+          this.show = false
         }
       } else {
-        this.$toast.clear();
-        this.$toast.warning("输入金额数量不正确，请重新输入");
+        this.$toast.clear()
+        this.$toast.warning('输入金额数量不正确，请重新输入')
       }
-      this.isclose_on_click_overlay = true;
+      this.isclose_on_click_overlay = true
     },
     cancel() {
-      this.show = false;
-      this.cancelShow = true;
+      this.show = false
+      this.cancelShow = true
     },
     async cancel_yes() {
       try {
@@ -272,21 +242,21 @@ export default {
           amount2: this.MaxLegalTender,
           did: this.orderItem.id,
           type: 2, //取消订单
-        });
-        this.$toast.success("订单已经取消");
-        PubSub.publish("update_order");
+        })
+        this.$toast.success('订单已经取消')
+        PubSub.publish('update_order')
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
       }
     },
     soldout() {
       Dialog.confirm({
-        title: "下架提示",
-        message: "暂时下架交易后会暂时停止对外收购，\n是否暂时下架该笔订单 ",
-        confirmButtonText: "下架",
-        confirmButtonColor: "red",
-        cancelButtonText: "取消",
-        cancelButtonColor: "#666",
+        title: '下架提示',
+        message: '暂时下架交易后会暂时停止对外收购，\n是否暂时下架该笔订单 ',
+        confirmButtonText: '下架',
+        confirmButtonColor: 'red',
+        cancelButtonText: '取消',
+        cancelButtonColor: '#666',
       })
         .then(async () => {
           UPdateOrder_sj({
@@ -297,20 +267,20 @@ export default {
             did: this.orderItem.id,
             type: 220, //下架
           }).then(() => {
-            this.$toast.success("订单已下架");
-            PubSub.publish("update_order");
-          });
+            this.$toast.success('订单已下架')
+            PubSub.publish('update_order')
+          })
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     putaway() {
       // 订单上架
       Dialog.confirm({
-        title: "上架提示",
-        message: "上架后订单可正常进行交易，\n是否上架该笔订单 ",
-        confirmButtonText: "上架",
-        cancelButtonText: "取消",
-        cancelButtonColor: "#666",
+        title: '上架提示',
+        message: '上架后订单可正常进行交易，\n是否上架该笔订单 ',
+        confirmButtonText: '上架',
+        cancelButtonText: '取消',
+        cancelButtonColor: '#666',
       })
         .then(() => {
           UPdateOrder_sj({
@@ -319,168 +289,165 @@ export default {
             amount1: this.MinLegalTender,
             amount2: this.MaxLegalTender,
             did: this.orderItem.id,
-            type: 221, 
+            type: 221,
           }).then(() => {
-            this.$toast.success("订单已上架，可正常进行交易");
-            PubSub.publish("update_order");
-          });
+            this.$toast.success('订单已上架，可正常进行交易')
+            PubSub.publish('update_order')
+          })
         })
         .catch(() => {
           // on cancel
-        });
+        })
     },
     warning(index, flg) {
-      this.$set(this.eror, index, flg);
+      this.$set(this.eror, index, flg)
       setTimeout(() => {
-        this.$set(this.eror, index, !flg);
-      }, 800);
+        this.$set(this.eror, index, !flg)
+      }, 800)
     },
     onPriceInput(min, max, e) {
-      this.isChange_orderInfo = true;
-      this.$toast.clear();
+      this.isChange_orderInfo = true
+      this.$toast.clear()
       if (min <= Number(e.target.value) && Number(e.target.value) <= max) {
-        this.price = e.target.value;
+        this.price = e.target.value
       } else if (Number(e.target.value) <= min) {
-        e.target.value = 5;
-        this.price = 5;
-        this.$toast.warning("该货币价格不能低于 5 CNY");
+        e.target.value = min
+        this.price = min
+        this.$toast.warning(`该货币价格不能低于 ${min} CNY`)
       } else if (Number(e.target.value) >= max) {
-        this.price = 7.5;
-        e.target.value = 7.5;
-        this.$toast.warning("该货币价格不能高于 7.5 CNY");
+        this.price = max
+        e.target.value = max
+        this.$toast.warning(`该货币价格不能高于 ${max} CNY`)
       }
-      this.is_validVal();
+      this.is_validVal()
     },
     onNumInput(e) {
-      this.isChange_orderInfo = true;
+      this.isChange_orderInfo = true
       // const max = localStorage.getItem("myeotc");
 
-      const myEoct=localStorage.getItem("myeotc")*1
-      const otczy= localStorage.getItem("otczy")*1
-      const giftEotc=localStorage.getItem("giftEotc")*1
+      const myEoct = localStorage.getItem('myeotc') * 1
+      const otczy = localStorage.getItem('otczy') * 1
+      const giftEotc = localStorage.getItem('giftEotc') * 1
 
-      const max=myEoct+otczy+giftEotc
+      const max = myEoct + otczy + giftEotc
 
       if (Number(e.target.value) < 0) {
-        e.target.value = 0;
-        this.number = 0;
+        e.target.value = 0
+        this.number = 0
       }
-      if (Number(e.target.value) > max*10) {
-        e.target.value = max*10;
-        this.number = e.target.value;
-        this.$toast.clear();
-        this.$toast.warning(`您最高收购 USDT 的数量不能超过质押的数量${max*10}`);
+      if (Number(e.target.value) > max * 10) {
+        e.target.value = max * 10
+        this.number = e.target.value
+        this.$toast.clear()
+        this.$toast.warning(`您最高收购 ${this.coinType} 的数量不能超过质押的数量${max * 10}`)
       }
-      this.is_validVal();
+      this.is_validVal()
     },
     //限购 最小 法币值
     onMinLegalTender(e) {
-      this.isChange_orderInfo = true;
-      const value = e.target.value;
+      this.isChange_orderInfo = true
+      const value = e.target.value
       if (
         0 < parseFloat(value) &&
         value <= (parseFloat(this.price) * parseFloat(this.number)).toFixed(2)
       ) {
-        this.MinDigitalCash = (+e.target.value / this.price).toFixed(6);
+        this.MinDigitalCash = (+e.target.value / this.price).toFixed(6)
       }
-      this.is_validVal();
+      this.is_validVal()
     },
     // 限购 最小 货币值
     onMinDigitalCash(e) {
-      this.isChange_orderInfo = true;
-      const value = e.target.value;
+      this.isChange_orderInfo = true
+      const value = e.target.value
       if (0 <= +value && +value <= this.number) {
-        this.MinLegalTender = (value * this.price).toFixed(2);
+        this.MinLegalTender = (value * this.price).toFixed(2)
       }
-      this.is_validVal();
+      this.is_validVal()
     },
     // 限购 最高 金额
     onMaxLegalTender(e) {
-      this.isChange_orderInfo = true;
-      const value = parseFloat(e.target.value);
+      this.isChange_orderInfo = true
+      const value = parseFloat(e.target.value)
       if (
         value >= parseFloat(this.MinLegalTender) &&
         value <= (parseFloat(this.price) * parseFloat(this.number)).toFixed(2)
       ) {
-        this.MaxDigitalCash = (value / this.price).toFixed(6);
+        this.MaxDigitalCash = (value / this.price).toFixed(6)
       }
-      this.is_validVal();
+      this.is_validVal()
     },
     onMaxDigitalCash(e) {
-      this.isChange_orderInfo = true;
-      const value = e.target.value;
+      this.isChange_orderInfo = true
+      const value = e.target.value
       if (+this.MinDigitalCash <= value && value <= +this.number) {
-        this.MaxLegalTender = (value * this.price).toFixed(2);
+        this.MaxLegalTender = (value * this.price).toFixed(2)
       }
-      this.is_validVal(3);
+      this.is_validVal(3)
     },
     is_validVal() {
-      if ((this.price ?? "") === "") {
-        this.vali_value = true;
-        return false;
+      if ((this.price ?? '') === '') {
+        this.vali_value = true
+        return false
       }
-      if ((this.number ?? "") === "") {
-        this.vali_value = true;
-        return false;
+      if ((this.number ?? '') === '') {
+        this.vali_value = true
+        return false
       }
-      if ((this.MaxLegalTender ?? "") === "") {
-        this.vali_value = true;
-        return false;
+      if ((this.MaxLegalTender ?? '') === '') {
+        this.vali_value = true
+        return false
       }
-      if ((this.MinLegalTender ?? "") === "") {
-        this.vali_value = true;
-        return false;
+      if ((this.MinLegalTender ?? '') === '') {
+        this.vali_value = true
+        return false
       }
-      if ((this.MaxDigitalCash ?? "") === "") {
-        this.vali_value = true;
-        return false;
+      if ((this.MaxDigitalCash ?? '') === '') {
+        this.vali_value = true
+        return false
       }
-      if ((this.MinDigitalCash ?? "") === "") {
-        this.vali_value = true;
-        return false;
+      if ((this.MinDigitalCash ?? '') === '') {
+        this.vali_value = true
+        return false
       }
-      this.effective_range();
-      return true;
+      this.effective_range()
+      return true
     },
     effective_range() {
-      const MinLegalTender = parseFloat(this.MinLegalTender);
-      const MinDigitalCash = parseFloat(this.MinDigitalCash);
-      const MaxLegalTender = parseFloat(this.MaxLegalTender); // tender 法币
-      const MaxDigitalCash = parseFloat(this.MaxDigitalCash);
+      const MinLegalTender = parseFloat(this.MinLegalTender)
+      const MinDigitalCash = parseFloat(this.MinDigitalCash)
+      const MaxLegalTender = parseFloat(this.MaxLegalTender) // tender 法币
+      const MaxDigitalCash = parseFloat(this.MaxDigitalCash)
 
-      const price = parseFloat(this.price);
-      const num = parseFloat(this.number);
+      const price = parseFloat(this.price)
+      const num = parseFloat(this.number)
 
       if (MinLegalTender <= 0 || MinLegalTender > (price * num).toFixed(2)) {
-        this.vali_value = true;
-        this.warning(0, true);
-        return false;
+        this.vali_value = true
+        this.warning(0, true)
+        return false
       }
 
       if (MinDigitalCash <= 0 || MinDigitalCash > num) {
-        this.vali_value = true;
-        this.warning(1, true);
-        return false;
+        this.vali_value = true
+        this.warning(1, true)
+        return false
       }
 
-      if (
-        MaxLegalTender < MinLegalTender ||
-        MaxLegalTender > (price * num).toFixed(2)
-      ) {
-        this.vali_value = true;
-        this.warning(2, true);
-        return false;
+      if (MaxLegalTender < MinLegalTender || MaxLegalTender > (price * num).toFixed(2)) {
+        this.vali_value = true
+        this.warning(2, true)
+        return false
       }
 
       if (MaxDigitalCash < MinDigitalCash || MaxDigitalCash > num) {
-        this.vali_value = true;
-        this.warning(3, true);
-        return false;
+        this.vali_value = true
+        this.warning(3, true)
+        return false
       }
-      this.vali_value = false;
+      this.vali_value = false
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

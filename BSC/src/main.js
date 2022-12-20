@@ -5,6 +5,8 @@ import router from "./router";
 import echarts from "echarts";
 
 import Vant from "vant";
+	
+// import Base64 from 'js-base64'
 
 // 复制粘贴
 import VueClipboard from "vue-clipboard2";
@@ -13,7 +15,6 @@ import VueClipboard from "vue-clipboard2";
 import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
-// import { time2 } from "@/api/autoRequest"
 
 // 语言国际化
 import i18n from "@/i18n";
@@ -41,6 +42,7 @@ Vue.use(Lazyload);
 Vue.use(all); //将全局函数当做插件来进行注册
 
 Vue.use(VueClipboard);
+
 
 Vue.use(Vant);
 Vue.use(plugin);

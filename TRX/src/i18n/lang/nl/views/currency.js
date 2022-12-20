@@ -1,0 +1,17 @@
+export default {
+  hd_txt: "Vertraagde vrijgave van munten",
+  header_text: "Wachten tot de verkoper de valuta vrijgeeft",
+  pay_text: "munten worden later vrijgegeven,Let op controleren",
+  sell: "verkopen",
+  price: "eenheid prijs",
+  number: "hoeveelheid",
+  total: "forfaitair bedrag",
+  site: "portemonnee adres",
+  Seller: "informatie van de verkoper",
+  relation: "neem contact op met de verkoper",
+  nickname: "bijnaam verkoper",
+  payment: "aanbetaling tomaten",
+  order_number: "bestellingsnummer",
+  date: "bestellingstijd",
+  launch: "Start arbitrage",
+};

@@ -1,0 +1,16 @@
+export default {
+	tip: ["まだ開いていません，お待ちください！", "頻繁にデータをリクエストする"],
+	empty: "データなし",
+	noMore: "もういや...",
+	reset: "リセット",
+	confirm: "確認",
+	cancel: "取消",
+	confirm2: "もちろん",
+	complete: "完成",
+	submit: "参加する",
+	load: "読み込み中",
+	loading: "読み込み中...",
+	name: "名前",
+	alipay: "Alipay",
+	wechat: "微信",
+};

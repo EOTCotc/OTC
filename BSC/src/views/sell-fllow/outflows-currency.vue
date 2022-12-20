@@ -40,7 +40,7 @@
           :src="require('@/assets/currency-icons/usdt.svg')"
           alt=""
         />
-        <span>出售 USDT</span>
+        <span>出售 {{ kind }}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -82,7 +82,7 @@
           </li>
           <li>
             <span>数量</span>
-            <span>{{ cacheData.num }} USDT</span>
+            <span>{{ cacheData.num }} {{ kind }}</span>
           </li>
           <li>
             <span>总金额</span>
@@ -94,7 +94,7 @@
                   '总金额 复制成功'
                 )
               "
-              >￥{{ ThousandSeparator(cacheData.totalMoney) }}.00
+              >￥{{ ThousandSeparator(cacheData.totalMoney) }}
               <i class="iconfont icon-copy" :style="{ color: '#999' }"></i>
             </span>
           </li>
@@ -353,6 +353,8 @@ export default {
       showOrderSaleInfo: false, // 出售订单详情信息弹窗 显隐
       playList: [], //对方收款方式列表
       curpaymentterm: ["", "default"], // 收款方式
+      kind: localStorage.getItem("userIconType"),
+      coin: "",
     };
   },
   created() {
@@ -534,12 +536,34 @@ export default {
         const selectpayk =
           this.getMoneyInfo(this.curpaymentterm[1]) || "网络&出现&问题";
         const type = 1;
-
+        let coinList = JSON.parse(localStorage.getItem("coinList"));
+        let coinID = localStorage.getItem("userIconId");
+        for (let i of coinList) {
+          if (i.id == coinID) this.coin = i;
+        }
         try {
-          await Reconstruction_getTrxBalance();
-          await Reconstruction_myApprove(usdt);
-          await Reconstruction_verifyUSDT(parseFloat(usdt));
-          await Reconstruction_sellOrder_user(oid, usdt.toString(), sj_ads);
+          if (this.coin.id != window.itself) {
+            await Reconstruction_getTrxBalance();
+            await Reconstruction_myApprove(
+              usdt,
+              JSON.parse(this.coin.abi),
+              this.coin.ads
+            ); // 授权
+            await Reconstruction_verifyUSDT(
+              parseFloat(usdt),
+              JSON.parse(this.coin.abi),
+              this.coin.ads
+            ); // 验证延保余额
+          } else {
+            await Reconstruction_getTrxBalance(usdt);
+          }
+
+          await Reconstruction_sellOrder_user(
+            oid,
+            usdt.toString(),
+            sj_ads,
+            coinID
+          );
           const data = await subbuysellorder({
             oid,
             usdt,

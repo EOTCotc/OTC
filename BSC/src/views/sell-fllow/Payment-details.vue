@@ -30,10 +30,10 @@
       <div class="top-text">
         <img
           class="icon-img"
-          :src="require('@/assets/currency-icons/usdt.svg')"
+          :src="require(`@/assets/currency-icons/${kind.toLowerCase()}.png`)"
           alt=""
         />
-        <span>出售 USDT</span>
+        <span>出售 {{ kind }}</span>
       </div>
       <div class="top-main">
         <ul>
@@ -86,7 +86,7 @@
           </li>
           <li>
             <span>数量</span>
-            <span>{{ cacheData.num }} USDT</span>
+            <span>{{ cacheData.num }} {{ kind }}</span>
           </li>
           <li>
             <span>总金额</span>
@@ -98,13 +98,13 @@
                   '总金额 复制成功'
                 )
               "
-              >￥{{ ThousandSeparator(cacheData.totalMoney) }}.00
+              >￥{{ ThousandSeparator(cacheData.totalMoney) }}
               <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
             ></span>
           </li>
           <li>
             <span>手续费</span>
-            <span>{{ cacheData.item.service_charge }} USDT</span>
+            <span>{{ cacheData.item.service_charge }} {{ kind }}</span>
           </li>
           <li v-if="cacheData.item.cash === '-1'">
             <span>收款方式</span>
@@ -264,7 +264,7 @@
                     '到账金额 复制成功'
                   )
                 "
-                >￥{{ ThousandSeparator(cacheData.totalMoney) }}.00 &nbsp;&nbsp;
+                >￥{{ ThousandSeparator(cacheData.totalMoney) }} &nbsp;&nbsp;
                 <i class="iconfont icon-copy" :style="{ color: '#999' }"></i
               ></span>
             </span>
@@ -390,6 +390,9 @@ export default {
       netType: localStorage.getItem("netType") || "trx",
       myaddress: localStorage.getItem("myaddress") || contractAddress,
       badge: getItem("bsnum"),
+
+      kind: localStorage.getItem("userIconType"),
+      coinId: localStorage.getItem("userIconId"),
     };
   },
   activated() {
@@ -477,12 +480,17 @@ export default {
             timeout: false,
           }
         );
-        await Reconstruction_getTrxBalance();
         //oid --当前子订单id  num 数量
         const oid = this.cacheData.item.oid || this.cacheData.MerchanInfo.odid;
         const mail =
           this.cacheData.item.mail || this.cacheData.MerchanInfo.aipay;
-        await Reconstruction_outOrder_user(oid, this.cacheData.num);
+        if (this.coinId != window.itself) {
+          await Reconstruction_getTrxBalance();
+        } else {
+          await Reconstruction_getTrxBalance(this.cacheData.num);
+        }
+        await Reconstruction_outOrder_user(oid, this.cacheData.num,this.coinId);
+
         // 合约操作验证通过，订单可执行交易
         const { data } = await UpdateOrderType({
           did: String(oid),
@@ -495,7 +503,7 @@ export default {
         let bsnum = parseInt(localStorage.getItem("bsnum"));
         localStorage.setItem("bsnum", --bsnum);
         this.$toast.clear();
-        this.$toast.success("Usdt 释放完成，成功出售！", {
+        this.$toast.success(`${this.kind} 释放完成，成功出售！`, {
           timeout: false,
         });
         this.$router.replace({
@@ -513,7 +521,7 @@ export default {
         this.$toast.error(
           <div>
             <p style="font-size:14px">区块繁忙。。释放过程出现错误！</p>
-            <p style="font-size:14px">USDT 释放请稍后重试！</p>
+            <p style="font-size:14px">释放错误请稍后重试！</p>
           </div>,
           {
             timeout: false,

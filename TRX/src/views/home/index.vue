@@ -53,7 +53,6 @@ export default {
     };
   },
   created() {
-   this.init()
     
     this.getMsg();
   },
@@ -81,23 +80,6 @@ export default {
           });
       });
     },
-    init(){
-      CoinList({}).then(res=>{
-        let data=res.data
-        for(let i of data){
-          i.name=i.name.trim()
-          i.ads=i.ads.trim()
-        }
-        console.log(data)
-        localStorage.setItem('coinList',JSON.stringify(data))
-
-      }).catch(err=>{
-        if(err.response.status==429){
-          return
-        }
-        console.log(err)
-      })
-    }
   },
 };
 </script>

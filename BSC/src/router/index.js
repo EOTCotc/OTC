@@ -627,31 +627,31 @@ router.beforeEach((to, form, next) => {
 
   if (to.name === 'order-Ticket') {
     Vue.$toast.clear()
-    // if (
-    //   localStorage.getItem('myeotc') * 1 < 5000 &&
-    //   Number(localStorage.getItem('giftNFT')) == 0
-    // ) {
-    //   Vue.$toast.warning({
-    //     component: toastComponent,
-    //     props: {
-    //       title: '您质押的EOTC不足',
-    //       content: 'EOTC质押5000以上的会员才能挂单.',
-    //       color: 'red',
-    //     },
-    //   })
-    //   return next(false)
-    // }
-    // if (localStorage.getItem('myjifen') < 9) {
-    //   Vue.$toast.warning({
-    //     component: toastComponent,
-    //     props: {
-    //       title: '您的积分不足',
-    //       content: '拥有10积分的会员才能挂单.',
-    //       color: 'red',
-    //     },
-    //   })
-    //   return next(false)
-    // }
+    if (
+      localStorage.getItem('otczy') * 1 < 5000 &&
+      Number(localStorage.getItem('giftNFT')) == 0
+    ) {
+      Vue.$toast.warning({
+        component: toastComponent,
+        props: {
+          title: '您质押的EOTC不足',
+          content: 'EOTC质押5000以上的会员才能挂单.',
+          color: 'red',
+        },
+      })
+      return next(false)
+    }
+    if (localStorage.getItem('myjifen') < 9) {
+      Vue.$toast.warning({
+        component: toastComponent,
+        props: {
+          title: '您的积分不足',
+          content: '拥有10积分的会员才能挂单.',
+          color: 'red',
+        },
+      })
+      return next(false)
+    }
     Bususer().then((res) => {
       if(res.data==null){
         return next()

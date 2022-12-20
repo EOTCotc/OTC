@@ -32,6 +32,7 @@ export default {
     VueLoading,
   },
   name: "canceled-order", //用户已完成订单·
+  props:['id'],
   data() {
     return {
       dataLoading_before: true,
@@ -39,15 +40,16 @@ export default {
     };
   },
   created() {
-    this.getinit_Data();
+    this.getinit_Data(this.id);
   },
   methods: {
-    async getinit_Data() {
+    async getinit_Data(coinID) {
       try {
         const { data } = await Eotcdis_Order({
           type: 1, //双位数商家， 单位数用户
           t1: 3,
           t2: 10,
+          coinID: coinID,
         });
         //console.log(data);
         this.orderData_List = data;
